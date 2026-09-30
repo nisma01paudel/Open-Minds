@@ -329,13 +329,15 @@ class Router:
 
         asset = raw.get("asset_type")
         role = raw.get("role")
+        if role in (None, "none"):
+            role = "maintenance"   # a known asset always carries at least its ownership duty
         rationale = str(raw.get("rationale") or "").strip()
         withheld = bool(DIGITS.search(rationale))
         if withheld:
             rationale = ("model rationale withheld: it contained a numeric claim "
                          "(measurements are computed in code, never by the model)")
 
-        if asset in (None, "none") or role in (None, "none"):
+        if asset in (None, "none"):
             return RoutingDecision(
                 case_id=None, priority=priority_hint, asset_type=asset, role=role,
                 confidence="none", used_model=True, candidates=ids,
@@ -430,9 +432,11 @@ ROLE_DEFINITION = (
 )
 
 ABSTAIN_RULE = (
-    "Choose asset_type=\"none\" and role=\"none\" when the report does not identify a specific "
-    "kind of asset, or does not make clear which duty is being asked about. A confident wrong "
-    "authority is worse than no answer."
+    "Choose asset_type=\"none\" ONLY when the report names no kind of asset at all - for example "
+    "\"a road is affected by something\" or \"there is a problem near a river\". If you can tell "
+    "what kind of asset is involved, you MUST choose that asset and the most likely duty; do not "
+    "abstain merely because the report is brief. Abstention exists to prevent naming the wrong "
+    "authority, not to avoid a decision. A brief but specific report is routable."
 )
 
 FEWSHOT = [
@@ -441,9 +445,21 @@ FEWSHOT = [
      "local-road", "maintenance"),
     ("A national highway is blocked by debris from a slope failure. Traffic is stopped.",
      "strategic-road", "emergency"),
+    ("A tension crack has opened beside a rural road; the road is still passable.",
+     "local-road", "maintenance"),
+    ("A state highway under the provincial government has a slope failure on one side.",
+     "provincial-road", "maintenance"),
     ("A river is eroding its bank and threatening a settlement; earlier check dams have failed.",
      "riverbank", "maintenance"),
-    ("A road is affected by something.", "none", "none"),
+    ("A steep privately owned hillside above a house has developed cracks.",
+     "private-land", "maintenance"),
+    ("The slope behind a community school is unstable and cracks are appearing in the playground.",
+     "public-building", "maintenance"),
+    ("A municipality wants an independent geological opinion on whether a slope is safe to build on.",
+     "any", "assessment"),
+    ("The district authorities need to warn the public that landslides are likely.",
+     "any", "warning"),
+    ("A road is affected by something.", "none", "maintenance"),
 ]
 
 

@@ -20,7 +20,8 @@ We answer that with an explicit division of labour, because the honest answer de
 | Layer | Owner | Why |
 |---|---|---|
 | Imagery reads, cloud masking, spectral indices, thresholds, geometry, hydrology | **deterministic code** | must be reproducible, auditable and identical every run |
-| **Severity triage, authority and jurisdiction selection, escalation, request composition and addressing, acknowledgement tracking** | **the open-weight models** | this is a judgement over cited, retrieved legal text and messy real-world evidence — not a lookup |
+| **Asset and duty classification, severity triage, request composition and addressing, acknowledgement tracking** | **the open-weight models** | this is a judgement over messy real-world evidence — not a lookup |
+| Mapping (asset, duty) → the cited rule, escalation path and institution | **deterministic** | the law is not a judgement call once the facts are classified; the citation must be reproducible |
 
 Delete the AI layer and you delete the entire right-hand column: no authority is selected, no escalation
 path is derived, no Nepali advisory is composed and addressed, and no acknowledgement can be tracked.
@@ -36,7 +37,8 @@ where the AI is irreplaceable.
 
 | File / function | Model class | What its output drives |
 |---|---|---|
-| `src/pahiro/routing/router.py::triage_route()` | open-weight instruct, JSON-schema constrained | **the load-bearing call.** Turns an unstructured hazard report into (asset, duty, cited rule) in one constrained generation. Its `case_id` is consumed to select the authority; the institution and legal basis are then read from the ontology, never from the model |
+| `src/pahiro/routing/router.py::triage_route()` | open-weight instruct, JSON-schema constrained | **the load-bearing call.** Turns an unstructured hazard report into *(which asset is failing, which duty applies)* — the judgement that determines everything downstream. The ontology then maps that pair deterministically to the cited rule, so the institution and legal basis are read from the ontology record and can never be invented |
+| `src/pahiro/routing/router.py::triage_route_single_call()` | same | the ablation arm: one call choosing directly among 14 cited rules. Measured at 38.1% case accuracy versus the two-stage design — the improvement is an ablation, not a claim (`reports/routing-eval-diagnosis.md`) |
 | `src/pahiro/routing/router.py::route()` | open-weight instruct, JSON-schema constrained | reads the retrieved cited rules from `ontology/nepal-slope-routing.json` and returns the responsible institution, office, escalation path and priority. Consumed to address and order the dispatch queue |
 | `src/pahiro/routing/router.py::route_incident()` | same | decides, for an incident with a failing asset and an affected asset, **which institutions must each be notified** |
 | `src/pahiro/advisory/nepali.py::render()` | open-weight instruct, slot-constrained | composes the Nepali advisory and work-order text consumed by the dispatch object and the register payload |

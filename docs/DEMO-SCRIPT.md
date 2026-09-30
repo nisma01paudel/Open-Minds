@@ -69,8 +69,9 @@ Run: `python scripts/demo_end_to_end.py --report "..." --lon 85.0575 --lat 27.76
 > days, with a hidden **thirty-four day silence** across the monsoon. Adding radar closes it — plus
 > fifty-eight points in July.
 >
-> And on routing accuracy against twenty-one expert-labelled scenarios: **{E1}**. Including three cases
-> where it correctly abstains rather than guess an authority.
+> And on routing accuracy against twenty-one expert-labelled scenarios: **61.9% end to end, 76.2% on asset
+> identification — with zero confident misroutes across road tiers and 100% abstention precision.** We got
+> there by measuring, diagnosing and re-measuring: the first design scored 38.1% and never once abstained.
 >
 > The ontology, the harness and the data are open. Free data, no API keys, and an open-weight model that
 > runs on a laptop. Every ward in Nepal could run this."
@@ -87,7 +88,7 @@ Run: `python scripts/demo_end_to_end.py --report "..." --lon 85.0575 --lat 27.76
 | 4 | Nepali advisory | terminal output of the same run |
 | 5 | Abstain state | same command, `--as-of 2024-07-20` (or the cached recording) |
 | 6 | Ablation table | `reports/eval-v0.md` §2 |
-| 7 | E1 routing score | `reports/routing-eval.md` — fill in `{E1}` before recording |
+| 7 | E1 routing score | `reports/routing-ablation.md` — 38.1% → 61.9%, three arms |
 
 ## Do not say
 
