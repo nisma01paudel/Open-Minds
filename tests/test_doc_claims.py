@@ -822,3 +822,37 @@ def test_the_phone_and_the_browser_ship_the_same_season_guide():
     phone = (root / "mobile/assets/seasons.json").read_bytes()
     assert web == phone, (
         "the web and phone season guides differ - the phone copy is a manual step and it was missed")
+
+
+def test_the_submission_describes_every_thing_that_exists():
+    """The regression, found by grepping the documents after a whole objective of building.
+
+    None of the features added in that stretch were mentioned anywhere a judge reads: panorama 0,
+    season 0, complaint 0, demo 0. The submission had been accurate when written and had never been
+    revisited - which is the failure this file has caught six times, and the seventh was the worst
+    because it was the whole product description rather than one number.
+    """
+    sub = read("SUBMISSION.md")
+    required = {
+        "panorama": "the 360 view",
+        "season": "when to go",
+        "complaint": "the complaint portal",
+        "place": "the major-places layer",
+        "flood": "the flood scenario",
+        "offline": "the offline claim",
+    }
+    for term, label in required.items():
+        assert term in sub.lower(), (
+            f"the submission does not mention {label} ({term!r}), so a judge reading it would not "
+            f"know the feature exists")
+
+    # and it must point at the device evidence, which is the strongest thing in the repository
+    assert "reports/device" in sub, "the submission does not link the on-device frames"
+
+
+def test_the_submission_states_the_honesty_rather_than_only_the_features():
+    """The distinguishing claim. A submission listing features without the abstentions would be an
+    accurate description of a different product."""
+    sub = read("SUBMISSION.md")
+    for claim in ("unvalidated", "not proof that nobody walks here", "nothing is here"):
+        assert claim in sub, f"the submission dropped its own honesty: {claim!r}"

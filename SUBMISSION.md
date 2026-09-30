@@ -58,6 +58,34 @@ Stated here so you do not have to find it:
 
 ---
 
+## What you can open right now
+
+Everything below is on both platforms, works with the radio off, and has a frame in
+[reports/device/](reports/device/) taken from the release APK on an Android device.
+
+| | what it does | where it is verified |
+|---|---|---|
+| **Which season to go** | twelve months of measured rain, dry days and temperature for the nearest of six regions. **No month is labelled good or bad** - a farmer, a trekker and a paraglider want different weather from the same month. The four monsoon months are cross-checked against this project's own CHIRPS measurement and drawn green; the other eight are grey and marked unvalidated. **Kathmandu's own figures are shown with a warning not to quote them**, because ERA5 puts nearly twice the measured monsoon there. | `seasons.json`, guarded by tests |
+| **Look around the valley** | a 360-degree equirectangular render of the real terrain, draggable, for each of six regions. **264 KB for the whole country, inside the APK.** Not a photograph and it says so: a silhouette from the elevation grid, no trees, no buildings, gradient sky. | `render_panorama.py`, six frames on device |
+| **Major places** | 277 of Nepal's 753 local units with bilingual names, population, district, documented slope count, mapped trail density and **the unit's own official gov.np website**. The caption states the two things that would otherwise be over-read: it is 277 of 753, and a position is the mean of the documented slopes inside a unit, not a town centre. | `places.geojson`, attribution to both sources |
+| **Who is responsible for this ground** | every complaint portal in Nepal routes to a municipality, and a municipality can say "not ours". This names the **specific office** the routing key holds responsible AND the local unit it belongs to, with that unit's official site and the statutory section - so a request cannot be bounced without somebody deciding that on paper. | on device: Melamchi - Sindhupalchok - melamchimun.gov.np |
+| **The complaint itself** | drafted on the phone from the row, in Nepali, citing **धारा १२(२)(ग)**, with the coordinates, the district and a statement on its face that it was drafted automatically and starts no proceeding. The citizen sends it and keeps the receipt. | three tests, including one that taps the button by name |
+| **What the app does when a flood comes** | the six steps of the 2024 monsoon, each **labelled for whether it is computed on this phone or cited from a measurement made elsewhere**. Four are live; two are cited. A demo that blurred the two would be the same failure as every stale caption this project has caught. | on device, 1/6 to 2/6 |
+
+### The honesty is the feature
+
+Every panel in this list says what it cannot do, and that is the thing worth looking at:
+
+- the season guide marks **eight of twelve months unvalidated** and warns that one region's rain figures should not be quoted
+- the trail list says *"a gap in the map, not proof that nobody walks here"* when it finds nothing
+- the bus layer is **withheld** rather than shown when the nearest stop is in another region's data
+- the complaint drafter **names no office** rather than guessing one
+- the panorama says it is not a photograph
+- the demo labels every step live or cited
+- and the offline indicator distinguishes **saved / working from cache / NOT saved**, because an app that quietly is not offline is worse than one that says so
+
+**A user of this app can always tell "nothing is here" from "we could not look."** Most software cannot.
+
 ## The five required items
 
 | # | Required | Where | State |
