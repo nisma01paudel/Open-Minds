@@ -36,13 +36,13 @@ else
 fi
 
 echo
-if [ ${#PASSTHRU[@]} -gt 0 ]; then
-  "$PY" scripts/agent_demo.py "${PASSTHRU[@]}"
-else
-  "$PY" scripts/agent_demo.py \
-    --as-of 2024-09-28 --lon 85.05 --lat 27.76 \
-    --report "A rural road built by a municipality runs across the slope above the national highway. Cracks have appeared and debris is falling onto the highway."
-fi
+# Defaults FIRST, caller's flags after: argparse keeps the last value for a repeated
+# option, so --as-of overrides the default while the required arguments still exist.
+# Passing only the caller's flags broke the documented "--as-of 2024-07-20" invocation.
+"$PY" scripts/agent_demo.py \
+  --as-of 2024-09-28 --lon 85.05 --lat 27.76 \
+  --report "A rural road built by a municipality runs across the slope above the national highway. Cracks have appeared and debris is falling onto the highway." \
+  "${PASSTHRU[@]}"
 
 if [ "$STOP_AFTER" = "1" ]; then
   scripts/serve_model.sh stop
