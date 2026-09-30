@@ -32,7 +32,7 @@ Not a plan — running code, verified against live services:
 ## Quickstart
 
 ```bash
-uv venv .venv && uv pip install --python .venv/bin/python -e '.[geo]'
+uv venv .venv && uv pip install --python .venv/bin/python -e '.[geo,dev]'
 
 python scripts/verify_data_access.py          # the founding evidence, live from anonymous STAC
 python -m pytest -q                            # 54 tests

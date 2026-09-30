@@ -2,6 +2,9 @@
 [ai]
 onnxruntime
 
+[dev]
+pytest
+
 [geo]
 rasterio
 numpy

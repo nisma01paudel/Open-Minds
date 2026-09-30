@@ -83,10 +83,22 @@ def main() -> int:
     for ref, where in sorted(refs.items()):
         problems.append(f"BROKEN reference: {ref}  (referenced from {', '.join(sorted(where))})")
 
-    tests = subprocess.run([sys.executable, "-m", "pytest", "-q"], cwd=ROOT,
-                           capture_output=True, text=True)
-    tail = (tests.stdout or "").strip().splitlines()[-1:] or ["(no output)"]
-    print(f"tests: {tail[0]}")
+    try:
+        tests = subprocess.run([sys.executable, "-m", "pytest", "-q"], cwd=ROOT,
+                               capture_output=True, text=True)
+    except Exception as exc:                                   # noqa: BLE001
+        tests = None
+        print(f"tests: could not run ({type(exc).__name__})")
+    if tests is not None:
+        output = (tests.stdout or "") + (tests.stderr or "")
+        if "No module named pytest" in output:
+            problems.append("pytest is not installed - run: pip install -e '.[dev]'")
+            print("tests: pytest is not installed")
+        else:
+            tail = (tests.stdout or "").strip().splitlines()[-1:] or ["(no output)"]
+            print(f"tests: {tail[0]}")
+            if tests.returncode != 0:
+                problems.append("the test suite does not pass")
 
     n_files = sum(1 for _ in ROOT.rglob("*") if _.is_file()
                   and ".venv" not in _.parts and ".git" not in _.parts)
