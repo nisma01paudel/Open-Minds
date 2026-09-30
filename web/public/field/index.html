@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#05070d" />
+<title>Pahiro Field — पाहिरो</title>
+<link rel="manifest" href="/manifest.webmanifest" />
+<style>
+  :root {
+    --bg: #05070d; --panel: #0c1220; --line: #1e293b; --text: #e8edf7;
+    --muted: #94a3b8; --accent: #22d3ee; --sos: #ff2d20; --ok: #22c55e; --warn: #f59e0b;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text);
+    font: 16px/1.5 ui-sans-serif, system-ui, -apple-system, sans-serif; }
+  body { padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom); }
+  header { position: sticky; top: 0; z-index: 5; background: rgba(5,7,13,.94);
+    backdrop-filter: blur(12px); border-bottom: 1px solid var(--line);
+    padding: 10px 14px; display: flex; align-items: center; gap: 10px; }
+  header h1 { font-size: 15px; margin: 0; font-weight: 600; letter-spacing: .2px; }
+  header .ne { color: var(--muted); font-size: 12px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex: none; }
+  .dot.on { background: var(--ok); } .dot.off { background: var(--sos); }
+  main { padding: 12px 14px 90px; max-width: 720px; margin: 0 auto; }
+  nav { position: fixed; bottom: 0; left: 0; right: 0; display: flex; z-index: 6;
+    background: rgba(5,7,13,.96); border-top: 1px solid var(--line);
+    padding-bottom: env(safe-area-inset-bottom); }
+  nav button { flex: 1; background: none; border: 0; color: var(--muted); font: inherit;
+    font-size: 12px; padding: 11px 4px 13px; cursor: pointer; }
+  nav button[aria-selected="true"] { color: var(--accent); box-shadow: inset 0 2px 0 var(--accent); }
+  section { display: none; } section.active { display: block; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+    padding: 13px 14px; margin: 0 0 11px; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .09em; color: var(--muted);
+    margin: 18px 0 9px; font-weight: 600; }
+  label { display: block; font-size: 12.5px; color: var(--muted); margin: 9px 0 4px; }
+  input, textarea, select { width: 100%; background: #070b14; color: var(--text);
+    border: 1px solid var(--line); border-radius: 9px; padding: 11px 12px; font: inherit; }
+  textarea { min-height: 74px; resize: vertical; }
+  button.act { width: 100%; border: 0; border-radius: 11px; padding: 15px;
+    font: inherit; font-weight: 700; font-size: 16px; cursor: pointer; color: #04121a;
+    background: var(--accent); margin-top: 11px; }
+  button.sos { background: var(--sos); color: #fff; font-size: 19px; padding: 22px; }
+  button.sos:active { transform: scale(.99); }
+  button.ghost { background: transparent; color: var(--accent);
+    border: 1px solid var(--line); font-weight: 600; }
+  button:disabled { opacity: .5; }
+  .row { display: flex; gap: 9px; } .row > * { flex: 1; }
+  .muted { color: var(--muted); font-size: 12.5px; }
+  .pill { display: inline-block; font-size: 11px; padding: 3px 8px; border-radius: 999px;
+    border: 1px solid var(--line); color: var(--muted); margin-right: 5px; }
+  .pill.hot { color: #fff; background: var(--sos); border-color: var(--sos); }
+  .pill.warm { color: #201202; background: var(--warn); border-color: var(--warn); }
+  .pill.good { color: #04120a; background: var(--ok); border-color: var(--ok); }
+  .board-item { border-left: 3px solid var(--muted); padding-left: 11px; margin: 12px 0; }
+  .board-item.has-fix { border-left-color: var(--accent); }
+  .bignum { font-size: 30px; font-weight: 700; letter-spacing: -.5px; }
+  .unit { font-size: 13px; color: var(--muted); font-weight: 400; }
+  .rssi-bar { height: 9px; border-radius: 5px; background: #131c2e; overflow: hidden; margin-top: 7px; }
+  .rssi-bar > i { display: block; height: 100%; background: linear-gradient(90deg,#3b82f6,#22d3ee,#22c55e); }
+  .target { border: 1px solid var(--accent); }
+  .err { color: #fecaca; background: rgba(255,45,32,.12); border-left: 3px solid var(--sos);
+    padding: 9px 11px; border-radius: 0 8px 8px 0; font-size: 12.5px; margin-top: 10px; }
+  .note { color: #cbd5e1; background: rgba(148,163,184,.08); border-left: 3px solid var(--muted);
+    padding: 9px 11px; border-radius: 0 8px 8px 0; font-size: 12px; margin-top: 10px; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<header>
+  <span class="dot" id="netdot"></span>
+  <div>
+    <h1>Pahiro Field <span class="ne">पाहिरो</span></h1>
+    <div class="ne" id="netlabel">checking…</div>
+  </div>
+</header>
+
+<main>
+  <!-- ================= SOS ================= -->
+  <section id="s-sos" class="active">
+    <h2>Send a distress report</h2>
+    <div class="muted" id="fixline">Location: reading…</div>
+
+    <div class="card">
+      <label for="msg">What is happening</label>
+      <textarea id="msg" placeholder="House buried by the slide, two of us inside"></textarea>
+      <div class="row">
+        <div><label for="people">People with me</label><input id="people" type="number" min="0" value="1" inputmode="numeric" /></div>
+        <div><label for="batt">Battery %</label><input id="batt" type="number" min="0" max="100" placeholder="auto" /></div>
+      </div>
+      <label for="name">Name</label>
+      <input id="name" placeholder="optional" />
+      <button class="act sos" id="send">SEND SOS</button>
+      <div id="sosresult"></div>
+    </div>
+
+    <div class="note">
+      Works with no signal. If the network is down the report is kept on this phone and sent
+      the moment a connection appears — or carried by someone else's phone over Bluetooth.
+    </div>
+    <h2>Waiting to send</h2>
+    <div id="queue" class="card muted">Nothing queued.</div>
+  </section>
+
+  <!-- ================= BOARD ================= -->
+  <section id="s-board">
+    <h2>The board</h2>
+    <button class="act ghost" id="refresh">Refresh</button>
+    <div id="board"></div>
+  </section>
+
+  <!-- ================= SEARCH ================= -->
+  <section id="s-search">
+    <h2>Find a buried phone</h2>
+    <div class="card">
+      <div id="btstate" class="muted">Bluetooth: not started</div>
+      <button class="act" id="scan">SCAN FOR ADVERTISEMENTS</button>
+      <button class="act ghost" id="watch">CHOOSE ONE DEVICE AND WATCH ITS SIGNAL</button>
+      <div class="muted" style="margin-top:8px">
+        Walk the debris. As you get closer the reading rises. Mark three spots from different
+        directions and the app will work out where to dig.
+      </div>
+      <div id="bterr"></div>
+    </div>
+
+    <h2>Nearby devices</h2>
+    <div id="devices" class="muted">None yet.</div>
+
+    <h2>Sightings for the target</h2>
+    <div id="sightings" class="muted">No target chosen.</div>
+    <div id="estimate"></div>
+  </section>
+
+  <!-- ================= SETTINGS ================= -->
+  <section id="s-more">
+    <h2>Connection</h2>
+    <div class="card">
+      <label for="api">Field API address</label>
+      <input id="api" placeholder="http://192.168.1.72:8080" />
+      <button class="act ghost" id="saveapi">Save and test</button>
+      <div id="apitest" class="muted" style="margin-top:8px"></div>
+    </div>
+    <h2>This device</h2>
+    <div class="card">
+      <div class="muted">Device id (how the board knows you)</div>
+      <div id="devid" style="font-family:ui-monospace,monospace"></div>
+    </div>
+    <h2>Limits, stated plainly</h2>
+    <div class="note">
+      Bluetooth does not go through rock or wet soil. A reading is not a measurement — it is
+      a hint. The app reports a <b>search circle</b>, never a single point, because a point
+      sends a team to dig in one place and a circle sends them to search an area.
+    </div>
+  </section>
+</main>
+
+<nav role="tablist">
+  <button role="tab" aria-selected="true" data-tab="s-sos">SOS</button>
+  <button role="tab" aria-selected="false" data-tab="s-board">Board</button>
+  <button role="tab" aria-selected="false" data-tab="s-search">Search</button>
+  <button role="tab" aria-selected="false" data-tab="s-more">More</button>
+</nav>
+
+<script>
+"use strict";
+/* =======================================================================================
+   Pahiro Field — the client a rescuer actually holds.
+
+   Three jobs, in the order they happen: shout for help, see who else has, and find the
+   phone of someone who cannot shout any more.
+
+   Two rules shape the whole file:
+
+   1. NOTHING IS LOST BECAUSE THE NETWORK WAS DOWN. Every outbound report is written to
+      localStorage BEFORE it is sent, and only removed once the server has acknowledged it.
+      A phone that dies mid-send keeps the report.
+
+   2. THE APP DEGRADES HONESTLY. If there is no Bluetooth, no GPS or no API, it says which
+      of those is missing and keeps working with the rest, rather than pretending.
+   ======================================================================================= */
+
+var $ = function (id) { return document.getElementById(id); };
+var store = {
+  get: function (k, d) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set: function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+
+/* --- identity ------------------------------------------------------------------------ */
+var deviceId = store.get("pahiro.device", null);
+if (!deviceId) {
+  deviceId = "dev-" + Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-4);
+  store.set("pahiro.device", deviceId);
+}
+$("devid").textContent = deviceId;
+
+/* --- the API address ----------------------------------------------------------------- */
+// Default to wherever this page was served from, on the API port, so a phone that opened
+// the app from the field laptop usually needs no configuration at all.
+var apiBase = store.get("pahiro.api", null) ||
+  (location.protocol + "//" + (location.hostname || "127.0.0.1") + ":8080");
+$("api").value = apiBase;
+
+/* --- an outbound queue that survives a dead battery ---------------------------------- */
+function queue() { return store.get("pahiro.queue", []); }
+function setQueue(q) { store.set("pahiro.queue", q); renderQueue(); }
+
+function enqueue(path, payload) {
+  var q = queue();
+  q.push({ path: path, payload: payload, at: Date.now(), tries: 0 });
+  setQueue(q);
+}
+
+async function flush() {
+  var q = queue(); if (!q.length) return 0;
+  var sent = 0, left = [];
+  for (var i = 0; i < q.length; i++) {
+    var item = q[i];
+    try {
+      var r = await fetch(apiBase + item.path, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(item.payload)
+      });
+      // 4xx means the server understood and refused: retrying will not help, so drop it
+      // and keep the reason, rather than blocking the queue behind one bad report forever.
+      if (r.ok || (r.status >= 400 && r.status < 500)) { sent++; }
+      else { item.tries++; left.push(item); }
+    } catch (e) { item.tries++; left.push(item); }
+  }
+  setQueue(left);
+  return sent;
+}
+
+function renderQueue() {
+  var q = queue();
+  if (!q.length) { $("queue").textContent = "Nothing queued."; return; }
+  var html = "<b>" + q.length + "</b> report(s) held on this phone:<ul style='margin:8px 0 0;padding-left:18px'>";
+  for (var i = 0; i < q.length; i++) {
+    html += "<li>" + esc((q[i].payload.message || q[i].path).slice(0, 60)) + "</li>";
+  }
+  $("queue").innerHTML = html + "</ul>";
+  $("queue").classList.remove("hidden");
+}
+
+/* --- helpers ------------------------------------------------------------------------- */
+function esc(s) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+  });
+}
+function fmtTime(iso) {
+  try { return new Date(iso).toLocaleString(); } catch (e) { return iso; }
+}
+
+/* --- network state ------------------------------------------------------------------- */
+function net() {
+  var on = navigator.onLine;
+  $("netdot").className = "dot " + (on ? "on" : "off");
+  $("netlabel").textContent = on ? "online" + (queue().length ? " · " + queue().length + " queued" : "")
+                                 : "OFFLINE — reports are kept and sent later";
+  renderQueue();
+}
+window.addEventListener("online", function () { net(); flush(); loadBoard(); });
+window.addEventListener("offline", net);
+
+/* --- tabs ---------------------------------------------------------------------------- */
+var tabs = document.querySelectorAll("nav button");
+for (var i = 0; i < tabs.length; i++) {
+  tabs[i].addEventListener("click", function () {
+    for (var j = 0; j < tabs.length; j++) {
+      var on = tabs[j] === this;
+      tabs[j].setAttribute("aria-selected", on ? "true" : "false");
+      $(tabs[j].dataset.tab).classList.toggle("active", on);
+    }
+    if (this.dataset.tab === "s-board") loadBoard();
+  });
+}
+
+/* --- position ------------------------------------------------------------------------ */
+var fix = null;
+function watchFix() {
+  if (!navigator.geolocation) {
+    $("fixline").textContent = "Location: this browser has no location API. " +
+      "The report can still be sent — say where you are in the message.";
+    return;
+  }
+  navigator.geolocation.watchPosition(function (p) {
+    fix = { lat: p.coords.latitude, lon: p.coords.longitude, accuracy_m: p.coords.accuracy };
+    $("fixline").innerHTML = "Location: <b>" + fix.lat.toFixed(5) + ", " + fix.lon.toFixed(5) +
+      "</b> <span class='unit'>±" + Math.round(fix.accuracy_m) + " m</span>";
+  }, function (err) {
+    // Saying WHICH failure matters: indoors a fix may just be slow, while a denial is final.
+    $("fixline").textContent = "Location: unavailable (" + err.message + "). " +
+      "The report will still be sent — describe where you are.";
+  }, { enableHighAccuracy: true, maximumAge: 15000, timeout: 20000 });
+}
+watchFix();
+
+/* --- SOS ----------------------------------------------------------------------------- */
+$("send").addEventListener("click", async function () {
+  var body = $("msg").value.trim();
+  if (!body) { $("sosresult").innerHTML = "<div class='err'>Describe what is happening first.</div>"; return; }
+  var payload = {
+    // A frame id generated HERE and reused on every retry. This is what makes the send
+    // idempotent: without it a retry looks like a second victim to the board.
+    id: "sos-" + deviceId + "-" + Date.now(),
+    device_id: deviceId,
+    name: $("name").value.trim(),
+    message: body,
+    people: parseInt($("people").value, 10) || null,
+    battery: parseInt($("batt").value, 10) || null
+  };
+  if (fix) { payload.lat = fix.lat; payload.lon = fix.lon; payload.accuracy_m = fix.accuracy_m; }
+
+  enqueue("/api/v1/sos", payload);                 // durable FIRST, network second
+  $("send").disabled = true;
+  $("sosresult").innerHTML = "<div class='note'>Saved on this phone. Sending…</div>";
+  var n = await flush();
+  $("send").disabled = false;
+  $("sosresult").innerHTML = n
+    ? "<div class='note'><b>Sent.</b> The board has this report" +
+      (fix ? " with your position." : " without a position — rescuers will need your description.") + "</div>"
+    : "<div class='note'><b>Held on this phone.</b> No connection. It will send automatically, " +
+      "or be carried to signal by someone else's device.</div>";
+  net();
+});
+
+/* --- board --------------------------------------------------------------------------- */
+async function loadBoard() {
+  var box = $("board");
+  try {
+    var r = await fetch(apiBase + "/api/v1/trapped", { cache: "no-store" });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    var data = await r.json();
+    store.set("pahiro.board", data);                // so the board survives going offline
+    renderBoard(data);
+  } catch (e) {
+    var cached = store.get("pahiro.board", null);
+    if (cached) {
+      renderBoard(cached);
+      box.insertAdjacentHTML("afterbegin",
+        "<div class='err'>Showing the last copy — the API is unreachable (" + esc(e.message) + ").</div>");
+    } else {
+      box.innerHTML = "<div class='err'>Cannot reach the field API at " + esc(apiBase) +
+        ". Check the address under More.</div>";
+    }
+  }
+}
+
+function renderBoard(data) {
+  var rows = (data && data.trapped) || [];
+  if (!rows.length) { $("board").innerHTML = "<div class='card muted'>Nobody has called for help yet.</div>"; return; }
+  var html = "";
+  for (var i = 0; i < rows.length; i++) {
+    var t = rows[i], loc = t.located;
+    html += "<div class='card board-item " + (t.lat != null ? "has-fix" : "") + "'>";
+    html += "<div style='font-weight:600'>" + esc(t.name || t.device_id) + "</div>";
+    html += "<div class='muted'>" + fmtTime(t.created_at) +
+            " · " + (t.people != null ? t.people + " people" : "people unknown") +
+            (t.battery != null ? " · battery " + t.battery + "%" : "") + "</div>";
+    html += "<div style='margin:8px 0'>" + esc(t.message) + "</div>";
+    if (t.lat != null) {
+      html += "<span class='pill good'>position " + t.lat.toFixed(4) + "," + t.lon.toFixed(4) + "</span>";
+    } else {
+      html += "<span class='pill warm'>no position — needs a search</span>";
+    }
+    if (t.hops) html += "<span class='pill'>carried " + t.hops + " hop(s) by hand</span>";
+    if (t.reports > 1) html += "<span class='pill'>" + t.reports + " reports</span>";
+    if (loc) {
+      html += "<div class='note' style='margin-top:10px'>RSSI search: <b>" +
+        Math.round(loc.radius_m) + " m radius</b> (" + loc.confidence + " confidence, " +
+        loc.receivers + " receivers)" +
+        "<br><button class='act ghost' data-lat='" + loc.lat + "' data-lon='" + loc.lon +
+        "' data-r='" + loc.radius_m + "' onclick='showCircle(this)'>Show the search circle</button></div>";
+      html += "<div id='circle-" + esc(t.device_id) + "'></div>";
+    }
+    html += "</div>";
+  }
+  $("board").innerHTML = html;
+}
+
+function showCircle(btn) {
+  var lat = parseFloat(btn.dataset.lat), lon = parseFloat(btn.dataset.lon), r = parseFloat(btn.dataset.r);
+  var deg = r / 111320;
+  var d = btn.parentNode.querySelector("div");
+  d.innerHTML = "<div class='card'>Search centre <b>" + lat.toFixed(5) + ", " + lon.toFixed(5) +
+    "</b><br>Radius <b>" + Math.round(r) + " m</b> ≈ " + (Math.PI * r * r / 10000).toFixed(2) + " hectares" +
+    "<div class='muted' style='margin-top:8px'>Corners: " +
+    (lat + deg).toFixed(5) + "," + (lon + deg).toFixed(5) + " · " +
+    (lat - deg).toFixed(5) + "," + (lon - deg).toFixed(5) + "</div></div>";
+  return false;
+}
+window.showCircle = showCircle;
+
+$("refresh").addEventListener("click", loadBoard);
+
+/* --- Bluetooth search ---------------------------------------------------------------- */
+/* Web Bluetooth is a CENTRAL role only: this app can hear a device that is advertising,
+   which is exactly what a trapped phone's beacon is, but a browser cannot make this phone
+   advertise in the background. So this screen is the rescuer's side of the search. The
+   trapped handset needs a native app or a cheap dedicated beacon — stated in docs/MESH.md
+   rather than pretended away here. */
+
+var target = null;                 // the device we are hunting
+var sightings = [];                // {lat, lon, rssi_dbm, label}
+var devices = {};                  // id -> {name, rssi, seenAt, device}
+
+$("scan").addEventListener("click", async function () {
+  $("bterr").innerHTML = "";
+  if (!navigator.bluetooth) {
+    $("bterr").innerHTML = "<div class='err'>This browser has no Web Bluetooth. " +
+      "On Android use Chrome and serve the page over HTTPS — Web Bluetooth is refused on " +
+      "plain http (except localhost).</div>";
+    return;
+  }
+  if (!navigator.bluetooth.requestLEScan) {
+    $("bterr").innerHTML = "<div class='err'>This build of Chrome cannot scan for " +
+      "advertisements (it is behind a flag on some builds). Use “Choose one device and " +
+      "watch its signal” instead — that path works on a stock Android phone.</div>";
+    $("btstate").textContent = "Bluetooth: connect-only mode";
+    return;
+  }
+  try {
+    var scan = await navigator.bluetooth.requestLEScan({ acceptAllAdvertisements: true, keepRepeatedDevices: true });
+    $("scan").disabled = true;
+    $("btstate").innerHTML = "Bluetooth: <b>scanning</b> — walk the debris";
+    navigator.bluetooth.addEventListener("advertisementreceived", function (e) {
+      var id = e.device.id || e.device.name || "unknown";
+      devices[id] = {
+        name: e.device.name || "(unnamed)",
+        rssi: e.rssi,
+        seenAt: Date.now(),
+        device: e.device
+      };
+      renderDevices();
+    });
+    setTimeout(function () { scan.stop(); $("scan").disabled = false;
+      $("btstate").textContent = "Bluetooth: scan stopped"; }, 60000);
+  } catch (e) {
+    $("bterr").innerHTML = "<div class='err'>Scan refused: " + esc(e.message) + "</div>";
+  }
+});
+
+/* The wider-availability path. `requestLEScan` is behind a Chrome flag; connecting to one
+   device and calling watchAdvertisements() is not, and gives a live RSSI per advertisement.
+   This is the flow that actually works on a stock Android phone, so it is a first-class
+   button rather than a fallback mentioned in an error message. */
+$("watch").addEventListener("click", async function () {
+  $("bterr").innerHTML = "";
+  if (!navigator.bluetooth) {
+    $("bterr").innerHTML = "<div class='err'>This browser has no Web Bluetooth. On Android " +
+      "use Chrome over HTTPS.</div>";
+    return;
+  }
+  try {
+    var dev = await navigator.bluetooth.requestDevice({ acceptAllDevices: true });
+    var id = dev.id || dev.name || "chosen";
+    devices[id] = { name: dev.name || "(unnamed)", rssi: -127, seenAt: Date.now(), device: dev };
+    target = id;
+    renderDevices();
+    if (!dev.watchAdvertisements) {
+      $("bterr").innerHTML = "<div class='err'>This browser cannot watch advertisements. " +
+        "The device is listed, but this phone cannot read its signal strength.</div>";
+      return;
+    }
+    dev.addEventListener("advertisementreceived", function (e) {
+      devices[id].rssi = e.rssi;
+      devices[id].seenAt = Date.now();
+      renderDevices();
+    });
+    await dev.watchAdvertisements();
+    $("btstate").innerHTML = "Bluetooth: <b>watching " + esc(dev.name || id) +
+      "</b> — walk and watch the bar rise";
+  } catch (e) {
+    if (e && e.name === "NotFoundError") return;      // the user cancelled; not an error
+    $("bterr").innerHTML = "<div class='err'>" + esc(e.message) + "</div>";
+  }
+});
+
+function renderDevices() {
+  var ids = Object.keys(devices);
+  if (!ids.length) { $("devices").textContent = "None yet."; return; }
+  ids.sort(function (a, b) { return devices[b].rssi - devices[a].rssi; });
+  var html = "";
+  for (var i = 0; i < ids.length; i++) {
+    var d = devices[ids[i]];
+    // RSSI roughly -100..-40 dBm. This bar is a PROXIMITY HINT, not a distance.
+    var pct = Math.max(4, Math.min(100, (d.rssi + 100) * 100 / 60));
+    html += "<div class='card " + (target === ids[i] ? "target" : "") + "'>";
+    html += "<div><b>" + esc(d.name) + "</b> <span class='muted'>" + d.rssi + " dBm</span></div>";
+    html += "<div class='rssi-bar'><i style='width:" + pct + "%'></i></div>";
+    html += "<div class='row' style='margin-top:9px'>";
+    html += "<button class='act ghost' onclick='pickTarget(\"" + esc(ids[i]) + "\")'>" +
+            (target === ids[i] ? "TARGET" : "Mark as target") + "</button>";
+    html += "<button class='act' onclick='recordSighting(\"" + esc(ids[i]) + "\")'>Record sighting here</button>";
+    html += "</div></div>";
+  }
+  $("devices").innerHTML = html;
+}
+
+window.pickTarget = function (id) { target = id; renderDevices(); renderSightings(); };
+
+window.recordSighting = async function (id) {
+  if (!fix) {
+    // Without the reader's own position a sighting cannot be placed on a map. Ask for it
+    // rather than posting a reading with nowhere attached.
+    alert("No position yet. Wait for the location line at the top, or record from a spot " +
+          "where the phone can get a fix.");
+    return;
+  }
+  var d = devices[id];
+  var s = { lat: fix.lat, lon: fix.lon, rssi_dbm: d.rssi, label: d.name, gps_accuracy_m: fix.accuracy_m };
+  sightings.push(s);
+  if (!target) target = id;
+  renderSightings();
+  await fetch(apiBase + "/api/v1/track/" + encodeURIComponent("ble-" + id), {
+    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(s)
+  }).then(function (r) { return r.json(); })
+    .then(function (est) { renderEstimate(est); })
+    .catch(function () { renderEstimate(localEstimate(sightings), "computed on the phone — API unreachable"); });
+};
+
+function renderSightings() {
+  if (!sightings.length) { $("sightings").textContent = "No target chosen."; return; }
+  var html = "<div class='card'><b>" + sightings.length + " sighting(s)</b><div class='muted'>" +
+             "Spread out. Three spots from different directions pin the position; three from " +
+             "one spot do not.</div>";
+  for (var i = 0; i < sightings.length; i++) {
+    var s = sightings[i];
+    html += "<div class='muted' style='margin-top:6px'>" + (i + 1) + ". " +
+      s.lat.toFixed(5) + ", " + s.lon.toFixed(5) + " · " + s.rssi_dbm + " dBm</div>";
+  }
+  $("sightings").innerHTML = html + "</div>";
+}
+
+/* A local copy of the server's maths, so the phone can still answer with no API.
+   Deliberately the same model: log-distance path loss, then weighted least squares. */
+function rssiToDistance(rssi, tx, n) { return Math.max(1, Math.pow(10, (tx - rssi) / (10 * n))); }
+
+function localEstimate(rows) {
+  var TX = -59, N = 2.0;
+  if (rows.length < 3) {
+    var best = rows[rows.length - 1];
+    return { lat: best.lat, lon: best.lon, radius_m: rssiToDistance(best.rssi_dbm, TX, N),
+             confidence: "low", method: "fewer-than-three-receivers", receivers: rows.length,
+             notes: ["Three sightings from different directions are needed to fix a position."] };
+  }
+  var lat0 = 0, lon0 = 0, i;
+  for (i = 0; i < rows.length; i++) { lat0 += rows[i].lat; lon0 += rows[i].lon; }
+  lat0 /= rows.length; lon0 /= rows.length;
+  var pts = [], dist = [];
+  for (i = 0; i < rows.length; i++) {
+    var x = (rows[i].lon - lon0) * 111320 * Math.cos(lat0 * Math.PI / 180);
+    var y = (rows[i].lat - lat0) * 111320;
+    pts.push([x, y]); dist.push(rssiToDistance(rows[i].rssi_dbm, TX, N));
+  }
+  var a11 = 0, a12 = 0, a22 = 0, b1 = 0, b2 = 0;
+  for (i = 1; i < pts.length; i++) {
+    var w = 1 / Math.max(Math.min(dist[0], dist[i]) * Math.min(dist[0], dist[i]), 1);
+    var ax = -2 * (pts[i][0] - pts[0][0]), ay = -2 * (pts[i][1] - pts[0][1]);
+    var bb = (dist[i] * dist[i] - dist[0] * dist[0]) - (pts[i][0] * pts[i][0] - pts[0][0] * pts[0][0])
+           - (pts[i][1] * pts[i][1] - pts[0][1] * pts[0][1]);
+    a11 += w * ax * ax; a12 += w * ax * ay; a22 += w * ay * ay;
+    b1 += w * ax * bb; b2 += w * ay * bb;
+  }
+  var det = a11 * a22 - a12 * a12;
+  if (Math.abs(det) < 1e-9) {
+    return { lat: rows[0].lat, lon: rows[0].lon, radius_m: 200, confidence: "low",
+             method: "collinear-receivers", receivers: rows.length,
+             notes: ["Sightings are in a line — spread out to fix a position."] };
+  }
+  var x = (b1 * a22 - b2 * a12) / det, y = (a11 * b2 - a12 * b1) / det;
+  var lat = lat0 + y / 111320, lon = lon0 + x / (111320 * Math.cos(lat0 * Math.PI / 180));
+  var res = 0;
+  for (i = 0; i < pts.length; i++) {
+    var dd = Math.sqrt((x - pts[i][0]) * (x - pts[i][0]) + (y - pts[i][1]) * (y - pts[i][1]));
+    res += (dd - dist[i]) * (dd - dist[i]);
+  }
+  res = Math.sqrt(res / pts.length);
+  return { lat: lat, lon: lon, radius_m: Math.max(res * 1.5 + 5, 15),
+           confidence: res < 12 ? "medium" : "low", method: "weighted-least-squares",
+           receivers: rows.length, residual_m: res,
+           notes: ["computed on the phone, not the server"] };
+}
+
+function renderEstimate(est, why) {
+  if (!est || typeof est.radius_m === "undefined") return;
+  var html = "<div class='card target'><div class='muted'>SEARCH THIS AREA</div>";
+  html += "<div class='bignum'>" + Math.round(est.radius_m) + " <span class='unit'>m radius</span></div>";
+  if (est.lat != null) html += "<div>Centre <b>" + est.lat.toFixed(5) + ", " + est.lon.toFixed(5) + "</b></div>";
+  html += "<div class='muted'>" + esc(est.method) + " · " + esc(est.confidence || "") +
+          " confidence · " + (est.receivers || 0) + " receivers" +
+          (est.residual_m ? " · residual " + Math.round(est.residual_m) + " m" : "") + "</div>";
+  var area = (Math.PI * est.radius_m * est.radius_m / 10000).toFixed(2);
+  html += "<div class='muted'>about " + area + " hectares to search</div>";
+  if (why) html += "<div class='note'>" + esc(why) + "</div>";
+  if (est.notes && est.notes.length) {
+    html += "<div class='note'>" + est.notes.map(esc).join("<br>") + "</div>";
+  }
+  $("estimate").innerHTML = html + "</div>";
+}
+
+/* --- settings ------------------------------------------------------------------------ */
+$("saveapi").addEventListener("click", async function () {
+  apiBase = $("api").value.trim().replace(/\/+$/, "");
+  store.set("pahiro.api", apiBase);
+  $("apitest").textContent = "testing " + apiBase + " …";
+  try {
+    var r = await fetch(apiBase + "/api/v1/health", { cache: "no-store" });
+    var j = await r.json();
+    $("apitest").innerHTML = "<span class='pill good'>reachable</span> " +
+      esc(j.messages) + " messages, " + esc(j.sos_devices) + " on the board";
+    loadBoard();
+  } catch (e) {
+    $("apitest").innerHTML = "<span class='pill hot'>unreachable</span> " + esc(e.message) +
+      " — reports will be queued on this phone.";
+  }
+});
+
+/* --- start --------------------------------------------------------------------------- */
+net();
+renderQueue();
+if (queue().length) flush();
+</script>
+</body>
+</html>
