@@ -195,3 +195,41 @@ def test_a_non_abstaining_dispatch_cites_its_evidence():
     assert run.dispatch is not None
     assert run.dispatch.validate() == [], "a claim must cite the scenes behind it"
     assert run.dispatch.provenance.scenes == ["S2A_TEST"]
+
+
+def test_the_agent_skips_terrain_when_nothing_is_raising_the_slope():
+    """Genuine control, not a fixed pipeline: the tool sequence depends on what it saw.
+
+    A slope with the trigger below and no fresh evidence cannot be helped by reading its
+    terrain, so the DEM fetch is not spent - and the reason is recorded rather than the
+    step silently vanishing.
+    """
+    agent = build_agent(trigger_state="below", evidence_ok=False)
+    run = agent.run("report", 85.05, 27.76, AS_OF)
+    names = [t.name for t in run.trace]
+    assert "siting_advice" not in names, "the fetch must not be spent"
+    assert run.decisions and run.decisions[0].choice == "skip siting_advice"
+    assert "cannot change the answer" in run.decisions[0].reason
+    assert run.state == ABSTAIN
+
+
+def test_the_agent_reads_terrain_when_the_slope_is_primed():
+    agent = build_agent(trigger_state="exceeded", evidence_ok=False)
+    run = agent.run("report", 85.05, 27.76, AS_OF)
+    assert "siting_advice" in [t.name for t in run.trace]
+    assert run.decisions[0].choice == "siting_advice"
+    assert "rainfall trigger is exceeded" in run.decisions[0].reason
+
+
+def test_the_agent_reads_terrain_when_evidence_is_fresh_even_with_no_rain():
+    agent = build_agent(trigger_state="below", evidence_ok=True)
+    run = agent.run("report", 85.05, 27.76, AS_OF)
+    assert "siting_advice" in [t.name for t in run.trace]
+    assert "ground evidence is fresh" in run.decisions[0].reason
+
+
+def test_the_sequence_is_not_the_same_on_every_input():
+    """The whole point: two inputs must produce two different tool sequences."""
+    primed = build_agent(trigger_state="exceeded", evidence_ok=True).run("r", 85.05, 27.76, AS_OF)
+    quiet = build_agent(trigger_state="below", evidence_ok=False).run("r", 85.05, 27.76, AS_OF)
+    assert [t.name for t in primed.trace] != [t.name for t in quiet.trace]

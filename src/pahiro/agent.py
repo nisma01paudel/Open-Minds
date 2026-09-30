@@ -34,7 +34,7 @@ from pahiro.ontology import Ontology
 from pahiro.routing.abstain import Observation, staleness_gate
 from pahiro.routing.resolve import RoutingContext, resolve
 from pahiro.routing.router import Router
-from pahiro.trigger import EXCEEDED, PANCHPOKHARI, assess
+from pahiro.trigger import APPROACHING, EXCEEDED, PANCHPOKHARI, assess
 
 # Decision states.
 PRIMED_CONFIRMED = "primed-confirmed"     # trigger up AND fresh ground evidence
@@ -56,6 +56,19 @@ class ToolCall:
 
 
 @dataclass
+class Decision:
+    """A choice the agent made about its own next action, and why.
+
+    Kept separate from ToolCall on purpose. A trace of tool calls shows what the system
+    DID; it does not show that the system chose. Without this the loop is a fixed
+    pipeline and should be judged as one.
+    """
+    after: str
+    choice: str
+    reason: str
+
+
+@dataclass
 class AgentRun:
     report: str
     lon: float
@@ -69,6 +82,7 @@ class AgentRun:
     staleness: object | None = None
     trigger: object | None = None
     siting: object | None = None
+    decisions: list[Decision] = field(default_factory=list)
     scenes: list[str] = field(default_factory=list)
     sensors: list[str] = field(default_factory=list)
     routing: object | None = None
@@ -378,9 +392,28 @@ class SlopeChangeAgent:
         self._call_tool(run, "resolve_location", self.tool_resolve_location)
         self._call_tool(run, "rainfall_trigger", self.tool_rainfall_trigger)
         evidence = self._call_tool(run, "ground_evidence", self.tool_ground_evidence)
-        self._call_tool(run, "siting_advice", self.tool_siting_advice)
-        run.state = decide_state(run.rainfall_state or "", bool(
-            getattr(evidence, "may_issue", False)))
+
+        # The agent chooses its own next action from what it has just observed, rather
+        # than running a fixed list. Reading terrain costs a DEM fetch, and on a slope
+        # that nothing is raising and nothing can see, that fetch cannot change the
+        # answer - so it is not spent. The reason is recorded either way.
+        primed = (run.rainfall_state or "") in (APPROACHING, EXCEEDED)
+        can_see = bool(getattr(evidence, "may_issue", False))
+        if primed or can_see:
+            run.decisions.append(Decision(
+                after="ground_evidence", choice="siting_advice",
+                reason=("rainfall trigger is "
+                        f"{run.rainfall_state or 'unknown'}" if primed
+                        else "ground evidence is fresh")
+                        + " - reading terrain can change the recommendation"))
+            self._call_tool(run, "siting_advice", self.tool_siting_advice)
+        else:
+            run.decisions.append(Decision(
+                after="ground_evidence", choice="skip siting_advice",
+                reason=("nothing is raising this slope (trigger below) and no fresh "
+                        "observation exists; a DEM fetch here cannot change the answer")))
+
+        run.state = decide_state(run.rainfall_state or "", can_see)
         self._call_tool(run, "route_report", self.tool_route_report)
         run.advisory_ne = self._call_tool(run, "compose_advisory", self.tool_compose_advisory)
         self._call_tool(run, "emit_dispatch", self.tool_emit_dispatch)
