@@ -229,8 +229,8 @@ class Router:
         )
 
     # -- triage from an unstructured report ---------------------------------
-    def triage_route(self, ontology: Ontology, facts: str, evidence_state: str = "",
-                     priority_hint: str = MEDIUM) -> RoutingDecision:
+    def triage_route_single_call(self, ontology: Ontology, facts: str, evidence_state: str = "",
+                                priority_hint: str = MEDIUM) -> RoutingDecision:
         """Turn an unstructured report into a routing decision in one constrained call.
 
         This is where the AI is genuinely load-bearing: without the model, a free-text
@@ -293,6 +293,79 @@ class Router:
             escalation=list(rule.escalation), confidence=rule.confidence, rationale=rationale,
             used_model=True, numeric_claim_withheld=withheld, candidates=ids, notes=notes)
 
+    # -- two-stage triage (the default) -------------------------------------
+    def triage_route(self, ontology: Ontology, facts: str, evidence_state: str = "",
+                     priority_hint: str = MEDIUM) -> RoutingDecision:
+        """Classify (asset, duty) with the model, then map deterministically to a rule.
+
+        The single-call version asked a 1.5B model to resolve asset, duty, jurisdiction
+        and citation at once and scored 38.1%. Here the model answers a small, defined
+        classification - which asset is failing, and which duty applies - and the
+        ontology maps that to the cited rule. The model still makes the decision that
+        determines the outcome; it is no longer asked to also recall the law.
+        """
+        candidates = [r for r in ontology.rules if r.citable]
+        ids = [c.case_id for c in candidates]
+        assets = sorted({c.asset_type for c in candidates})
+        roles = sorted({c.role for c in candidates})
+
+        if self.backend is None or not self.backend.available():
+            return RoutingDecision(
+                case_id=None, priority=priority_hint, confidence="none", fallback_used=True,
+                candidates=ids,
+                rationale=("free-text triage requires the open-weight model; without it an "
+                           "unstructured report cannot be resolved to an asset and a duty, "
+                           "so nothing is routed"),
+                notes=["the decision layer is load-bearing: remove it and the product stops"])
+
+        try:
+            raw = self.backend.decide(
+                build_classify_prompt(facts, assets, roles, evidence_state),
+                build_classify_schema(assets, roles))
+        except Exception as exc:
+            return RoutingDecision(case_id=None, priority=priority_hint, confidence="none",
+                                   fallback_used=True, candidates=ids,
+                                   rationale=f"model call failed ({type(exc).__name__}); routed nothing")
+
+        asset = raw.get("asset_type")
+        role = raw.get("role")
+        rationale = str(raw.get("rationale") or "").strip()
+        withheld = bool(DIGITS.search(rationale))
+        if withheld:
+            rationale = ("model rationale withheld: it contained a numeric claim "
+                         "(measurements are computed in code, never by the model)")
+
+        if asset in (None, "none") or role in (None, "none"):
+            return RoutingDecision(
+                case_id=None, priority=priority_hint, asset_type=asset, role=role,
+                confidence="none", used_model=True, candidates=ids,
+                rationale=f"abstained: {rationale[:220]}",
+                notes=["the model chose to abstain rather than guess an authority"])
+
+        # Deterministic mapping from (asset, duty) to the cited rule.
+        matched = [c for c in candidates if c.asset_type == asset and c.role == role]
+        if not matched:
+            return RoutingDecision(
+                case_id=None, priority=priority_hint, asset_type=asset, role=role,
+                confidence="none", used_model=True, candidates=ids,
+                rationale=f"no cited rule exists for asset={asset!r} duty={role!r}; nothing routed",
+                notes=["the report fell outside the cited routing key - a real gap, recorded"])
+        if len(matched) > 1:
+            return RoutingDecision(
+                case_id=None, priority=priority_hint, asset_type=asset, role=role,
+                confidence="none", used_model=True, candidates=ids,
+                rationale=f"ambiguous: {len(matched)} rules match asset={asset!r} duty={role!r}",
+                notes=["ambiguity abstains rather than guessing"])
+
+        rule = matched[0]
+        priority = raw.get("priority") if raw.get("priority") in (HIGH, MEDIUM, LOW) else priority_hint
+        notes = [n for n in (rule.notes, rule.legal_gap) if n]
+        return RoutingDecision(
+            case_id=rule.case_id, priority=priority, asset_type=asset, role=role,
+            institution=rule.institution, office=rule.office, legal_basis=rule.legal_basis,
+            escalation=list(rule.escalation), confidence=rule.confidence, rationale=rationale,
+            used_model=True, numeric_claim_withheld=withheld, candidates=ids, notes=notes)
+
     def route_emergency(self, ontology: Ontology, asset_type: str,
                         jurisdiction: str | None = None) -> RoutingDecision:
         return self.route(ontology, asset_type, role=EMERGENCY, jurisdiction=jurisdiction,
@@ -338,3 +411,77 @@ def build_triage_prompt(facts: str, candidates: list[AuthorityRule], evidence_st
         lines.append(f"  legal basis: {c.legal_basis}")
     lines += ["", "Return JSON: asset_type, role, case_id, priority, rationale."]
     return "\n".join(lines)
+
+
+ASSET_DEFINITION = (
+    "asset_type = WHICH ASSET IS FAILING OR AT RISK. This is not always the asset that is "
+    "damaged: if a road on the slope above a highway fails and debris lands on the highway, "
+    "the FAILING asset is the road on the slope, not the highway."
+)
+
+ROLE_DEFINITION = (
+    "role = WHICH DUTY the report is asking about:\n"
+    "  maintenance = who OWNS and must repair/maintain that asset (a budget-holding duty)\n"
+    "  emergency   = who RESPONDS NOW to an event that has already happened (rescue, clearance, "
+    "traffic control, relief)\n"
+    "  warning     = who issues a public warning\n"
+    "  assessment  = who provides a technical or geological opinion\n"
+    "  coordination= who coordinates a multi-agency response"
+)
+
+ABSTAIN_RULE = (
+    "Choose asset_type=\"none\" and role=\"none\" when the report does not identify a specific "
+    "kind of asset, or does not make clear which duty is being asked about. A confident wrong "
+    "authority is worse than no answer."
+)
+
+FEWSHOT = [
+    ("A rural road built by a municipality crosses the slope above a national highway. The road has "
+     "failed and debris has come down onto the national highway.",
+     "local-road", "maintenance"),
+    ("A national highway is blocked by debris from a slope failure. Traffic is stopped.",
+     "strategic-road", "emergency"),
+    ("A river is eroding its bank and threatening a settlement; earlier check dams have failed.",
+     "riverbank", "maintenance"),
+    ("A road is affected by something.", "none", "none"),
+]
+
+
+def build_classify_prompt(facts: str, assets: list[str], roles: list[str],
+                          evidence_state: str = "") -> str:
+    lines = [
+        "You are routing a slope-hazard report in Nepal.",
+        ASSET_DEFINITION,
+        ROLE_DEFINITION,
+        ABSTAIN_RULE,
+        "",
+        f"Allowed asset_type values: {', '.join(assets)}",
+        f"Allowed role values: {', '.join(roles)}",
+        "",
+        "EXAMPLES:",
+    ]
+    for text, a, r in FEWSHOT:
+        lines.append(f'- report: "{text}"')
+        lines.append(f'  answer: asset_type="{a}", role="{r}"')
+    lines += [
+        "",
+        f'REPORT TO ROUTE: "{facts}"',
+    ]
+    if evidence_state:
+        lines.append(f"EVIDENCE STATE: {evidence_state}")
+    lines += ["", "Do not state any number. Reply with JSON only."]
+    return "\n".join(lines)
+
+
+def build_classify_schema(assets: list[str], roles: list[str]) -> dict:
+    return {
+        "type": "object",
+        "properties": {
+            "asset_type": {"type": "string", "enum": assets + ["none"]},
+            "role": {"type": "string", "enum": roles + ["none"]},
+            "priority": {"type": "string", "enum": [HIGH, MEDIUM, LOW]},
+            "rationale": {"type": "string"},
+        },
+        "required": ["asset_type", "role", "priority", "rationale"],
+        "additionalProperties": False,
+    }

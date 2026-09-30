@@ -30,10 +30,11 @@ def load_scenarios(path: str | Path) -> list[dict]:
 
 
 def evaluate(scenarios: list[dict], ontology: Ontology, router: Router,
-             evidence_state: str = "") -> dict:
+             evidence_state: str = "", mode: str = "two-stage") -> dict:
     results = []
+    call = (router.triage_route_single_call if mode == "single-call" else router.triage_route)
     for sc in scenarios:
-        d = router.triage_route(ontology, sc["facts"], evidence_state=evidence_state)
+        d = call(ontology, sc["facts"], evidence_state=evidence_state)
         expected = sc["case"]
         predicted = d.case_id if d.case_id else "none"
         row = {
@@ -101,7 +102,7 @@ def markdown(rep: dict) -> str:
     lines = [
         "# E1 — routing accuracy",
         "",
-        f"Scenarios: **{rep['n']}** · answered by the open-weight model: {rep['used_model']}/{rep['n']}",
+        f"Mode: **{rep.get('mode', 'two-stage')}** · Scenarios: **{rep['n']}** · answered by the open-weight model: {rep['used_model']}/{rep['n']}",
         "",
         "| Metric | Value |",
         "|---|---|",
@@ -135,6 +136,9 @@ def main(argv=None) -> int:
     ap.add_argument("--ontology", default="ontology/nepal-slope-routing.json")
     ap.add_argument("--url", default="http://127.0.0.1:8081")
     ap.add_argument("--limit", type=int)
+    ap.add_argument("--mode", default="two-stage", choices=["two-stage", "single-call"],
+                    help="two-stage decomposes (asset, duty) then maps deterministically; "
+                         "single-call is the ablation arm")
     ap.add_argument("--out", default="reports/routing-eval.json")
     a = ap.parse_args(argv)
 
@@ -147,7 +151,8 @@ def main(argv=None) -> int:
         print("WARNING: model server not reachable; the harness will measure abstention only",
               file=sys.stderr)
 
-    rep = evaluate(scenarios, ontology, router)
+    rep = evaluate(scenarios, ontology, router, mode=a.mode)
+    rep["mode"] = a.mode
     out = Path(a.out); out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(rep, indent=2, ensure_ascii=False) + "\n")
     md = out.with_suffix(".md")
