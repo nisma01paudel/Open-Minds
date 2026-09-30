@@ -44,16 +44,60 @@ SAC_WORDS = {
 WALKABLE = {"path", "footway", "track", "steps", "bridleway"}
 
 # One extract per region. Adding a region is a data change: fetch it, save it, add a line here.
+# name, the raw extract, the bbox to fetch it, and what it covers.
+#
+# THE RAW EXTRACTS ARE NOT COMMITTED. They are 27 MB of machine-generated OSM that anyone can
+# re-fetch in one command, and the bundle they produce - 4.5 MB - IS committed, so the app works
+# from a clone without them. Carrying the inputs as well made the repository 102 MB for no reader's
+# benefit; this project has already had one 353 MB bloat problem and does not need a second.
 REGIONS = [
-    ("kathmandu", "evidence/trails-raw-valley.json",
-     "Kathmandu valley and the Shivapuri rim (27.70-27.84 N, 85.22-85.42 E)"),
-    ("khumbu", "evidence/trails-raw-khumbu.json",
-     "Khumbu / Everest region (27.55-28.05 N, 86.55-87.05 E)"),
-    ("annapurna", "evidence/trails-raw-annapurna.json",
-     "Annapurna region (28.15-28.85 N, 83.65-84.35 E)"),
-    ("langtang", "evidence/trails-raw-langtang.json",
-     "Langtang and Helambu (27.90-28.45 N, 85.15-85.85 E)"),
+    ("kathmandu", "evidence/trails-raw-valley.json", "27.70,85.22,27.84,85.42",
+     "Kathmandu valley and the Shivapuri rim"),
+    ("khumbu", "evidence/trails-raw-khumbu.json", "27.55,86.55,28.05,87.05",
+     "Khumbu / Everest region"),
+    ("annapurna", "evidence/trails-raw-annapurna.json", "28.15,83.65,28.85,84.35",
+     "Annapurna region"),
+    ("langtang", "evidence/trails-raw-langtang.json", "27.90,85.15,28.45,85.85",
+     "Langtang and Helambu"),
 ]
+
+OVERPASS = ["https://overpass-api.de/api/interpreter",
+            "https://overpass.kumi.systems/api/interpreter"]
+
+
+def fetch_regions() -> int:
+    """Download every region's extract from Overpass. One command, no key, ~27 MB.
+
+    This is what replaces committing the raw data: the bundle is in the repository, the recipe to
+    rebuild it is in this function, and the intermediate files are not shipped twice.
+    """
+    import time
+    import urllib.parse
+    import urllib.request
+
+    ok = 0
+    for name, path, bbox, description in REGIONS:
+        dest = ROOT / path
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        query = (f'[out:json][timeout:280];'
+                 f'way["highway"~"^(path|footway|track|steps|bridleway)$"]({bbox});out geom;')
+        for endpoint in OVERPASS:
+            try:
+                req = urllib.request.Request(
+                    endpoint, data=urllib.parse.urlencode({"data": query}).encode(),
+                    headers={"User-Agent": "pahiro-trails/1.0"})
+                data = urllib.request.urlopen(req, timeout=300).read()
+                dest.write_bytes(data)
+                ways = data.count(b'"type":"way"')
+                print(f"  {name}: {ways} ways -> {path}")
+                ok += 1
+                break
+            except Exception as exc:                       # noqa: BLE001
+                print(f"  {name}: {endpoint.split('/')[2]} failed ({type(exc).__name__})")
+                time.sleep(2)
+        else:
+            print(f"  {name}: could not fetch - {description}")
+    return ok
 
 # GEOMETRY IS SIMPLIFIED, and this is a deliberate trade rather than a shortcut.
 #
@@ -132,14 +176,24 @@ def main() -> int:
     ap.add_argument("--in", dest="src", default=None,
                     help="a single extract; omit to build from every region in REGIONS")
     ap.add_argument("--out", default="web/public/data/trails.geojson")
+    ap.add_argument("--fetch", action="store_true",
+                    help="download the regional extracts from Overpass first (they are not "
+                         "committed: 27 MB of machine-generated data)")
     a = ap.parse_args()
+
+    if a.fetch:
+        print("fetching regional extracts from OpenStreetMap ...")
+        got = fetch_regions()
+        if not got:
+            return 1
 
     feats, vertices, raw_vertices, covered = [], 0, 0, []
     sources = REGIONS if a.src is None else [(a.src, a.src, "explicit --in")]
-    for region, path, description in sources:
+    for region, path, *rest in [(s[0], s[1]) for s in sources] if a.src else REGIONS:
+        description = rest[0] if rest else "explicit --in"
         f_path = ROOT / path
         if not f_path.exists():
-            print(f"  {region}: no extract at {path} - skipped")
+            print(f"  {region}: no extract at {path} - run with --fetch to download it")
             continue
         raw = json.loads(f_path.read_text(encoding="utf-8"))
         got = 0
