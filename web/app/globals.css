@@ -208,3 +208,10 @@ button.present:hover { background: rgba(34,211,238,.3); color: #fff; }
   border-radius: 0 8px 8px 0; padding: 8px 10px; display: flex; flex-direction: column; gap: 3px; }
 .blind b { font-size: 12.5px; color: #fecaca; }
 .blind span { font-size: 11.5px; color: #cbd5e1; }
+
+#maperr { display: none; position: absolute; z-index: 9; top: 8px; left: 50%; transform: translateX(-50%);
+  background: rgba(220,38,38,.92); color: #fff; font-size: 12px; padding: 6px 12px; border-radius: 8px;
+  max-width: 70%; }
+
+.placelabel { font-size: 11px; color: #fff; font-weight: 600; letter-spacing: .01em;
+  text-shadow: 0 1px 3px #000, 0 0 8px rgba(0,0,0,.9); pointer-events: none; white-space: nowrap; }

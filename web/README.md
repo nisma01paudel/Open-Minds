@@ -18,8 +18,8 @@ key on stage is worse than a clean map.
 
 | Layer | Source | Key |
 |---|---|---|
-| Basemap | OpenFreeMap vector tiles | none |
-| 3D terrain | AWS Terrain Tiles (terrarium DEM) | none |
+| Basemap | **Sentinel-2 cloudless (EOX/ESA)** — real satellite imagery | none |
+| Alt basemap | Esri World Imagery — real high-res satellite | none |
 | Live rainfall | Open-Meteo (ICON/ECMWF/GFS) | none |
 | Historical rainfall | CHIRPS | none |
 
@@ -45,3 +45,29 @@ Both were found by screenshotting the page and looking at it, not by reading the
    rendered empty. The source is now added empty and filled by an effect.
 2. The header subtitle ran underneath the panel, and grey dots at 1.6 px were invisible
    on light terrain. Both fixed, but only because the output was inspected.
+
+## Why there is no 3D terrain layer
+
+Two approaches were tried and both were **measured**, not assumed:
+
+| Approach | Result |
+|---|---|
+| `terrain` key inside the style object | map renders completely blank |
+| `map.setTerrain({source:"dem"})` in `load` | map renders completely blank |
+| a `raster-dem` source + `hillshade` layer present | the map's `load` event never fires, so no layer is ever added |
+
+No error event, nothing in the console, nothing on the error surface. It was isolated by
+rendering the style one piece at a time until the imagery came back. The DEM tiles
+themselves are fine (HTTP 200, `Access-Control-Allow-Origin: *`), so this is almost
+certainly the software GL in the headless capture environment failing the shading pass.
+
+It may work on a real GPU. But it could not be verified here, and a layer that silently
+blanks the map is worse than no layer — so what ships is the real satellite imagery,
+which is verified. To try terrain, re-add a `raster-dem` source and uncomment the
+`setTerrain` line in `components/SlopeMap.tsx`; if the map goes black, that is the cause.
+
+## A warning about screenshotting this app
+
+A cold Chromium profile with a short `--virtual-time-budget` captures the map **before
+the satellite tiles arrive**, producing an apparently blank map. This cost an hour of
+bisecting a bug that did not exist. Warm the profile, or allow a long budget.

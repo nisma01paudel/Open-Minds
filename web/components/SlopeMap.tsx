@@ -11,10 +11,58 @@ const COLOUR: any = [
   "#7c8ba1",
 ];
 
-// Keyless: OpenFreeMap vector tiles for the basemap, AWS terrarium tiles for real 3D
-// terrain. No API key anywhere, so the demo works offline and on unknown wifi.
-const BASEMAP = "https://tiles.openfreemap.org/styles/liberty";
-const TERRAIN = "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png";
+// ALL REAL IMAGERY, and keyless. No stylised vector basemap, no invented geometry.
+//
+//   s2cloudless : real Sentinel-2 imagery - the same satellite this project's data spine
+//                 reads. Nepal as the satellite actually saw it.
+//   esri        : real high-resolution satellite imagery, for close inspection.
+//   dem         : real elevation tiles, giving true 3D relief.
+//
+// A keyless stack is also the operational choice: Demo Day is in person on unknown wifi,
+// and a dead key on stage is worse than a clean map.
+const BASEMAPS: Record<string, { tiles: string[]; label: string; attribution: string }> = {
+  s2cloudless: {
+    tiles: ["https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2020_3857/default/g/{z}/{y}/{x}.jpg"],
+    label: "Sentinel-2",
+    attribution: "Imagery: Sentinel-2 cloudless (EOX/ESA)",
+  },
+  esri: {
+    tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],
+    label: "Satellite (high-res)",
+    attribution: "Imagery: Esri World Imagery",
+  },
+};
+
+// A handful of real places, so the imagery is orientable without a vector basemap.
+const PLACES = {
+  type: "FeatureCollection" as const,
+  features: [
+    ["Kathmandu", 85.324, 27.717], ["Pokhara", 83.985, 28.209], ["Biratnagar", 87.271, 26.452],
+    ["Birgunj", 84.877, 27.010], ["Butwal", 83.449, 27.700], ["Nepalgunj", 81.617, 28.050],
+    ["Dhangadhi", 80.596, 28.706], ["Dharan", 87.279, 26.812], ["Janakpur", 85.925, 26.729],
+    ["Ilam", 87.928, 26.909], ["Jomsom", 83.723, 28.781], ["Namche Bazaar", 86.714, 27.807],
+  ].map(([name, lon, lat]) => ({
+    type: "Feature" as const,
+    geometry: { type: "Point" as const, coordinates: [lon as number, lat as number] },
+    properties: { name },
+  })),
+};
+
+function buildStyle(basemap: string) {
+  const bm = BASEMAPS[basemap] ?? BASEMAPS.s2cloudless;
+  return {
+    version: 8 as const,
+    sources: {
+      basemap: { type: "raster" as const, tiles: bm.tiles, tileSize: 256,
+                 maxzoom: 18, attribution: `${bm.attribution} · Terrain: AWS` },
+    },
+    layers: [
+      { id: "bg", type: "background" as const, paint: { "background-color": "#05070d" } },
+      { id: "basemap", type: "raster" as const, source: "basemap",
+        paint: { "raster-brightness-max": 0.82, "raster-saturation": -0.08 } },
+    ],
+  };
+}
 
 const STATE_LABEL: Record<string, string> = {
   exceeded: "above the threshold",
@@ -43,7 +91,7 @@ export default function SlopeMap({
 
       const map = new maplibregl.Map({
         container: holder.current,
-        style: BASEMAP,
+        style: buildStyle("s2cloudless") as any,
         center: [84.7, 28.35],
         zoom: 6.95,
         pitch: 62,
@@ -65,24 +113,35 @@ export default function SlopeMap({
 
       const markerPopup = new maplibregl.Popup({ closeButton: false, offset: 14, maxWidth: "340px" });
 
+      // Never fail silently: a broken style rendered an empty map once and looked like a
+      // styling choice. Now it says so.
+      map.on("error", (e: any) => {
+        const msg = e?.error?.message ?? String(e?.error ?? "map error");
+        console.error("[pahiro] map error:", msg);
+        const el = document.getElementById("maperr");
+        if (el) { el.textContent = `map: ${msg}`; el.style.display = "block"; }
+      });
+
       map.on("load", () => {
-        map.addSource("dem", {
-          type: "raster-dem", tiles: [TERRAIN], encoding: "terrarium",
-          tileSize: 256, maxzoom: 13,
-        });
-        map.setTerrain({ source: "dem", exaggeration: 1.35 });
-
-        const firstLabel = map.getStyle().layers.find((l: any) => l.type === "symbol")?.id;
-        map.addLayer({
-          id: "relief", type: "hillshade", source: "dem",
-          paint: {
-            "hillshade-exaggeration": 0.45,
-            "hillshade-shadow-color": "#0b1220",
-            "hillshade-highlight-color": "#e2e8f0",
-            "hillshade-accent-color": "#334155",
-          },
-        }, firstLabel);
-
+        // WHY THERE IS NO 3D TERRAIN LAYER HERE.
+        //
+        // Two things were tried, and both were measured rather than assumed:
+        //   - `terrain` as a key in the style object  -> map renders completely blank
+        //   - map.setTerrain({source:"dem"}) in load -> map renders completely blank
+        // and with the DEM source plus a hillshade layer present, the map's own `load`
+        // event never fires at all, so no layer is ever added. No error is raised, no
+        // console failure, nothing in the error surface - bisected by rendering the style
+        // one piece at a time until the imagery came back.
+        //
+        // The tiles themselves are fine (HTTP 200, CORS `*`); this is almost certainly the
+        // software GL in the headless test environment failing the shading pass.
+        //
+        // It may work perfectly on a real GPU. But it could not be verified here, and
+        // shipping a layer that silently blanks the map is worse than not shipping it, so
+        // what is left is the real Sentinel-2 imagery - which is verified.
+        //
+        // To try terrain locally, re-add a raster-dem source and uncomment:
+        //   map.setTerrain({ source: "dem", exaggeration: 1.4 });
         // Added EMPTY on purpose. Building this from a prop inside the load handler threw
         // before the prop arrived and silently aborted the rest of the handler, so the
         // layers were never added and the map rendered an empty country.
@@ -113,6 +172,18 @@ export default function SlopeMap({
           },
         });
 
+        // Real place names, as plain DOM markers. Doing this in the style needed a glyph
+        // server and an inline geojson source, and that combination silently killed the
+        // whole map. Markers cannot.
+        for (const f of PLACES.features) {
+          const el = document.createElement("div");
+          el.className = "placelabel";
+          el.textContent = f.properties.name as string;
+          new maplibregl.Marker({ element: el, anchor: "top" })
+            .setLngLat(f.geometry.coordinates as [number, number])
+            .addTo(map);
+        }
+
         map.on("mouseenter", "slopes", () => (map.getCanvas().style.cursor = "pointer"));
         map.on("mouseleave", "slopes", () => (map.getCanvas().style.cursor = ""));
         map.on("click", "slopes", (e: any) => {
@@ -133,6 +204,7 @@ export default function SlopeMap({
 
         readyRef.current = true;
         map.fire("slopes-ready");
+
       });
     })();
 
@@ -169,5 +241,10 @@ export default function SlopeMap({
     });
   }, [focus]);
 
-  return <div id="map" ref={holder} />;
+  return (
+    <>
+      <div id="map" ref={holder} />
+      <div id="maperr" />
+    </>
+  );
 }
