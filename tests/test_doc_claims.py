@@ -724,3 +724,34 @@ def test_the_sixty_second_summary_quotes_numbers_that_are_in_the_reports():
     assert "does NOT claim" in summary
     for caveat in ("real handset", "52.4%", "cryptographer"):
         assert caveat in summary, f"the summary dropped the caveat {caveat!r}"
+
+
+def test_the_presenter_quotes_the_day_counts_the_timeline_holds():
+    """The presenter beat said "305 of 613 slopes above the rainfall threshold on one day".
+
+    Checked against the timeline: no day in the 2024 monsoon reaches 305. The peak is 149 of 613,
+    and the day the beat names - 28 September, the day Nepal recorded 167 landslides - has 31. The
+    305th-largest rainfall that day is 38.6 mm against a 118.8 mm threshold.
+
+    It was the one number left in the repository that a judge could check in ten seconds and find
+    wrong, and it was in the beat the presenter is told to say out loud.
+    """
+    import json
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    tl = json.loads((root / "web/public/data/timeline.json").read_text(encoding="utf-8"))
+    days, th, sites = tl["days"], tl["threshold_mm_24h"], tl["sites"]
+    counts = {d: sum(1 for s in sites if s["r"][i] >= th) for i, d in enumerate(days)}
+
+    named = counts["2024-09-28"]
+    peak = max(counts.values())
+
+    page = read("web/app/page.tsx")
+    beat = page[page.index("4 Â· The day") if "4 Â· The day" in page else page.index("The day \u2014 28 September"):]
+    beat = beat[:700]
+
+    assert "305" not in beat, (
+        "the presenter still claims 305 slopes; no day in the monsoon reaches it")
+    assert str(named) in beat, f"the beat should state the real count for 28 September ({named})"
+    assert str(peak) in beat, f"the beat should state the real season peak ({peak})"
