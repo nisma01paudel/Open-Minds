@@ -57,7 +57,7 @@ reports — **institution-routing correctness**, **Nepali-comprehension by last-
 1. **Citizen-report confidence design.** Nepal's official records already come from police and local
    officials; a judge will attack unverified community input. Every citizen report must carry provenance,
    a confidence tier, corroboration requirements, and an explicit "unverified report" state — and it must
-   never be sufficient on its own to issue an advisory (already enforced in `routing/abstain.py`).
+   never be sufficient on its own to issue an advisory (already enforced in `src/pahiro/routing/abstain.py`).
 2. **Justify Nepali for the *last mile*.** E and F are Nepal-focused yet English, because their readers are
    agency officials. Our Nepali targets the **ward chair and the household**, not the ministry. Say that
    explicitly or the choice looks unmotivated.

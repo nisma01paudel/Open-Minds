@@ -116,7 +116,7 @@ detection → diff → authority-addressed verify-list — just for buildings in
   narration, bge-m3 embeddings.
 - The only entry that quotes Leapfrog's own litmus test and states the renderer is
   *"deliberately dumb… infers nothing."*
-- Ships `AI_USAGE.md`, `docs/architecture.md`, a component table, a failure-mode table, a privacy
+- Ships its own AI usage file, an architecture document, a component table, a failure-mode table, a privacy
   policy, and honest "known limitations".
 - Language discipline: outputs are **"items to verify"**, never "violates".
 - **Weakness: one commit, no pipeline code, no dataset, no demo.** Everything AI is *planned*; the only
