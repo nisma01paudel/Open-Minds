@@ -79,6 +79,28 @@ Three paths near Kathmandu are unnamed in OSM, and the app prints "(unnamed path
 inventing one. The difficulty field says "not recorded" and "cannot check this from the map data"
 rather than guessing a grade from a length. The caveat paragraph names all three limits.
 
+## The third responsive hide, checked and left alone
+
+Round 62 swept the stylesheet for `display: none` and found three rules. Two were defects and are
+fixed. The third:
+
+    @media (max-width: 760px) { .stage header p { display: none; } }
+
+hides the one-sentence description under the title - "Every documented landslide-prone slope in Nepal,
+each carrying the routing key's default duty holder for a local road - and the statute that says so."
+
+Checked rather than assumed. The same explanation appears in the sidebar as its closing note:
+
+    This is not detection. It is the list of slopes loaded on a given day, each carrying the
+    routing key's default duty holder for a local road. Per-report routing, which resolves the
+    actual asset, is measured separately on 21 expert-labelled scenarios.
+
+and `.panel` is `overflow-y: auto` with a styled scrollbar, so nothing in the sidebar is unreachable
+at a narrow width. At 700px the app still says what it is, in more detail than the hidden line.
+
+So this one is a judgement about space that happens to be covered elsewhere, not a silent hide. Left
+as it is, and recorded here so the next sweep does not re-open it.
+
 ## The whole internet, unavailable, and the map still draws
 
 The offline claim had been verified on the phone (airplane mode, `dumpsys` showing no default
