@@ -15,7 +15,7 @@ Read this file and you have everything. Ten minutes end to end.
 | 1 | Public GitHub repository | `nisma01paudel/Open-Minds` | ✅ |
 | 2 | Documentation — README, architecture, tech, **limitations/future work** | [README.md](README.md) · [docs/AGENT.md](docs/AGENT.md) · [docs/LIMITATIONS.md](docs/LIMITATIONS.md) | ✅ |
 | 3 | Working demo | **`./scripts/fetch_model.sh` once, then `./scripts/demo.sh`** | ✅ runs offline after the one-time fetch |
-| 4 | 2–3 minute demo video | [reports/video/pahiro-narrated-web.mp4](reports/video/pahiro-narrated-web.mp4) — **2:34**, 1920×1080, continuous Nepali narration; shot list in [docs/DEMO-SCRIPT.md](docs/DEMO-SCRIPT.md) | **recorded ✅** |
+| 4 | 2–3 minute demo video | [reports/video/pahiro-narrated-web.mp4](reports/video/pahiro-narrated-web.mp4) — **2:36**, 1920×1080, continuous Nepali narration; shot list in [docs/DEMO-SCRIPT.md](docs/DEMO-SCRIPT.md) | **recorded ✅** |
 | 5 | **AI usage disclosure** naming the exact file/function where AI output is consumed | [docs/AI-USAGE.md](docs/AI-USAGE.md) | ✅ |
 
 ## Run it

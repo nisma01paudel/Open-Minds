@@ -27,8 +27,16 @@ mkdir -p "$CLIPS"; rm -f "$CLIPS"/*.mp4
 dur () { ffprobe -v error -show_entries format=duration -of csv=p=0 "$1"; }
 
 # clip name, still (or "SEASON"), narration key, caption file
+# The clips are concatenated IN THE ORDER THEY ARE BUILT, recorded as they are built.
+#
+# This list used to be hardcoded at the concatenation step as well, so adding a beat built its clip
+# and then silently left it out of the film - the file existed on disk and the duration did not
+# change. Two lists for one thing, and the second one was the one nobody remembered.
+CLIP_ORDER=()
+
 build () {
   local out="$1" still="$2" key="$3" cap="$4"
+  CLIP_ORDER+=("$out")
   local wav="$VOICE/$key.wav"
   local silent=0
   local d
@@ -94,6 +102,10 @@ drawtext=fontfile='$FONT':textfile='$CLIPS/$cap.txt':expansion=none:fontcolor=wh
 cap () { printf '%b' "$2" > "$CLIPS/$1.txt"; }
 
 echo "building narrated clips (voice: $VOICE) ..."
+# The daily-use beat. The film showed only the disaster half for twenty rounds after the app grew
+# the other one - a demo that undersells half the product misdescribes it.
+cap co "20,176 mapped footpaths, offline.\nFour regions of Nepal, in 4.5 MB.\nWhich bus, and what it costs."
+build trails 09-trails o co
 cap ca "Nepal can already detect.\nNepal cannot dispatch."
 build t0 CARD a ca
 # The caption is generated here, which is why editing clips-voiced/cb.txt does nothing: it is
@@ -128,8 +140,12 @@ build t1 CARD j cj
 
 echo "concatenating ..."
 : > "$CLIPS/list.txt"
-for f in t0 map season peak blind advisory routing agent limit impact fly phone share t1; do
-  [ -f "$CLIPS/$f.mp4" ] && echo "file '$PWD/$CLIPS/$f.mp4'" >> "$CLIPS/list.txt"
+for f in "${CLIP_ORDER[@]}"; do
+  if [ ! -f "$CLIPS/$f.mp4" ]; then
+    echo "wanted to concatenate $f.mp4 and it was never built" >&2
+    exit 1
+  fi
+  echo "file '$PWD/$CLIPS/$f.mp4'" >> "$CLIPS/list.txt"
 done
 ffmpeg -hide_banner -loglevel error -y -f concat -safe 0 -i "$CLIPS/list.txt" \
   -c:v libx264 -preset slow -crf 22 -c:a aac -b:a 160k -pix_fmt yuv420p -movflags +faststart "$OUT"
