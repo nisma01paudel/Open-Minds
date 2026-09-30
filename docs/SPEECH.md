@@ -341,7 +341,7 @@ apparent contradiction becomes the most rigorous thing in the room.
 
 ---
 
-## The three that make people put their phones down
+## The seven that make people put their phones down
 
 These are the newest parts of the system and the ones that get a reaction, because each is a
 thing you can **do in front of the room in under thirty seconds** rather than a slide about it.
@@ -606,6 +606,59 @@ reads the silence as a decision not to call.
 
 ---
 
+### N7 · The day it isn't a disaster
+
+> *Nothing to click, or open the Walk tab if the phone is handy. This is the beat that answers the
+> question every judge is too polite to ask out loud: "would anyone actually use this?"*
+
+Here is the problem with everything I have told you so far.
+
+**Nobody opens a landslide tool on a clear Saturday.**
+
+And a tool that nobody opens on a clear Saturday is not installed on the Tuesday the mountain moves.
+You do not get to be the app that saves someone unless you are already the app they use. That is not
+a marketing point. It is the difference between a project and a product.
+
+**〔beat〕**
+
+So the same engine, the same offline data, answers the ordinary question. Watch.
+
+*"I've got a free morning. Something easy, maybe a view, and I'd rather not spend more than forty
+rupees on the bus."*
+
+**〔pause — let them read the screen〕**
+
+> understood as **easy · under 1h00 · bus under Rs 40 · wants a view**
+
+It read that itself. The open-weight model turns the sentence into a structured request; then a
+deterministic engine — not the model — picks the walk, the bus stop and the fare.
+
+**4.1 km, about fifty minutes. Bus to Toudol Micro Station, twenty-four rupees, then three
+kilometres on foot.**
+
+**〔beat〕**
+
+And here is the part I want you to notice. **That fare is the one number in this system the law
+sets.** The Bagmati minimum, twenty-four rupees, dated April 2026, from the Department of Transport
+Management. Everything the model produced was validated before the engine touched it — and we say
+which of the two read your sentence, because those are different qualities of evidence.
+
+**〔beat〕**
+
+Four thousand four hundred and twenty-three mapped footpaths, the whole Kathmandu valley, **one and
+a half megabytes.** They ship with the app. So does the elevation, the watches, the advisories —
+**four megabytes, all of it, on the phone, with the radio off.**
+
+The same bundle is on the handset. The same screen. No network, no key, no account.
+
+**〔beat〕**
+
+And that is the honest answer to "why would anyone use this?"
+
+**Because on the day they need it, they will already have it.**
+
+---
+
 ## The applause close
 
 > *Say this last. Slow. Put the paper with the 40 back on the table if you still have it.*
@@ -842,6 +895,9 @@ Every figure you say out loud, and where it lives.
 | Escape planner | direction from the **local fall line**, candidates >75° off it rejected; refuses when no reachable ground clears the rise. Bundled DEM is **832×512 over Nepal (~1.1 km a cell)**, so valley-scale only | `src/pahiro/shelter.py`, `tests/test_shelter.py` |
 | Escape planner — worked answers | Beni: E 1076 m, climb 15 m. Barhabise: E 1082 m, climb **547 m**, 82 min. **Melamchi: refused** (only higher ground is downhill, across the water). Nepalgunj: **refused** (4.8 km) | same |
 | Spoken navigation | Nepali first, English fallback. `माथि जानुहोस्` · `अझ माथि जानुहोस्` · `तल जानुभयो — फर्कनुहोस्`. Ascent check is relative to where they started, never to the summit | `src/pahiro/navigate.py`, `tests/test_navigate.py` |
+| Daily use — trails | **4,423 OSM footpaths**, 53,844 vertices, **1.43 MB**, offline on web and phone. Junction-snapped at 25 m | `src/pahiro/trails.py`, `mobile/lib/trails.dart` |
+| Daily use — getting there | **141 mapped bus stops**, which park, and a fare from the **Rs 24** Bagmati minimum (April 2026, DOTM). Schedules and bandha are stated as **unknown** | `src/pahiro/access.py` |
+| Daily use — asking in words | Open-weight model reads the sentence; a **deterministic engine** picks trail, stop and fare. Model output is validated and clamped, and the answer says which reader produced it | `src/pahiro/trip_agent.py`, `/api/v1/plan` |
 | Offline voice | Piper `ne_NP` chitwan medium, **63 MB, MIT**, downloaded and synthesised in this repo. **RTF 0.32** measured as the video pipeline invokes it (7.3 s of Nepali in 2.3 s, best of 3), of which ~1.3 s is process start and model load; a long-lived process gets closer to 0.14. Runs on the handset — **no network, no API key** | [docs/MODELS.md](MODELS.md) |
 | Mobile fit ladder | 512 MB → **no model, all life-saving features** · 1 GB → vision (92.5 MB) · 2–3 GB → mid (492.5 MB) · 4 GB+ → full (1488.5 MB weights). Working memory is modeled, not assumed: ×1.8 plus a 700 MB OS floor | `src/pahiro/offline_ai.py`, `tests/test_offline_ai.py` |
 | The floor is enforced | a test fails the build if any capability in `LIFESAVING` leaves `TIER_NONE` — i.e. if anyone moves routing behind an LLM | same |

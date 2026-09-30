@@ -223,7 +223,9 @@ def test_every_beat_the_speech_tells_the_presenter_to_press_actually_exists():
     assert titles, "no beats found in web/app/page.tsx"
 
     live = speech[speech.index("## Running it live"):]
-    live = live[:live.index("## The three that make people put their phones down")]
+    # The heading is now "The seven that..." - it named three when there were seven. Matched on
+    # the part that does not move, so a future count change does not break the slice.
+    live = live[:live.index("that make people put their phones down") - 3]
 
     # every beat title the app defines should be referenced by the speech
     for title in titles:
@@ -417,3 +419,39 @@ def test_the_submission_describes_both_halves_of_the_project():
     # and the same honesty rules must apply to the new half as to the old
     for caveat in ("OpenStreetMap", "1.2 km", "schedules", "never run on a phone"):
         assert caveat.lower() in lowered, f"the daily-use section omits the caveat {caveat!r}"
+
+
+def test_the_speech_headline_count_matches_the_number_of_beats_it_has():
+    """The section heading said "the three that make people put their phones down" and there were
+    seven. A count in a heading is a claim, and this project has already shipped four stale ones.
+    """
+    import re
+
+    speech = read("docs/SPEECH.md")
+    beats = re.findall(r"^### (N\d+) ·", speech, re.M)
+    assert beats, "no beats found in the speech"
+    assert len(set(beats)) == len(beats), f"duplicate beat ids: {beats}"
+
+    m = re.search(r"## The (\w+) that make people put their phones down", speech)
+    assert m, "the beats section heading changed shape; this test needs updating with it"
+    words = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7,
+             "eight": 8, "nine": 9, "ten": 10}
+    claimed = words.get(m.group(1).lower())
+    assert claimed is not None, f"unrecognised number word {m.group(1)!r}"
+    assert claimed == len(beats), (
+        f"the heading claims {claimed} beats and the speech has {len(beats)}: {beats}")
+
+
+def test_the_speech_covers_the_daily_use_half_as_well_as_the_disaster_half():
+    """The pitch described only the disaster half for eleven rounds after the daily-use half was
+    built. A judge who hears only about landslides has no reason to think anyone would install it.
+    """
+    speech = read("docs/SPEECH.md").lower()
+    assert "4,423" in speech or "4423" in speech, "the pitch never gives the trail network"
+    assert "walk" in speech
+    assert "bus" in speech, "the pitch never mentions how you get there"
+    assert "dotm" in speech or "transport management" in speech, \
+        "the fare is a sourced figure and the pitch should say where it comes from"
+    assert "clear saturday" in speech, (
+        "the pitch must give the ADOPTION argument for the daily half - a tool nobody opens is a "
+        "tool nobody has installed when it is needed")
