@@ -146,9 +146,16 @@ class FieldStore:
         for r in rows:
             est = self.locate(r["device_id"]) if r["device_id"] in self.sightings else None
             r["located"] = est.as_dict() if est else None
-        rows.sort(key=lambda r: (r.get("lat") is None, r.get("created_at", ""),
-                                 -(r.get("people") or 0)), reverse=False)
-        return list(reversed(rows))
+        # Applied as STABLE sorts, least significant first.
+        #
+        # This used to be one sort followed by reversed(), which flips EVERY key at once: the
+        # board put reports WITHOUT a position at the top, which is the exact opposite of the
+        # intent documented above, and ranked the smallest group of people first. Both keys
+        # that matter for triage were inverted, on the endpoint a coordinator actually reads.
+        rows.sort(key=lambda r: -(r.get("people") or 0))                 # most people first
+        rows.sort(key=lambda r: r.get("created_at", ""), reverse=True)   # then newest
+        rows.sort(key=lambda r: r.get("lat") is None)                    # then has a position
+        return rows
 
     def stats(self) -> dict[str, Any]:
         with self.lock:
@@ -317,7 +324,16 @@ class _Handler(BaseHTTPRequestHandler):
         if not isinstance(items, list):
             return self._send(400, {"error": "'messages' must be a list"})
         accepted = duplicates = rejected = 0
-        ids = []
+        ids: list[str] = []
+        # PER-ID OUTCOMES, not just counts.
+        #
+        # The gateway phone needs to know WHICH frames landed, because it must not re-send
+        # the whole backlog forever - but it also must not mark a frame as delivered when
+        # the server refused it. With counts alone the client has to guess, and the obvious
+        # guess ("anything not accepted, when there was at least one duplicate, was a
+        # duplicate") silently discards refused messages and never tells anyone.
+        duplicate_ids: list[str] = []
+        rejected_ids: list[str] = []
         for raw in items:
             try:
                 if isinstance(raw, dict):
@@ -330,6 +346,8 @@ class _Handler(BaseHTTPRequestHandler):
                     raise ValueError("each item must be an object or a JSON frame string")
             except (ValueError, KeyError) as exc:
                 rejected += 1
+                if isinstance(raw, dict) and raw.get("id"):
+                    rejected_ids.append(str(raw["id"]))
                 self.store.reject(f"mesh: {exc}", raw)
                 continue
             if self.store.ingest_message(msg):
@@ -337,8 +355,11 @@ class _Handler(BaseHTTPRequestHandler):
                 ids.append(msg.id)
             else:
                 duplicates += 1
+                duplicate_ids.append(msg.id)
         return self._send(202, {"accepted": accepted, "duplicates": duplicates,
-                                "rejected": rejected, "ids": ids})
+                                "rejected": rejected, "ids": ids,
+                                "duplicate_ids": duplicate_ids,
+                                "rejected_ids": rejected_ids})
 
     def _ingest_sos(self, data: dict[str, Any]) -> None:
         device = (data.get("device_id") or self.headers.get("X-Device-Id") or "").strip()

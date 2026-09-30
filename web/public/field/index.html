@@ -126,6 +126,11 @@
     </div>
 
     <h2>On this phone</h2>
+    <div class="card"><div id="meshcount" class="muted">nothing yet</div>
+      <div id="syncstate" class="muted" style="margin-top:6px"></div>
+      <button class="act ghost" id="syncnow">HAND THESE TO THE DISTRICT NOW</button>
+    </div>
+    <div id="refusedbox"></div>
     <div id="chatlog" class="muted">No messages yet.</div>
     <div class="note">
       Messages travel phone to phone. You do not need signal, and the person you are
@@ -286,7 +291,11 @@ function net() {
                                  : "OFFLINE — reports are kept and sent later";
   renderQueue();
 }
-window.addEventListener("online", function () { net(); flush(); loadBoard(); });
+window.addEventListener("online", function () {
+  net(); flush(); loadBoard();
+  // Signal came back: this is the moment a carried SOS becomes visible to the district.
+  syncMeshToApi(false);
+});
 window.addEventListener("offline", net);
 
 /* --- tabs ---------------------------------------------------------------------------- */
@@ -660,10 +669,16 @@ function startMesh() {
   mesh.send(node.compose("status", "hello", {}));
   mesh.pump();
   renderChat();
+  renderRefused();
 
   // A late arrival: open a second tab and it will be sent everything this one holds.
   // That is store-and-forward, and it is the whole reason a mesh beats a walkie-talkie.
   setInterval(function () { mesh.send(node.compose("status", "hello", {})); }, 8000);
+
+  // A phone in signal keeps handing over whatever the mesh gave it. Silent when there is
+  // nothing to send, so it does not fill the screen with reassurances.
+  setInterval(function () { syncMeshToApi(true); }, 15000);
+  setTimeout(function () { syncMeshToApi(true); }, 2000);
 
   setInterval(function () {
     var got = mesh.pump();
@@ -679,7 +694,7 @@ function startMesh() {
         }
       }
     }
-    if (got || msgs.length) { renderChat(); }
+    if (got || msgs.length) { renderChat(); renderMeshStatus(0); }
   }, 1500);
 }
 
@@ -717,6 +732,121 @@ function renderChat() {
   $("chatlog").innerHTML = html || "<div class='muted'>No messages yet.</div>";
 }
 
+/* --- the gateway: mesh -> district ---------------------------------------------------- */
+/* THE MISSING LINK. Everything before this carried a message between phones; nothing
+   handed it to anyone who was not standing there. A phone that walks into signal is the
+   bridge between the mesh and the district office, and until it uploads, an SOS that was
+   successfully carried across four kilometres is still invisible to the board.
+
+   Uploading is idempotent on the server side (messages dedupe by frame id), so a phone
+   that is unsure whether its last upload arrived simply sends again. The `synced` set is
+   only an optimisation - to avoid re-sending the whole backlog every fifteen seconds. */
+
+function syncedIds() { return store.get("pahiro.synced", {}); }
+function refusedIds() { return store.get("pahiro.refused", {}); }
+
+async function syncMeshToApi(quiet) {
+  if (!mesh || !navigator.onLine) { return 0; }
+  var done = syncedIds(), refused = refusedIds();
+  var pending = [];
+  Object.keys(mesh.node.store).forEach(function (k) {
+    var m = mesh.node.store[k];
+    // `status` frames are mesh housekeeping between phones, and a refused frame is not
+    // re-sent: re-sending something the server already rejected is a loop, not a retry.
+    if (m.kind !== "status" && !done[m.id] && !refused[m.id]) { pending.push(m.toDict()); }
+  });
+  if (!pending.length) { renderMeshStatus(0); return 0; }
+
+  try {
+    var r = await fetch(apiBase + "/api/v1/mesh/messages", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messages: pending })
+    });
+    if (!r.ok) { throw new Error("HTTP " + r.status); }
+    var res = await r.json();
+    // PER-ID OUTCOMES. This used to read `if (accepted[d.id] || res.duplicates > 0)`, which
+    // is a BATCH count applied to every item: one duplicate marked every pending frame as
+    // delivered, so anything the server refused was never retried and never mentioned. The
+    // comment above it claimed the opposite, which is the worst kind of comment.
+    var delivered = {};
+    (res.ids || []).forEach(function (id) { delivered[id] = true; });
+    (res.duplicate_ids || []).forEach(function (id) { delivered[id] = true; });
+    var newlyDelivered = 0;
+    pending.forEach(function (d) {
+      if (delivered[d.id]) { if (!done[d.id]) { newlyDelivered++; } done[d.id] = true; }
+    });
+
+    // A refused frame is not retried forever - re-sending a malformed frame is a loop - and
+    // it is not silently forgotten either: the phone that carried it is told, and the body
+    // is kept so somebody can pass it on by voice or by hand.
+    var newlyRefused = 0;
+    (res.rejected_ids || []).forEach(function (id) {
+      for (var i = 0; i < pending.length; i++) {
+        if (pending[i].id === id) { refused[id] = pending[i].b || "(empty)"; newlyRefused++; }
+      }
+    });
+    store.set("pahiro.synced", done);
+    store.set("pahiro.refused", refused);
+
+    // The count reported here is what was JUST DELIVERED, not what is still queued. Passing
+    // the pending length made a successful sync say "3 handed to the district (+3 just now)"
+    // when the 3 was the backlog it had just cleared.
+    renderMeshStatus(newlyDelivered);
+    renderRefused();
+    if (!quiet) {
+      if (res.accepted) {
+        $("syncstate").innerHTML = "<span class='pill good'>synced</span> " + res.accepted +
+          " handed to the district" +
+          (res.duplicates ? ", " + res.duplicates + " already known" : "");
+      } else if (newlyRefused) {
+        $("syncstate").innerHTML = "<span class='pill hot'>refused</span> " + newlyRefused +
+          " message(s) the district would not accept — see below";
+      }
+    }
+    return res.accepted || 0;
+  } catch (e) {
+    if (!quiet) {
+      $("syncstate").innerHTML = "<span class='pill warm'>not synced</span> " +
+        esc(e.message) + " — it will go when there is a connection";
+    }
+    return 0;
+  }
+}
+
+function renderMeshStatus(justAdded) {
+  if (!mesh) { return; }
+  var total = 0, sos = 0, done = syncedIds();
+  Object.keys(mesh.node.store).forEach(function (k) {
+    var m = mesh.node.store[k];
+    if (m.kind === "status") { return; }
+    total++;
+    if (m.isSos()) { sos++; }
+  });
+  var synced = 0;
+  Object.keys(done).forEach(function (k) { synced++; });
+  $("meshcount").innerHTML = "<b>" + total + "</b> message(s) on this phone" +
+    (sos ? ", <b>" + sos + "</b> of them distress" : "") +
+    " · <b>" + synced + "</b> handed to the district" +
+    (justAdded ? " (+" + justAdded + " just now)" : "");
+}
+
+/* A refused message must be visible on the device that carried it.
+   The district refused it, so it is not going to arrive on its own - but it may be a real
+   person's words, and the only copy in the world is the one on this phone. Showing the body
+   lets whoever is holding the handset read it down a radio or write it on paper. */
+function renderRefused() {
+  var refused = refusedIds();
+  var ids = Object.keys(refused);
+  if (!ids.length) { $("refusedbox").innerHTML = ""; return; }
+  var html = "<div class='err'><b>" + ids.length + " message(s) the district refused.</b><br>" +
+    "They will not be sent again. Read them out if they matter — this phone may hold the " +
+    "only copy.<ul style='margin:8px 0 0;padding-left:18px'>";
+  for (var i = 0; i < ids.length; i++) {
+    html += "<li>" + esc(refused[ids[i]]).slice(0, 120) + "</li>";
+  }
+  $("refusedbox").innerHTML = html + "</ul></div>";
+}
+
 $("chatsend").addEventListener("click", function () {
   var body = $("chatmsg").value.trim();
   if (!body || !mesh) { return; }
@@ -725,6 +855,8 @@ $("chatsend").addEventListener("click", function () {
   $("chatmsg").value = "";
   renderChat();
 });
+
+$("syncnow").addEventListener("click", function () { syncMeshToApi(false); });
 
 $("shout").addEventListener("click", function () {
   if (!mesh) { return; }
