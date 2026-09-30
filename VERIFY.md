@@ -19,6 +19,17 @@ fresh clone silently skipped the whole sealing layer while the suite reported su
 .venv/bin/python scripts/mutate_check.py          # the suite can FAIL
 ```
 
+```bash
+cd web && npm ci && npm run build          # the demo the film shows, from a clean checkout
+```
+
+The web build is worth running because it is the surface the video shows. It is a static export:
+six routes (`/`, `/admin`, `/ar`, `/fly`, `/share`), and `out/` must contain the map data —
+`timeline.json`, `terrain.bin`, the slopes geojson and 34 offline tiles. All three of the data
+files were **missing from the repository** until round 21, so a clone built an app with a blank
+map. Build a clone, not your working tree: a checkout that already has the data cannot show you
+this.
+
 The last one is the one worth your time. **A passing suite is not evidence until you know it can
 fail.** `mutate_check.py` breaks six load-bearing constants on purpose — the beacon's frame
 size, the weight of a headcount in triage, the battery level at which a phone stops scanning,
