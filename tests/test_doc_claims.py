@@ -871,3 +871,25 @@ def test_the_readme_names_every_feature_by_the_word_a_reader_would_search_for():
             f"the README does not contain {term!r} - a reader searching the front page for it "
             f"would conclude the feature does not exist")
     assert "reports/device" in readme, "the README does not link the on-device frames"
+
+
+def test_the_speech_names_the_four_things_a_judge_will_ask_about():
+    """The same defect as the README, in the third document, one round later.
+
+    The speech went seven rounds of building without mentioning the panorama or the complaint portal,
+    and when the insert was written for them it described the panorama as "a 360-degree render" and
+    never used the word - so searching the speech for "panorama" returned nothing, again, immediately
+    after adding a guard that requires exactly that of the README.
+
+    Describing something and naming it are different acts. Only one of them is findable, and a
+    presenter searching their own notes for a feature is the same reader as a judge.
+    """
+    speech = read("docs/SPEECH.md")
+    for term in ("panorama", "complaint", "season", "places"):
+        assert term in speech.lower(), (
+            f"the speech does not contain {term!r}, so a presenter looking for it would not find it")
+
+    # the insert must not silently join the timed script
+    assert "Not part of the timed script" in speech, (
+        "the optional insert no longer says it is outside the timed script, so the cut table's "
+        "numbers may now be wrong")

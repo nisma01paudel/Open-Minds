@@ -937,3 +937,44 @@ pattern, and all three are true here:
 
 The speech is built to make those three points in that order, and to survive being cut to ninety seconds
 without losing any of them.
+
+---
+
+### N7b · Optional insert — the four things a judge will ask about
+
+> *Not part of the timed script. The word count and the cut table cover sections 1-6, so this insert
+> can be added or dropped without making either stale. Use it if the room asks what else the app
+> does, or if you have the time and want the daily-use half on the screen for more than one beat.*
+
+**The same app answers four more questions, and every one of them refuses something.**
+
+**When should I go?** Twelve months of measured rain for the nearest region, and no month is called
+good or bad - because a farmer, a trekker and a paraglider want different weather from the same
+month. Four of those months are drawn green: they were cross-checked against our own satellite
+measurement. The other eight are grey, and marked as model only. And Kathmandu's own rain figures
+carry a warning **not to quote them**, because the reanalysis puts nearly twice the measured monsoon
+there. *We drew the bars and told you not to believe four of them.*
+
+**What does it look like?** Open the Walk tab and look around the valley. That is a panorama - a
+360-degree render
+of the real terrain, draggable, for six regions, **264 kilobytes inside the app** - because the places
+a valley view is worth most are the places with no signal. It is not a photograph, and it says so on
+the screen: a silhouette from the elevation grid, no trees, no buildings.
+
+**Who is responsible for this ground?** Every complaint portal in Nepal routes to a municipality, and
+a municipality can say "not ours" and be finished with it. This names the specific office the routing
+key holds responsible, **the local unit it belongs to, that unit's own official government website,
+and the section of the Local Government Operation Act that obliges them.** Press one more button and
+it drafts the complaint in Nepali, citing धारा १२(२)(ग). *The app does not send it, sign it or receive
+it - and it says that on the face of the letter. The citizen sends it and keeps the receipt.*
+
+**And if a judge asks what happens when a flood comes?** There is a scenario in the app: six steps of
+the 2024 monsoon, and **each step is labelled with whether it was computed on that phone or cited from
+a measurement made elsewhere.** Four are live. Two are cited. A demo that blurred those two would be
+the same failure as every stale number this project has caught.
+
+> *The line to land it:* **A user of this app can always tell "nothing is here" from "we could not
+> look."** The season guide marks its own unvalidated months. The trail list says a gap in the map is
+> not proof that nobody walks. The bus layer is withheld rather than shown when the nearest stop is in
+> another region's data. The complaint drafter names no office rather than guessing one. Most software
+> cannot do this. Ask them to try it.
