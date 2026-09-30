@@ -319,6 +319,7 @@ class WalkScreen extends StatefulWidget {
 class _WalkScreenState extends State<WalkScreen> {
   TrailNetwork? _net;
   seasons.SeasonGuide? _seasons;
+  bool _seasonsFailed = false;
   String? _error;
   bool _busy = true;
   // Kathmandu, until the phone reports a fix. Stated in the UI rather than assumed silently.
@@ -345,7 +346,10 @@ class _WalkScreenState extends State<WalkScreen> {
         final sg = await widget.seasonLoader.load();
         if (mounted) setState(() { _seasons = sg; });
       } catch (_) {
-        // no season guide; the strip simply does not appear
+        // The walk list is what matters here, so a failed season load must not block it - but it
+        // must not VANISH either. The same defect I fixed in the three panels was still here: a
+        // strip that fails to load and a strip with nothing to say looked identical.
+        if (mounted) setState(() => _seasonsFailed = true);
       }
     } catch (e) {
       if (mounted) setState(() { _error = '$e'; _busy = false; });
@@ -369,6 +373,7 @@ class _WalkScreenState extends State<WalkScreen> {
       Text('${s['walk.from']} ${_lat.toStringAsFixed(4)}, ${_lon.toStringAsFixed(4)}',
            style: Theme.of(context).textTheme.bodySmall),
       const SizedBox(height: 12),
+      if (_seasonsFailed) loadFailed(s['load.failed']),
       if (_seasons != null) seasonStrip(s, _seasons!, _lat, _lon),
       const SizedBox(height: 14),
       PlacesPanel(
@@ -1092,7 +1097,7 @@ class _DutyPanelState extends State<DutyPanel> {
 
   @override
   Widget build(BuildContext context) {
-    if (_failed) return _loadFailed(widget.failedLabel);
+    if (_failed) return loadFailed(widget.failedLabel);
     if (!_tried || _duty == null) return const SizedBox.shrink();
     final d = _duty!;
     final km = (_distanceM ?? 0) / 1000;
@@ -1197,7 +1202,7 @@ class _DemoPanelState extends State<DemoPanel> {
 
   @override
   Widget build(BuildContext context) {
-    if (_failed) return _loadFailed(widget.failedLabel);
+    if (_failed) return loadFailed(widget.failedLabel);
     if (!_loaded || _steps.isEmpty) return const SizedBox.shrink();
     return Card(
       child: Padding(
@@ -1298,7 +1303,7 @@ class _PlacesPanelState extends State<PlacesPanel> {
 
   @override
   Widget build(BuildContext context) {
-    if (_failed) return _loadFailed(widget.failedLabel);
+    if (_failed) return loadFailed(widget.failedLabel);
     if (!_loaded || _near.isEmpty) return const SizedBox.shrink();
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text(widget.title, style: const TextStyle(fontWeight: FontWeight.w700)),
@@ -1339,7 +1344,7 @@ class _PlacesPanelState extends State<PlacesPanel> {
 /// having nothing to say. This project's whole argument is that a user must be able to tell "nothing
 /// is here" from "we could not look" - and that has to be true of the app's own furniture, not only
 /// of the map data.
-Widget _loadFailed(String label) => Padding(
+Widget loadFailed(String label) => Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Text(label,
           style: const TextStyle(fontSize: 11, color: Color(0xFFF0A0A0))),

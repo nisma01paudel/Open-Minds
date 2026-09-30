@@ -66,6 +66,14 @@ class _NoSeasons implements SeasonLoader {
   Future<SeasonGuide> load() async => const SeasonGuide(regions: [], note: '');
 }
 
+
+/// A season loader that fails, to prove the screen says so rather than showing a gap.
+class _BrokenSeasons implements SeasonLoader {
+  const _BrokenSeasons();
+  @override
+  Future<SeasonGuide> load() async => throw StateError('simulated missing asset');
+}
+
 void main() {
   boardTests();
   l10nAudit();
@@ -197,5 +205,28 @@ void l10nAudit() {
 
     expect(offenders, isEmpty,
         reason: 'English prose rendered in the UI, untranslated:\n${offenders.join('\n')}');
+  });
+
+  testWidgets('the walk screen says so when the season guide is missing', (tester) async {
+    // The last of the silent hides. The walk list is the point of this screen, so a failed season
+    // load must not block it - but a strip that fails and a strip with nothing to say looked
+    // identical, which is the defect fixed in the three panels one round earlier.
+    tester.view.physicalSize = const Size(1200, 3000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: WalkScreen(
+          strings: const L10n(AppLang.ne), lang: AppLang.ne,
+          loader: FakeLoader(),
+          seasonLoader: const _BrokenSeasons(),
+        ),
+      ),
+    ));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('लोड हुन सकेन'), findsOneWidget,
+        reason: 'a failed season load left a gap instead of a message');
   });
 }
