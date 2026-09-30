@@ -33,18 +33,24 @@ self.addEventListener("fetch", (e) => {
   const url = new URL(e.request.url);
   if (e.request.method !== "GET" || url.origin !== location.origin) return;
 
-  // data + icons: cache first, they are stable for the day
+  // Data and icons: STALE-WHILE-REVALIDATE.
+  //
+  // Cache-first was wrong here. The offline demo needs a cached copy, but regenerating the
+  // data and rebuilding the app left the browser serving the previous file indefinitely -
+  // the advisory panel showed the old text and looked like a rendering bug. This serves
+  // the cache immediately (so offline still works) and refreshes it in the background (so
+  // a rebuild is picked up on the next load).
   if (url.pathname.startsWith("/data/") || url.pathname.startsWith("/icons/")) {
     e.respondWith((async () => {
-      const hit = await caches.match(e.request);
-      if (hit) return hit;
-      try {
-        const res = await fetch(e.request);
-        if (res.ok) (await caches.open(VERSION)).put(e.request, res.clone());
+      const cache = await caches.open(VERSION);
+      const hit = await cache.match(e.request);
+      const network = fetch(e.request).then((res) => {
+        if (res.ok) cache.put(e.request, res.clone());
         return res;
-      } catch {
-        return new Response("{}", { headers: { "Content-Type": "application/json" } });
-      }
+      }).catch(() => null);
+      return hit ?? (await network) ?? new Response("{}", {
+        headers: { "Content-Type": "application/json" },
+      });
     })());
     return;
   }

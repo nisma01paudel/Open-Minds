@@ -74,10 +74,12 @@ export default function SlopeMap({
   data,
   popup,
   focus,
+  onPick,
 }: {
   data: AnyFC | null;
   popup?: boolean;
   focus?: { lon: number; lat: number; zoom?: number } | null;
+  onPick?: (p: any) => void;
 }) {
   const holder = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any>(null);
@@ -191,6 +193,7 @@ export default function SlopeMap({
           const p = e.features?.[0]?.properties;
           if (!p) return;
           const [lon, lat] = e.features[0].geometry.coordinates;
+          onPick?.(p);
           markerPopup.setLngLat([lon, lat]).setHTML(
             `<h3>${p.title || "Documented slope"}</h3>
              <div style="color:#94a3b8">${STATE_LABEL[p.state] ?? p.state} ·
