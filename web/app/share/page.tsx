@@ -15,7 +15,7 @@ export default function Share() {
       <header className="sharehead">
         <h1>Pahiro <span>पहिरो</span></h1>
         <p>
-          In the 2024 monsoon, <b>305 of 613 documented landslide-prone slopes in Nepal</b> were
+          In the 2024 monsoon, <b>31 of 613 documented landslide-prone slopes in Nepal</b> were
           above the rainfall threshold on a single day — 28 September. On that day Nepal
           recorded <b>167 landslides</b>. And only <b>27.8%</b> of the satellite imagery that
           month had clear ground, so most of those slopes could not be looked at at all.

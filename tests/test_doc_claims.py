@@ -933,3 +933,55 @@ def test_the_film_caption_states_the_counts_the_timeline_holds():
         "the film caption claims 305 slopes; no day in the monsoon reaches it")
     assert str(named) in caption, f"the film caption should state the real count for that day ({named})"
     assert str(peak) in caption, f"the film caption should state the season peak ({peak})"
+
+
+def test_every_stated_slope_count_matches_the_timeline():
+    """The class-level guard, after fixing the same number in four separate artefacts.
+
+    Round 50 corrected the presenter cue. Round 43 found the film caption. This round found the demo
+    script, the speech's running-live table, the share page and a superseded build script - six
+    places, one number, and each guard I wrote was scoped to the instance in front of it.
+
+    So this does not check a file. It scans every source artefact for the PATTERN "N of 613" and
+    requires every N to be a value the timeline actually contains.
+    """
+    import json
+    import re
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    tl = json.loads((root / "web/public/data/timeline.json").read_text(encoding="utf-8"))
+    days, th, sites = tl["days"], tl["threshold_mm_24h"], tl["sites"]
+    real = {sum(1 for s in sites if s["r"][i] >= th) for i in range(len(days))}
+
+    exts = (".md", ".py", ".tsx", ".sh", ".dart")
+    skip = ("node_modules", "/.git/", "/out/", "/.next/", "__pycache__",
+            "/evidence/", "tests/test_doc_claims.py")
+    found, bad = 0, []
+    for f in root.rglob("*"):
+        if not f.is_file() or f.suffix not in exts:
+            continue
+        sp = str(f)
+        if any(x in sp for x in skip):
+            continue
+        try:
+            text = f.read_text(encoding="utf-8")
+        except Exception:                                     # noqa: BLE001
+            continue
+        # SCOPED, because a bare "N of 613" is not one measure. The first version of this sweep
+        # flagged "119 of 613" (slopes with no matchable local unit) and "534 of 613" (slopes with a
+        # susceptibility sample) - both correct, both counting the same 613 slopes, neither a claim
+        # about rainfall. A guard that cannot say what it is guarding is the defect this session has
+        # found five times, and this was the sixth, written by me while fixing it.
+        for line in text.splitlines():
+            if "threshold" not in line.lower() and "above the rainfall" not in line.lower():
+                continue
+            for m in re.finditer(r"(\d[\d,]*)\s+of\s+613", line):
+                n = int(m.group(1).replace(",", ""))
+                found += 1
+                if n not in real:
+                    bad.append(f"{f.relative_to(root)}: {n} of 613  ({line.strip()[:70]})")
+
+    assert found >= 4, f"the sweep only found {found} counts, so it is not scanning"
+    assert not bad, (
+        "these state a slope count the timeline does not contain:\n  " + "\n  ".join(bad))

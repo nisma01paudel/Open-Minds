@@ -317,7 +317,7 @@ step even if you lose your place, because the beat on screen tells you which par
 | §2 The turn | **1** · The national picture | 613 slopes on real Sentinel-2, each carrying the routing key's **default** duty holder for a local road |
 | §2 The turn (contrast) | **2** · A quiet week | mid-June — **0** above threshold, nothing loaded |
 | §2 → §3 | **3** · The season, running | the 2024 monsoon animating |
-| §3 Act one / §4 Act two | **4** · The day — 28 Sept 2024 | 305 of 613 above threshold on the day 167 landslides were recorded |
+| §3 Act one / §4 Act two | **4** · The day — 28 Sept 2024 | 31 of 613 above threshold on the day 167 landslides were recorded; the season peaked at 149 the day before |
 | §2 payoff (the blindness) | **5** · And we could not see them | September: only 27.8% of scenes had clear ground |
 | §2 payoff (the register) | **5b** · Where we are blind | the measured-observability layer — 17 of 142 sites never seen |
 | §5 Act three | **6** · Fly over it (3D) → `Enter` | real elevation and imagery |

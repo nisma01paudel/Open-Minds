@@ -152,7 +152,7 @@ film.
 | 1 | The national picture | 613 slopes on real Sentinel-2 imagery, live |
 | 2 | A quiet week | mid-June — **0** above threshold, 0 approaching, nothing loaded |
 | 3 | The season, running | the 2024 monsoon plays across the country |
-| 4 | The day — 28 September 2024 | 305 of 613 above threshold |
+| 4 | The day — 28 September 2024 | 31 of 613 above threshold, the season peaked at 149 the day before |
 | 5 | And we could not see them | only 27.8% of September imagery had clear ground |
 | 5b | Where we are blind | the observability layer — 142 measured sites, 17 never seen; August 16.8% |
 | 6 | Fly over it (3D) | real elevation, real imagery, real rainfall |

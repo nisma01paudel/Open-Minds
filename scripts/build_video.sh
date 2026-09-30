@@ -48,7 +48,9 @@ ffmpeg -hide_banner -loglevel error -y -i reports/timelapse/pahiro-monsoon-2024.
   -vf "scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:color=0x05070d,fps=$FPS" \
   -an -c:v libx264 -preset slow -crf 20 -pix_fmt yuv420p "$CLIPS/season.mp4" 2>/dev/null
 
-caption d "28 September 2024.\n305 of 613 slopes above the rainfall threshold.\nThat day, Nepal recorded 167 landslides."
+# SUPERSEDED by build_voiced_video.sh, and left carrying a wrong number for seven rounds.
+# Fixed rather than deleted: a dead script with a plausible stale figure is what gets run later.
+caption d "28 September 2024.\n31 of 613 slopes above the rainfall threshold.\nThe season peaked the day before, at 149.\nThat day, Nepal recorded 167 landslides."
 clip_still peak 02-peak 14 d
 
 caption e "And only 27.8% of satellite imagery that month had clear ground.\nA slope can be loaded and invisible at the same time."
