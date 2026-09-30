@@ -21,10 +21,33 @@ export type Beat = {
  */
 export default function Presenter({ beats }: { beats: Beat[] }) {
   const [on, setOn] = useState(false);
-  const [i, setI] = useState(0);
+  // ?beat=N opens the pitch on a given POSITION, not on the number in the title. There are nine
+  // beats labelled 1, 2, 3, 4, 5, 5b, 6, 7, 8 - "5b" is an inserted half-beat that consumes no
+  // number - so ?beat=6 opens "5b · Where we are blind". Written down because the divergence looks
+  // like an off-by-one when you open ?beat=9 and read a card headed "8". It is not: the titles are
+  // labels and the parameter is a position, and both were checked against the array before this
+  // comment was written.
+  // ?beat=N opens the pitch on a given beat. Two reasons, and the second is the one that mattered:
+  // a beat can be linked during a talk, and every beat becomes renderable from a URL - which is how
+  // eight of the nine were checked, having never been seen because advancing needs a key press.
+  const startBeat = () => {
+    if (typeof window === "undefined") return 0;
+    const raw = new URLSearchParams(window.location.search).get("beat");
+    const n = raw ? Number(raw) : NaN;
+    if (!Number.isFinite(n)) return 0;
+    return Math.max(0, Math.min(beats.length - 1, Math.trunc(n) - 1));
+  };
+  const [i, setI] = useState(startBeat);
 
   useEffect(() => {
-    if (new URLSearchParams(location.search).get("present") === "1") setOn(true);
+    const q = new URLSearchParams(location.search);
+    // Both parameters open the pitch; ?beat also asks for its beat's map state, which otherwise only
+    // an arrow key would set.
+    if (q.get("present") === "1" || q.get("beat")) {
+      setOn(true);
+      beats[startBeat()].action();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
