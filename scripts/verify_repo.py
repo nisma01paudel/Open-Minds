@@ -28,6 +28,7 @@ REQUIRED = [
     "benchmark/events.csv", "benchmark/controls.csv", "benchmark/routing-scenarios.jsonl",
     "reports/eval-v1.md", "reports/routing-ablation.md",
     "scripts/agent_demo.py", "scripts/verify_data_access.py",
+    "scripts/demo.sh", "scripts/serve_model.sh", "scripts/fetch_model.sh",
     "scripts/check_beacon_parity.py", "scripts/check_seal_parity.py",
     "scripts/build_event_benchmark.py", "scripts/build_controls.py",
 ]

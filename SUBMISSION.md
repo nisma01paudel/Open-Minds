@@ -14,7 +14,7 @@ Read this file and you have everything. Ten minutes end to end.
 |---|---|---|---|
 | 1 | Public GitHub repository | `nisma01paudel/Open-Minds` | ✅ |
 | 2 | Documentation — README, architecture, tech, **limitations/future work** | [README.md](README.md) · [docs/AGENT.md](docs/AGENT.md) · [docs/LIMITATIONS.md](docs/LIMITATIONS.md) | ✅ |
-| 3 | Working demo | **`./scripts/demo.sh`** — one command, verified cold | ✅ runs offline after first warm-up |
+| 3 | Working demo | **`./scripts/fetch_model.sh` once, then `./scripts/demo.sh`** | ✅ runs offline after the one-time fetch |
 | 4 | 2–3 minute demo video | [reports/video/pahiro-narrated-web.mp4](reports/video/pahiro-narrated-web.mp4) — **2:34**, 1920×1080, continuous Nepali narration; shot list in [docs/DEMO-SCRIPT.md](docs/DEMO-SCRIPT.md) | **recorded ✅** |
 | 5 | **AI usage disclosure** naming the exact file/function where AI output is consumed | [docs/AI-USAGE.md](docs/AI-USAGE.md) | ✅ |
 
@@ -25,16 +25,24 @@ uv venv .venv && uv pip install --python .venv/bin/python -e '.[geo,dev,crypto]'
 .venv/bin/python -m pytest -q             # the whole suite, no skips
 .venv/bin/python scripts/verify_repo.py   # submission readiness: files, references, tests
 
-# ONE COMMAND: starts the open-weight model, runs the whole pipeline, prints the
-# trace and the Nepali advisory. Verified from a cold start.
+# ONE-TIME: 1.1 GB of weights and a compiled server. Deliberately not in the repo.
+./scripts/fetch_model.sh
+
+# ONE COMMAND AFTER THAT: starts the model, runs the whole pipeline, prints the
+# trace and the Nepali advisory.
 ./scripts/demo.sh
 
 # a mid-monsoon date instead, to see the abstain state
 ./scripts/demo.sh --as-of 2024-07-20
 ```
 
-`demo.sh` starts the model server itself (6 threads - 12 collapses throughput on this
-CPU), so there is nothing to do first. Add `--stop` to shut the server down afterwards.
+`demo.sh` starts the model server itself (6 threads - 12 collapses throughput on this CPU).
+It needs `fetch_model.sh` to have run once: the weights are 1.1 GB and the server is a
+compiled binary, so neither is in the repository, and a clone without them gets a clear
+message naming both and the command that fetches them.
+
+Without the model, geometry, thresholds and routing still work - only the decision step
+needs it. `tests/test_router.py::test_without_the_model_nothing_is_routed` holds that line. Add `--stop` to shut the server down afterwards.
 Pass `--as-of`, `--lon`, `--lat` or `--report` to interrogate any slope you like.
 
 ## See it in a browser
