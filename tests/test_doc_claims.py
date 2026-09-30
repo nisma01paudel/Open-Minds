@@ -1099,3 +1099,28 @@ def test_the_speech_timing_claim_still_matches_the_speech():
         assert abs((h * 60 + m) - minutes * 60) < 90, (
             f"the table says {total.group(1)} and the script works out at "
             f"{int(minutes)}m{int(minutes * 60 % 60):02d}s")
+
+
+def test_a_superseded_report_says_so_on_its_own_first_line():
+    """eval-v1 declared that it supersedes eval-v0. eval-v0 did not say anything.
+
+    So a reader opening v0 - which still calls itself "first real measurement" - sees a headline
+    figure of +10.4 points where the current report says +9.6, and nothing on the page tells them
+    which to quote. A supersession recorded only in the newer document is recorded where the reader
+    is not.
+
+    Two figures also had to be reconciled, not just flagged: July's +58 agrees in both reports, and
+    the overall figure does not, because the pilot area moved.
+    """
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    v0 = (root / "reports/eval-v0.md").read_text(encoding="utf-8")
+    v1 = (root / "reports/eval-v1.md").read_text(encoding="utf-8")
+
+    assert "Supersedes `eval-v0.md`" in v1, "v1 no longer declares the supersession"
+    head = v0[:900]
+    assert "SUPERSEDED by" in head, "eval-v0 does not say it has been superseded"
+    assert "+9.6" in head or "+10.4" in head, (
+        "the banner does not name the figure that differs, so a reader cannot tell what changed")
+    assert "Do not quote" in head, "the banner must say which figures are no longer current"

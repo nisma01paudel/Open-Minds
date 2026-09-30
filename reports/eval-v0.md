@@ -1,5 +1,13 @@
 # Evaluation v0 — gap-state calibration (contribution C, measured)
 
+> **SUPERSEDED by [`eval-v1.md`](eval-v1.md).** This report measured the ORIGINAL pilot AOI, which
+> was moved after the event benchmark showed the original box held only 2 documented landslides
+> (`docs/PILOT-AOI.md`). One figure differs between the two: radar adds **+10.4 points overall**
+> here and **+9.6** in v1, because the area changed. July's **+58** agrees in both.
+>
+> **Do not quote this report's overall coverage figures.** It is kept because the method and the
+> July result are sound and are cited by v1, not because its headline number is current.
+
 Date: 2026-09-30 · status: **first real measurement** · reproducible with one command each.
 
 ```bash
