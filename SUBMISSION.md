@@ -239,6 +239,12 @@ Verified, not asserted: the release APK builds and is a valid Android package. T
 check in this repository that proves the product exists as something a person can hold, and it is
 the one to run first if you have half an hour.
 
+**The APK is NOT in this repository**, deliberately: `mobile/build/` is gitignored, and fifty
+megabytes of build output does not belong in git beside the source that generates it. So an
+installable binary requires a Flutter toolchain - clone, one command, half an hour cold. If a
+downloadable binary matters for demo day, attach the built APK to a GitHub **Release** rather than
+committing it; that is what releases are for and it keeps the repository clean.
+
 **What it does not prove is that it has run on a handset.** No radio figure has been measured on a
 device, and every radio number in this repository is somebody else's measurement or modelled from
 one. Installing this APK on a phone is the next real step.
