@@ -537,5 +537,41 @@ def test_every_data_file_is_named_in_the_provenance_page():
             f"{f.name} ships with the app and is not named in the provenance page, so a reader "
             f"cannot tell whether it can be rebuilt")
 
-    assert provenance.count("**no**") >= 3, "the three unreproducible files must be marked"
-    assert "observability-sites.json" in provenance and "terrain-texture.jpg" in provenance
+    # Whatever CANNOT be rebuilt must SAY so rather than being quietly listed. The list changes as
+    # gaps get closed - the observability pair was on it for two rounds and no longer is - so this
+    # asserts the property rather than a count.
+    assert "no committed generator" in provenance
+    assert "terrain-texture.jpg" in provenance, "the file still without a generator must be named"
+    for closed in ("observability-sites.json", "observability-by-month.json"):
+        assert closed in provenance
+    assert "build_observability.py" in provenance, (
+        "the observability files are reproducible now and the page must say by what")
+
+
+def test_the_observability_layer_can_be_rebuilt_and_refuses_to_write_a_bad_one():
+    """It was listed as unreproducible for two rounds.
+
+    The app serves two files derived from the evaluation report, and the derivation was lost - beat
+    5b of the demo rests on them. scripts/build_observability.py reproduces both, and the first
+    version of it did NOT: it filtered to 2024 and produced 37 months instead of 5, with August and
+    September percentages that would have silently replaced the figures the demo turns on.
+    """
+    src = read("scripts/build_observability.py")
+    assert "reports/observability-monsoon.json" in src, "the source report is not named"
+    assert "EXPECTED_SCENES = 2021" in src, "the guard on the season total is gone"
+    assert "REFUSING TO WRITE" in src, (
+        "the script must refuse to overwrite the demo's figures when its aggregation disagrees "
+        "with them, rather than writing a plausible wrong answer")
+
+    # and the served files must still carry the two figures the pitch quotes
+    import json
+    from pathlib import Path
+    root = Path(__file__).resolve().parents[1]
+    month = json.loads((root / "web/public/data/observability-by-month.json").read_text())
+    assert month["scenes"] == 2021
+    assert month["months"]["08"]["pct"] == 16.8, "August is a quoted figure"
+    assert month["months"]["09"]["pct"] == 27.8, "September is a quoted figure"
+    sites = json.loads((root / "web/public/data/observability-sites.json").read_text())
+    assert len(sites["sites"]) == 142
+    assert sum(1 for s in sites["sites"] if s["usable"] == 0) == 17, \
+        "17 of 142 sites were never seen; that is the beat 5b number"

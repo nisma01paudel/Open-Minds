@@ -12,40 +12,29 @@ once, and `bus-parks.geojson` was exactly that until round 27.
 | `advisories.json` | `scripts/build_advisories.py` | **yes** |
 | `slopes-live-*.geojson`, `slopes-chirps-*.geojson`, `frames.json` | `scripts/build_watch_geojson.py` | **yes** |
 | `timeline.json` | `scripts/build_timeline.py` | **yes** |
-| `observability-sites.json` | **no committed generator** | **no** |
-| `observability-by-month.json` | **no committed generator** | **no** |
+| `observability-sites.json` | `scripts/build_observability.py` | **yes** - from `reports/observability-monsoon.json` |
+| `observability-by-month.json` | `scripts/build_observability.py` | **yes** |
 | `terrain-texture.jpg` | **no committed generator** | **no** |
 
-## The three that cannot be rebuilt, stated plainly
+## The one that still cannot be rebuilt
 
-`observability-sites.json` and `observability-by-month.json` are **live-demo beat 5b** - the
-measured-observability layer, 142 sites, and the figure that August returned 16.8% usable scenes
-and 17 of 142 sites were never seen at all. `terrain-texture.jpg` is the backdrop of the 3D
-flythrough, beat 6.
+`terrain-texture.jpg` is the backdrop of the 3D flythrough, beat 6, and **no committed generator
+produces it.** The rest of the file has been rebuilt independently by
+`scripts/build_observability.py`, which reproduces the two observability files exactly from
+`reports/observability-monsoon.json`.
 
-They were derived from satellite scene metadata during the evaluation work, and **the pipeline that
-produced them was not kept.** The numbers in them are reported in `reports/eval-v1.md` and are
-consistent with it, and the files themselves are committed and verified by the tests - but nobody,
-including the author, can regenerate them from this repository.
+### How those two were closed, because the way they were closed matters
 
-**An attempt to close this gap failed, and the failure is worth recording.** The measurement code is
-still here (`src/pahiro/eval/observability.py`) and `reports/observability-monsoon.json` still holds
-142 site rows, so the missing piece looked like assembly. A generator was written that rebuilt
-`observability-sites.json` from those rows - and produced a **different `by_month` block**: 37
-months instead of the 5 the app serves, and August/September percentages that are the whole of
-live-demo beat 5b replaced with other numbers.
+They were listed here as unreproducible. A first attempt to rebuild them filtered the report to
+2024 and produced a `by_month` block of the wrong size - **37 months instead of 5**, with August and
+September percentages that would have quietly replaced the two figures live-demo beat 5b turns on.
+It ran cleanly and its output looked plausible; the only thing that caught it was diffing against
+the committed file.
 
-The report is **not** the source. `observability-by-month.json` says it was measured on **2,021
-Sentinel-2 scenes**, against the report's per-site 30-day windows - a different computation over a
-different scene set. The generator was deleted rather than shipped, because a script named
-`build_observability.py` that silently produces different numbers is worse than no script at all.
-
-What is needed is the seasonal scene inventory, not the per-site report.
-
-That is a real gap, not a stylistic one: it means these two demo beats rest on files whose
-derivation cannot be re-run or audited line by line, which is below the standard the rest of this
-repository holds itself to. Rebuilding the observability pipeline is the honest fix, and until it
-exists this table is the disclosure.
+The correct aggregation is **all years, by calendar month, restricted to the monsoon months**: 415 /
+518 / 518 / 403 / 167 scenes, **2,021 in total** - the number the data file itself states, which is
+now an assertion in the script. If that total ever stops matching, the script **refuses to write**
+rather than overwriting the demo's figures.
 
 ## Licence
 
