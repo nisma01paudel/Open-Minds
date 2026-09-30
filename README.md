@@ -17,7 +17,7 @@ Not a plan — running code, verified against live services:
 | Component | State |
 |---|---|
 | Free satellite ingest (Sentinel-2, Sentinel-1, DEM, CHIRPS) | **working**, anonymous, no keys |
-| Per-AOI cloud screening (the honest measure) | **working** — 150 scenes screened, July = 0.0% clear |
+| Per-AOI cloud screening (the honest measure) | **working** — 457 scenes screened at the corrected pilot, July = 0.0% clear |
 | Staleness gate (issue / degraded / **abstain**) | **working**, measured: 34-day monsoon blind streak |
 | Dispatch object with validation | **working** — an authority without a cited section is structurally invalid |
 | Nepali advisory renderer | **working** — fully Nepali, including the evidence state |
@@ -27,7 +27,7 @@ Not a plan — running code, verified against live services:
 | BIPAD government integration | **working** — coordinate → ward; real road-blockage register |
 | Evaluation harnesses (routing accuracy, kappa, gap calibration) | **working** |
 
-54 tests pass. Every claim in this repo is reproducible from the commands below.
+The full test suite passes. Every claim in this repo is reproducible from the commands below.
 
 ## Start here
 
@@ -41,7 +41,7 @@ weakness attached. Reserve ten minutes.
 uv venv .venv && uv pip install --python .venv/bin/python -e '.[geo,dev]'
 
 python scripts/verify_data_access.py          # the founding evidence, live from anonymous STAC
-python -m pytest -q                            # 54 tests
+python -m pytest -q                            # the full suite
 
 # end-to-end: a real coordinate, real observations, a real Nepali advisory
 python scripts/demo_end_to_end.py --lon 85.0575 --lat 27.7620 --as-of 2024-07-20 \
@@ -58,7 +58,7 @@ python scripts/demo_end_to_end.py --lon 85.0575 --lat 27.7620 --as-of 2024-07-20
 Not few — zero. July is when Nepal's landslides kill. Optical-only monitoring is blind exactly when it
 matters, and radar is the only thing still looking (4–6 passes every month of every year).
 
-Measured consequence: under an optical-only policy the system can speak on **89.6%** of days, with a
+Measured consequence: under an optical-only policy the system can speak on **90.4%** of days, with a
 **hidden 34-day silence** across the monsoon. Adding radar closes it — **+58 points in July**.
 
 And the intake side is broken too: BIPAD holds **7,081 citizen hazard reports of which zero are
