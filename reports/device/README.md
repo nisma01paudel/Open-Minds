@@ -25,6 +25,7 @@ launched on an Android emulator (API 36, x86_64, `/dev/kvm`) on 2026-10-01.
 | `pahiro-complaint.png` | **the complaint itself, drafted on the phone, citing the section** |
 | `pahiro-demo-panel.png` | the flood scenario: **Run the scenario**, labelled live vs cited |
 | `pahiro-places.png` | **major places: bilingual names, population, district, gov.np sites** |
+| `pahiro-duty-nepali.png` | **the duty holder in Nepali** - the one-place translation, on the device |
 
 ## What this changes, and what it does not
 
@@ -35,6 +36,29 @@ a real handset" end here.
 **Unchanged, and still stated everywhere:** this is an **emulator**, not a physical phone. No radio
 figure has been measured on real hardware - Bluetooth range, Wi-Fi Aware range and battery endurance
 are all still somebody else's measurements or modelled from them. An emulator cannot measure a radio.
+
+## The duty holder, in Nepali, on the device
+
+    वडा समिति (वडा अध्यक्षको नेतृत्वमा); माथि नगर/गाउँ कार्यपालिका (प्रमुख/अध्यक्ष)
+
+One entry in one table in src/pahiro/complaints.py, because there is exactly one distinct office
+across all 613 slopes. Read by the Python letter and by the phone's derived index, so the letter and
+the card above it cannot end up in two languages.
+
+## STILL NOT CAPTURED: THE EXPANDED LETTER ON THE DEVICE
+
+Four attempts, four misses. The draft button sits below the demo panel, the duty panel and the place
+selector, so its position moves whenever the content above it changes - and I read the coordinate off
+a scaled preview (872x1890) against a 1080x2340 device, which is the same error that produced a false
+bug report three rounds ago and a false "does not work" two rounds ago.
+
+What IS verified: the letter's text, by three Python tests including one that asserts the English
+office no longer appears inside the Nepali letter; and the panel fix above, on the device. What is NOT:
+a device frame of the expanded letter. The text is asserted; the rendering is not.
+
+The lesson is not "measure more carefully". It is that driving a scrolling screen by blind
+coordinates is a bad instrument, and a UI test that scrolls to and taps a widget by name would not
+have this failure mode at all.
 
 ## Major places, on the phone
 
