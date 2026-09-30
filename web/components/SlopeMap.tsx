@@ -91,15 +91,18 @@ export default function SlopeMap({
   focus,
   onPick,
   blind,
+  trails,
 }: {
   data: AnyFC | null;
   popup?: boolean;
   focus?: { lon: number; lat: number; zoom?: number } | null;
   onPick?: (p: any, at?: { lon: number; lat: number }) => void;
   blind?: boolean;
+  trails?: boolean;
 }) {
   const holder = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any>(null);
+  const trailsRef = useRef(false);
   const readyRef = useRef(false);
   const blindRef = useRef<boolean>(!!blind);
   const [ready, setReady] = useState(false);
@@ -210,6 +213,47 @@ export default function SlopeMap({
           },
         });
 
+        // --- hiking trails ------------------------------------------------------------------
+        //
+        // Vectors, not tiles. The bundled basemap is zoom 5-7: it answers "where in Nepal" and
+        // nothing else. A trail is a LINE, so it stays correct at every zoom, costs 1.4 MB for
+        // the whole Kathmandu valley, and needs no network once it is here.
+        //
+        // Added empty and populated from the bundled file, following the same rule as the slopes
+        // source: building a source from a fetch INSIDE this handler aborted the rest of it and
+        // left the map empty.
+        map.addSource("trails", { type: "geojson", data: { type: "FeatureCollection", features: [] } });
+
+        map.addLayer({
+          id: "trails-casing", type: "line", source: "trails",
+          layout: { "line-cap": "round", "line-join": "round" },
+          paint: {
+            "line-color": "#0b1020",
+            "line-opacity": 0.55,
+            "line-width": ["interpolate", ["linear"], ["zoom"], 8, 2.0, 12, 5.0, 16, 9.0],
+          },
+        });
+
+        map.addLayer({
+          id: "trails", type: "line", source: "trails",
+          layout: { "line-cap": "round", "line-join": "round" },
+          paint: {
+            // Difficulty where OSM records it; where it does not, the trail still draws, in the
+            // neutral colour. Drawing nothing would hide a real path because of a missing tag.
+            "line-color": ["match", ["get", "d"],
+              "easy", "#34d399", "moderate", "#fbbf24", "hard", "#f97316",
+              "severe", "#ef4444", "#93c5fd"],
+            "line-opacity": 0.95,
+            "line-width": ["interpolate", ["linear"], ["zoom"], 8, 1.1, 12, 3.0, 16, 5.5],
+          },
+        });
+
+        // Trails start hidden: this app's first job is still the slope, and a valley of green
+        // lines over it before anyone asked would be decoration.
+        const trailsVis = trailsRef.current ? "visible" : "none";
+        map.setLayoutProperty("trails-casing", "visibility", trailsVis);
+        map.setLayoutProperty("trails", "visibility", trailsVis);
+
         // Real place names, as plain DOM markers. Doing this in the style needed a glyph
         // server and an inline geojson source, and that combination silently killed the
         // whole map. Markers cannot.
@@ -298,6 +342,43 @@ export default function SlopeMap({
     if (readyRef.current) apply();
     else map.once("slopes-ready", apply);
   }, [data]);
+
+  // The trail bundle ships with the app, so this is a local file read, not a request. It is
+  // fetched rather than inlined because 1.4 MB of geometry in the JS bundle would delay first
+  // paint for every visitor, including the ones who never open the trails.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    let cancelled = false;
+    const apply = async () => {
+      try {
+        const r = await fetch("/data/trails.geojson");
+        if (!r.ok) return;
+        const trails = await r.json();
+        if (cancelled) return;
+        const src: any = map.getSource("trails");
+        if (src) src.setData(trails);
+      } catch {
+        // Offline with an empty cache, or the file is missing: the rest of the map still works,
+        // and a trail layer that failed to load must not take the slopes with it.
+      }
+    };
+    if (readyRef.current) apply();
+    else map.once("slopes-ready", apply);
+    return () => { cancelled = true; };
+  }, []);
+
+  // Toggle the trails without rebuilding anything.
+  useEffect(() => {
+    trailsRef.current = !!trails;
+    const map = mapRef.current;
+    if (!map || !readyRef.current) return;
+    for (const id of ["trails", "trails-casing"]) {
+      if (map.getLayer(id)) {
+        map.setLayoutProperty(id, "visibility", trails ? "visible" : "none");
+      }
+    }
+  }, [trails, ready]);
 
   // While offline, hide the network basemap entirely rather than let it fail tile by tile.
   // The bundled low-zoom layer stays, so the map still draws.

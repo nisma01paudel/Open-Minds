@@ -286,3 +286,37 @@ def test_every_copy_of_the_install_command_asks_for_the_same_extras():
     assert "crypto" in reference, (
         "the install command omits the crypto extra, so the sealing layer skips silently "
         "on a fresh clone")
+
+
+# ---- the trails layer must be reachable, not just written ---------------------------------------
+
+def test_the_trail_layer_is_wired_into_the_map_and_the_bundle_ships():
+    """A layer the map never adds is decoration in a source file.
+
+    The trail engine is tested in tests/test_trails.py and the data is committed; this checks the
+    other half - that the app actually draws it, that there is a way to turn it on, and that the
+    licence notice travels with it.
+    """
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    map_src = read("web/components/SlopeMap.tsx")
+    page = read("web/app/page.tsx")
+
+    assert 'addSource("trails"' in map_src, "the map never adds a trails source"
+    assert 'id: "trails"' in map_src, "no trails layer is added"
+    assert "/data/trails.geojson" in map_src, "the layer is never populated from the bundle"
+    assert 'visibility' in map_src, "there is no way to hide the trails again"
+
+    assert "trails" in page and "setTrails" in page, "the page has no trails control"
+    assert "OpenStreetMap" in page, (
+        "ODbL requires attribution wherever the data is shown; the UI must carry it")
+    assert "ODbL" in page
+
+    bundle = root / "web/public/data/trails.geojson"
+    assert bundle.exists(), "the trail bundle is not in the repository"
+    import json
+
+    d = json.loads(bundle.read_text(encoding="utf-8"))
+    assert "OpenStreetMap" in d["attribution"], "attribution must travel in the data too"
+    assert len(d["features"]) > 1000

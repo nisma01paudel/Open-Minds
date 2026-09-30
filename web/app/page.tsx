@@ -99,6 +99,7 @@ export default function Page() {
   const [adv, setAdv] = useState<any>(null);
   const [picked, setPicked] = useState<any>(null);
   const [blind, setBlind] = useState(false);
+  const [trails, setTrails] = useState(false);
   const [flood, setFlood] = useState(false);
   const [esc, setEsc] = useState<any>(null);
   const [escErr, setEscErr] = useState("");
@@ -119,6 +120,7 @@ export default function Page() {
       setDay(Number.isFinite(idx) && idx >= 0 ? idx : Math.max(0, t.days.indexOf("2024-09-28")));
       if (q.get("mode") === "replay") setMode("replay");
       if (q.get("blind") === "1") setBlind(true);
+      if (q.get("trails") === "1") setTrails(true);
     }).catch(() => setErr("timeline not built yet"));
     fetch("/data/observability-by-month.json").then((r) => r.json()).then(setObs).catch(() => {});
     fetch("/data/advisories.json").then((r) => r.json())
@@ -212,6 +214,7 @@ export default function Page() {
         data={mode === "replay" ? replayFC : liveFC}
         focus={focus}
         blind={blind}
+        trails={trails}
         onPick={(p, at) => {
           const a = advisories.current[p.id];
           setPicked(p);
@@ -453,6 +456,29 @@ export default function Page() {
             Show <b>measured observability</b> — where the satellite could not see
           </span>
         </label>
+
+        <label className="toggle">
+          <input type="checkbox" checked={trails} onChange={(e) => setTrails(e.target.checked)} />
+          <span>
+            Show <b>hiking trails</b> — 4,423 mapped paths, offline
+          </span>
+        </label>
+
+        {trails && (
+          <div className="blindnote">
+            <b>OpenStreetMap, bundled.</b> Every mapped footpath, track and stairway in the
+            Kathmandu valley — 4,423 ways, 53,844 points, 1.4 MB. Coloured by recorded
+            difficulty: <b style={{ color: "#34d399" }}>easy</b>,{" "}
+            <b style={{ color: "#fbbf24" }}>moderate</b>,{" "}
+            <b style={{ color: "#f97316" }}>hard</b>, and neutral where OSM records none.
+            It is a vector layer, so it stays sharp at any zoom and needs no network — the same
+            bundle the offline trip planner reads.
+            <div style={{ marginTop: 8, opacity: 0.75 }}>
+              Trail data © OpenStreetMap contributors, ODbL 1.0. Nepal&apos;s footpath coverage is
+              incomplete: a trail missing here is one nobody has drawn yet.
+            </div>
+          </div>
+        )}
 
         {blind && (
           <div className="blindnote">
