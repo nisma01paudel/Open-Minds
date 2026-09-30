@@ -178,6 +178,21 @@ we credit it — including two 2026 papers that already use open-weight LLMs to 
 landslide reports ([docs/PRIOR-ART.md](docs/PRIOR-ART.md), [docs/DIFERENTIATION.md](docs/DIFERENTIATION.md)).
 Full list of limitations and honest gaps: [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
 
+## The phone app builds and installs
+
+```bash
+cd mobile && flutter build apk --release
+# -> an APK under mobile/build/app/outputs/flutter-apk/   (48.5 MB, generated, not committed)
+```
+
+Verified, not asserted: the release APK builds and is a valid Android package. That is the only
+check in this repository that proves the product exists as something a person can hold, and it is
+the one to run first if you have half an hour.
+
+**What it does not prove is that it has run on a handset.** No radio figure has been measured on a
+device, and every radio number in this repository is somebody else's measurement or modelled from
+one. Installing this APK on a phone is the next real step.
+
 ## Where things are
 
 The daily-use half: `src/pahiro/trails.py` (the network and routing), `src/pahiro/access.py` (bus

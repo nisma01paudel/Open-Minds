@@ -30,6 +30,19 @@ files were **missing from the repository** until round 21, so a clone built an a
 map. Build a clone, not your working tree: a checkout that already has the data cannot show you
 this.
 
+```bash
+cd mobile && flutter build apk --release     # the app phone-installable, not just tested
+```
+
+**This is the strongest single check in the repository**, and it was the last one to be run. Everything
+else verifies that the logic is right; this verifies that the product exists as something a person
+can install. It writes an APK under mobile/build/app/outputs/flutter-apk/ - **48.5 MB**, built and
+confirmed - and it takes about thirty-five minutes cold, because the first Gradle build downloads its
+distribution and the Compose dependencies.
+
+Nothing in it is generated into the repository: `mobile/build/` is gitignored, so the artefact is a
+command rather than 50 MB of history.
+
 The last one is the one worth your time. **A passing suite is not evidence until you know it can
 fail.** `mutate_check.py` breaks six load-bearing constants on purpose — the beacon's frame
 size, the weight of a headcount in triage, the battery level at which a phone stops scanning,
