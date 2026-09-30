@@ -57,6 +57,12 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  # The national elevation grid, bundled so the escape direction is computed on the handset with
+  # no network. 852 KB: 832x512 over Nepal, about a kilometre a cell.
+  assets:
+    - assets/terrain.bin
+    - assets/terrain.json
+
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

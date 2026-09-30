@@ -31,3 +31,7 @@ reports/video/voice*/
 # judge then had to clone. Untracked and purged from history separately.
 reports/video/
 reports/timelapse/frames/
+# Flutter
+mobile/.dart_tool/
+mobile/build/
+mobile/.flutter-plugins-dependencies
