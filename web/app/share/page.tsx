@@ -21,9 +21,10 @@ export default function Share() {
           month had clear ground, so most of those slopes could not be looked at at all.
           <br /><br />
           <b>We then tested whether that ranking finds the slopes that fail. It does not.</b> The
-          slopes that actually failed that day ranked at the 55th percentile of the rainfall
+          slopes that actually failed ranked at the 53rd and 55th percentile of the rainfall
           ranking — a coin toss. So this is not a forecast, and the map does not claim to be
-          one. It is the list of slopes under load, and the office on the hook for each.
+          one. It is the list of slopes under load, each carrying the routing key&apos;s default
+          duty holder.
         </p>
       </header>
 
@@ -39,15 +40,19 @@ export default function Share() {
 
       <section className="sharefoot">
         <p>
-          <b>Nepal can already detect. Nepal cannot dispatch.</b> Pahiro Watch pairs every
-          documented slope with the office legally responsible for it — the municipality, the
-          division road office, the ward — under the section of law that gives them the duty.
+          <b>Nepal can already detect. Nepal cannot dispatch.</b> Pahiro Watch puts every
+          documented slope on the map, each carrying the routing key&apos;s <b>default</b> duty holder
+          for a local road — cited to the section of law that creates the duty. Resolving which
+          office is actually responsible for a specific report is a separate, measured step:
+          <b>61.9%</b> exact on 21 expert-labelled scenarios, with <b>zero</b> confident misroutes
+          across road tiers and <b>100%</b> abstention precision — including the Simaltal case,
+          where the upslope rural road belonged to a municipality, not to the highway authority.
         </p>
         <p className="dim">
           Rainfall: CHIRPS 0.05° daily. Imagery: Sentinel-2 cloudless (EOX/ESA) and Esri World
           Imagery. Threshold: the published Panchpokhari Thangpal curve (118.8 mm/24 h), a local
           fit used as a national reference. This is not detection: it is the list of slopes under
-          load, and who is on the hook for each.
+          load, each carrying the routing key&apos;s default duty holder.
         </p>
       </section>
     </div>

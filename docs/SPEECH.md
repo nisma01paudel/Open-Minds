@@ -116,12 +116,18 @@ is the Department of Roads" — you have written a beautiful, confident report a
 office. Not once. Every time. Forever.
 
 So we built the routing key from the statute itself — who holds the duty, under which section of which
-act, down to the municipality — and then we tested it against **613 documented landslides** and **1,839
-matched control sites**.
+act, down to the municipality — and then we tested it against **21 expert-labelled scenarios**. Real
+reports, each with a ground-truth reading of the statute written **before** we wrote the rules — because a
+test whose answers come from the system under test measures nothing.
 
 The numbers: on naming the exact responsible actor, **61.9%**. On naming the correct tier of government,
 **76.2%**. Confident misroutes across road tiers: **zero**. And when it does not know, it abstains — and
 **100% of its abstentions were correct**.
+
+Twenty-one is a small set, and I am not going to pretend otherwise. What makes it worth your attention is
+the case sitting inside it. The first scenario is Simaltal: a rural road built by a municipality, across
+the slope above a national highway. The correct answer is the **municipality** — not the highway
+authority. That is the case where the obvious answer is wrong, and we get it right.
 
 **Zero misroutes is the number that matters.** A wrong accusation costs more than silence. So we made
 silence cheap and accusation expensive.
@@ -273,8 +279,8 @@ step even if you lose your place, because the beat on screen tells you which par
 
 | Script section | Beat to press | Screen shows |
 |---|---|---|
-| §2 The turn | **1** · The national picture | 613 slopes on real Sentinel-2, each with its responsible office |
-| §2 The turn (contrast) | **2** · A quiet week | early July — almost nothing loaded |
+| §2 The turn | **1** · The national picture | 613 slopes on real Sentinel-2, each carrying the routing key's **default** duty holder for a local road |
+| §2 The turn (contrast) | **2** · A quiet week | mid-June — **0** above threshold, nothing loaded |
 | §2 → §3 | **3** · The season, running | the 2024 monsoon animating |
 | §3 Act one / §4 Act two | **4** · The day — 28 Sept 2024 | 305 of 613 above threshold on the day 167 landslides were recorded |
 | §2 payoff (the blindness) | **5** · And we could not see them | September: only 27.8% of scenes had clear ground |
@@ -322,9 +328,15 @@ the ceiling. What we optimised for is the failure mode. **Zero confident misrout
 100% correct abstention rate** beats a higher average that occasionally accuses the wrong ministry.
 
 **4. "How do you know the responsible actor?"**
-From the statute, not from the model's opinion. The routing key is a JSON ontology in the repository with
-every rule cited to the act and section. The model's job is to select among rules that are already
-written and sourced.
+From the statute, not from the model's opinion. The routing key is a JSON ontology in the repository — 14
+rules, every one cited to the act and section, each with an escalation chain and a stated confidence. The
+model's job is to select among rules that are already written and sourced.
+
+*If they ask whether the map routes all 613 slopes:* it does not, and the map says so. All 613 carry the
+routing key's **default** duty holder for a local road — a rule whose own notes call it a default until
+the municipal executive prescribes otherwise. Per-report routing, which resolves the actual asset, is what
+the 21 scenarios measure. Conflating those two would be the easiest lie available to us, and we have gone
+out of our way not to tell it.
 
 **5. "Satellite imagery in Nepal is mostly cloud. Isn't this unusable?"**
 Optical alone is blind exactly when it matters — that is our negative result: **not one** June, July or
@@ -434,12 +446,14 @@ Every figure you say out loud, and where it lives.
 | Longest optical blind streak | **34 days**, replicates in a second area | same |
 | Site-level observability (a **different** metric — do not confuse with the row above) | usable = **≥30% of a 1.1 km site** clear in the SCL band. **125/142 sites (88.0%)** had at least one usable look; **17/142 had none**; August **16.8%**, September **27.8%** | [reports/observability-monsoon.md](../reports/observability-monsoon.md) |
 | Optical-only days issuable | 90.4% | same |
-| Benchmark size | **613 sites**; 1,839 matched controls; 1,650 distinct coordinates from 6,579 records | `benchmark/events.csv`, `benchmark/controls.csv` |
-| Routing — exact actor | **61.9%** | [reports/routing-ablation.md](../reports/routing-ablation.md) |
+| Event benchmark — rainfall + observability work (**not** the routing set) | **613 sites**; 1,839 matched controls; 1,650 distinct coordinates from 6,579 records | `benchmark/events.csv`, `benchmark/controls.csv` |
+| Routing evaluation set | **21 expert-labelled scenarios** (`n = 21`). This is a *different* set from the 613 above. **Never say the routing was measured on 613 slopes.** | `benchmark/routing-scenarios.jsonl`, [reports/routing-ablation.md](../reports/routing-ablation.md) |
+| Routing — exact actor | **61.9%** = 13 of 21 | same |
 | Routing — correct tier | **76.2%** | same |
 | Confident misroutes across road tiers | **0** | same |
 | Abstention precision | **100%** | same |
 | Duty axis alone | 52.4% (the weakness — say it if asked) | same |
+| **What the map actually shows** | all 613 points carry the **same** rule — `local-road-maintenance`, whose own notes call it *"defaults applying until the municipal executive prescribes otherwise"*. The map does **not** route each slope. Do not claim it does; say "default duty holder" | `src/pahiro/watch.py`, `ontology/nepal-slope-routing.json` |
 | Rainfall ranking vs failures | **53rd and 55th percentile** on the two event days; 4 of 14 crossed; peak-day median load on a failed slope **0.97** vs **1.00** across all 613 | [reports/rainfall-ranking.md](../reports/rainfall-ranking.md) |
 | Trigger discrimination (E4a) | **13.6%** of event sites exceeded vs **10.6%** of controls, 22 event days / 66 matched controls — a three-point edge | [reports/eval-v1.md](../reports/eval-v1.md) |
 | Trigger on 2024-09-28 | EXCEEDED at 48 / 72 / 240 h | [docs/DATA.md](DATA.md) |

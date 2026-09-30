@@ -52,3 +52,53 @@ def test_results_are_ordered_worst_first(monkeypatch):
     monkeypatch.setattr(watch, "fetch_window_cached", lambda day, *a, **k: _window(140.0))
     st = watch.national_status(date(2024, 9, 28), sites=SITES)
     assert st[0].state == "exceeded", "the loaded slope must lead"
+
+
+def test_status_carries_the_office_and_not_only_the_institution(monkeypatch):
+    """The map popup lists Responsible and Office as separate rows.
+
+    `national_status` used to fill authority/legal_basis from the rule and drop `office`, so every
+    historical frame rendered "Office: -" while the live frame rendered the real office. Same rule,
+    two different renderings — a judge clicking three slopes sees the dash.
+    """
+    monkeypatch.setattr(watch, "fetch_window_cached", lambda day, *a, **k: _window(140.0))
+    st = watch.national_status(date(2024, 9, 28), sites=SITES)
+    assert st, "precondition: the fixture produced statuses"
+    for s in st:
+        assert s.office, f"slope {s.site_id} has an institution but no office"
+        assert s.authority, "the institution must still be carried alongside it"
+
+
+def test_the_office_matches_the_rule_the_ontology_actually_returns(monkeypatch):
+    """Guards against the office drifting from the cited rule, which is what makes it citable."""
+    from pahiro.ontology import MAINTENANCE, Ontology
+
+    monkeypatch.setattr(watch, "fetch_window_cached", lambda day, *a, **k: _window(140.0))
+    rule = Ontology.load("ontology/nepal-slope-routing.json").lookup("local-road", MAINTENANCE)
+    st = watch.national_status(date(2024, 9, 28), sites=SITES)
+    for s in st:
+        assert s.office == rule.office
+        assert s.authority == rule.institution
+        assert s.legal_basis == rule.legal_basis
+
+
+@pytest.mark.parametrize("name", ["slopes-chirps-2024-09-28.geojson",
+                                  "slopes-chirps-2024-07-06.geojson",
+                                  "slopes-live-2026-09-30.geojson"])
+def test_committed_map_frames_carry_an_office_for_every_slope(name):
+    """The artefact a judge actually loads, checked directly.
+
+    The historical frames are written by a second, inline properties dict in
+    scripts/build_watch_geojson.py -- it is easy to fix the dataclass and still ship a frame with no
+    office, so this asserts on the committed bytes rather than on the code path.
+    """
+    import json
+    from pathlib import Path
+
+    path = Path("web/public/data") / name
+    if not path.exists():
+        pytest.skip(f"{name} not built in this checkout")
+    feats = json.loads(path.read_text())["features"]
+    assert feats, f"{name} has no features"
+    missing = [f["properties"]["id"] for f in feats if not f["properties"].get("office")]
+    assert not missing, f"{name}: {len(missing)} slopes render 'Office: -' (e.g. {missing[:3]})"

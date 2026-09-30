@@ -237,7 +237,7 @@ export default function Page() {
       <header>
         <div className="brand">
           <h1>Pahiro Watch <span>पहिरो</span></h1>
-          <p>Every documented landslide-prone slope in Nepal, with the office legally responsible for each.</p>
+          <p>Every documented landslide-prone slope in Nepal, each carrying the routing key&apos;s <b>default</b> duty holder for a local road — and the statute that says so.</p>
         </div>
       </header>
 
@@ -350,8 +350,9 @@ export default function Page() {
                 used as a national reference.</>
             : <>Rainfall: Open-Meteo (near-real-time). Threshold: 118.8 mm/24 h, as above.</>}
           <br /><br />
-          This is not detection. It is the list of slopes loaded on a given day, and who is on the
-          hook for each.
+          This is not detection. It is the list of slopes loaded on a given day, each carrying the
+          routing key&apos;s default duty holder for a local road. Per-report routing, which resolves
+          the actual asset, is measured separately on 21 expert-labelled scenarios.
         </div>
       </aside>
 
@@ -366,11 +367,11 @@ export default function Page() {
       <Presenter
         beats={[
           { title: "1 · The national picture",
-            cue: "Every documented landslide-prone slope in Nepal — 613 of them — on real Sentinel-2 imagery, each one paired with the office legally responsible for it.",
+            cue: "Every documented landslide-prone slope in Nepal — 613 of them — on real Sentinel-2 imagery, each carrying the routing key's default duty holder for a local road, cited to the statute. Say 'default': per-report routing, which resolves the actual asset, is measured separately on 21 expert-labelled scenarios.",
             action: () => { setMode("live"); setPlaying(false); setFocus(null); } },
           { title: "2 · A quiet week",
-            cue: "Early July. Almost nothing is loaded. This is what the country looks like when it is not raining.",
-            action: () => { setMode("replay"); setPlaying(false); setDay(tl ? tl.days.indexOf("2024-07-06") : 0); setFocus(null); } },
+            cue: "Mid-June. Not one slope above the threshold, and nothing approaching it. This is what the country looks like when it is not raining.",
+            action: () => { setMode("replay"); setPlaying(false); setDay(tl ? tl.days.indexOf("2024-06-15") : 0); setFocus(null); } },
           { title: "3 · The season, running",
             cue: "Now the 2024 monsoon. Press play and watch the belt move.",
             action: () => { setMode("replay"); setDay(0); setSpeed(70); setPlaying(true); setFocus(null); } },

@@ -98,7 +98,8 @@ def main() -> int:
                              "coordinates": [s.lon, s.lat]},
                 "properties": {"id": s.site_id, "title": s.title, "state": s.state,
                                "r24": s.r24_mm, "r72": s.r72_mm,
-                               "authority": s.authority, "legal_basis": s.legal_basis,
+                               "authority": s.authority, "office": s.office,
+                               "legal_basis": s.legal_basis,
                                "source": "chirps"},
             })
         frames.append({"id": f"chirps-{day}", "label": str(day), "date": str(day),

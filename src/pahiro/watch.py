@@ -43,6 +43,11 @@ class SiteStatus:
     state: str
     authority: str | None
     legal_basis: str | None
+    # The office inside that institution. Carried separately from `authority` because the map
+    # popup shows them as distinct rows, and the live frame (which resolves through
+    # routing.RoutingDecision) has always had it while `national_status` did not -- so the
+    # historical frames rendered "Office: -" for every slope.
+    office: str | None = None
 
 
 def load_sites(path: str | Path = "benchmark/events.csv") -> list[dict]:
@@ -89,6 +94,7 @@ def national_status(as_of: date, sites: list[dict] | None = None,
             state=a.state,
             authority=rule.institution if rule else None,
             legal_basis=rule.legal_basis if rule else None,
+            office=rule.office if rule else None,
         ))
     out.sort(key=lambda r: (STATE_ORDER.get(r.state, 9), -r.r24_mm))
     return out
