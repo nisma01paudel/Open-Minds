@@ -62,3 +62,7 @@ evidence/voices/
 evidence/trails-raw-*.json
 evidence/bus-stations-*.json
 evidence/bus-*.json
+
+# The Zenodo susceptibility raster: 688 MB, CC-BY-4.0, fetchable in one command. The 25 KB of
+# sampled values is what the app uses and what is committed; the source raster is not.
+evidence/zenodo/

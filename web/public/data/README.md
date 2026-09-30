@@ -14,9 +14,34 @@ once, and `bus-parks.geojson` was exactly that until round 27.
 | `timeline.json` | `scripts/build_timeline.py` | **yes** |
 | `observability-sites.json` | `scripts/build_observability.py` | **yes** - from `reports/observability-monsoon.json` |
 | `observability-by-month.json` | `scripts/build_observability.py` | **yes** |
+| `susceptibility.json` | `scripts/build_susceptibility.py` | **yes** - 688 MB Zenodo raster, sampled |
 | `administration.json` | `scripts/build_administration.py` | **yes** - cached in `evidence/`, no network |
 | `seasons.json` | `scripts/build_seasons.py` | **yes** - Open-Meteo ERA5; `--fetch` |
 | `terrain-texture.jpg` | `scripts/build_terrain_texture.py` | **in kind** - exact geometry, reconstructed palette |
+
+## susceptibility.json is the first number here that is not ours
+
+Every hazard judgement in this repository was measured by us or ranked against our own 613 slopes.
+Both are honest and neither is peer-reviewed. This is **Kincey et al. (2023), a national 30 m
+rainfall-triggered landslide susceptibility surface, CC-BY-4.0** -
+[zenodo.org/records/8307964](https://zenodo.org/records/8307964).
+
+Sampled at our own slope coordinates: **534 of 613 match**, range **0.031 - 0.580**, median 0.227.
+The app can now say *"this ground is in the published high-susceptibility class"* and cite a source
+that is not this project.
+
+**What it is not.** A susceptibility model says where failure is more likely across a country. It
+does not say whether a slope is moving today. The two are reported side by side and neither is
+presented as the other - which is the same line the rainfall work already holds.
+
+Two bugs the build caught, both of which would have shipped a plausible wrong answer:
+
+1. **The raster is EPSG:32645 (UTM 45N), our coordinates are WGS84.** `rasterio.sample()` reads its
+   input in the raster's own CRS, so the first run passed degrees as metres and every point came back
+   missing. The script refused to write a blank file, which is the only reason it was noticed.
+2. **The nodata sentinel is not NaN.** This raster marks emptiness with the float32 minimum,
+   -3.4e38, so an `isnan` test passed it through and the reported range began at minus three hundred
+   undecillion. It now honours the raster's own nodata.
 
 ## administration.json is somebody else's good data, and it closed a real gap
 
