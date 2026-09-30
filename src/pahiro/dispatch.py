@@ -41,6 +41,7 @@ class DispatchObject:
     recommendation: str | None = None
     advisory_ne: str | None = None   # Nepali advisory, the user-facing output
     needs_review: bool = False       # set when routing could not be justified
+    routing_context: dict | None = None   # ward/municipality/district, from government data
     provenance: Provenance = field(default_factory=Provenance)
 
     # --- invariants -------------------------------------------------------

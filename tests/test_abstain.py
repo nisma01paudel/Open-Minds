@@ -107,3 +107,14 @@ def test_recent_citizen_report_counts_but_not_alone():
     obs = [Observation(CITIZEN, days_ago(2), quality=1.0)]
     d = staleness_gate(obs, AS_OF)
     assert d.status == "abstain"
+
+
+def test_unverified_radar_is_weaker_than_verified_radar():
+    """An acquisition whose usability we have not measured must not read as strong."""
+    opt = Observation(OPTICAL, days_ago(60), quality=0.85)
+    verified = staleness_gate([opt, Observation(RADAR, days_ago(4))], AS_OF)
+    unverified = staleness_gate(
+        [opt, Observation(RADAR, days_ago(4), verified=False)], AS_OF)
+    assert verified.confidence == "medium"
+    assert unverified.confidence == "low"
+    assert any("unverified" in r for r in unverified.reasons)

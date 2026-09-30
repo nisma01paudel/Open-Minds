@@ -43,6 +43,10 @@ class Observation:
     observed_at: date
     quality: float = 1.0          # usable pixel fraction, 0..1
     scene_id: str | None = None
+    # False when we know the acquisition happened but have NOT measured how
+    # usable it is (e.g. radar passes before the geolocation fix and per-pixel
+    # usability analysis). Unverified evidence is never treated as strong.
+    verified: bool = True
 
 
 @dataclass
@@ -113,6 +117,11 @@ def staleness_gate(
     if not has_optical and has_radar:
         reasons.append("optical unavailable - monsoon cloud or no recent pass")
         reasons.append("radar-only: reports surface change, cannot resolve ground detail")
+        # An acquisition we have not validated is weaker evidence than one we have.
+        if not usable[RADAR].verified:
+            reasons.append("radar usability unverified: acquisition time known, "
+                           "per-pixel usability not yet measured")
+            return StalenessDecision("degraded", "low", ages, fresh, reasons)
         return StalenessDecision("degraded", "medium", ages, fresh, reasons)
 
     optical_obs = usable[OPTICAL]
@@ -125,7 +134,9 @@ def staleness_gate(
 
     reasons.append("fresh optical observation with adequate usable fraction")
     if has_radar:
-        reasons.append("radar corroborates the optical signal")
+        reasons.append("radar corroborates the optical signal"
+                       if usable[RADAR].verified else
+                       "radar present but its usability is unverified")
     if RAINFALL in fresh:
         reasons.append("antecedent rainfall available")
     return StalenessDecision("ok", "high", ages, fresh, reasons)

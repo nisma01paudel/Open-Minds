@@ -34,6 +34,24 @@ SENSOR_NE = {
 }
 
 
+STATUS_NE = {"ok": "पर्याप्त", "degraded": "सीमित", "abstain": "अपर्याप्त"}
+CONFIDENCE_NE = {"high": "उच्च", "medium": "मध्यम", "low": "न्यून", "none": "छैन"}
+
+
+def evidence_state_ne(staleness: StalenessDecision) -> str:
+    """Render the evidence state in Nepali - never leave English inside an advisory."""
+    if not staleness.ages:
+        return "यो स्थानको कुनै अवलोकन अभिलेख छैन।"
+    parts = [f"{SENSOR_NE.get(s, s)} {age} दिन अघि"
+             for s, age in sorted(staleness.ages.items(), key=lambda kv: kv[1])]
+    status = STATUS_NE.get(staleness.status, staleness.status)
+    conf = CONFIDENCE_NE.get(staleness.confidence, staleness.confidence)
+    text = f"पछिल्लो अवलोकन: {', '.join(parts)}। प्रमाण {status}, विश्वास {conf}।"
+    if any("unverified" in r for r in staleness.reasons):
+        text += " रडारको उपयोगिता अझै नापिएको छैन।"
+    return text
+
+
 def refusal_text(staleness: StalenessDecision) -> str:
     if staleness.ages:
         newest_sensor, days = min(staleness.ages.items(), key=lambda kv: kv[1])
