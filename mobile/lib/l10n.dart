@@ -95,6 +95,11 @@ const Map<String, Map<String, String>> translations = {
     'beacon.bytes': 'बाइट',
     'board.title': 'बोर्ड',
     'walk.look': 'उपत्यका हेर्नुहोस्',
+    'duty.title': 'यो जमिन कसको जिम्मामा',
+    'duty.where': 'यो जमिनको जिम्मा माथि देखाइएको निकायको हो।',
+    'duty.noAddress': 'यो ठाउँको नगरपालिका पहिचान गर्न सकिएन — ठेगाना बनाइएको छैन।',
+    'duty.default': 'तल देखाइएको कार्यालय सडकको लागि पूर्वनिर्धारित हो, हरेक जग्गाको कानुनी '
+        'निर्धारण होइन। राजमार्ग, वन वा निजी जग्गामा जिम्मेवार निकाय फरक पर्छ।',
     'walk.noPanorama': 'यो क्षेत्रको चित्र उपलब्ध छैन',
     'walk.lookNote': 'यो तस्बिर होइन — उचाइको डेटाबाट बनाइएको ३६०° को चित्र हो। रूख, घर वा '
         'जमिनको रङ यसमा छैन; आकृति मात्र। दायाँबायाँ तान्नुहोस्।',
@@ -152,6 +157,12 @@ const Map<String, Map<String, String>> translations = {
     'beacon.bytes': 'bytes',
     'board.title': 'Board',
     'walk.look': 'Look around the valley',
+    'duty.title': 'Who is responsible for this ground',
+    'duty.where': 'The duty for this ground rests with the body shown above.',
+    'duty.noAddress': 'No local unit could be matched for this place — no address is invented.',
+    'duty.default': 'The office below is the routing key\'s DEFAULT for a local road, not a '
+        'per-parcel legal determination. On a highway, in forest, or on private land the responsible '
+        'body differs.',
     'walk.noPanorama': 'No panorama bundled for this region',
     'walk.lookNote': 'Not a photograph — a 360° view rendered from the elevation data. No trees, no '
         'buildings, no ground colour; shape only. Drag left and right.',

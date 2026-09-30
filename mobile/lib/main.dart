@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 import 'beacon.dart' as beacon;
+import 'duty.dart';
 import 'seasons.dart' as seasons;
 import 'escape.dart' as escape;
 import 'l10n.dart';
@@ -467,6 +468,12 @@ class _EscapeScreenState extends State<EscapeScreen> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
+        DutyPanel(
+          strings: s.lang.code, lat: place.lat, lon: place.lon,
+          title: s['duty.title'], caption: s['duty.where'],
+          noAddress: s['duty.noAddress'], defaultNote: s['duty.default'],
+        ),
+        const SizedBox(height: 12),
         Text(s['escape.title'],
             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
         const SizedBox(height: 6),
@@ -944,5 +951,100 @@ class _PanoramaViewState extends State<PanoramaView> {
       Text('← 360° →',
           style: const TextStyle(fontSize: 10, color: Color(0xFF475569))),
     ]);
+  }
+}
+
+/// Who is responsible for the ground you are standing on.
+///
+/// Self-contained: it loads its own asset, so nothing has to be threaded through the Escape screen's
+/// state to show it. Every complaint portal in Nepal routes to a municipality, and a municipality can
+/// say "not ours" and be finished - this names the office the routing key holds responsible AND the
+/// local unit that office belongs to, with the unit's own gov.np site, so a letter can be addressed
+/// to something that exists.
+///
+/// It says what it does not know: 119 of the 613 documented slopes name a unit the national
+/// gazetteer does not carry, and for those it reports the office without inventing an address.
+class DutyPanel extends StatefulWidget {
+  final String strings;
+  final double lat;
+  final double lon;
+  final String title;
+  final String caption;
+  final String noAddress;
+  final String defaultNote;
+  const DutyPanel({super.key, required this.strings, required this.lat, required this.lon,
+                   required this.title, required this.caption, required this.noAddress,
+                   required this.defaultNote});
+
+  @override
+  State<DutyPanel> createState() => _DutyPanelState();
+}
+
+class _DutyPanelState extends State<DutyPanel> {
+  Duty? _duty;
+  double? _distanceM;
+  bool _tried = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    try {
+      final raw = await rootBundle.loadString('assets/complaint-index.json');
+      final idx = DutyIndex.parse(raw);
+      final d = idx.nearest(widget.lat, widget.lon);
+      if (!mounted) return;
+      setState(() {
+        _duty = d;
+        _distanceM = d == null
+            ? null
+            : haversineM(widget.lat, widget.lon, d.lat, d.lon);
+        _tried = true;
+      });
+    } catch (_) {
+      if (mounted) setState(() => _tried = true);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_tried || _duty == null) return const SizedBox.shrink();
+    final d = _duty!;
+    final km = (_distanceM ?? 0) / 1000;
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(widget.title, style: const TextStyle(fontWeight: FontWeight.w700)),
+          const SizedBox(height: 6),
+          Text(d.title, style: const TextStyle(fontSize: 13)),
+          const SizedBox(height: 2),
+          Text('${km.toStringAsFixed(1)} km', style: const TextStyle(
+              fontSize: 11, color: Color(0xFF94A3B8))),
+          const SizedBox(height: 8),
+          if (d.hasAddress) ...[
+            Text('${d.unit} — ${d.district ?? ''}',
+                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+            if (d.site != null)
+              Text(d.site!, style: const TextStyle(fontSize: 11, color: Color(0xFF38BDF8))),
+          ] else
+            Text(widget.noAddress,
+                style: const TextStyle(fontSize: 11, color: Color(0xFFF0A0A0))),
+          const SizedBox(height: 8),
+          Text(d.office, style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8))),
+          const SizedBox(height: 4),
+          Text(d.legal, style: const TextStyle(fontSize: 10, color: Color(0xFF64748B))),
+          const SizedBox(height: 8),
+          Text(widget.defaultNote,
+              style: const TextStyle(fontSize: 10, color: Color(0xFF64748B))),
+          const SizedBox(height: 4),
+          Text(widget.caption,
+              style: const TextStyle(fontSize: 10, color: Color(0xFF64748B))),
+        ]),
+      ),
+    );
   }
 }

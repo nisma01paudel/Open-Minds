@@ -21,6 +21,7 @@ launched on an Android emulator (API 36, x86_64, `/dev/kvm`) on 2026-10-01.
 | `pahiro-beacon-nepali.png` | the frame card after the fix: **every line in Nepali** |
 | `pahiro-walk-seasons.png` | **the Walk tab with when-to-go: twelve bars, four green, Kathmandu warned** |
 | `pahiro-walk-panorama.png` | **and look-around: the 360° valley render, on the phone, offline** |
+| `pahiro-duty.png` | **who is responsible for the ground, with a real gov.np address and the statute** |
 
 ## What this changes, and what it does not
 
@@ -31,6 +32,27 @@ a real handset" end here.
 **Unchanged, and still stated everywhere:** this is an **emulator**, not a physical phone. No radio
 figure has been measured on real hardware - Bluetooth range, Wi-Fi Aware range and battery endurance
 are all still somebody else's measurements or modelled from them. An emulator cannot measure a radio.
+
+## Who is responsible for the ground, on the phone
+
+    यो जमिन कसको जिम्मामा
+    Landslide at Baguwa, Melamchi Municipality-10          2.3 km
+    Melamchi — Sindhupalchok
+    https://www.melamchimun.gov.np/en
+    Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it
+    LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; ...
+
+Every complaint portal in Nepal routes to a municipality, and a municipality can say "not ours" and be
+finished with it. This names the office the routing key holds responsible AND the local unit that
+office belongs to, with the unit's own gov.np site, so a letter can be addressed to something that
+exists rather than to "the municipality".
+
+It says what it does not know, in the same card: the office is the routing key's DEFAULT holder for a
+local road rather than a per-parcel determination, and 119 of the 613 slopes name a unit the national
+gazetteer does not carry - for those it reports the office and invents no address.
+
+The phone carries a 271 KB derived index rather than the 2.5 MB hazard record, because answering
+"whose ground is this" does not need 153 days of rainfall per slope.
 
 ## Look around the valley, on the phone
 
