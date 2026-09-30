@@ -675,7 +675,7 @@ Every figure you say out loud, and where it lives.
 | Offline voice | Piper `ne_NP` chitwan medium, **63 MB, MIT**, 9.5 s of Nepali in 1.3 s (RTF 0.14). Runs on the handset — **no network, no API key** | [docs/MODELS.md](MODELS.md) |
 | Mobile fit ladder | 512 MB → **no model, all life-saving features** · 1 GB → vision (92.5 MB) · 2–3 GB → mid (492.5 MB) · 4 GB+ → full (1488.5 MB weights). Working memory is modeled, not assumed: ×1.8 plus a 700 MB OS floor | `src/pahiro/offline_ai.py`, `tests/test_offline_ai.py` |
 | The floor is enforced | a test fails the build if any capability in `LIFESAVING` leaves `TIER_NONE` — i.e. if anyone moves routing behind an LLM | same |
-| Transport ladder (offline, no extra hardware) | **ble 30 m / 20 B** · **wifi_aware 200 m / 4096 B** · **sms 160 B, any cell** · **courier no limit, ~6 h**. Wi-Fi Aware is ~6× a Bluetooth hop on the phone's own chip | `src/pahiro/mesh/dtn.py`, `tests/test_dtn.py` |
+| Transport ladder (offline, no extra hardware) | **ble 30 m / 20 B** · **wifi_aware 300 m (measured) / 4096 B** · **sms 160 B, any cell** · **courier no limit, ~6 h**. Wi-Fi Aware is ~10× a Bluetooth hop on the phone's own chip | `src/pahiro/mesh/dtn.py`, `tests/test_dtn.py` |
 | Why a full-text SOS cannot ride an advertisement | "SOS six trapped at KM 42" is **24 bytes**; a BLE advertisement carries **20**. Only the packed beacon frame fits — that is *why* `beacon.py` exists | same |
 | Custody rule (the one to quote) | release is refused without an acknowledgement: *"refusing to drop a bundle nobody has acknowledged: keeping it is the whole point"* | same |
 | The property that makes it a network | with no transport available the bundle is **held, not dropped** — asserted by test, not hoped for | same |

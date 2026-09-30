@@ -179,6 +179,7 @@ INPUTS (borrowed, credited)                THE LAST METRE (ours)
 | `reports/eval-v0.md` · `reports/routing-eval.md` | measurements: gap calibration, routing accuracy |
 | `docs/DEMO-SCRIPT.md` | the 2–3 minute demo video script |
 | `docs/SPEECH.md` | the spoken pitch, a 90-second cut, Q&A armour, and a fact sheet citing every number |
+| `docs/OFFLINE-RANGE.md` | how far software can actually reach, with measured ranges and the open-source projects that already solve parts of it |
 
 ## Limitations — stated, not buried
 

@@ -21,7 +21,7 @@ No single transport is right for a valley, so the design is not "pick the best o
 "exhaust them in order, and hold the bundle between rungs":
 
     SMS        anything with a cell signal, anywhere, ~160 bytes, and it costs the sender money
-    Wi-Fi Aware  ~200 m phone-to-phone over the handset's own Wi-Fi chip, no infrastructure
+    Wi-Fi Aware  ~300 m phone-to-phone over the handset's own Wi-Fi chip, no infrastructure
     BLE advert   ~30 m, 20 bytes, carried by strangers who never open the app
     courier      a person walking out; unlimited range, hours of latency, zero power
 
@@ -76,8 +76,11 @@ class Transport:
 
 SMS = Transport("sms", math.inf, 160, 30.0, 5.0, "cell",
                 "works when data is dead but the cell network is not")
-WIFI_AWARE = Transport("wifi_aware", 200.0, 4096, 1.0, 1.0, "radio",
-                       "~200 m phone-to-phone on the handset's own Wi-Fi chip")
+# 300 m, not a vendor figure: this is the measured range of consumer smartphone Wi-Fi in
+# https://www.duo.uio.no/bitstream/handle/10852/53773/Smartphones-in-wireless-communication-without-mobile-networks.pdf
+# Wi-Fi Aware shares the same radio and power budget. See docs/OFFLINE-RANGE.md.
+WIFI_AWARE = Transport("wifi_aware", 300.0, 4096, 1.0, 1.0, "radio",
+                       "~300 m phone-to-phone on the handset's own Wi-Fi chip (measured)")
 BLE = Transport("ble", 30.0, 20, 2.0, 0.5, "radio",
                 "20 bytes inside an advertisement, carried by strangers")
 COURIER = Transport("courier", math.inf, MAX_BODY, 21600.0, 0.0, "none",
