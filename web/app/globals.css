@@ -209,6 +209,7 @@ button.present:hover { background: rgba(34,211,238,.3); color: #fff; }
 .blind b { font-size: 12.5px; color: #fecaca; }
 .blind span { font-size: 11.5px; color: #cbd5e1; }
 
+#maperr.info { background: rgba(148,163,184,.16); border-color: rgba(148,163,184,.35); color: #cbd5e1; }
 #maperr { display: none; position: absolute; z-index: 9; top: 8px; left: 50%; transform: translateX(-50%);
   background: rgba(220,38,38,.92); color: #fff; font-size: 12px; padding: 6px 12px; border-radius: 8px;
   max-width: 70%; }

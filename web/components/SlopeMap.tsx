@@ -50,16 +50,31 @@ const PLACES = {
 
 function buildStyle(basemap: string) {
   const bm = BASEMAPS[basemap] ?? BASEMAPS.s2cloudless;
+  const paint = { "raster-brightness-max": 0.82, "raster-saturation": -0.08 };
   return {
     version: 8 as const,
     sources: {
+      // Two sources for one basemap, split by zoom, because Demo Day is on unknown wifi.
+      //
+      // The national view is what the room actually looks at, and the country fits in
+      // thirty-four tiles across z5-z7 - 728 KB, bundled in the repo by
+      // scripts/prefetch_tiles.py. Those zooms are served from disk, so the map draws with
+      // the network unplugged. Deeper zoom still comes from the live service, because that
+      // is hundreds of megabytes and pointless to bundle.
+      //
+      // Before this, the map was the ONE surface that needed the internet: everything else
+      // was cached and keyless, so a dead venue wifi showed an empty map over perfectly
+      // present data - which looks like the project is broken, not like it is offline.
+      basemapLocal: { type: "raster" as const, tiles: [`tiles/${basemap}/{z}/{y}/{x}.jpg`],
+                      tileSize: 256, minzoom: 0, maxzoom: 7, attribution: bm.attribution },
       basemap: { type: "raster" as const, tiles: bm.tiles, tileSize: 256,
-                 maxzoom: 18, attribution: `${bm.attribution} · Terrain: AWS` },
+                 minzoom: 8, maxzoom: 18, attribution: `${bm.attribution} · Terrain: AWS` },
     },
     layers: [
       { id: "bg", type: "background" as const, paint: { "background-color": "#05070d" } },
-      { id: "basemap", type: "raster" as const, source: "basemap",
-        paint: { "raster-brightness-max": 0.82, "raster-saturation": -0.08 } },
+      { id: "basemap-low", type: "raster" as const, source: "basemapLocal",
+        maxzoom: 8, paint },
+      { id: "basemap", type: "raster" as const, source: "basemap", minzoom: 8, paint },
     ],
   };
 }
@@ -125,7 +140,24 @@ export default function SlopeMap({
         const msg = e?.error?.message ?? String(e?.error ?? "map error");
         console.error("[pahiro] map error:", msg);
         const el = document.getElementById("maperr");
-        if (el) { el.textContent = `map: ${msg}`; el.style.display = "block"; }
+        // Offline is not an error. The high-zoom basemap is the one thing that genuinely
+        // needs the network, so when it is gone MapLibre reports a tile decode failure -
+        // alarming, and useless to someone standing in a room with a dead venue wifi.
+        // Say what is actually happening instead.
+        if (el) {
+          if (!navigator.onLine || /decode|Failed to fetch|load/i.test(msg)) {
+            // Informational, not an error: red would overstate it for someone who simply
+            // walked out of wifi range.
+            el.classList.add("info");
+            el.textContent = navigator.onLine
+              ? "basemap detail is unavailable - the national view is bundled and still works"
+              : "offline - showing the bundled national view; deeper zoom needs a connection";
+          } else {
+            el.classList.remove("info");
+            el.textContent = `map: ${msg}`;
+          }
+          el.style.display = "block";
+        }
       });
 
       map.on("load", () => {
@@ -263,6 +295,24 @@ export default function SlopeMap({
     if (readyRef.current) apply();
     else map.once("slopes-ready", apply);
   }, [data]);
+
+  // While offline, hide the network basemap entirely rather than let it fail tile by tile.
+  // The bundled low-zoom layer stays, so the map still draws.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    const apply = () => {
+      const vis = navigator.onLine ? "visible" : "none";
+      if (map.getLayer("basemap")) map.setLayoutProperty("basemap", "visibility", vis);
+    };
+    apply();
+    window.addEventListener("online", apply);
+    window.addEventListener("offline", apply);
+    return () => {
+      window.removeEventListener("online", apply);
+      window.removeEventListener("offline", apply);
+    };
+  }, [ready]);
 
   // Toggle the blind-spot layer without rebuilding anything.
   useEffect(() => {

@@ -7,7 +7,7 @@
  * Data is cache-first (it does not change on a given day). HTML is network-first with a
  * cache fallback, so a stale page is never served while the network is up.
  */
-const VERSION = "pahiro-v1";
+const VERSION = "pahiro-v2";
 const SHELL = ["/", "/ar/", "/manifest.webmanifest",
                "/icons/icon-192.png", "/icons/icon-512.png"];
 const DATA = ["/data/frames.json", "/data/timeline.json", "/data/observability-by-month.json"];
@@ -31,7 +31,33 @@ self.addEventListener("activate", (e) => {
 
 self.addEventListener("fetch", (e) => {
   const url = new URL(e.request.url);
-  if (e.request.method !== "GET" || url.origin !== location.origin) return;
+  if (e.request.method !== "GET") return;
+
+  // Cross-origin BASEMAP TILES: cache-first, in their own bucket.
+  //
+  // These are the only third-party requests the app makes, and they used to be ignored
+  // outright by the origin check below - so panning around while online cached nothing, and
+  // the map came up empty the moment the network went away. Opaque responses are fine to
+  // cache here: we only ever read them back through the same tile URL.
+  const TILE_HOSTS = ["tiles.maps.eox.at", "server.arcgisonline.com", "s3.amazonaws.com"];
+  if (TILE_HOSTS.includes(url.hostname)) {
+    e.respondWith((async () => {
+      const cache = await caches.open(`${VERSION}-tiles`);
+      const hit = await cache.match(e.request);
+      if (hit) return hit;
+      try {
+        const res = await fetch(e.request);
+        if (res.ok || res.type === "opaque") cache.put(e.request, res.clone());
+        return res;
+      } catch {
+        const local = await caches.match("/tiles/" + (url.hostname.includes("eox") ? "s2cloudless" : "esri") + "/" + url.pathname.split("/").slice(-3).join("/"));
+        return local ?? Response.error();
+      }
+    })());
+    return;
+  }
+
+  if (url.origin !== location.origin) return;
 
   // Data and icons: STALE-WHILE-REVALIDATE.
   //
