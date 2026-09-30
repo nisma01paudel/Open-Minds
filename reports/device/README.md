@@ -16,6 +16,7 @@ launched on an Android emulator (API 36, x86_64, `/dev/kvm`) on 2026-10-01.
 | `pahiro-beacon.png` | the Beacon tab: a message that needs no pairing and no app on the carrier |
 | `pahiro-offline-airplane.png` | **airplane mode on, network "none", and the trails are identical** |
 | `pahiro-beacon-frame.png` | **a real 20-byte advertisement, encoded on the device, in hex** |
+| `pahiro-board-empty.png` | the Board with no messages, **and the app explaining why** |
 
 ## What this changes, and what it does not
 
@@ -26,6 +27,18 @@ a real handset" end here.
 **Unchanged, and still stated everywhere:** this is an **emulator**, not a physical phone. No radio
 figure has been measured on real hardware - Bluetooth range, Wi-Fi Aware range and battery endurance
 are all still somebody else's measurements or modelled from them. An emulator cannot measure a radio.
+
+## The empty screen the device exposed
+
+The Board tab had nothing to show, because no other phone has sent anything - and until this round it
+said only "there are no messages right now". On a phone, that sentence cannot be told apart from a
+broken feature. It now says what the board is for and which of the two reasons applies:
+
+    यो बोर्डले नजिकैका फोनबाट ब्लुटुथमा आएका सन्देश देखाउँछ। खाली हुनुको अर्थ दुईमध्ये एक हो:
+    कसैले पठाएको छैन, वा नजिकमा अर्को फोन छैन। फोन सँगै राख्नुहोस्।
+
+Six rounds ago I wrote the same fix for the missing trail data ("a gap in the map, not proof that
+nobody walks here"). This is the same failure in a different place, and the device is what showed it.
 
 ## The 20-byte claim, as bytes on a screen
 

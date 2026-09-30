@@ -649,9 +649,21 @@ class BoardScreen extends StatelessWidget {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
-        child: Text(strings['board.empty'],
-            style: const TextStyle(color: Color(0xFF64748B)),
-            textAlign: TextAlign.center),
+        // An empty screen that says only "nothing here" cannot be told apart from a broken one.
+        // The board says what it is for and why it may be empty, so a person who sees it knows
+        // whether to wait, to move closer to other phones, or to stop trusting the app.
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(strings['board.empty'],
+                style: const TextStyle(color: Color(0xFF64748B), fontSize: 16),
+                textAlign: TextAlign.center),
+            const SizedBox(height: 12),
+            Text(strings['board.empty_why'],
+                style: const TextStyle(color: Color(0xFF475569), fontSize: 13),
+                textAlign: TextAlign.center),
+          ],
+        ),
       ),
     );
   }

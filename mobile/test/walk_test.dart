@@ -2,6 +2,8 @@
 //
 // The loader is injected, the same way the terrain loader is, so these run headlessly with no
 // asset bundle and no device.
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pahiro_field/l10n.dart';
@@ -50,6 +52,7 @@ Widget wrap(TrailLoader loader) => MaterialApp(
     );
 
 void main() {
+  boardTests();
   testWidgets('it lists walks near you, longest first', (tester) async {
     await pumpScreen(tester, FakeLoader());
     expect(find.text('Shiva puri peak trek (stairs)'), findsOneWidget);
@@ -92,5 +95,45 @@ void main() {
     await tester.tap(find.text('Shiva puri peak trek (stairs)'));
     await tester.pumpAndSettle();
     expect(find.textContaining('27.7052'), findsOneWidget);
+  });
+}
+
+// ---------------------------------------------------------------------------------------------
+// The board empty state, and a guard for every other string beside it.
+// ---------------------------------------------------------------------------------------------
+
+void boardTests() {
+  test('the board says why it may be empty rather than only that it is', () {
+    // An empty screen that says only "nothing here" cannot be told apart from a broken one. A
+    // person who sees it should know whether to wait, to move closer to other phones, or to stop
+    // trusting the app - and only the app can tell them which.
+    for (final ne in [true, false]) {
+      final s = L10n(ne ? AppLang.ne : AppLang.en);
+      expect(s['board.empty'], isNotEmpty);
+      expect(s['board.empty_why'], isNotEmpty,
+          reason: 'the board explains itself in ${ne ? 'Nepali' : 'English'}');
+      expect(s['board.empty_why']!.length, greaterThan(40),
+          reason: 'a one-word explanation explains nothing');
+    }
+  });
+
+  test('every string the app asks for exists in both languages', () {
+    // A missing key renders as the key itself or throws, depending on the lookup - either way the
+    // user sees a failure the developer never did. This walks the keys the source actually uses.
+    final src = File('lib/main.dart').readAsStringSync();
+    final used = RegExp(r"""strings\['([a-z0-9_.]+)'\]""")
+        .allMatches(src)
+        .map((m) => m.group(1)!)
+        .toSet();
+    expect(used, isNotEmpty, reason: 'the scan found no keys, so it is not scanning');
+
+    for (final ne in [true, false]) {
+      final s = L10n(ne ? AppLang.ne : AppLang.en);
+      for (final k in used) {
+        final v = s[k];
+        expect(v, isNotNull, reason: "'$k' is missing in ${ne ? 'Nepali' : 'English'}");
+        expect(v, isNot(k), reason: "'$k' fell back to the key itself in ${ne ? 'ne' : 'en'}");
+      }
+    }
   });
 }
