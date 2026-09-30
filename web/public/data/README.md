@@ -14,7 +14,31 @@ once, and `bus-parks.geojson` was exactly that until round 27.
 | `timeline.json` | `scripts/build_timeline.py` | **yes** |
 | `observability-sites.json` | `scripts/build_observability.py` | **yes** - from `reports/observability-monsoon.json` |
 | `observability-by-month.json` | `scripts/build_observability.py` | **yes** |
+| `seasons.json` | `scripts/build_seasons.py` | **yes** - Open-Meteo ERA5; `--fetch` |
 | `terrain-texture.jpg` | `scripts/build_terrain_texture.py` | **in kind** - exact geometry, reconstructed palette |
+
+## seasons.json is mostly valid and says so
+
+Twelve-month climate normals per trail region, so the app can answer "when should I go". ERA5 is a
+~28 km reanalysis and the Himalaya is its worst case: it gives Manaslu **8,228 mm a year** against a
+real figure nearer 1,000-1,900, and calls April its wettest month.
+
+So the file carries a cross-check against this repository's own CHIRPS measurement, and it does not
+flatter all six regions:
+
+| region | ERA5 ÷ CHIRPS, Jun-Sep | verdict |
+|---|---|---|
+| Kathmandu | **1.89** | **not reliable - should not be quoted** |
+| Manaslu | 1.54 | passes the monsoon check, annual total still wrong |
+| Annapurna | 1.13 | reliable |
+| Upper Mustang | 1.06 | reliable |
+| Langtang | 0.83 | reliable |
+| Khumbu | 0.71 | reliable |
+
+Only **June to September** could be checked, because that is the window CHIRPS covers here. The
+other eight months are marked `validated: false`. The guide reports what the model says and states
+which parts of it have been tested - it does not label a month good or bad, because a farmer, a
+trekker and a paraglider want different weather from the same month.
 
 ## Every file here now has a recipe
 

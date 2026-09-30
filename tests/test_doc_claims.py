@@ -755,3 +755,46 @@ def test_the_presenter_quotes_the_day_counts_the_timeline_holds():
         "the presenter still claims 305 slopes; no day in the monsoon reaches it")
     assert str(named) in beat, f"the beat should state the real count for 28 September ({named})"
     assert str(peak) in beat, f"the beat should state the real season peak ({peak})"
+
+
+def test_the_season_guide_says_which_months_it_stands_behind():
+    """A twelve-month climate guide built from ERA5 in the Himalaya is mostly extrapolation.
+
+    The cross-check against this repository's own CHIRPS measurement covers June to September. It
+    flags Kathmandu as unreliable (ERA5 nearly twice the measured monsoon), and it PASSES Manaslu -
+    which is why the flag has to be per month and not per region: Manaslu passes the monsoon test
+    while ERA5 gives it 8,228 mm a year and calls April its wettest month, and both are wrong.
+
+    A guide that reported twelve confident months from that model would tell a walker something
+    precise and false, which is the failure this project spends its whole length avoiding.
+    """
+    import json
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    d = json.loads((root / "web/public/data/seasons.json").read_text(encoding="utf-8"))
+
+    assert len(d["regions"]) == 6
+    validated = unreliable = 0
+    for r in d["regions"]:
+        assert "validation" in r, f"{r['name']} carries no cross-check"
+        assert "reliable" in r["validation"]
+        if r["validation"]["reliable"]:
+            validated += 1
+        else:
+            unreliable += 1
+        months = r["months"]
+        assert len(months) == 12
+        assert sum(1 for m in months if m.get("validated")) == 4, (
+            f"{r['name']} should mark exactly the four months that were cross-checked")
+        assert "annual_note" in r
+
+    # Kathmandu is the one the measurement disagrees with; if that ever flips, look again rather
+    # than assuming the check is broken.
+    kathmandu = next(r for r in d["regions"] if r["key"] == "kathmandu")
+    assert kathmandu["validation"]["reliable"] is False, (
+        "ERA5 was nearly twice the measured monsoon for Kathmandu; if that changed, re-check")
+    assert unreliable >= 1
+
+    # and the file must not claim to be a forecast
+    assert "not a forecast" in d["method"]
