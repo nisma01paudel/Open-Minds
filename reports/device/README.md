@@ -26,6 +26,8 @@ launched on an Android emulator (API 36, x86_64, `/dev/kvm`) on 2026-10-01.
 | `pahiro-demo-panel.png` | the flood scenario: **Run the scenario**, labelled live vs cited |
 | `pahiro-places.png` | **major places: bilingual names, population, district, gov.np sites** |
 | `pahiro-duty-nepali.png` | **the duty holder in Nepali** - the one-place translation, on the device |
+| `pahiro-small-720-language.png` | **720x1280 at 320 dpi** - the budget-phone profile, not the flagship |
+| `pahiro-small-720-escape.png` | same profile, scrolled to the bottom: **the last button clears the tab bar** |
 
 ## What this changes, and what it does not
 
@@ -36,6 +38,28 @@ a real handset" end here.
 **Unchanged, and still stated everywhere:** this is an **emulator**, not a physical phone. No radio
 figure has been measured on real hardware - Bluetooth range, Wi-Fi Aware range and battery endurance
 are all still somebody else's measurements or modelled from them. An emulator cannot measure a radio.
+
+## On a budget phone, not the flagship
+
+Every frame in this directory before this round was taken at **1080x2340 at 440 dpi**, which is a
+flagship. The people this app is for do not carry one. The same APK was run at **720x1280 at 320
+dpi**:
+
+    adb shell wm size 720x1280
+    adb shell wm density 320
+
+The language chooser renders clean, both scripts legible, buttons full width. The Escape tab - the
+densest screen, four panels deep - renders with no overflow, and `adb logcat` reports no
+`RenderFlex overflowed`. The Nepali office line is present and correct at the smaller size.
+
+Scrolled to the very bottom, the "यहाँबाट कहाँ जाने?" button clears the tab bar with space to spare,
+so the list's bottom padding is enough and no content is unreachable behind the navigation bar. That
+was the specific thing worth checking: a list whose last item sits under the tab bar can never be
+fully read, and it would not show on the large screen at all.
+
+**What this does not establish:** the AVD is still an emulator, at a size set by `wm` rather than a
+1280-pixel panel, on API 36. Font rendering, memory pressure and touch latency on a real budget
+handset are not measured here and are not claimed.
 
 ## The duty holder, in Nepali, on the device
 
