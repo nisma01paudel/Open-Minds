@@ -409,3 +409,29 @@ kbd { background: rgba(148,163,184,.16); border: 1px solid rgba(148,163,184,.25)
 .planhead b { display: block; }
 .planhead span { display: block; margin-top: .15rem; opacity: .8; }
 .planbox { margin-bottom: .6rem; }
+
+/* The plan output, whose class names existed in the JSX and in no stylesheet.
+   The rule that makes this a defect rather than a style choice: JSX removes a newline that sits
+   between two tags. So
+
+       understood as <b>{...}</b>
+       <span className="plansrc">...</span>
+
+   concatenates to "understood as easy walkkeyword-match. Start the model server..." with no space -
+   the same failure as .planhead, in the output of the walk planner rather than its heading. */
+.planout { margin-top: .5rem; padding-top: .4rem; border-top: 1px solid #1e293b; }
+.planunderstood { font-size: .82rem; margin-bottom: .4rem; }
+.plansrc { display: block; margin-top: .15rem; opacity: .75; font-size: .76rem; }
+.planopt { margin: .4rem 0; }
+.planoptname { font-weight: 600; font-size: .84rem; }
+.planoptmeta { font-size: .76rem; opacity: .8; }
+.planbus { font-size: .76rem; opacity: .8; }
+.planfits { font-size: .76rem; color: #7dd3fc; }
+.plansrc, .plainnote { line-height: 1.35; }
+.plainnote { font-size: .74rem; opacity: .7; margin-top: .3rem; }
+.planerr { color: #fca5a5; font-size: .8rem; }
+.planrow { display: flex; gap: .3rem; flex-wrap: wrap; }
+.chip { background: #1e293b; border: 1px solid #334155; border-radius: 4px; padding: .15rem .4rem;
+        font-size: .74rem; cursor: pointer; }
+.chip:hover { background: #334155; }
+.act { display: flex; align-items: center; gap: .3rem; }
