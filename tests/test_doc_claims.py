@@ -692,3 +692,35 @@ def test_the_bundle_describes_its_coverage_in_words_not_coordinates():
     assert "data['regions']" in dart, (
         "the phone reads `region` (singular), which the bundle stopped emitting - it would parse "
         "to an empty string forever and nothing would notice, because the field is never shown")
+
+
+def test_the_sixty_second_summary_quotes_numbers_that_are_in_the_reports():
+    """The first section of SUBMISSION.md is the only part a judge with ten projects is certain to
+    read, so its figures are the most load-bearing in the repository.
+
+    They were checked by hand against the reports, and this makes that permanent: each number the
+    summary quotes must appear in the report it comes from. A summary is exactly the kind of
+    document that gets edited for rhythm and quietly loses a digit.
+    """
+    sub = read("SUBMISSION.md")
+    summary = sub[sub.index("## If you have sixty seconds"):sub.index("## The five required items")]
+
+    ablation = read("reports/routing-ablation.md")
+    evals = read("reports/eval-v1.md")
+
+    # routing accuracy, which the summary calls its weak axis
+    for figure in ("52.4%", "61.9%", "76.2%"):
+        assert figure in summary, f"the summary no longer quotes {figure}"
+        assert figure in ablation, (
+            f"the summary quotes {figure} and reports/routing-ablation.md does not contain it")
+
+    # the negative result
+    for figure in ("53rd", "55th"):
+        assert figure in summary, f"the summary no longer quotes {figure}"
+        assert figure in evals, (
+            f"the summary quotes {figure} and reports/eval-v1.md does not contain it")
+
+    # and the honesty section must be there, not only the achievements
+    assert "does NOT claim" in summary
+    for caveat in ("real handset", "52.4%", "cryptographer"):
+        assert caveat in summary, f"the summary dropped the caveat {caveat!r}"
