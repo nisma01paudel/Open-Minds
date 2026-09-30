@@ -170,10 +170,17 @@ class Sealed:
         """The associated data: bound into the tag, so it cannot be edited in flight.
 
         Without this an attacker could keep a valid body and change the kind from `chat` to `sos`,
-        or reset the ttl, and every relay would believe it.
+        and every relay would believe it.
+
+        **The ttl is deliberately NOT here.** It was, and that made the whole layer unusable: a
+        ttl decrements at every hop, so the tag failed the moment a relay did its job and a sealed
+        bundle could not be relayed even once. Mutable routing metadata cannot be authenticated
+        directly. The ttl is instead sealed *inside* the payload, and the recipient refuses a
+        bundle whose outer ttl exceeds the sealed one - which stops an extension attack while
+        still allowing every honest decrement. See `pipeline.py`.
         """
-        return "\x1f".join([self.id, self.kind, self.content_type, self.sender,
-                            str(self.ttl)]).encode("utf-8")
+        return "\x1f".join([self.id, self.kind, self.content_type,
+                             self.sender]).encode("utf-8")
 
 
 def seal(bundle_id: str, kind: str, content: bytes | str, key: bytes, cipher: Cipher, *,

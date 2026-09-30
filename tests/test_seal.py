@@ -125,13 +125,19 @@ def test_promoting_a_chat_message_to_an_sos_is_detected(cipher):
         S.unseal(promoted, KEY, cipher)
 
 
-def test_rewriting_the_ttl_is_detected(cipher):
+def test_the_ttl_is_deliberately_not_authenticated_here(cipher):
+    """The ttl is mutable routing metadata and cannot be in the tag.
+
+    It was, and that made the layer unusable: a ttl decrements at every hop, so the tag failed as
+    soon as a relay did its job. The ttl is sealed inside the payload instead, and the refusal of
+    a raised ttl is asserted at the pipeline layer where it belongs - see
+    tests/test_pipeline.py::test_extending_the_ttl_in_transit_is_refused.
+    """
     sealed = S.seal("b1", "sos", "help", KEY, cipher, sender_key=SENDER, ttl=1)
-    extended = S.Sealed(id=sealed.id, kind=sealed.kind, content_type=sealed.content_type,
-                        sender=sealed.sender, ttl=99, size=sealed.size,
-                        payload=sealed.payload, created_at=sealed.created_at)
-    with pytest.raises(S.SealError):
-        S.unseal(extended, KEY, cipher)
+    changed = S.Sealed(id=sealed.id, kind=sealed.kind, content_type=sealed.content_type,
+                       sender=sealed.sender, ttl=99, size=sealed.size,
+                       payload=sealed.payload, created_at=sealed.created_at)
+    assert S.unseal(changed, KEY, cipher) == b"help"
 
 
 def test_truncating_a_voice_note_is_detected(cipher):

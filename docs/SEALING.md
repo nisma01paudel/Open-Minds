@@ -77,20 +77,41 @@ party holding **both public keys** cannot.
 - a truncated payload is refused before decryption
 - the replay guard works on real ciphertext
 
+## It is now on the mesh path
+
+`pipeline.py` is the join that was missing: `dtn.Bundle` carried a plaintext `body` and
+`seal.Sealed` carried an opaque payload, and **nothing converted between them**. A `SealedBundle`
+satisfies exactly the interface `dtn.py` needs to route it — `kind`, `size_bytes`, `fits`,
+`priority`, `ttl`, `hops`, `custody`, `attempts` — and has **no body attribute at all**.
+
+So a carrier can choose a transport, take custody, spend a hop and hand off, without ever being
+able to read what it moved. That is not a policy; there is no method that returns the plaintext,
+and a test asserts the absence.
+
+Verified on the joined path: relaying three strangers deep leaves the payload byte-identical and
+the message still opens correctly at the end.
+
+## The bug that only wiring could find
+
+`ttl` was in the authenticated data. A ttl **decrements at every hop**, so the tag failed the
+moment a relay did its job — **a sealed bundle could not be relayed even once.** Every unit test
+on either side passed; the layers were individually correct and jointly useless.
+
+Mutable routing metadata cannot be authenticated directly. The ttl is now sealed *inside* the
+payload as a leading byte, and the recipient refuses a bundle whose outer ttl exceeds the sealed
+one. A relay can spend hops; nobody can add them. The test that used to assert "rewriting the ttl
+is detected" at the seal layer was **wrong by design** and now documents why the protection moved
+up a layer.
+
+Two further interface mismatches surfaced the same way: `Custody` records responsibility with
+`dataclasses.replace(..., custody=...)` and counts offers in `attempts`, and neither field existed
+on the sealed form.
+
 ## What is still NOT done
 
-Being precise, because "we have encryption" and "our messages are encrypted" are different
-claims:
-
-- **The sealing layer is implemented and tested. It is not yet on the live bundle path.**
-  `dtn.py` and the field client do not call it, so a message sent through the running system today
-  is **not** sealed. Wiring it means sealing at compose time and unsealing at the destination, and
-  choosing where keys live — which is a product decision, not a code one.
-- The insecure placeholder still exists for tests and **still refuses to construct** without an
-  explicit flag. A test asserts that, so shipping the fake one by accident is not possible.
-- Nothing here has been reviewed by a cryptographer. It uses vetted primitives correctly as far
-  as the tests show, which is not the same as an audit.
-
-**So: do not tell a judge the system is end-to-end encrypted today.** The right sentence is that
-the sealing layer is built and tested against a real AEAD, and the remaining work is wiring it
-into the message path and deciding where keys live.
+- **The field client does not seal.** `web/public/field/index.html` composes messages and posts
+  them in the clear; the Python mesh path can now carry sealed bundles but the browser is not yet
+  sealing them. That needs WebCrypto on the client and a decision about where keys live.
+- Nothing has been reviewed by a cryptographer.
+- **So do not tell a judge the system is end-to-end encrypted today.** The sealing layer is built,
+  tested against a real AEAD, and now on the Python mesh path. The client is not sealing.
