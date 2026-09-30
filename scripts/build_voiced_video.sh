@@ -11,7 +11,11 @@ set -euo pipefail
 
 STILLS="reports/video/stills"
 CLIPS="reports/video/clips-voiced"
-VOICE="${VOICE_DIR:-reports/video/voice-omni}"
+# Defaults to reports/video/voice, which holds all fourteen lines (a through n). The old
+# default was voice-omni, which holds only the ten that the hosted TTS produced - so
+# running this script with no arguments silently built four clips with a caption and no
+# voice, and the film lost fifty seconds of narration without failing.
+VOICE="${VOICE_DIR:-reports/video/voice}"
 TIMELAPSE="reports/timelapse/pahiro-monsoon-2024.mp4"
 FONT="$(fc-match -f '%{file}' 'DejaVu Sans' 2>/dev/null || echo /usr/share/fonts/TTF/DejaVuSans.ttf)"
 FPS=30
