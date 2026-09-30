@@ -1,0 +1,14 @@
+analysing 10 documented sites, 30-day window
+  [1/10] 2026-09-28 optical 2/14 usable, best 0.48, radar 7
+  [2/10] 2026-09-27 optical 2/16 usable, best 1.00, radar 6
+  [3/10] 2026-09-27 optical 5/7 usable, best 0.97, radar 8
+  [4/10] 2026-09-27 optical 14/60 usable, best 1.00, radar 6
+  [5/10] 2026-09-27 optical 1/14 usable, best 0.73, radar 5
+  [6/10] 2026-09-27 optical 8/14 usable, best 1.00, radar 5
+  [7/10] 2026-09-27 optical 5/7 usable, best 1.00, radar 8
+  [8/10] 2026-09-27 optical 2/7 usable, best 1.00, radar 8
+  [9/10] 2026-09-27 optical 3/14 usable, best 0.63, radar 8
+  [10/10] 2026-09-27 optical 1/7 usable, best 1.00, radar 8
+
+10/10 sites had a usable optical look in the 30 days before failure (100.0%)
+wrote reports/observability.json and reports/observability.md
