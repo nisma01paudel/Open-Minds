@@ -611,9 +611,17 @@ class _BeaconScreenState extends State<BeaconScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // THE FRAME CARD WAS PART ENGLISH IN A NEPALI APP - the same defect as the
+                  // Settings card, on a screen I had already photographed once without noticing.
+                  // "2 people", "position", "ttl ... hops ... (relayed once)" and the Flutter line
+                  // were all literals; only the tab name and the button above them were translated.
                   Text(
-                    '${frame!.length} ${s['beacon.bytes']} · '
-                    '${beacon.maxAdBytes - frame!.length} spare of ${beacon.maxAdBytes}',
+                    s.lang == AppLang.ne
+                        ? '${frame!.length} ${s['beacon.bytes']} · '
+                            '${beacon.maxAdBytes - frame!.length} बाँकी '
+                            '${beacon.maxAdBytes} मध्ये'
+                        : '${frame!.length} ${s['beacon.bytes']} · '
+                            '${beacon.maxAdBytes - frame!.length} spare of ${beacon.maxAdBytes}',
                     style: const TextStyle(fontWeight: FontWeight.w700),
                   ),
                   const SizedBox(height: 8),
@@ -623,14 +631,21 @@ class _BeaconScreenState extends State<BeaconScreen> {
                   if (decoded != null) ...[
                     Text('${decoded!.peopleText} · ${decoded!.severity}'),
                     Text(decoded!.hasPosition
-                        ? 'position ${decoded!.lat!.toStringAsFixed(5)}, '
+                        ? '${s.lang == AppLang.ne ? 'स्थान' : 'position'} '
+                            '${decoded!.lat!.toStringAsFixed(5)}, '
                             '${decoded!.lon!.toStringAsFixed(5)}'
-                        : 'no position fix'),
-                    Text('ttl ${decoded!.ttl} · hops ${decoded!.hops} (relayed once)'),
+                        : (s.lang == AppLang.ne ? 'स्थान थाहा छैन' : 'no position fix')),
+                    Text(s.lang == AppLang.ne
+                        ? 'ttl ${decoded!.ttl} · ${decoded!.hops} पटक अगाडि बढेको'
+                        : 'ttl ${decoded!.ttl} · hops ${decoded!.hops} (relayed once)'),
                   ],
                   const SizedBox(height: 10),
-                  const Text('A Flutter app can put bytes on the air. A browser cannot.',
-                      style: TextStyle(color: Color(0xFF38BDF8), fontSize: 12)),
+                  Text(
+                      s.lang == AppLang.ne
+                          ? 'बाइट हावामा पठाउन सक्ने एप हो यो। ब्राउजरले सक्दैन।'
+                          : 'A Flutter app can put bytes on the air. A browser cannot.',
+                      style: const TextStyle(color: Color(0xFF38BDF8), fontSize: 12),
+                      textAlign: TextAlign.center),
                 ],
               ),
             ),

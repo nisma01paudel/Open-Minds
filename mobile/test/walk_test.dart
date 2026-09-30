@@ -53,6 +53,7 @@ Widget wrap(TrailLoader loader) => MaterialApp(
 
 void main() {
   boardTests();
+  l10nAudit();
   testWidgets('it lists walks near you, longest first', (tester) async {
     await pumpScreen(tester, FakeLoader());
     expect(find.text('Shiva puri peak trek (stairs)'), findsOneWidget);
@@ -135,5 +136,45 @@ void boardTests() {
         expect(v, isNot(k), reason: "'$k' fell back to the key itself in ${ne ? 'ne' : 'en'}");
       }
     }
+  });
+}
+
+void l10nAudit() {
+  test('no English sentence is rendered straight into the UI', () {
+    // The defect this exists for, found twice on the emulator and once by looking at a screenshot
+    // I had already taken:
+    //
+    //   यो फोनमा के चल्छ
+    //   vision - sees change between two images and speaks Nepali on the handset, offline
+    //
+    // A Nepali heading over English literals, in a Nepali-first app. The strings were literals in
+    // the widget rather than keys in l10n, so the test that walks strings['...'] could not see them
+    // - it only checks keys that exist. Reading the file does not show it either, because the
+    // English looks correct until you notice what language you are supposed to be in.
+    //
+    // So this looks for ASCII prose inside a Text(...) in the widget tree.
+    final files = Directory('lib')
+        .listSync()
+        .whereType<File>()
+        .where((f) => f.path.endsWith('.dart'));
+    final allowed = <String>{
+      'Pahiro',                       // the product name, which is bilingual by design
+      'monospace',                    // a font family, not prose
+    };
+    final offenders = <String>[];
+    final re = RegExp(r"""Text\(\s*'([^']{12,})'""");
+
+    for (final f in files) {
+      for (final m in re.allMatches(f.readAsStringSync())) {
+        final lit = m.group(1)!;
+        if (lit.contains(r'$')) continue;             // interpolated: built from parts
+        if (allowed.any(lit.contains)) continue;
+        if (!RegExp(r'[A-Za-z]{3}').hasMatch(lit)) continue;   // no words in it
+        offenders.add('${f.path}: $lit');
+      }
+    }
+
+    expect(offenders, isEmpty,
+        reason: 'English prose rendered in the UI, untranslated:\n${offenders.join('\n')}');
   });
 }
