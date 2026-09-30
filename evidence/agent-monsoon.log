@@ -1,0 +1,21 @@
+=== agent trace
+  1. [ok ] resolve_location         1140 ms  Ward 11, Thakre, DHADING, Province 3  [bipad-wfs]
+  2. [ok ] rainfall_trigger        79142 ms  rainfall trigger BELOW (Panchpokhari Thangpal, Sindhupalchok): 24h 28/119mm, 48h 28/142mm, 72h 28/158mm, 240h 168/215mm
+  3. [ok ] ground_evidence         39734 ms  18 optical scenes (4 usable), 6 radar -> abstain
+  4. [ok ] route_report             7489 ms  Rural/Urban Municipality (Ward Committee)  [local-road-maintenance]
+  5. [ok ] compose_advisory            0 ms  nepali advisory composed
+  6. [ok ] emit_dispatch               0 ms  nothing issued: no trigger and no fresh evidence
+
+=== decision: abstain   priority: None
+    rainfall trigger BELOW (Panchpokhari Thangpal, Sindhupalchok): 24h 28/119mm, 48h 28/142mm, 72h 28/158mm, 240h 168/215mm
+    NO FRESH OBSERVATION (sentinel-2-l2a 27d, sentinel-1-grd 6d) - no advisory issued.
+    institution: Rural/Urban Municipality (Ward Committee)
+    legal basis: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Co
+    rationale  : The report indicates a rural road built by a municipality, which is at risk due to cracks appearing and debris falling onto the highway. The municipality is the most likely to own and maintain the ass
+
+=== advisory (Nepali)
+नयाँ अवलोकन छैन — यो ढलानको पछिल्लो उपलब्ध अवलोकन sentinel-1-grdको 6 दिन अघि थियो। प्रमाण पर्याप्त नभएकोले सूचना जारी गरिएको छैन।
+
+=== no dispatch: nothing to issue
+
+wrote evidence/agent-run-monsoon.json
