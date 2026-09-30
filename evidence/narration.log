@@ -1,0 +1,13 @@
+connected to k2-fsa/OmniVoice; 10 lines, lang=Nepali
+  a: 6.7s  (88 chars)
+  b: 7.2s  (102 chars)
+  c: FAILED AppError: You have exceeded your ZeroGPU quota (90s requested vs. 0s left). Try again in 0:00:00. Authenticate with a Hugging Face
+  d: FAILED AppError: You have exceeded your ZeroGPU quota (90s requested vs. 0s left). Try again in 0:00:00. Authenticate with a Hugging Face
+  e: FAILED AppError: You have exceeded your ZeroGPU quota (90s requested vs. 0s left). Try again in 0:00:00. Authenticate with a Hugging Face
+  f: FAILED AppError: You have exceeded your ZeroGPU quota (90s requested vs. 0s left). Try again in 0:00:00. Authenticate with a Hugging Face
+  g: FAILED AppError: You have exceeded your ZeroGPU quota (90s requested vs. 0s left). Try again in 0:00:00. Authenticate with a Hugging Face
+  h: FAILED AppError: You have exceeded your ZeroGPU quota (90s requested vs. 0s left). Try again in 0:00:00. Authenticate with a Hugging Face
+  i: FAILED AppError: You have exceeded your ZeroGPU quota (90s requested vs. 0s left). Try again in 0:00:00. Authenticate with a Hugging Face
+  j: FAILED AppError: You have exceeded your ZeroGPU quota (90s requested vs. 0s left). Try again in 0:00:00. Authenticate with a Hugging Face
+
+2/10 lines generated into /home/logic/win/open-minds/reports/video/voice-omni

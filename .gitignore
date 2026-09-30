@@ -22,3 +22,6 @@ reports/video/clips/
 reports/video/stills/
 reports/video/*.mp4
 reports/timelapse/frames/
+
+# Generated narration audio (reproducible; also large)
+reports/video/voice*/
