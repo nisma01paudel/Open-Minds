@@ -29,6 +29,8 @@ launched on an Android emulator (API 36, x86_64, `/dev/kvm`) on 2026-10-01.
 | `pahiro-small-720-language.png` | **720x1280 at 320 dpi** - the budget-phone profile, not the flagship |
 | `pahiro-small-720-escape.png` | same profile, scrolled to the bottom: **the last button clears the tab bar** |
 | `pahiro-small-720-walk.png` | **the season guide and places panel at 720x1280** - four green months, eight grey |
+| `pahiro-font-130-escape.png` | **1.3x accessibility text** at 720x1280 |
+| `pahiro-font-150-escape.png` | **1.5x accessibility text** - the standard, at the same size |
 
 ## What this changes, and what it does not
 
@@ -67,6 +69,22 @@ month, and the major-places list beneath it. All legible at 320 dpi.
 `adb logcat` across the whole run reports no Flutter layout error. The only exceptions in the log are
 Android's own `BestClock: no network time available`, which is the emulator having no network and not
 this app.
+
+### Larger text, because the people this is for use it
+
+Devanagari at a larger scale is where a text-heavy layout breaks: labels collide, lines clip, buttons
+overflow. Both common accessibility scales were run at 720x1280:
+
+    adb shell settings put system font_scale 1.3
+    adb shell settings put system font_scale 1.5
+
+At 1.3 the long English place name wraps to two lines and the Nepali duty-holder line wraps to two,
+with nothing clipped or overlapped. At 1.5, the accessibility standard, the same holds: every string
+wraps rather than truncating, the tab bar labels still fit, and `adb logcat` reports zero RenderFlex
+overflows at both scales.
+
+The content is taller and the last line sits below the fold at 1.5x, which is what a scrolling list is
+for. Nothing is unreachable.
 
 **What this does not establish:** the AVD is still an emulator, at a size set by `wm` rather than a
 1280-pixel panel, on API 36. Font rendering, memory pressure and touch latency on a real budget
