@@ -29,6 +29,10 @@ REQUIRED = [
     "reports/eval-v1.md", "reports/routing-ablation.md",
     "scripts/agent_demo.py", "scripts/verify_data_access.py",
     "scripts/demo.sh", "scripts/serve_model.sh", "scripts/fetch_model.sh",
+    # The daily-use half. A clone that loses one of these would still have passed this check.
+    "src/pahiro/trails.py", "src/pahiro/access.py", "src/pahiro/trip_agent.py",
+    "scripts/build_trails.py", "scripts/plan_trip.py",
+    "web/public/data/trails.geojson", "web/public/data/bus-parks.geojson",
     "scripts/check_beacon_parity.py", "scripts/check_seal_parity.py",
     "scripts/build_event_benchmark.py", "scripts/build_controls.py",
 ]
