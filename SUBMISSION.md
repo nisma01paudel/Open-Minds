@@ -115,6 +115,7 @@ Full list of limitations and honest gaps: [docs/LIMITATIONS.md](docs/LIMITATIONS
 | | |
 |---|---|
 | The routing key (who is responsible, under which section) | [ontology/nepal-slope-routing.json](ontology/nepal-slope-routing.json) · [docs/AUTHORITY-MAP.md](docs/AUTHORITY-MAP.md) |
+| The spoken pitch, with a fact sheet citing every number | [docs/SPEECH.md](docs/SPEECH.md) |
 | The agent loop | [docs/AGENT.md](docs/AGENT.md) · `src/pahiro/agent.py` |
 | Model choices, sizes, licences, measured latencies | [docs/MODELS.md](docs/MODELS.md) |
 | Verified data access and the traps | [docs/DATA.md](docs/DATA.md) |

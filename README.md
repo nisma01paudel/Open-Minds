@@ -178,6 +178,7 @@ INPUTS (borrowed, credited)                THE LAST METRE (ours)
 | `docs/COMPETITION.md` | the field, and what winning requires |
 | `reports/eval-v0.md` · `reports/routing-eval.md` | measurements: gap calibration, routing accuracy |
 | `docs/DEMO-SCRIPT.md` | the 2–3 minute demo video script |
+| `docs/SPEECH.md` | the spoken pitch, a 90-second cut, Q&A armour, and a fact sheet citing every number |
 
 ## Limitations — stated, not buried
 
