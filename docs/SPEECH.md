@@ -415,6 +415,57 @@ ever moves routing behind a language model.
 
 ---
 
+### N4 · The part that is not a radio
+
+> *Nothing to click. This one is best told, not shown — unless you have the admin panel open at
+> `/admin`, which is a better thing to leave on screen than a slide.*
+
+Everything so far has been about one hop. A phone broadcasts, a stranger's phone carries it, a
+searcher hears it. But a gorge is nine kilometres deep and no radio we are allowed to use reaches
+nine kilometres.
+
+So the honest answer is not one technology. **It is a ladder of four, and the thing that makes
+them one network is not any of the radios.**
+
+**〔beat〕**
+
+> **Bluetooth advertisement** — thirty metres, twenty bytes, carried by a stranger.
+> **Wi-Fi Aware** — two hundred metres, phone to phone, on the handset's own Wi-Fi chip. No
+> infrastructure, no router, no extra hardware. **Six times a Bluetooth hop, and almost nobody
+> reaches for it.**
+> **SMS** — anywhere there is a cell, when the data network is dead.
+> **A courier** — a person walking out. No range limit, no power, six hours of delay.
+
+LoRa would beat all of them. LoRa needs a radio you have to buy, and that is not what we are
+shipping. So the floor of this ladder is a human being, and the floor never fails, because
+somebody is always walking out.
+
+**〔beat〕**
+
+Now the part I am actually proud of, and it is four lines of behaviour rather than a feature.
+
+A relay that forwards a message and forgets it **loses that message exactly when the next hop
+fails.** In a valley that is not an edge case. It is Tuesday. So a bundle is held until someone
+**takes custody and acknowledges it** — and the system refuses to let go without that:
+
+> *release refused — refusing to drop a bundle nobody has acknowledged: keeping it is the whole
+> point.*
+
+**〔beat〕**
+
+And here is the property that turns four radios into a network. Ask it to send when nothing at
+all is available:
+
+> *no transport is available and no one is walking out.*
+
+**It does not drop the message. It holds it.** Every link that assumes it can send is useless in
+the exact situation this system exists for. Holding is a valid answer, and it is the answer.
+
+The same call arriving over Bluetooth and then again over SMS is counted **once** — one person,
+not two. That is asserted in the tests, not hoped for.
+
+---
+
 ## The applause close
 
 > *Say this last. Slow. Put the paper with the 40 back on the table if you still have it.*
@@ -624,6 +675,11 @@ Every figure you say out loud, and where it lives.
 | Offline voice | Piper `ne_NP` chitwan medium, **63 MB, MIT**, 9.5 s of Nepali in 1.3 s (RTF 0.14). Runs on the handset — **no network, no API key** | [docs/MODELS.md](MODELS.md) |
 | Mobile fit ladder | 512 MB → **no model, all life-saving features** · 1 GB → vision (92.5 MB) · 2–3 GB → mid (492.5 MB) · 4 GB+ → full (1488.5 MB weights). Working memory is modeled, not assumed: ×1.8 plus a 700 MB OS floor | `src/pahiro/offline_ai.py`, `tests/test_offline_ai.py` |
 | The floor is enforced | a test fails the build if any capability in `LIFESAVING` leaves `TIER_NONE` — i.e. if anyone moves routing behind an LLM | same |
+| Transport ladder (offline, no extra hardware) | **ble 30 m / 20 B** · **wifi_aware 200 m / 4096 B** · **sms 160 B, any cell** · **courier no limit, ~6 h**. Wi-Fi Aware is ~6× a Bluetooth hop on the phone's own chip | `src/pahiro/mesh/dtn.py`, `tests/test_dtn.py` |
+| Why a full-text SOS cannot ride an advertisement | "SOS six trapped at KM 42" is **24 bytes**; a BLE advertisement carries **20**. Only the packed beacon frame fits — that is *why* `beacon.py` exists | same |
+| Custody rule (the one to quote) | release is refused without an acknowledgement: *"refusing to drop a bundle nobody has acknowledged: keeping it is the whole point"* | same |
+| The property that makes it a network | with no transport available the bundle is **held, not dropped** — asserted by test, not hoped for | same |
+| First-place claim on the ladder | Wi-Fi Aware. The research answer for long-range offline is LoRa, which needs hardware and is out of scope — so the software ladder is the honest contribution | same |
 | Models | Qwen2.5-1.5B-Instruct Q4_K_M, SmolVLM-256M, DINOv2-S/14 int8 — all open weights | [docs/MODELS.md](MODELS.md) |
 | Not tested | real handsets, real valley, real dispatch; Bluetooth through rock | [docs/LIMITATIONS.md](LIMITATIONS.md) |
 
