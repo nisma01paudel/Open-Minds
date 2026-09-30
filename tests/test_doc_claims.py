@@ -508,3 +508,34 @@ def test_the_build_writes_both_copies_of_the_trail_bundle():
     builder = read("scripts/build_trails.py")
     assert "mobile/assets/trails.geojson" in builder, \
         "the builder no longer writes the phone copy, so it is a manual step again"
+
+
+def test_every_data_file_is_named_in_the_provenance_page():
+    """A dataset with no recipe is an artefact somebody made once.
+
+    bus-parks.geojson was exactly that until round 27, and three more files still are. The page
+    exists so a reader can tell which files they can rebuild and which rest on a pipeline that was
+    not kept - the second kind is a gap, and it should be visible rather than discovered.
+    """
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    data_dir = root / "web" / "public" / "data"
+    provenance = (data_dir / "README.md").read_text(encoding="utf-8")
+
+    # Every backticked token in the page is a filename or a pattern ("slopes-chirps-*.geojson"
+    # is one row for three files, which is the right way to write it). A file is covered when a
+    # token matches it - literally or as a glob.
+    import fnmatch
+    import re
+
+    tokens = re.findall(r"`([^`]+)`", provenance)
+    for f in sorted(data_dir.iterdir()):
+        if not f.is_file() or f.name == "README.md":
+            continue
+        assert any(fnmatch.fnmatch(f.name, tok) for tok in tokens), (
+            f"{f.name} ships with the app and is not named in the provenance page, so a reader "
+            f"cannot tell whether it can be rebuilt")
+
+    assert provenance.count("**no**") >= 3, "the three unreproducible files must be marked"
+    assert "observability-sites.json" in provenance and "terrain-texture.jpg" in provenance
