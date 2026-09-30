@@ -50,10 +50,21 @@ record.
 A demo that blurred measured and cited numbers would be the same failure as every stale caption in
 this project, so the distinction is on the screen rather than in a speaker's note.
 
-**NOT YET VERIFIED ON THE DEVICE:** the panel renders with its button, and the step-through logic is
-compiled and covered, but my swipe-and-tap attempt scrolled the view past the card instead of pressing
-it, so I have not seen the six steps appear. The button rendering is evidence; the interaction is not,
-and it is the next thing to check.
+**Verified, on the second attempt.** The first attempt reported the button rendering but not
+advancing, and the reason was my taps: I read the coordinate off the SCALED preview (872x1890) while
+the device is 1080x2340, so I pressed at y=900 against a button spanning y=780-879. Tapping y=830
+advanced it:
+
+    1. २०२४ सेप्टेम्बर २८ — ... ६१३ मध्ये ३१ ढलान वर्षाको सीमाभन्दा माथि थिए।
+       यहाँ उद्धृत · CHIRPS daily rainfall, 613 documented slopes
+    2. अगस्टमा उपग्रहको तस्बिरको १६.८% मात्र प्रयोगयोग्य थियो, र १४२ मध्ये १७ स्थान कहिल्यै देखिएन।
+       यहाँ उद्धृत · Sentinel-2 scene metadata, 2,021 scenes
+       [ अर्को चरण (2/6) ]
+
+Both steps render, the grey "cited" label is right on both, and the counter advanced 1/6 to 2/6.
+
+This is the third time this session a coordinate read off a scaled preview produced a wrong
+conclusion - once as a false bug report, twice as a false "it does not work"
 
 ## The complaint, drafted on the phone
 
