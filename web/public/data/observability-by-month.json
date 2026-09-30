@@ -1,0 +1,37 @@
+{
+  "_note": "Measured on 2,021 Sentinel-2 scenes across 142 documented failure sites: the share of scenes with usable clear ground, by calendar month. This is the counterweight to the replay - a slope can be loaded and invisible at once.",
+  "sites": 142,
+  "scenes": 2021,
+  "months": {
+    "06": {
+      "name": "June",
+      "scenes": 415,
+      "usable": 223,
+      "pct": 53.7
+    },
+    "07": {
+      "name": "July",
+      "scenes": 518,
+      "usable": 169,
+      "pct": 32.6
+    },
+    "08": {
+      "name": "August",
+      "scenes": 518,
+      "usable": 87,
+      "pct": 16.8
+    },
+    "09": {
+      "name": "September",
+      "scenes": 403,
+      "usable": 112,
+      "pct": 27.8
+    },
+    "10": {
+      "name": "October",
+      "scenes": 167,
+      "usable": 85,
+      "pct": 50.9
+    }
+  }
+}

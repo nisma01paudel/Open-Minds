@@ -1,0 +1,39 @@
+[
+  {
+    "id": "live-2026-09-30",
+    "label": "Live \u2014 2026-09-30",
+    "date": "2026-09-30",
+    "source": "open-meteo",
+    "file": "slopes-live-2026-09-30.geojson",
+    "counts": {
+      "below": 613
+    },
+    "worst_r24": 8.5
+  },
+  {
+    "id": "chirps-2024-09-28",
+    "label": "2024-09-28",
+    "date": "2024-09-28",
+    "source": "chirps",
+    "file": "slopes-chirps-2024-09-28.geojson",
+    "counts": {
+      "exceeded": 305,
+      "approaching": 115,
+      "below": 193
+    },
+    "worst_r24": 209.1
+  },
+  {
+    "id": "chirps-2024-07-06",
+    "label": "2024-07-06",
+    "date": "2024-07-06",
+    "source": "chirps",
+    "file": "slopes-chirps-2024-07-06.geojson",
+    "counts": {
+      "below": 499,
+      "approaching": 51,
+      "exceeded": 63
+    },
+    "worst_r24": 196.2
+  }
+]

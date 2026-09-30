@@ -3,6 +3,9 @@ __pycache__/
 .venv/
 venv/
 data/
+# ...but NOT the web app's own data. The map fetches /data/timeline.json, /data/terrain.bin and
+# the slopes geojson at runtime; ignoring these left a clone with an empty map and no terrain.
+!web/public/data/
 cache/
 .env
 *.tif

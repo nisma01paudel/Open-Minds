@@ -1,0 +1,1086 @@
+{
+ "day": "2024-09-28",
+ "threshold_mm_24h": 118.8,
+ "advisories": {
+  "72526": {
+   "title": "Landslide at Bhuwa, Mahakulung Rural Municipality-2",
+   "lat": 27.56766,
+   "lon": 86.83177,
+   "r24": 209.1,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Bhuwa, Mahakulung Rural Municipality-2\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 209 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 105 मिटर माथि सार्नुहोस् (करिब 57 मिटर उचाइ बढी)। माथिल्लो भागमा 30° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 105.0,
+    "target_elevation_gain_m": 57.4,
+    "source_distance_m": 45.0,
+    "source_slope_deg": 30.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "39711": {
+   "title": "Landslide at Makalu Rural Municipality-1",
+   "lat": 27.57093,
+   "lon": 87.20988,
+   "r24": 200.3,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Makalu Rural Municipality-1\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 200 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 105 मिटर माथि सार्नुहोस् (करिब 52 मिटर उचाइ बढी)। माथिल्लो भागमा 29° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 105.0,
+    "target_elevation_gain_m": 52.5,
+    "source_distance_m": 45.0,
+    "source_slope_deg": 29.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "47221": {
+   "title": "Landslide at Kartike, Jugal Rural Municipality-4",
+   "lat": 27.89409,
+   "lon": 85.79063,
+   "r24": 184.5,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Kartike, Jugal Rural Municipality-4\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 184 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत गर्न सकिन्छ — तर भू-प्राविधिक जाँचपछि मात्र।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "repair-in-place",
+    "target_offset_m": null,
+    "target_elevation_gain_m": null,
+    "source_distance_m": null,
+    "source_slope_deg": null,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "64818": {
+   "title": "Landslide at Majuwa Dovan, Sabhapokhari Rural Municipality-6",
+   "lat": 27.41286,
+   "lon": 87.34043,
+   "r24": 183.5,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Majuwa Dovan, Sabhapokhari Rural Municipality-6\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 184 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 105 मिटर माथि सार्नुहोस् (करिब 42 मिटर उचाइ बढी)। माथिल्लो भागमा 25° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 105.0,
+    "target_elevation_gain_m": 42.3,
+    "source_distance_m": 45.0,
+    "source_slope_deg": 25.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "65926": {
+   "title": "Landslide at Lyachhebar, Umakunda Rural Municipality-1",
+   "lat": 27.7078,
+   "lon": 86.46974,
+   "r24": 166.4,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Lyachhebar, Umakunda Rural Municipality-1\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 166 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 105 मिटर माथि सार्नुहोस् (करिब 82 मिटर उचाइ बढी)। माथिल्लो भागमा 39° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 105.0,
+    "target_elevation_gain_m": 82.1,
+    "source_distance_m": 45.0,
+    "source_slope_deg": 39.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "44543": {
+   "title": "Landslide at Chichila Rural Municipality-2",
+   "lat": 27.4702,
+   "lon": 87.18957,
+   "r24": 157.9,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Chichila Rural Municipality-2\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 158 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 240 मिटर माथि सार्नुहोस् (करिब 59 मिटर उचाइ बढी)। माथिल्लो भागमा 28° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 240.0,
+    "target_elevation_gain_m": 59.4,
+    "source_distance_m": 180.0,
+    "source_slope_deg": 28.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "72880": {
+   "title": "Landslide at Bebare, Phungling Municipality-6",
+   "lat": 27.35985,
+   "lon": 87.68455,
+   "r24": 153.9,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Bebare, Phungling Municipality-6\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 154 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 315 मिटर माथि सार्नुहोस् (करिब 117 मिटर उचाइ बढी)। माथिल्लो भागमा 29° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 315.0,
+    "target_elevation_gain_m": 116.9,
+    "source_distance_m": 255.0,
+    "source_slope_deg": 29.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "43871": {
+   "title": "Landslide at Panchakhapan Municipality-6",
+   "lat": 27.33957,
+   "lon": 87.29181,
+   "r24": 152.8,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Panchakhapan Municipality-6\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 153 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत गर्न सकिन्छ — तर भू-प्राविधिक जाँचपछि मात्र।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "repair-in-place",
+    "target_offset_m": null,
+    "target_elevation_gain_m": null,
+    "source_distance_m": null,
+    "source_slope_deg": null,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "47298": {
+   "title": "Landslide at Ingebhir, Silichong Rural Municipality-5",
+   "lat": 27.5367,
+   "lon": 87.16282,
+   "r24": 151.7,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Ingebhir, Silichong Rural Municipality-5\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 152 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 105 मिटर माथि सार्नुहोस् (करिब 98 मिटर उचाइ बढी)। माथिल्लो भागमा 46° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 105.0,
+    "target_elevation_gain_m": 98.2,
+    "source_distance_m": 45.0,
+    "source_slope_deg": 46.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "44082": {
+   "title": "Landslide at Simmasing, Balefi Rural Municipality-3",
+   "lat": 27.7943,
+   "lon": 85.81143,
+   "r24": 151.5,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Simmasing, Balefi Rural Municipality-3\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 152 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत गर्न सकिन्छ — तर भू-प्राविधिक जाँचपछि मात्र।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "repair-in-place",
+    "target_offset_m": null,
+    "target_elevation_gain_m": null,
+    "source_distance_m": null,
+    "source_slope_deg": null,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "81261": {
+   "title": "Landslide at Chimling Beshi , Balefi Rural Municipality-7",
+   "lat": 27.77392,
+   "lon": 85.84065,
+   "r24": 151.5,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Chimling Beshi , Balefi Rural Municipality-7\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 152 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 165 मिटर माथि सार्नुहोस् (करिब 65 मिटर उचाइ बढी)। माथिल्लो भागमा 30° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 165.0,
+    "target_elevation_gain_m": 64.7,
+    "source_distance_m": 105.0,
+    "source_slope_deg": 30.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "83064": {
+   "title": "Landslide at Chainpur Municipality-3",
+   "lat": 27.30089,
+   "lon": 87.36168,
+   "r24": 150.6,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Chainpur Municipality-3\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 151 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 105 मिटर माथि सार्नुहोस् (करिब 43 मिटर उचाइ बढी)। माथिल्लो भागमा 26° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 105.0,
+    "target_elevation_gain_m": 43.2,
+    "source_distance_m": 45.0,
+    "source_slope_deg": 26.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "47374": {
+   "title": "Landslide at balephi, Jugal Rural Municipality-3",
+   "lat": 27.98877,
+   "lon": 85.84283,
+   "r24": 149.6,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at balephi, Jugal Rural Municipality-3\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 150 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 105 मिटर माथि सार्नुहोस् (करिब 78 मिटर उचाइ बढी)। माथिल्लो भागमा 35° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 105.0,
+    "target_elevation_gain_m": 78.2,
+    "source_distance_m": 45.0,
+    "source_slope_deg": 35.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "91874": {
+   "title": "Landslide at Phaktanglung Rural Municipality-3",
+   "lat": 27.44535,
+   "lon": 87.73837,
+   "r24": 148.7,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Phaktanglung Rural Municipality-3\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 149 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 105 मिटर माथि सार्नुहोस् (करिब 100 मिटर उचाइ बढी)। माथिल्लो भागमा 44° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 105.0,
+    "target_elevation_gain_m": 100.4,
+    "source_distance_m": 45.0,
+    "source_slope_deg": 44.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "91031": {
+   "title": "Landslide at Madi Municipality-6",
+   "lat": 27.27066,
+   "lon": 87.34602,
+   "r24": 144.1,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Madi Municipality-6\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 144 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 300 मिटर माथि सार्नुहोस् (करिब 137 मिटर उचाइ बढी)। माथिल्लो भागमा 38° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 300.0,
+    "target_elevation_gain_m": 136.6,
+    "source_distance_m": 240.0,
+    "source_slope_deg": 38.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "65178": {
+   "title": "Landslide at Dharapani, Bhotekoshi Rural Municipality-1",
+   "lat": 27.91907,
+   "lon": 85.88028,
+   "r24": 141.8,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Dharapani, Bhotekoshi Rural Municipality-1\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 142 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 105 मिटर माथि सार्नुहोस् (करिब 61 मिटर उचाइ बढी)। माथिल्लो भागमा 29° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 105.0,
+    "target_elevation_gain_m": 61.1,
+    "source_distance_m": 45.0,
+    "source_slope_deg": 29.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "92880": {
+   "title": "Landslide at Neta Bhir , Makalu Rural Municipality-4",
+   "lat": 27.60915,
+   "lon": 87.44795,
+   "r24": 141.5,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Neta Bhir , Makalu Rural Municipality-4\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 142 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 105 मिटर माथि सार्नुहोस् (करिब 78 मिटर उचाइ बढी)। माथिल्लो भागमा 37° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 105.0,
+    "target_elevation_gain_m": 78.2,
+    "source_distance_m": 45.0,
+    "source_slope_deg": 37.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "38748": {
+   "title": "Landslide at Salpasilichho Rural Municipality-3",
+   "lat": 27.42655,
+   "lon": 87.06431,
+   "r24": 139.1,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Salpasilichho Rural Municipality-3\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 139 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 195 मिटर माथि सार्नुहोस् (करिब 88 मिटर उचाइ बढी)। माथिल्लो भागमा 33° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 195.0,
+    "target_elevation_gain_m": 88.0,
+    "source_distance_m": 135.0,
+    "source_slope_deg": 33.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "47893": {
+   "title": "Landslide at Baruwa, Panchpokhari Thangpal Rural Municipality-2",
+   "lat": 27.97273,
+   "lon": 85.61311,
+   "r24": 132.4,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Baruwa, Panchpokhari Thangpal Rural Municipality-2\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 132 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 105 मिटर माथि सार्नुहोस् (करिब 85 मिटर उचाइ बढी)। माथिल्लो भागमा 39° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 105.0,
+    "target_elevation_gain_m": 85.1,
+    "source_distance_m": 45.0,
+    "source_slope_deg": 39.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "72525": {
+   "title": "Landslide at Sallari, Solududhakunda Municipality-5",
+   "lat": 27.50056,
+   "lon": 86.57367,
+   "r24": 130.2,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Sallari, Solududhakunda Municipality-5\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 130 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 120 मिटर माथि सार्नुहोस् (करिब 63 मिटर उचाइ बढी)। माथिल्लो भागमा 30° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 120.0,
+    "target_elevation_gain_m": 62.9,
+    "source_distance_m": 60.0,
+    "source_slope_deg": 30.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "47568": {
+   "title": "Landslide at Sankanti Bazer, Aathrai Rural Municipality-1",
+   "lat": 27.2108,
+   "lon": 87.63645,
+   "r24": 127.3,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Sankanti Bazer, Aathrai Rural Municipality-1\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 127 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 270 मिटर माथि सार्नुहोस् (करिब 79 मिटर उचाइ बढी)। माथिल्लो भागमा 26° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 270.0,
+    "target_elevation_gain_m": 78.8,
+    "source_distance_m": 210.0,
+    "source_slope_deg": 26.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "73608": {
+   "title": "Landslide at Diktel Rupakot Majhuwagadhi Municipality-14",
+   "lat": 27.21259,
+   "lon": 86.72413,
+   "r24": 126.8,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Diktel Rupakot Majhuwagadhi Municipality-14\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 127 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत गर्न सकिन्छ — तर भू-प्राविधिक जाँचपछि मात्र।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "repair-in-place",
+    "target_offset_m": null,
+    "target_elevation_gain_m": null,
+    "source_distance_m": null,
+    "source_slope_deg": null,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "92314": {
+   "title": "Landslide at Bhorleni , Dudhouli Municipality-2",
+   "lat": 27.06268,
+   "lon": 86.0849,
+   "r24": 125.9,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Bhorleni , Dudhouli Municipality-2\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 126 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 105 मिटर माथि सार्नुहोस् (करिब 51 मिटर उचाइ बढी)। माथिल्लो भागमा 30° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 105.0,
+    "target_elevation_gain_m": 50.8,
+    "source_distance_m": 45.0,
+    "source_slope_deg": 30.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "73968": {
+   "title": "Landslide at Balefi Rural Municipality-4",
+   "lat": 27.76969,
+   "lon": 85.79306,
+   "r24": 125.7,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Balefi Rural Municipality-4\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 126 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 105 मिटर माथि सार्नुहोस् (करिब 88 मिटर उचाइ बढी)। माथिल्लो भागमा 41° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 105.0,
+    "target_elevation_gain_m": 87.7,
+    "source_distance_m": 45.0,
+    "source_slope_deg": 41.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "59681": {
+   "title": "Landslide at Mahabir, Dharmadevi Municipality-1",
+   "lat": 27.19806,
+   "lon": 87.42634,
+   "r24": 125.6,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Mahabir, Dharmadevi Municipality-1\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 126 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 105 मिटर माथि सार्नुहोस् (करिब 51 मिटर उचाइ बढी)। माथिल्लो भागमा 31° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 105.0,
+    "target_elevation_gain_m": 50.7,
+    "source_distance_m": 45.0,
+    "source_slope_deg": 31.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "73241": {
+   "title": "Landslide at Bakhumma , Salpasilichho Rural Municipality-5",
+   "lat": 27.41486,
+   "lon": 86.96293,
+   "r24": 124.6,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Bakhumma , Salpasilichho Rural Municipality-5\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 125 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 135 मिटर माथि सार्नुहोस् (करिब 36 मिटर उचाइ बढी)। माथिल्लो भागमा 28° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 135.0,
+    "target_elevation_gain_m": 36.5,
+    "source_distance_m": 75.0,
+    "source_slope_deg": 28.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "82591": {
+   "title": "Landslide at Soryang , Arun Rural Municipality-2",
+   "lat": 27.22937,
+   "lon": 87.14007,
+   "r24": 123.9,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Soryang , Arun Rural Municipality-2\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 124 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत गर्न सकिन्छ — तर भू-प्राविधिक जाँचपछि मात्र।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "repair-in-place",
+    "target_offset_m": null,
+    "target_elevation_gain_m": null,
+    "source_distance_m": null,
+    "source_slope_deg": null,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "44023": {
+   "title": "Landslide at Sunkoshi Rural Municipality-10",
+   "lat": 27.31072,
+   "lon": 86.42065,
+   "r24": 121.3,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Sunkoshi Rural Municipality-10\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 121 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 135 मिटर माथि सार्नुहोस् (करिब 59 मिटर उचाइ बढी)। माथिल्लो भागमा 27° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 135.0,
+    "target_elevation_gain_m": 59.2,
+    "source_distance_m": 75.0,
+    "source_slope_deg": 27.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "80901": {
+   "title": "Landslide at Syaule , Chautara SangachokGadhi Municipality-1",
+   "lat": 27.82426,
+   "lon": 85.69773,
+   "r24": 120.3,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Syaule , Chautara SangachokGadhi Municipality-1\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 120 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत गर्न सकिन्छ — तर भू-प्राविधिक जाँचपछि मात्र।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "repair-in-place",
+    "target_offset_m": null,
+    "target_elevation_gain_m": null,
+    "source_distance_m": null,
+    "source_slope_deg": null,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "56963": {
+   "title": "Landslide at Itahari Submetropolitan City-2",
+   "lat": 26.7075,
+   "lon": 87.2888,
+   "r24": 120.2,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Itahari Submetropolitan City-2\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 120 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत गर्न सकिन्छ — तर भू-प्राविधिक जाँचपछि मात्र।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "repair-in-place",
+    "target_offset_m": null,
+    "target_elevation_gain_m": null,
+    "source_distance_m": null,
+    "source_slope_deg": null,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "44025": {
+   "title": "Landslide at Gope, Sunkoshi Rural Municipality-9",
+   "lat": 27.32574,
+   "lon": 86.38063,
+   "r24": 118.8,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Gope, Sunkoshi Rural Municipality-9\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 119 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत गर्न सकिन्छ — तर भू-प्राविधिक जाँचपछि मात्र।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "repair-in-place",
+    "target_offset_m": null,
+    "target_elevation_gain_m": null,
+    "source_distance_m": null,
+    "source_slope_deg": null,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "39289": {
+   "title": "Landslide at Salpasilichho Rural Municipality-4",
+   "lat": 27.41217,
+   "lon": 87.03347,
+   "r24": 116.6,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Salpasilichho Rural Municipality-4\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 117 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत गर्न सकिन्छ — तर भू-प्राविधिक जाँचपछि मात्र।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "repair-in-place",
+    "target_offset_m": null,
+    "target_elevation_gain_m": null,
+    "source_distance_m": null,
+    "source_slope_deg": null,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "43904": {
+   "title": "Landslide at Ranikhola, Bhokraha Rural Municipality-1",
+   "lat": 26.64363,
+   "lon": 87.10653,
+   "r24": 115.4,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Ranikhola, Bhokraha Rural Municipality-1\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 115 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत गर्न सकिन्छ — तर भू-प्राविधिक जाँचपछि मात्र।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "repair-in-place",
+    "target_offset_m": null,
+    "target_elevation_gain_m": null,
+    "source_distance_m": null,
+    "source_slope_deg": null,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "47901": {
+   "title": "Landslide at Karthali, Barhabise Municipality-2",
+   "lat": 27.80398,
+   "lon": 85.96229,
+   "r24": 114.7,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Karthali, Barhabise Municipality-2\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 115 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत गर्न सकिन्छ — तर भू-प्राविधिक जाँचपछि मात्र।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "repair-in-place",
+    "target_offset_m": null,
+    "target_elevation_gain_m": null,
+    "source_distance_m": null,
+    "source_slope_deg": null,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "39159": {
+   "title": "Landslide at Panchpokhari Thangpal Rural Municipality-7",
+   "lat": 27.88415,
+   "lon": 85.66855,
+   "r24": 111.5,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Panchpokhari Thangpal Rural Municipality-7\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 112 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत गर्न सकिन्छ — तर भू-प्राविधिक जाँचपछि मात्र।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "repair-in-place",
+    "target_offset_m": null,
+    "target_elevation_gain_m": null,
+    "source_distance_m": null,
+    "source_slope_deg": null,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "80895": {
+   "title": "Landslide at Timure, Lisangkhu Pakhar Rural Municipality-7",
+   "lat": 27.70352,
+   "lon": 85.86842,
+   "r24": 111.3,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Timure, Lisangkhu Pakhar Rural Municipality-7\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 111 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 180 मिटर माथि सार्नुहोस् (करिब 89 मिटर उचाइ बढी)। माथिल्लो भागमा 32° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 180.0,
+    "target_elevation_gain_m": 89.3,
+    "source_distance_m": 120.0,
+    "source_slope_deg": 32.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "82996": {
+   "title": "Landslide at Lamidanda, Lisangkhu Pakhar Rural Municipality-6",
+   "lat": 27.72335,
+   "lon": 85.88219,
+   "r24": 111.3,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Lamidanda, Lisangkhu Pakhar Rural Municipality-6\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 111 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 210 मिटर माथि सार्नुहोस् (करिब 74 मिटर उचाइ बढी)। माथिल्लो भागमा 31° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 210.0,
+    "target_elevation_gain_m": 74.5,
+    "source_distance_m": 150.0,
+    "source_slope_deg": 31.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "56965": {
+   "title": "Landslide at Itahari Submetropolitan City-5",
+   "lat": 26.67314,
+   "lon": 87.26313,
+   "r24": 111.1,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Itahari Submetropolitan City-5\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 111 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत गर्न सकिन्छ — तर भू-प्राविधिक जाँचपछि मात्र।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "repair-in-place",
+    "target_offset_m": null,
+    "target_elevation_gain_m": null,
+    "source_distance_m": null,
+    "source_slope_deg": null,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "80723": {
+   "title": "Landslide at Mahakulung Rural Municipality-5",
+   "lat": 27.46339,
+   "lon": 86.86266,
+   "r24": 110.9,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Mahakulung Rural Municipality-5\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 111 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 105 मिटर माथि सार्नुहोस् (करिब 43 मिटर उचाइ बढी)। माथिल्लो भागमा 32° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 105.0,
+    "target_elevation_gain_m": 42.7,
+    "source_distance_m": 45.0,
+    "source_slope_deg": 32.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "44081": {
+   "title": "Landslide at Khale HIplo, Chautara SangachokGadhi Municipality-3",
+   "lat": 27.81153,
+   "lon": 85.73309,
+   "r24": 110.4,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Khale HIplo, Chautara SangachokGadhi Municipality-3\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 110 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 105 मिटर माथि सार्नुहोस् (करिब 88 मिटर उचाइ बढी)। माथिल्लो भागमा 40° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 105.0,
+    "target_elevation_gain_m": 88.1,
+    "source_distance_m": 45.0,
+    "source_slope_deg": 40.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "82234": {
+   "title": "Landslide at Jugal Rural Municipality-1",
+   "lat": 27.84901,
+   "lon": 85.73444,
+   "r24": 110.4,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Jugal Rural Municipality-1\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 110 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत गर्न सकिन्छ — तर भू-प्राविधिक जाँचपछि मात्र।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "repair-in-place",
+    "target_offset_m": null,
+    "target_elevation_gain_m": null,
+    "source_distance_m": null,
+    "source_slope_deg": null,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "95043": {
+   "title": "Landslide at Mithila Municipality-11",
+   "lat": 27.05642,
+   "lon": 85.94431,
+   "r24": 109.8,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Mithila Municipality-11\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 110 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत गर्न सकिन्छ — तर भू-प्राविधिक जाँचपछि मात्र।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "repair-in-place",
+    "target_offset_m": null,
+    "target_elevation_gain_m": null,
+    "source_distance_m": null,
+    "source_slope_deg": null,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "64885": {
+   "title": "Landslide at Chuhan Danda , Aathrai Rural Municipality-6",
+   "lat": 27.17851,
+   "lon": 87.69147,
+   "r24": 108.8,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Chuhan Danda , Aathrai Rural Municipality-6\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 109 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 180 मिटर माथि सार्नुहोस् (करिब 88 मिटर उचाइ बढी)। माथिल्लो भागमा 28° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 180.0,
+    "target_elevation_gain_m": 87.8,
+    "source_distance_m": 120.0,
+    "source_slope_deg": 28.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "83046": {
+   "title": "Landslide at Bagmati Rural Municipality-4",
+   "lat": 27.2942,
+   "lon": 85.40153,
+   "r24": 108.8,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Bagmati Rural Municipality-4\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 109 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत गर्न सकिन्छ — तर भू-प्राविधिक जाँचपछि मात्र।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "repair-in-place",
+    "target_offset_m": null,
+    "target_elevation_gain_m": null,
+    "source_distance_m": null,
+    "source_slope_deg": null,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "81478": {
+   "title": "Landslide at Buku , Khijidemba Rural Municipality-7",
+   "lat": 27.50254,
+   "lon": 86.35505,
+   "r24": 108.7,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Buku , Khijidemba Rural Municipality-7\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 109 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत गर्न सकिन्छ — तर भू-प्राविधिक जाँचपछि मात्र।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "repair-in-place",
+    "target_offset_m": null,
+    "target_elevation_gain_m": null,
+    "source_distance_m": null,
+    "source_slope_deg": null,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "39641": {
+   "title": "Landslide at Pathibhara Yangwarak Rural Municipality-2",
+   "lat": 27.30628,
+   "lon": 87.74641,
+   "r24": 106.8,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Pathibhara Yangwarak Rural Municipality-2\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 107 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 255 मिटर माथि सार्नुहोस् (करिब 116 मिटर उचाइ बढी)। माथिल्लो भागमा 36° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 255.0,
+    "target_elevation_gain_m": 116.5,
+    "source_distance_m": 195.0,
+    "source_slope_deg": 36.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "55892": {
+   "title": "Landslide at Aathrai Tribeni Rural Municipality-1",
+   "lat": 27.28101,
+   "lon": 87.65274,
+   "r24": 106.8,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Aathrai Tribeni Rural Municipality-1\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 107 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 135 मिटर माथि सार्नुहोस् (करिब 61 मिटर उचाइ बढी)। माथिल्लो भागमा 33° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 135.0,
+    "target_elevation_gain_m": 60.6,
+    "source_distance_m": 75.0,
+    "source_slope_deg": 33.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "43587": {
+   "title": "Landslide at Panchpokhari Thangpal Rural Municipality-6",
+   "lat": 27.91078,
+   "lon": 85.64643,
+   "r24": 105.6,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Panchpokhari Thangpal Rural Municipality-6\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 106 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 105 मिटर माथि सार्नुहोस् (करिब 55 मिटर उचाइ बढी)। माथिल्लो भागमा 30° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 105.0,
+    "target_elevation_gain_m": 55.0,
+    "source_distance_m": 45.0,
+    "source_slope_deg": 30.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "38682": {
+   "title": "Landslide at Solududhakunda Municipality-7",
+   "lat": 27.45665,
+   "lon": 86.58908,
+   "r24": 105.3,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Solududhakunda Municipality-7\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 105 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत गर्न सकिन्छ — तर भू-प्राविधिक जाँचपछि मात्र।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "repair-in-place",
+    "target_offset_m": null,
+    "target_elevation_gain_m": null,
+    "source_distance_m": null,
+    "source_slope_deg": null,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "94352": {
+   "title": "Landslide at Solududhkunda Municipality-6",
+   "lat": 27.48224,
+   "lon": 86.57618,
+   "r24": 105.3,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Solududhkunda Municipality-6\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 105 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत गर्न सकिन्छ — तर भू-प्राविधिक जाँचपछि मात्र।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "repair-in-place",
+    "target_offset_m": null,
+    "target_elevation_gain_m": null,
+    "source_distance_m": null,
+    "source_slope_deg": null,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "72551": {
+   "title": "Landslide at Diktel Rupakot Majhuwagadhi Municipality-15",
+   "lat": 27.1809,
+   "lon": 86.7379,
+   "r24": 105.0,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Diktel Rupakot Majhuwagadhi Municipality-15\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 105 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत गर्न सकिन्छ — तर भू-प्राविधिक जाँचपछि मात्र।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "repair-in-place",
+    "target_offset_m": null,
+    "target_elevation_gain_m": null,
+    "source_distance_m": null,
+    "source_slope_deg": null,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "44022": {
+   "title": "Landslide at Molung Rural Municipality-3",
+   "lat": 27.35904,
+   "lon": 86.40123,
+   "r24": 104.6,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Molung Rural Municipality-3\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 105 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 105 मिटर माथि सार्नुहोस् (करिब 112 मिटर उचाइ बढी)। माथिल्लो भागमा 44° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 105.0,
+    "target_elevation_gain_m": 112.5,
+    "source_distance_m": 45.0,
+    "source_slope_deg": 44.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "91927": {
+   "title": "Landslide at Molung Rural Municipality-5",
+   "lat": 27.37008,
+   "lon": 86.42668,
+   "r24": 104.6,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Molung Rural Municipality-5\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 105 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 105 मिटर माथि सार्नुहोस् (करिब 64 मिटर उचाइ बढी)। माथिल्लो भागमा 31° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 105.0,
+    "target_elevation_gain_m": 64.3,
+    "source_distance_m": 45.0,
+    "source_slope_deg": 31.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "64748": {
+   "title": "Landslide at Rambazar, Siddhicharan Municipality-11",
+   "lat": 27.31882,
+   "lon": 86.50955,
+   "r24": 102.8,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Rambazar, Siddhicharan Municipality-11\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 103 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत गर्न सकिन्छ — तर भू-प्राविधिक जाँचपछि मात्र।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "repair-in-place",
+    "target_offset_m": null,
+    "target_elevation_gain_m": null,
+    "source_distance_m": null,
+    "source_slope_deg": null,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "72874": {
+   "title": "Landslide at Chuplu, Siddhicharan Municipality-5",
+   "lat": 27.34004,
+   "lon": 86.53545,
+   "r24": 102.8,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Chuplu, Siddhicharan Municipality-5\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 103 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत गर्न सकिन्छ — तर भू-प्राविधिक जाँचपछि मात्र।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "repair-in-place",
+    "target_offset_m": null,
+    "target_elevation_gain_m": null,
+    "source_distance_m": null,
+    "source_slope_deg": null,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "47246": {
+   "title": "Landslide at Chaulakharka, Likhupike Rural Municipality-3",
+   "lat": 27.5556,
+   "lon": 86.39329,
+   "r24": 102.0,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Chaulakharka, Likhupike Rural Municipality-3\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 102 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत गर्न सकिन्छ — तर भू-प्राविधिक जाँचपछि मात्र।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "repair-in-place",
+    "target_offset_m": null,
+    "target_elevation_gain_m": null,
+    "source_distance_m": null,
+    "source_slope_deg": null,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "47439": {
+   "title": "Landslide at Damrang, Bhimeshwor Municipality-1",
+   "lat": 27.70653,
+   "lon": 86.04133,
+   "r24": 101.8,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Damrang, Bhimeshwor Municipality-1\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 102 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 330 मिटर माथि सार्नुहोस् (करिब 143 मिटर उचाइ बढी)। माथिल्लो भागमा 32° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 330.0,
+    "target_elevation_gain_m": 143.1,
+    "source_distance_m": 270.0,
+    "source_slope_deg": 32.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "74638": {
+   "title": "Landslide at Raniban , Champadevi Rural Municipality-10",
+   "lat": 27.34425,
+   "lon": 86.27221,
+   "r24": 101.7,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Raniban , Champadevi Rural Municipality-10\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 102 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 105 मिटर माथि सार्नुहोस् (करिब 69 मिटर उचाइ बढी)। माथिल्लो भागमा 39° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 105.0,
+    "target_elevation_gain_m": 68.9,
+    "source_distance_m": 45.0,
+    "source_slope_deg": 39.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "65042": {
+   "title": "Landslide at Bihibare Bazar , Nechasalyan Rural Municipality-3",
+   "lat": 27.35365,
+   "lon": 86.64151,
+   "r24": 101.4,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Bihibare Bazar , Nechasalyan Rural Municipality-3\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 101 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत गर्न सकिन्छ — तर भू-प्राविधिक जाँचपछि मात्र।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "repair-in-place",
+    "target_offset_m": null,
+    "target_elevation_gain_m": null,
+    "source_distance_m": null,
+    "source_slope_deg": null,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  },
+  "65084": {
+   "title": "Landslide at Nechasalyan Rural Municipality-5",
+   "lat": 27.35238,
+   "lon": 86.60202,
+   "r24": 101.4,
+   "authority": "Rural/Urban Municipality (Ward Committee)",
+   "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+   "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "advisory_ne": "पहिरो परिवर्तन सूचना\n\nस्थान: Landslide at Nechasalyan Rural Municipality-5\nमिति: 2024-09-28\n\nके परिवर्तन भयो: २४ घण्टामा 101 मिमि वर्षा भयो — यो क्षेत्रको वर्षा थ्रेसहोल्ड नाघेको छ\nप्रमाणको अवस्था: उपग्रह प्रमाण पुरानो छ — अवलोकन अभिलेख हेर्नुहोस्\nकिन महत्त्वपूर्ण: यति भार परेको ढलान खस्न सक्छ, र तलको सडक वा बस्ती जोखिममा पर्छ\nपहिले जाँच्नुहोस्: यो ढलानको सडक सतह र जल-निकास; सडक लाइनमाथिको ढलान\nसिफारिस: मर्मत स्वीकृत गर्नुअघि जाँच गर्नुहोस्\nसिफारिस (स्थान): सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब 105 मिटर माथि सार्नुहोस् (करिब 50 मिटर उचाइ बढी)। माथिल्लो भागमा 28° ढलान छ।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+   "siting": {
+    "recommendation": "relocate-upslope",
+    "target_offset_m": 105.0,
+    "target_elevation_gain_m": 49.6,
+    "source_distance_m": 45.0,
+    "source_slope_deg": 28.0,
+    "caveat": "terrain screening only: runout is not modelled, geology and drainage are not considered, and every recommendation requires a geotechnical assessment before any design or construction decision"
+   }
+  }
+ }
+}
