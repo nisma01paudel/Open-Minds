@@ -14,6 +14,7 @@ launched on an Android emulator (API 36, x86_64, `/dev/kvm`) on 2026-10-01.
 | `pahiro-walk.png` | the Walk tab: six trails from a 5.4 MB bundle read out of the APK |
 | `pahiro-escape-refusal.png` | the escape planner **refusing** at Melamchi, in Nepali, with advice |
 | `pahiro-beacon.png` | the Beacon tab: a message that needs no pairing and no app on the carrier |
+| `pahiro-offline-airplane.png` | **airplane mode on, network "none", and the trails are identical** |
 
 ## What this changes, and what it does not
 
@@ -24,6 +25,18 @@ a real handset" end here.
 **Unchanged, and still stated everywhere:** this is an **emulator**, not a physical phone. No radio
 figure has been measured on real hardware - Bluetooth range, Wi-Fi Aware range and battery endurance
 are all still somebody else's measurements or modelled from them. An emulator cannot measure a radio.
+
+## Offline, proven with the radio actually off
+
+The same Walk tab, with airplane mode enabled and `dumpsys connectivity` reporting
+**"Active default network: none"**:
+
+    before  131 m   675 m   343 m   84 m   2792 m   2383 m
+    offline 131 m   675 m   343 m   84 m   2792 m   2383 m
+
+Identical. The trail list is read from the 5.4 MB bundle inside the APK; nothing is fetched, nothing
+is cached from a previous request, and the distances are computed on the phone. This is the claim a
+whole product rests on, and it is now a screenshot with the aeroplane icon in the status bar.
 
 ## The refusal, on a device, is the best evidence in the repository
 
