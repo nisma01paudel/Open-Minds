@@ -180,6 +180,7 @@ INPUTS (borrowed, credited)                THE LAST METRE (ours)
 | `docs/DEMO-SCRIPT.md` | the 2–3 minute demo video script |
 | `docs/SPEECH.md` | the spoken pitch, a 90-second cut, Q&A armour, and a fact sheet citing every number |
 | `docs/OFFLINE-RANGE.md` | how far software can actually reach, with measured ranges and the open-source projects that already solve parts of it |
+| `docs/SEALING.md` | what a phone that carries your message is allowed to see, and why the crypto is not wired yet |
 
 ## Limitations — stated, not buried
 
