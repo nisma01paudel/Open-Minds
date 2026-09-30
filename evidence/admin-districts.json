@@ -1,0 +1,695 @@
+[
+    {
+        "districts": "Kailali",
+        "province": "सुदुरपश्चिम प्रदेश",
+        "nepali": "कैलाली",
+        "headquarters": "Dhangadhi",
+        "areaKm2": 3235,
+        "population20117": 904666,
+        "officialWebsites": "https://dcckailali.gov.np"
+    },
+    {
+        "districts": "Achham",
+        "province": "सुदुरपश्चिम प्रदेश",
+        "nepali": "अछाम",
+        "headquarters": "Mangalsen",
+        "areaKm2": 1680,
+        "population20117": 228852,
+        "officialWebsites": "https://dccachham.gov.np"
+    },
+    {
+        "districts": "Doti",
+        "province": "सुदुरपश्चिम प्रदेश",
+        "nepali": "डोटी",
+        "headquarters": "Dipayal Silgadhi",
+        "areaKm2": 2025,
+        "population20117": 204831,
+        "officialWebsites": "https://dccdoti.gov.np"
+    },
+    {
+        "districts": "Bajhang",
+        "province": "सुदुरपश्चिम प्रदेश",
+        "nepali": "बझाङ",
+        "headquarters": "Jayaprithvi",
+        "areaKm2": 3422,
+        "population20117": 189085,
+        "officialWebsites": "https://dccbajhang.gov.np"
+    },
+    {
+        "districts": "Bajura",
+        "province": "सुदुरपश्चिम प्रदेश",
+        "nepali": "बाजुरा",
+        "headquarters": "Martadi",
+        "areaKm2": 2188,
+        "population20117": 138523,
+        "officialWebsites": "https://dccbajura.gov.np"
+    },
+    {
+        "districts": "Kanchanpur",
+        "province": "सुदुरपश्चिम प्रदेश",
+        "nepali": "कंचनपुर",
+        "headquarters": "Bheemdatta",
+        "areaKm2": 1610,
+        "population20117": 513757,
+        "officialWebsites": "https://dcckanchanpur.gov.np"
+    },
+    {
+        "districts": "Dadeldhura",
+        "province": "सुदुरपश्चिम प्रदेश",
+        "nepali": "डडेलधुरा",
+        "headquarters": "Amargadhi",
+        "areaKm2": 1538,
+        "population20117": 139602,
+        "officialWebsites": "https://dccdadeldhura.gov.np"
+    },
+    {
+        "districts": "Baitadi",
+        "province": "सुदुरपश्चिम प्रदेश",
+        "nepali": "बैतडी",
+        "headquarters": "Dasharathchand",
+        "areaKm2": 1519,
+        "population20117": 242157,
+        "officialWebsites": "https://dccbaitadi.gov.np"
+    },
+    {
+        "districts": "Darchula",
+        "province": "सुदुरपश्चिम प्रदेश",
+        "nepali": "दार्चुला",
+        "headquarters": "Darchula",
+        "areaKm2": 2322,
+        "population20117": 133310,
+        "officialWebsites": "https://dccdarchula.gov.np"
+    },
+    {
+        "districts": "Western Rukum",
+        "province": "कर्णाली प्रदेश",
+        "nepali": "पश्चिमी रूकुम",
+        "headquarters": "Musikot",
+        "areaKm2": 1213.49,
+        "population20117": 166740,
+        "officialWebsites": "https://dccrukum.gov.np"
+    },
+    {
+        "districts": "Salyan",
+        "province": "कर्णाली प्रदेश",
+        "nepali": "सल्यान",
+        "headquarters": "Salyan",
+        "areaKm2": 1462,
+        "population20117": 238515,
+        "officialWebsites": "https://dccsalyan.gov.np"
+    },
+    {
+        "districts": "Dolpa",
+        "province": "कर्णाली प्रदेश",
+        "nepali": "डोल्पा",
+        "headquarters": "Dunai",
+        "areaKm2": 7889,
+        "population20117": 42774,
+        "officialWebsites": "https://dccdolpa.gov.np"
+    },
+    {
+        "districts": "Humla",
+        "province": "कर्णाली प्रदेश",
+        "nepali": "हुम्ला",
+        "headquarters": "Simikot",
+        "areaKm2": 5655,
+        "population20117": 55394,
+        "officialWebsites": "https://dcchumla.gov.np"
+    },
+    {
+        "districts": "Jumla",
+        "province": "कर्णाली प्रदेश",
+        "nepali": "जुम्ला",
+        "headquarters": "Chandannath",
+        "areaKm2": 2531,
+        "population20117": 118349,
+        "officialWebsites": "https://dccjumla.gov.np"
+    },
+    {
+        "districts": "Kalikot",
+        "province": "कर्णाली प्रदेश",
+        "nepali": "कालिकोट",
+        "headquarters": "Manma",
+        "areaKm2": 1741,
+        "population20117": 145292,
+        "officialWebsites": "https://dcckalikot.gov.np"
+    },
+    {
+        "districts": "Mugu",
+        "province": "कर्णाली प्रदेश",
+        "nepali": "मुगु",
+        "headquarters": "Gamgadhi",
+        "areaKm2": 3535,
+        "population20117": 64549,
+        "officialWebsites": "https://dccmugu.gov.np"
+    },
+    {
+        "districts": "Surkhet",
+        "province": "कर्णाली प्रदेश",
+        "nepali": "सुर्खेत",
+        "headquarters": "Birendranagar",
+        "areaKm2": 2451,
+        "population20117": 415126,
+        "officialWebsites": "https://dccsurkhet.gov.np"
+    },
+    {
+        "districts": "Dailekh",
+        "province": "कर्णाली प्रदेश",
+        "nepali": "दैलेख",
+        "headquarters": "Narayan",
+        "areaKm2": 1502,
+        "population20117": 252313,
+        "officialWebsites": "https://dccdailekh.gov.np"
+    },
+    {
+        "districts": "Jajarkot",
+        "province": "कर्णाली प्रदेश",
+        "nepali": "जाजरकोट",
+        "headquarters": "Khalanga",
+        "areaKm2": 2230,
+        "population20117": 189360,
+        "officialWebsites": "https://dccjajarkot.gov.np"
+    },
+    {
+        "districts": "Kapilvastu",
+        "province": "लुम्बिनी प्रदेश",
+        "nepali": "कपिलवस्तु",
+        "headquarters": "Taulihawa",
+        "areaKm2": 1738,
+        "population20117": 682961,
+        "officialWebsites": "https://dcckapilvastu.gov.np"
+    },
+    {
+        "districts": "Parasi",
+        "province": "लुम्बिनी प्रदेश",
+        "nepali": "परासी",
+        "headquarters": "Ramgram",
+        "areaKm2": 634.88,
+        "population20117": 386868,
+        "officialWebsites": "https://dccnawalparasiwest.gov.np"
+    },
+    {
+        "districts": "Rupandehi",
+        "province": "लुम्बिनी प्रदेश",
+        "nepali": "रुपन्देही",
+        "headquarters": "Siddharthanagar",
+        "areaKm2": 1360,
+        "population20117": 1121957,
+        "officialWebsites": "https://dccrupandehi.gov.np"
+    },
+    {
+        "districts": "Arghakhanchi",
+        "province": "लुम्बिनी प्रदेश",
+        "nepali": "अर्घाखाँची",
+        "headquarters": "Sandhikharka",
+        "areaKm2": 1193,
+        "population20117": 177086,
+        "officialWebsites": "https://dccarghakhanchi.gov.np"
+    },
+    {
+        "districts": "Gulmi",
+        "province": "लुम्बिनी प्रदेश",
+        "nepali": "गुल्मी",
+        "headquarters": "Tamghas",
+        "areaKm2": 1149,
+        "population20117": 246494,
+        "officialWebsites": "https://dccgulmi.gov.np"
+    },
+    {
+        "districts": "Palpa",
+        "province": "लुम्बिनी प्रदेश",
+        "nepali": "पाल्पा",
+        "headquarters": "Tansen",
+        "areaKm2": 1373,
+        "population20117": 245027,
+        "officialWebsites": "https://dccpalpa.gov.np"
+    },
+    {
+        "districts": "Dang",
+        "province": "लुम्बिनी प्रदेश",
+        "nepali": "दाङ",
+        "headquarters": "Ghorahi",
+        "areaKm2": 2955,
+        "population20117": 674993,
+        "officialWebsites": "https://dccdang.gov.np"
+    },
+    {
+        "districts": "Pyuthan",
+        "province": "लुम्बिनी प्रदेश",
+        "nepali": "प्युठान",
+        "headquarters": "Pyuthan",
+        "areaKm2": 1309,
+        "population20117": 232019,
+        "officialWebsites": "https://dccpyuthan.gov.np"
+    },
+    {
+        "districts": "Rolpa",
+        "province": "लुम्बिनी प्रदेश",
+        "nepali": "रोल्पा",
+        "headquarters": "Liwang",
+        "areaKm2": 1879,
+        "population20117": 224506,
+        "officialWebsites": "https://dccrolpa.gov.np"
+    },
+    {
+        "districts": "Eastern Rukum",
+        "province": "लुम्बिनी प्रदेश",
+        "nepali": "पूर्वी रूकुम",
+        "headquarters": "Rukumkot",
+        "areaKm2": 1161.13,
+        "population20117": 56786,
+        "officialWebsites": "https://dccrukum.gov.np"
+    },
+    {
+        "districts": "Banke",
+        "province": "लुम्बिनी प्रदेश",
+        "nepali": "बाँके",
+        "headquarters": "Nepalganj",
+        "areaKm2": 2337,
+        "population20117": 603194,
+        "officialWebsites": "https://dccbanke.gov.np"
+    },
+    {
+        "districts": "Bardiya",
+        "province": "लुम्बिनी प्रदेश",
+        "nepali": "बर्दिया",
+        "headquarters": "Gulariya",
+        "areaKm2": 2025,
+        "population20117": 459900,
+        "officialWebsites": "https://dccbardiya.gov.np"
+    },
+    {
+        "districts": "Baglung",
+        "province": "गण्डकी प्रदेश",
+        "nepali": "बागलुङ",
+        "headquarters": "Baglung",
+        "areaKm2": 1784,
+        "population20117": 249211,
+        "officialWebsites": "https://dccbaglung.gov.np"
+    },
+    {
+        "districts": "Gorkha",
+        "province": "गण्डकी प्रदेश",
+        "nepali": "गोरखा",
+        "headquarters": "Gorkha",
+        "areaKm2": 3610,
+        "population20117": 251027,
+        "officialWebsites": "https://dccgorkha.gov.np"
+    },
+    {
+        "districts": "Kaski",
+        "province": "गण्डकी प्रदेश",
+        "nepali": "कास्की",
+        "headquarters": "Pokhara",
+        "areaKm2": 2017,
+        "population20117": 600051,
+        "officialWebsites": "https://dcckaski.gov.np"
+    },
+    {
+        "districts": "Lamjung",
+        "province": "गण्डकी प्रदेश",
+        "nepali": "लमजुङ",
+        "headquarters": "Besisahar",
+        "areaKm2": 1692,
+        "population20117": 155852,
+        "officialWebsites": "https://dcclamjung.gov.np"
+    },
+    {
+        "districts": "Manang",
+        "province": "गण्डकी प्रदेश",
+        "nepali": "मनाङ",
+        "headquarters": "Chame",
+        "areaKm2": 2246,
+        "population20117": 5658,
+        "officialWebsites": "https://dccmanang.gov.np"
+    },
+    {
+        "districts": "Mustang",
+        "province": "गण्डकी प्रदेश",
+        "nepali": "मुस्ताङ",
+        "headquarters": "Jomsom",
+        "areaKm2": 3573,
+        "population20117": 14452,
+        "officialWebsites": "https://dccmustang.gov.np"
+    },
+    {
+        "districts": "Myagdi",
+        "province": "गण्डकी प्रदेश",
+        "nepali": "म्याग्दी",
+        "headquarters": "Beni",
+        "areaKm2": 2297,
+        "population20117": 107033,
+        "officialWebsites": "https://dccmyagdi.gov.np"
+    },
+    {
+        "districts": "Nawalpur",
+        "province": "गण्डकी प्रदेश",
+        "nepali": "नवलपुर",
+        "headquarters": "Kawasoti",
+        "areaKm2": 1043.1,
+        "population20117": 378079,
+        "officialWebsites": "https://dccnawalparasieast.gov.np"
+    },
+    {
+        "districts": "Parbat",
+        "province": "गण्डकी प्रदेश",
+        "nepali": "पर्वत",
+        "headquarters": "Kusma",
+        "areaKm2": 494,
+        "population20117": 130887,
+        "officialWebsites": "https://dccparbat.gov.np"
+    },
+    {
+        "districts": "Syangja",
+        "province": "गण्डकी प्रदेश",
+        "nepali": "स्याङग्जा",
+        "headquarters": "Putalibazar",
+        "areaKm2": 1164,
+        "population20117": 253024,
+        "officialWebsites": "https://dccsyangja.gov.np"
+    },
+    {
+        "districts": "Tanahun",
+        "province": "गण्डकी प्रदेश",
+        "nepali": "तनहुँ",
+        "headquarters": "Damauli",
+        "areaKm2": 1546,
+        "population20117": 321153,
+        "officialWebsites": "https://dcctanahun.gov.np"
+    },
+    {
+        "districts": "Sindhuli",
+        "province": "बागमती प्रदेश",
+        "nepali": "सिन्धुली",
+        "headquarters": "Kamalamai",
+        "areaKm2": 2491,
+        "population20117": 300026,
+        "officialWebsites": "https://dccsindhuli.gov.np"
+    },
+    {
+        "districts": "Ramechhap",
+        "province": "बागमती प्रदेश",
+        "nepali": "रामेछाप",
+        "headquarters": "Manthali",
+        "areaKm2": 1546,
+        "population20117": 170302,
+        "officialWebsites": "https://dccramechhap.gov.np"
+    },
+    {
+        "districts": "Dolakha",
+        "province": "बागमती प्रदेश",
+        "nepali": "दोलखा",
+        "headquarters": "Bhimeshwar",
+        "areaKm2": 2191,
+        "population20117": 172767,
+        "officialWebsites": "https://dccdolakha.gov.np"
+    },
+    {
+        "districts": "Bhaktapur",
+        "province": "बागमती प्रदेश",
+        "nepali": "भक्तपुर",
+        "headquarters": "Bhaktapur",
+        "areaKm2": 119,
+        "population20117": 432132,
+        "officialWebsites": "https://dccbhaktapur.gov.np"
+    },
+    {
+        "districts": "Dhading",
+        "province": "बागमती प्रदेश",
+        "nepali": "धादिङ",
+        "headquarters": "Nilkantha",
+        "areaKm2": 1926,
+        "population20117": 325710,
+        "officialWebsites": "https://dccdhading.gov.np"
+    },
+    {
+        "districts": "Kathmandu",
+        "province": "बागमती प्रदेश",
+        "nepali": "काठमाडौँ",
+        "headquarters": "Kathmandu",
+        "areaKm2": 395,
+        "population20117": 2041587,
+        "officialWebsites": "https://dccktm.gov.np"
+    },
+    {
+        "districts": "Kavrepalanchok",
+        "province": "बागमती प्रदेश",
+        "nepali": "काभ्रेपलान्चोक",
+        "headquarters": "Dhulikhel",
+        "areaKm2": 1396,
+        "population20117": 364039,
+        "officialWebsites": "https://dcckavre.gov.np"
+    },
+    {
+        "districts": "Lalitpur",
+        "province": "बागमती प्रदेश",
+        "nepali": "ललितपुर",
+        "headquarters": "Lalitpur",
+        "areaKm2": 385,
+        "population20117": 551667,
+        "officialWebsites": "https://dcclalitpur.gov.np"
+    },
+    {
+        "districts": "Nuwakot",
+        "province": "बागमती प्रदेश",
+        "nepali": "नुवाकोट",
+        "headquarters": "Bidur",
+        "areaKm2": 1121,
+        "population20117": 263391,
+        "officialWebsites": "https://dccnuwakot.gov.np"
+    },
+    {
+        "districts": "Rasuwa",
+        "province": "बागमती प्रदेश",
+        "nepali": "रसुवा",
+        "headquarters": "Dhunche",
+        "areaKm2": 1544,
+        "population20117": 46689,
+        "officialWebsites": "https://dccrasuwa.gov.np"
+    },
+    {
+        "districts": "Sindhupalchok",
+        "province": "बागमती प्रदेश",
+        "nepali": "सिन्धुपाल्चोक",
+        "headquarters": "Chautara",
+        "areaKm2": 2542,
+        "population20117": 262624,
+        "officialWebsites": "https://dccsindhupalchowk.gov.np"
+    },
+    {
+        "districts": "Chitwan",
+        "province": "बागमती प्रदेश",
+        "nepali": "चितवन",
+        "headquarters": "Bharatpur",
+        "areaKm2": 2218,
+        "population20117": 719859,
+        "officialWebsites": "https://dccchitwan.gov.np"
+    },
+    {
+        "districts": "Makwanpur",
+        "province": "बागमती प्रदेश",
+        "nepali": "मकवानपुर",
+        "headquarters": "Hetauda",
+        "areaKm2": 2426,
+        "population20117": 466073,
+        "officialWebsites": "https://dccmakwanpur.gov.np"
+    },
+    {
+        "districts": "Parsa",
+        "province": "मधेश प्रदेश",
+        "nepali": "पर्सा",
+        "headquarters": "Birgunj",
+        "areaKm2": 1353,
+        "population20117": 654471,
+        "officialWebsites": "https://dccparsa.gov.np"
+    },
+    {
+        "districts": "Bara",
+        "province": "मधेश प्रदेश",
+        "nepali": "बारा",
+        "headquarters": "Kalaiya",
+        "areaKm2": 1190,
+        "population20117": 763137,
+        "officialWebsites": "https://dccbara.gov.np"
+    },
+    {
+        "districts": "Rautahat",
+        "province": "मधेश प्रदेश",
+        "nepali": "रौतहट",
+        "headquarters": "Gaur",
+        "areaKm2": 1126,
+        "population20117": 813573,
+        "officialWebsites": "https://dccrautahat.gov.np"
+    },
+    {
+        "districts": "Sarlahi",
+        "province": "मधेश प्रदेश",
+        "nepali": "सर्लाही",
+        "headquarters": "Malangwa",
+        "areaKm2": 1259,
+        "population20117": 862470,
+        "officialWebsites": "https://dccsarlahi.gov.np"
+    },
+    {
+        "districts": "Dhanusha",
+        "province": "मधेश प्रदेश",
+        "nepali": "धनुषा",
+        "headquarters": "Janakpur",
+        "areaKm2": 1180,
+        "population20117": 867747,
+        "officialWebsites": "https://dccdhanusha.gov.np"
+    },
+    {
+        "districts": "Siraha",
+        "province": "मधेश प्रदेश",
+        "nepali": "सिराहा",
+        "headquarters": "Siraha",
+        "areaKm2": 1188,
+        "population20117": 739953,
+        "officialWebsites": "https://dccsiraha.gov.np"
+    },
+    {
+        "districts": "Mahottari",
+        "province": "मधेश प्रदेश",
+        "nepali": "महोत्तरी",
+        "headquarters": "Jaleshwar",
+        "areaKm2": 1002,
+        "population20117": 706994,
+        "officialWebsites": "https://dccmahottari.gov.np"
+    },
+    {
+        "districts": "Saptari",
+        "province": "मधेश प्रदेश",
+        "nepali": "सप्तरी",
+        "headquarters": "Rajbiraj",
+        "areaKm2": 1363,
+        "population20117": 706255,
+        "officialWebsites": "https://dccsaptari.gov.np"
+    },
+    {
+        "districts": "Bhojpur",
+        "province": "कोशी प्रदेश",
+        "nepali": "भोजपुर",
+        "headquarters": "Bhojpur",
+        "areaKm2": 1507,
+        "population20117": 157923,
+        "officialWebsites": "https://dccbhojpur.gov.np"
+    },
+    {
+        "districts": "Dhankuta",
+        "province": "कोशी प्रदेश",
+        "nepali": "धनकुटा",
+        "headquarters": "Dhankuta",
+        "areaKm2": 892,
+        "population20117": 150599,
+        "officialWebsites": "https://dccdhankuta.gov.np"
+    },
+    {
+        "districts": "Ilam",
+        "province": "कोशी प्रदेश",
+        "nepali": "इलाम",
+        "headquarters": "Ilam",
+        "areaKm2": 1703,
+        "population20117": 279534,
+        "officialWebsites": "https://dccilam.gov.np"
+    },
+    {
+        "districts": "Jhapa",
+        "province": "कोशी प्रदेश",
+        "nepali": "झापा",
+        "headquarters": "Bhadrapur",
+        "areaKm2": 1606,
+        "population20117": 998054,
+        "officialWebsites": "https://dccjhapa.gov.np"
+    },
+    {
+        "districts": "Khotang",
+        "province": "कोशी प्रदेश",
+        "nepali": "खोटाँग",
+        "headquarters": "Diktel",
+        "areaKm2": 1591,
+        "population20117": 175298,
+        "officialWebsites": "https://dcckhotang.gov.np"
+    },
+    {
+        "districts": "Morang",
+        "province": "कोशी प्रदेश",
+        "nepali": "मोरंग",
+        "headquarters": "Biratnagar",
+        "areaKm2": 1855,
+        "population20117": 1148156,
+        "officialWebsites": "https://dccmorang.gov.np"
+    },
+    {
+        "districts": "Okhaldhunga",
+        "province": "कोशी प्रदेश",
+        "nepali": "ओखलढुंगा",
+        "headquarters": "Siddhicharan",
+        "areaKm2": 1074,
+        "population20117": 139552,
+        "officialWebsites": "https://dccokhaldhunga.gov.np"
+    },
+    {
+        "districts": "Panchthar",
+        "province": "कोशी प्रदेश",
+        "nepali": "पांचथर",
+        "headquarters": "Phidim",
+        "areaKm2": 1241,
+        "population20117": 172400,
+        "officialWebsites": "https://dccpanchthar.gov.np"
+    },
+    {
+        "districts": "Sankhuwasabha",
+        "province": "कोशी प्रदेश",
+        "nepali": "संखुवासभा",
+        "headquarters": "Khandbari",
+        "areaKm2": 3480,
+        "population20117": 158041,
+        "officialWebsites": "https://dccsankhuwasabha.gov.np"
+    },
+    {
+        "districts": "Solukhumbu",
+        "province": "कोशी प्रदेश",
+        "nepali": "सोलुखुम्बू",
+        "headquarters": "Salleri",
+        "areaKm2": 3312,
+        "population20117": 104851,
+        "officialWebsites": "https://dccsolukhumbu.gov.np"
+    },
+    {
+        "districts": "Sunsari",
+        "province": "कोशी प्रदेश",
+        "nepali": "सुनसरी",
+        "headquarters": "Inaruwa",
+        "areaKm2": 1257,
+        "population20117": 926962,
+        "officialWebsites": "https://dccsunsari.gov.np"
+    },
+    {
+        "districts": "Taplejung",
+        "province": "कोशी प्रदेश",
+        "nepali": "ताप्लेजुंग",
+        "headquarters": "Taplejung",
+        "areaKm2": 3646,
+        "population20117": 120590,
+        "officialWebsites": "https://dcctaplejung.gov.np/"
+    },
+    {
+        "districts": "Tehrathum",
+        "province": "कोशी प्रदेश",
+        "nepali": "तेह्रथुम",
+        "headquarters": "Myanglung",
+        "areaKm2": 679,
+        "population20117": 88731,
+        "officialWebsites": "https://dcctehrathum.gov.np"
+    },
+    {
+        "districts": "Udayapur",
+        "province": "कोशी प्रदेश",
+        "nepali": "उदयपुर",
+        "headquarters": "Gaighat",
+        "areaKm2": 2063,
+        "population20117": 340721,
+        "officialWebsites": "https://dccudayapur.gov.np"
+    }
+]

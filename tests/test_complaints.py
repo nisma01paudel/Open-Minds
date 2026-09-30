@@ -88,3 +88,43 @@ def test_every_route_uses_a_response_helper_that_exists():
     assert not missing, (
         f"the API calls helpers it does not define: {missing} - the route would fail at runtime "
         f"while every unit test still passed")
+
+
+def test_the_letter_names_a_local_unit_that_exists_and_can_be_looked_up():
+    """The gap this closed, and where the data came from.
+
+    The letter used to name only "Ward Committee under the Ward Chair" - a true description of the
+    duty and a useless address. Nepal's 753 local units each have an official gov.np site, and the
+    slope titles already carry the unit, so the letter can name one that exists.
+
+    Data: github.com/rgtstha/NEPAL-QUEST-DATA, compiled to web/public/data/administration.json.
+    """
+    c = C.draft(28.35, 83.57, "crack")
+    assert c.admin, "the slope in the fixture names a unit and it was not resolved"
+    assert c.admin["unit"] and c.admin["district"]
+    assert c.admin.get("website", "").startswith("http")
+    assert c.admin["unit"] in c.letter_en, "the English letter does not name the unit"
+    assert c.admin["unit"] in c.letter_ne, "the Nepali letter does not name the unit"
+    assert "district" in c.letter_en
+
+
+def test_an_unmatched_slope_says_so_rather_than_inventing_an_office():
+    """119 of 613 do not match, and the caveat has to reflect that rather than stay silent."""
+    sites = [{"id": "9", "title": "Landslide at Nowhere VDC-1", "lat": 27.70, "lon": 85.31,
+              "authority": "Rural/Urban Municipality (Ward Committee)",
+              "office": "Ward Committee under the Ward Chair",
+              "legal_basis": "LGOA 2074 s.12(2)(c)(23)"}]
+    c = C.draft(27.7005, 85.3105, "crack", sites=sites)
+    assert c.admin is None
+    assert any("No local unit could be matched" in x for x in c.caveats), (
+        "an unresolved letter must say it could not name the unit")
+
+
+def test_the_gazetteer_covers_the_whole_country():
+    import json
+    from pathlib import Path
+    d = json.loads((Path(__file__).resolve().parents[1] /
+                    "web/public/data/administration.json").read_text(encoding="utf-8"))
+    assert d["counts"]["districts"] == 77, "Nepal has 77 districts"
+    assert d["counts"]["units"] == 753, "Nepal has 753 local units"
+    assert d["counts"]["with_website"] >= 700

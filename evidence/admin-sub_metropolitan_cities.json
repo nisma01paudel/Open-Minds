@@ -1,0 +1,123 @@
+[
+    {
+        "rank": 1,
+        "name": "Dhangadhi",
+        "nepali": "धनगढी",
+        "district": "Kailali",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 204788,
+        "area": 261.75,
+        "density": 782,
+        "website": "http://dhangadhimun.gov.np"
+    },
+    {
+        "rank": 2,
+        "name": "Ghorahi",
+        "nepali": "घोराही",
+        "district": "Dang",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 201079,
+        "area": 522.21,
+        "density": 385,
+        "website": "http://ghorahimun.gov.np"
+    },
+    {
+        "rank": 3,
+        "name": "Itahari",
+        "nepali": "इटहरी",
+        "district": "Sunsari",
+        "province": "कोशी प्रदेश",
+        "population": 198098,
+        "area": 93.78,
+        "density": 2112,
+        "website": "http://itaharimun.gov.np"
+    },
+    {
+        "rank": 4,
+        "name": "Hetauda",
+        "nepali": "हेटौडा",
+        "district": "Makawanpur",
+        "province": "बागमती प्रदेश",
+        "population": 195951,
+        "area": 261.59,
+        "density": 749,
+        "website": "http://hetaudamun.gov.np"
+    },
+    {
+        "rank": 5,
+        "name": "Janakpurdham",
+        "nepali": "जनकपुर",
+        "district": "Dhanusha",
+        "province": "मदेश प्रदेश",
+        "population": 195438,
+        "area": 91.97,
+        "density": 2125,
+        "website": "http://www.janakpurmun.gov.np"
+    },
+    {
+        "rank": 6,
+        "name": "Butwal",
+        "nepali": "बुटवल",
+        "district": "Rupandehi",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 195054,
+        "area": 101.61,
+        "density": 1920,
+        "website": "http://butwalmun.gov.np"
+    },
+    {
+        "rank": 7,
+        "name": "Tulsipur",
+        "nepali": "तुल्सिपुर",
+        "district": "Dang",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 180734,
+        "area": 384.63,
+        "density": 470,
+        "website": "http://tulsipurmun.gov.np"
+    },
+    {
+        "rank": 8,
+        "name": "Dharan",
+        "nepali": "धरान",
+        "district": "Sunsari",
+        "province": "कोशी प्रदेश",
+        "population": 173096,
+        "area": 192.32,
+        "density": 900,
+        "website": "http://www.dharan.gov.np"
+    },
+    {
+        "rank": 9,
+        "name": "Nepalgunj",
+        "nepali": "नेपालगञ्ज",
+        "district": "Banke",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 166258,
+        "area": 85.94,
+        "density": 1935,
+        "website": "http://www.nepalgunjmun.gov.np"
+    },
+    {
+        "rank": 10,
+        "name": "Kalaiya",
+        "nepali": "कलैया",
+        "district": "Bara",
+        "province": "मदेश प्रदेश",
+        "population": 141179,
+        "area": 108.94,
+        "density": 1296,
+        "website": "http://kalaiyamun.gov.np"
+    },
+    {
+        "rank": 11,
+        "name": "Jitpursimara",
+        "nepali": "जीतपुरसिमरा",
+        "district": "Bara",
+        "province": "मदेश प्रदेश",
+        "population": 119148,
+        "area": 312.18,
+        "density": 382,
+        "website": "http://www.jeetpursimaramun.gov.np"
+    }
+]

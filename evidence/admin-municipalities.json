@@ -1,0 +1,2483 @@
+[
+    {
+        "name": "Aathabis",
+        "nepali": "आठबीस",
+        "district": "Dailekh",
+        "province": "कर्णाली प्रदेश",
+        "population": 29227,
+        "area": 168,
+        "website": "https://aathabismun.gov.np/"
+    },
+    {
+        "name": "Aathabiskot",
+        "nepali": "आठबिसकाेट",
+        "district": "Rukum West",
+        "province": "कर्णाली प्रदेश",
+        "population": 33601,
+        "area": 560.34,
+        "website": "https://aathbiskotmun.gov.np/"
+    },
+    {
+        "name": "Amargadhi",
+        "nepali": "अमरगढी",
+        "district": "Dadeldhura",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 21245,
+        "area": 139.33,
+        "website": "https://amargadhimun.gov.np/en"
+    },
+    {
+        "name": "Arjundhara",
+        "nepali": "अर्जुनधारा",
+        "district": "Jhapa",
+        "province": "कोशी प्रदेश",
+        "population": 60204,
+        "area": 109.86,
+        "website": "https://www.shaniarjunmun.gov.np/en"
+    },
+    {
+        "name": "Aurahi",
+        "nepali": "औरही",
+        "district": "Mahottari",
+        "province": "मदेश प्रदेश",
+        "population": 31751,
+        "area": 35.76,
+        "website": "https://aurahimunmahottari.gov.np/"
+    },
+    {
+        "name": "Badimalika",
+        "nepali": "बडीमालिका",
+        "district": "Bajura",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 16818,
+        "area": 276,
+        "website": "https://www.badimalikamun.gov.np/"
+    },
+    {
+        "name": "Bagchaur",
+        "nepali": "बागचौर",
+        "district": "Salyan",
+        "province": "कर्णाली प्रदेश",
+        "population": 34118,
+        "area": 163.14,
+        "website": "https://bagchaurmun.gov.np/en"
+    },
+    {
+        "name": "Baglung",
+        "nepali": "बागलुङ",
+        "district": "Baglung",
+        "province": "गण्डकी प्रदेश",
+        "population": 57823,
+        "area": 98.01,
+        "website": "https://baglungmun.gov.np/?language=en"
+    },
+    {
+        "name": "बागमती प्रदेश",
+        "nepali": "बागमती",
+        "district": "Sarlahi",
+        "province": "मदेश प्रदेश",
+        "population": 40399,
+        "area": 101.18,
+        "website": "https://www.बागमती प्रदेशmunsarlahi.gov.np/"
+    },
+    {
+        "name": "Bahudarmai",
+        "nepali": "बहुदरमाई",
+        "district": "Parsa",
+        "province": "मदेश प्रदेश",
+        "population": 39673,
+        "area": 31.55,
+        "website": "https://www.bahudarmaimun.gov.np/"
+    },
+    {
+        "name": "Balara",
+        "nepali": "बलरा",
+        "district": "Sarlahi",
+        "province": "मदेश प्रदेश",
+        "population": 45194,
+        "area": 48.55,
+        "website": "https://www.balramun.gov.np/"
+    },
+    {
+        "name": "Balawa",
+        "nepali": "बलवा",
+        "district": "Mahottari",
+        "province": "मदेश प्रदेश",
+        "population": 42341,
+        "area": 44.07,
+        "website": "https://balwamun.gov.np/"
+    },
+    {
+        "name": "Banepa",
+        "nepali": "बनेपा",
+        "district": "Kavrepalanchok",
+        "province": "बागमती प्रदेश",
+        "population": 55628,
+        "area": 55,
+        "website": "https://banepamun.gov.np/en"
+    },
+    {
+        "name": "Bangad Kupinde",
+        "nepali": "बनगाड कुपिण्डे",
+        "district": "Salyan",
+        "province": "कर्णाली प्रदेश",
+        "population": 36052,
+        "area": 338.21,
+        "website": "https://www.bangadkupindemun.gov.np/"
+    },
+    {
+        "name": "Banganga",
+        "nepali": "बाणगंगा",
+        "district": "Kapilvastu",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 75242,
+        "area": 233.68,
+        "website": "https://www.bangangamun.gov.np/en"
+    },
+    {
+        "name": "Bansgadhi",
+        "nepali": "बासगढी",
+        "district": "Bardiya",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 55875,
+        "area": 206.08,
+        "website": "https://www.bansgadhimun.gov.np/en"
+    },
+    {
+        "name": "Barahachhetra",
+        "nepali": "बराहक्षेत्र",
+        "district": "Sunsari",
+        "province": "कोशी प्रदेश",
+        "population": 77408,
+        "area": 222.09,
+        "website": "https://barahamun.gov.np/"
+    },
+    {
+        "name": "Barahathwa",
+        "nepali": "बरहथवा",
+        "district": "Sarlahi",
+        "province": "मदेश प्रदेश",
+        "population": 69822,
+        "area": 107.05,
+        "website": "https://barhathwamun.gov.np/en"
+    },
+    {
+        "name": "Barbardiya",
+        "nepali": "बारबर्दिया",
+        "district": "Bardiya",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 68012,
+        "area": 226.09,
+        "website": "https://barbardiyamun.gov.np/"
+    },
+    {
+        "name": "Bardghat",
+        "nepali": "बर्दघाट",
+        "district": "Parasi",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 55382,
+        "area": 162.05,
+        "website": "https://bardghatmun.gov.np/en/"
+    },
+    {
+        "name": "Bardibas",
+        "nepali": "बर्दिबास",
+        "district": "Mahottari",
+        "province": "मदेश प्रदेश",
+        "population": 66354,
+        "area": 315.57,
+        "website": "https://www.bardibasmun.gov.np/en"
+    },
+    {
+        "name": "Barhabise",
+        "nepali": "बाह्रविसे",
+        "district": "Sindhupalchok",
+        "province": "बागमती प्रदेश",
+        "population": 26700,
+        "area": 96.73,
+        "website": "https://www.bahrabisemun.gov.np/"
+    },
+    {
+        "name": "Baudhimai",
+        "nepali": "बौधीमाई",
+        "district": "Rautahat",
+        "province": "मदेश प्रदेश",
+        "population": 36265,
+        "area": 34.343,
+        "website": "https://www.baudhimaimun.gov.np/"
+    },
+    {
+        "name": "Bedkot",
+        "nepali": "वेदकोट",
+        "district": "Kanchanpur",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 49479,
+        "area": 159.92,
+        "website": "https://bedkotmun.gov.np/en"
+    },
+    {
+        "name": "Belaka",
+        "nepali": "वेलका",
+        "district": "Udayapur",
+        "province": "कोशी प्रदेश",
+        "population": 42356,
+        "area": 344.73,
+        "website": "https://www.belakamun.gov.np/"
+    },
+    {
+        "name": "Belauri",
+        "nepali": "बेलौरी",
+        "district": "Kanchanpur",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 53544,
+        "area": 123.37,
+        "website": "https://www.belaurimun.gov.np/en"
+    },
+    {
+        "name": "Belbari",
+        "nepali": "बेलवारी",
+        "district": "Morang",
+        "province": "कोशी प्रदेश",
+        "population": 65892,
+        "area": 132.79,
+        "website": "https://www.belbarimun.gov.np/en"
+    },
+    {
+        "name": "Belkotgadhi",
+        "nepali": "बेलकोटगढी",
+        "district": "Nuwakot",
+        "province": "बागमती प्रदेश",
+        "population": 39888,
+        "area": 155.6,
+        "website": "https://www.belkotgadhimun.gov.np/"
+    },
+    {
+        "name": "Beni",
+        "nepali": "बेनी",
+        "district": "Myagdi",
+        "province": "गण्डकी प्रदेश",
+        "population": 33498,
+        "area": 76.57,
+        "website": "https://www.benimun.gov.np/en"
+    },
+    {
+        "name": "Besisahar",
+        "nepali": "बेसीशहर",
+        "district": "Lamjung",
+        "province": "गण्डकी प्रदेश",
+        "population": 39356,
+        "area": 127.64,
+        "website": "https://www.besishaharmun.gov.np/en"
+    },
+    {
+        "name": "Bhadrapur",
+        "nepali": "भद्रपुर",
+        "district": "Jhapa",
+        "province": "कोशी प्रदेश",
+        "population": 65543,
+        "area": 96.35,
+        "website": "https://bhadrapur.municipality.gov.np/en"
+    },
+    {
+        "name": "Bhajani",
+        "nepali": "भजनी",
+        "district": "Kailali",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 51845,
+        "area": 176.25,
+        "website": "https://www.bhajanitrishaktimun.gov.np/en"
+    },
+    {
+        "name": "Bhaktapur",
+        "nepali": "भक्तपुर",
+        "district": "Bhaktapur",
+        "province": "बागमती प्रदेश",
+        "population": 81728,
+        "area": 6.89,
+        "website": "https://bhaktapurmun.gov.np/en"
+    },
+    {
+        "name": "Bhangaha",
+        "nepali": "भँगाहा",
+        "district": "Mahottari",
+        "province": "मदेश प्रदेश",
+        "population": 46754,
+        "area": 77.21,
+        "website": "https://bhagahamun.gov.np/"
+    },
+    {
+        "name": "Bhanu",
+        "nepali": "भानु",
+        "district": "Tanahun",
+        "province": "गण्डकी प्रदेश",
+        "population": 45792,
+        "area": 184,
+        "website": "https://www.sabailamun.gov.np/en"
+    },
+    {
+        "name": "Bheri",
+        "nepali": "भेरी",
+        "district": "Jajarkot",
+        "province": "कर्णाली प्रदेश",
+        "population": 33515,
+        "area": 219.77,
+        "website": "https://bherimalikamun.gov.np/en"
+    },
+    {
+        "name": "Bheriganga",
+        "nepali": "भेरीगंगा",
+        "district": "Surkhet",
+        "province": "कर्णाली प्रदेश",
+        "population": 41407,
+        "area": 256.2,
+        "website": "https://www.bherigangamun.gov.np/en"
+    },
+    {
+        "name": "Bhimad",
+        "nepali": "भिमाद",
+        "district": "Tanahun",
+        "province": "गण्डकी प्रदेश",
+        "population": 31362,
+        "area": 129,
+        "website": "https://www.bhimadmun.gov.np/"
+    },
+    {
+        "name": "Bhimdatta",
+        "nepali": "भीमदत्त",
+        "district": "Kanchanpur",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 123316,
+        "area": 78.24,
+        "website": "https://bheemdattamun.gov.np/en"
+    },
+    {
+        "name": "Bhimeshwar",
+        "nepali": "भीमेश्वर",
+        "district": "Dolakha",
+        "province": "बागमती प्रदेश",
+        "population": 31480,
+        "area": 132.5,
+        "website": "https://bhimeshwormun.gov.np/en"
+    },
+    {
+        "name": "Bhirkot",
+        "nepali": "भिरकोट",
+        "district": "Syangja",
+        "province": "गण्डकी प्रदेश",
+        "population": 25583,
+        "area": 78.23,
+        "website": "https://bheerkotmun.gov.np/en"
+    },
+    {
+        "name": "Bhojpur",
+        "nepali": "भोजपुर",
+        "district": "Bhojpur",
+        "province": "कोशी प्रदेश",
+        "population": 27204,
+        "area": 159.51,
+        "website": "https://www.bhojpurmun.gov.np/en"
+    },
+    {
+        "name": "Bhumikasthan",
+        "nepali": "भूमिकास्थान",
+        "district": "Arghakhanchi",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 32640,
+        "area": 159.13,
+        "website": "https://www.bhumikasthanmun.gov.np/"
+    },
+    {
+        "name": "Bideha",
+        "nepali": "विदेह",
+        "district": "Dhanusha",
+        "province": "मदेश प्रदेश",
+        "population": 32266,
+        "area": 45.51,
+        "website": "https://www.bidehamun.gov.np/"
+    },
+    {
+        "name": "Bidur",
+        "nepali": "विदुर",
+        "district": "Nuwakot",
+        "province": "बागमती प्रदेश",
+        "population": 54351,
+        "area": 130.01,
+        "website": "https://bidurmun.gov.np/en"
+    },
+    {
+        "name": "Birendranagar",
+        "nepali": "वीरेन्द्रनगर",
+        "district": "Surkhet",
+        "province": "कर्णाली प्रदेश",
+        "population": 154886,
+        "area": 245.06,
+        "website": "https://birendranagarmun.gov.np/en"
+    },
+    {
+        "name": "Birtamod",
+        "nepali": "बिर्तामोड",
+        "district": "Jhapa",
+        "province": "कोशी प्रदेश",
+        "population": 117355,
+        "area": 78.24,
+        "website": "https://www.birtamodmun.gov.np/en"
+    },
+    {
+        "name": "Bodebarsain",
+        "nepali": "बोदेबरसाईन",
+        "district": "Saptari",
+        "province": "मदेश प्रदेश",
+        "population": 43229,
+        "area": 58.93,
+        "website": "https://www.bodebarsainmun.gov.np/"
+    },
+    {
+        "name": "Brindaban",
+        "nepali": "बृन्दावन",
+        "district": "Rautahat",
+        "province": "मदेश प्रदेश",
+        "population": 42735,
+        "area": 95.4,
+        "website": "https://www.brindawanmun.gov.np/"
+    },
+    {
+        "name": "Buddhabhumi",
+        "nepali": "बुद्धभूमी",
+        "district": "Kapilvastu",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 64949,
+        "area": 366.67,
+        "website": "https://buddhabhumimun.gov.np/"
+    },
+    {
+        "name": "Budhanilkantha",
+        "nepali": "बुढानिलकण्ठ",
+        "district": "Kathmandu",
+        "province": "बागमती प्रदेश",
+        "population": 179688,
+        "area": 34.8,
+        "website": "https://www.budhanilkanthamun.gov.np/en"
+    },
+    {
+        "name": "Budhiganga",
+        "nepali": "बुढीगंगा",
+        "district": "Bajura",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 21677,
+        "area": 59.2,
+        "website": "https://www.budhigangamunbajura.gov.np/"
+    },
+    {
+        "name": "Budhinanda",
+        "nepali": "बुढीनन्दा",
+        "district": "Bajura",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 18776,
+        "area": 232.48,
+        "website": "https://www.budhinandamun.gov.np/"
+    },
+    {
+        "name": "Bungal",
+        "nepali": "बुंगल",
+        "district": "Bajhang",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 33224,
+        "area": 447.59,
+        "website": "https://www.bungalmun.gov.np/"
+    },
+    {
+        "name": "Chainpur",
+        "nepali": "चैनपुर",
+        "district": "Sankhuwasabha",
+        "province": "कोशी प्रदेश",
+        "population": 27308,
+        "area": 223.69,
+        "website": "https://www.chainpurmun.gov.np/en"
+    },
+    {
+        "name": "Chamunda Bindrasaini",
+        "nepali": "चामुण्डा विन्द्रासैनी",
+        "district": "Dailekh",
+        "province": "कर्णाली प्रदेश",
+        "population": 26149,
+        "area": 90.6,
+        "website": "https://chamundabindrasainimun.gov.np/"
+    },
+    {
+        "name": "Chandannath",
+        "nepali": "चन्दननाथ",
+        "district": "Jumla",
+        "province": "कर्णाली प्रदेश",
+        "population": 19047,
+        "area": 102.03,
+        "website": "https://www.chandannathmun.gov.np/en"
+    },
+    {
+        "name": "Chandragiri",
+        "nepali": "कृष बन्जाडे",
+        "district": "Kathmandu",
+        "province": "बागमती प्रदेश",
+        "population": 136928,
+        "area": 43.9,
+        "website": "https://www.chandragirimun.gov.np/en"
+    },
+    {
+        "name": "Chandrapur",
+        "nepali": "चन्द्रपुर",
+        "district": "Rautahat",
+        "province": "मदेश प्रदेश",
+        "population": 72059,
+        "area": 249.96,
+        "website": "https://www.chandrapurmun.gov.np/en"
+    },
+    {
+        "name": "Changunarayan",
+        "nepali": "चाँगुनारायण",
+        "district": "Bhaktapur",
+        "province": "बागमती प्रदेश",
+        "population": 55430,
+        "area": 62.98,
+        "website": "https://www.changunarayanmun.gov.np/en"
+    },
+    {
+        "name": "Chapakot",
+        "nepali": "चापाकोट",
+        "district": "Syangja",
+        "province": "गण्डकी प्रदेश",
+        "population": 26042,
+        "area": 120.59,
+        "website": "https://www.chapakotmun.gov.np/en"
+    },
+    {
+        "name": "Chaudandigadhi",
+        "nepali": "चौदण्डीगढी",
+        "district": "Udayapur",
+        "province": "कोशी प्रदेश",
+        "population": 48578,
+        "area": 283.78,
+        "website": "https://chaudandigadhimun.gov.np/"
+    },
+    {
+        "name": "Chaurjahari",
+        "nepali": "चौरजहारी",
+        "district": "Western Rukum",
+        "province": "कर्णाली प्रदेश",
+        "population": 27438,
+        "area": 107.38,
+        "website": "https://chaurjaharimun.gov.np/en"
+    },
+    {
+        "name": "Chautara Sangachokgadhi",
+        "nepali": "चौतारा साँगाचोकगढी",
+        "district": "Sindhupalchok",
+        "province": "बागमती प्रदेश",
+        "population": 51347,
+        "area": 165.25,
+        "website": "https://www.chautarasangachowkgadhimun.gov.np/"
+    },
+    {
+        "name": "Chhayanath Rara",
+        "nepali": "छायाँनाथ रारा",
+        "district": "Mugu",
+        "province": "कर्णाली प्रदेश",
+        "population": 20078,
+        "area": 480.67,
+        "website": "https://www.chhayanathraramun.gov.np/"
+    },
+    {
+        "name": "Chhedagad",
+        "nepali": "छेडागाड",
+        "district": "Jajarkot",
+        "province": "कर्णाली प्रदेश",
+        "population": 35295,
+        "area": 284.2,
+        "website": "https://chhedagadmun.gov.np/"
+    },
+    {
+        "name": "Chhireshwarnath",
+        "nepali": "क्षिरेश्वरनाथ",
+        "district": "Dhanusha",
+        "province": "मदेश प्रदेश",
+        "population": 42541,
+        "area": 50.85,
+        "website": "https://www.kshireshwornathmun.gov.np/"
+    },
+    {
+        "name": "Dakneshwari",
+        "nepali": "दक्नेश्वारी",
+        "district": "Saptari",
+        "province": "मदेश प्रदेश",
+        "population": 44782,
+        "area": 69.11,
+        "website": "https://www.dakneshworimun.gov.np/"
+    },
+    {
+        "name": "Dakshinkali",
+        "nepali": "दक्षिणकाली",
+        "district": "Kathmandu",
+        "province": "बागमती प्रदेश",
+        "population": 24296,
+        "area": 42.68,
+        "website": "https://www.daxinkalimun.gov.np/en"
+    },
+    {
+        "name": "Damak",
+        "nepali": "दमक",
+        "district": "Jhapa",
+        "province": "कोशी प्रदेश",
+        "population": 107410,
+        "area": 70.86,
+        "website": "https://damakmun.gov.np/en"
+    },
+    {
+        "name": "Dasharathchand",
+        "nepali": "दशरथचन्द",
+        "district": "Baitadi",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 34575,
+        "area": 135.15,
+        "website": "https://dasharathchandmun.gov.np/en"
+    },
+    {
+        "name": "Deumai",
+        "nepali": "देउमाई",
+        "district": "Ilam",
+        "province": "कोशी प्रदेश",
+        "population": 32927,
+        "area": 191.63,
+        "website": "https://www.deumaimun.gov.np/en"
+    },
+    {
+        "name": "Devchuli",
+        "nepali": "देवचुली",
+        "district": "Nawalpur",
+        "province": "गण्डकी प्रदेश",
+        "population": 42603,
+        "area": 112.72,
+        "website": "https://www.devchulimun.gov.np/en"
+    },
+    {
+        "name": "Devdaha",
+        "nepali": "देवदह",
+        "district": "Rupandehi",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 53523,
+        "area": 136.95,
+        "website": "https://www.devdahamun.gov.np/en"
+    },
+    {
+        "name": "Dewahi Gonahi",
+        "nepali": "देवाही गोनाही",
+        "district": "Rautahat",
+        "province": "मदेश प्रदेश",
+        "population": 32146,
+        "area": 33.99,
+        "website": "https://www.dewahigonahimun.gov.np/"
+    },
+    {
+        "name": "Dhangadimai",
+        "nepali": "धनगढीमाई",
+        "district": "Siraha",
+        "province": "मदेश प्रदेश",
+        "population": 47449,
+        "area": 159.51,
+        "website": "https://dhangadhimaimun.gov.np/en"
+    },
+    {
+        "name": "Dhankuta",
+        "nepali": "धनकुटा",
+        "district": "Dhankuta",
+        "province": "कोशी प्रदेश",
+        "population": 36619,
+        "area": 111,
+        "website": "https://dhankutamun.gov.np/en"
+    },
+    {
+        "name": "Dhanushadham",
+        "nepali": "धनुषाधाम",
+        "district": "Dhanusha",
+        "province": "मदेश प्रदेश",
+        "population": 45665,
+        "area": 91.64,
+        "website": "https://www.dhanushadhammun.gov.np/en"
+    },
+    {
+        "name": "Dharmadevi",
+        "nepali": "धर्मदेवी",
+        "district": "Sankhuwasabha",
+        "province": "कोशी प्रदेश",
+        "population": 18235,
+        "area": 132.82,
+        "website": "https://www.dharmadevimun.gov.np/"
+    },
+    {
+        "name": "Dhorpatan",
+        "nepali": "ढोरपाटन",
+        "district": "Baglung",
+        "province": "गण्डकी प्रदेश",
+        "population": 26215,
+        "area": 222.85,
+        "website": "https://www.dhorpatanmun.gov.np/"
+    },
+    {
+        "name": "Dhulikhel",
+        "nepali": "धुलिखेल",
+        "district": "Kavrepalanchok",
+        "province": "बागमती प्रदेश",
+        "population": 32162,
+        "area": 55,
+        "website": "https://dhulikhelmun.gov.np/en"
+    },
+    {
+        "name": "Dhunibeshi",
+        "nepali": "धुनीबेंशी",
+        "district": "Dhading",
+        "province": "बागमती प्रदेश",
+        "population": 31029,
+        "area": 96.3
+    },
+    {
+        "name": "Dipayal Silgadhi",
+        "nepali": "दिपायल सिलगढी",
+        "district": "Doti",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 32941,
+        "area": 126.62,
+        "website": "https://dipayalsilgadhimun.gov.np/en"
+    },
+    {
+        "name": "Dudhauli",
+        "nepali": "दुधौली",
+        "district": "Sindhuli",
+        "province": "बागमती प्रदेश",
+        "population": 65302,
+        "area": 390.39,
+        "website": "https://www.dudhaulimun.gov.np/en"
+    },
+    {
+        "name": "Duhabi",
+        "nepali": "दुहवी",
+        "district": "Sunsari",
+        "province": "कोशी प्रदेश",
+        "population": 56269,
+        "area": 73.67,
+        "website": "https://www.duhabibhaluwamun.gov.np/en"
+    },
+    {
+        "name": "Dullu",
+        "nepali": "दुल्लु",
+        "district": "Dailekh",
+        "province": "कर्णाली प्रदेश",
+        "population": 41540,
+        "area": 156.77,
+        "website": "https://www.dullumun.gov.np/en"
+    },
+    {
+        "name": "Gadhimai",
+        "nepali": "गढीमाई",
+        "district": "Rautahat",
+        "province": "मदेश प्रदेश",
+        "population": 40410,
+        "area": 49.44,
+        "website": "https://www.gadhimaimun.gov.np/"
+    },
+    {
+        "name": "Gaindakot",
+        "nepali": "गैडाकोट",
+        "district": "Nawalpur",
+        "province": "गण्डकी प्रदेश",
+        "population": 58836,
+        "area": 159.93,
+        "website": "https://www.gaindakotmun.gov.np/en"
+    },
+    {
+        "name": "Galkot",
+        "nepali": "गल्कोट",
+        "district": "Baglung",
+        "province": "गण्डकी प्रदेश",
+        "population": 33097,
+        "area": 194.39,
+        "website": "https://www.galkotmun.gov.np/"
+    },
+    {
+        "name": "Galyang",
+        "nepali": "गल्याङ",
+        "district": "Syangja",
+        "province": "गण्डकी प्रदेश",
+        "population": 36967,
+        "area": 122.71,
+        "website": "https://www.galyangmun.gov.np/"
+    },
+    {
+        "name": "Ganeshman Charanath",
+        "nepali": "गणेशमान चारनाथ",
+        "district": "Dhanusha",
+        "province": "मदेश प्रदेश",
+        "population": 37300,
+        "area": 244.31,
+        "website": "https://www.ganeshmancharnathmun.gov.np/"
+    },
+    {
+        "name": "Garuda",
+        "nepali": "गरुडा",
+        "district": "Rautahat",
+        "province": "मदेश प्रदेश",
+        "population": 50481,
+        "area": 44.46,
+        "website": "https://www.garudamun.gov.np/en"
+    },
+    {
+        "name": "Gaur",
+        "nepali": "गौर",
+        "district": "Rautahat",
+        "province": "मदेश प्रदेश",
+        "population": 34937,
+        "area": 21.53,
+        "website": "https://gaurmun.gov.np/en"
+    },
+    {
+        "name": "Gauradaha",
+        "nepali": "गौरादह",
+        "district": "Jhapa",
+        "province": "कोशी प्रदेश",
+        "population": 53033,
+        "area": 149.86,
+        "website": "https://gauradahamun.gov.np/en"
+    },
+    {
+        "name": "Gauriganga",
+        "nepali": "गौरीगंगा",
+        "district": "Kailali",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 55314,
+        "area": 244.44,
+        "website": "https://gaurigangamun.gov.np/"
+    },
+    {
+        "name": "Gaushala",
+        "nepali": "गौशाला",
+        "district": "Mahottari",
+        "province": "मदेश प्रदेश",
+        "population": 66673,
+        "area": 144.73,
+        "website": "https://www.gaushalamun.gov.np/en"
+    },
+    {
+        "name": "Ghodaghodi",
+        "nepali": "घोडाघोडी",
+        "district": "Kailali",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 75586,
+        "area": 354.45,
+        "website": "https://www.ghodaghodimun.gov.np/en"
+    },
+    {
+        "name": "Godaita",
+        "nepali": "गोडैता",
+        "district": "Sarlahi",
+        "province": "मदेश प्रदेश",
+        "population": 47687,
+        "area": 48.62,
+        "website": "https://www.godaitamun.gov.np/"
+    },
+    {
+        "name": "Godawari",
+        "nepali": "गोदावरी",
+        "district": "Lalitpur",
+        "province": "बागमती प्रदेश",
+        "population": 100972,
+        "area": 96.11,
+        "website": "https://godawarimunlalitpur.gov.np/en"
+    },
+    {
+        "name": "Godawari",
+        "nepali": "गोदावरी",
+        "district": "Kailali",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 78018,
+        "area": 305.63,
+        "website": "https://www.attariyamun.gov.np/en"
+    },
+    {
+        "name": "Gokarneshwar",
+        "nepali": "गोकर्णेश्वर",
+        "district": "Kathmandu",
+        "province": "बागमती प्रदेश",
+        "population": 151200,
+        "area": 58.5,
+        "website": "https://gokarneshwormun.gov.np/en"
+    },
+    {
+        "name": "Golbazar",
+        "nepali": "गोलबजार",
+        "district": "Siraha",
+        "province": "मदेश प्रदेश",
+        "population": 51137,
+        "area": 111.94
+    },
+    {
+        "name": "Gorkha",
+        "nepali": "गोरखा",
+        "district": "Gorkha",
+        "province": "गण्डकी प्रदेश",
+        "population": 49272,
+        "area": 131.86,
+        "website": "https://gorkhamun.gov.np/en"
+    },
+    {
+        "name": "Gujara",
+        "nepali": "गुजरा",
+        "district": "Rautahat",
+        "province": "मदेश प्रदेश",
+        "population": 46592,
+        "area": 150.33,
+        "website": "https://www.gujaramun.gov.np/"
+    },
+    {
+        "name": "Gulariya",
+        "nepali": "गुलरिया",
+        "district": "Bardiya",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 66679,
+        "area": 118.21,
+        "website": "https://gulariyamun.gov.np/en"
+    },
+    {
+        "name": "Gurbhakot",
+        "nepali": "गुर्भाकोट",
+        "district": "Surkhet",
+        "province": "कर्णाली प्रदेश",
+        "population": 43765,
+        "area": 228.62,
+        "website": "https://gurbhakotmun.gov.np/"
+    },
+    {
+        "name": "Halesi Tuwachung",
+        "nepali": "हलेसी तुवाचुङ",
+        "district": "Khotang",
+        "province": "कोशी प्रदेश",
+        "population": 29532,
+        "area": 280.17,
+        "website": "https://www.halesituwachungmun.gov.np/"
+    },
+    {
+        "name": "Hansapur",
+        "nepali": "हंसपुर",
+        "district": "Dhanusha",
+        "province": "मदेश प्रदेश",
+        "population": 39145,
+        "area": 48.71,
+        "website": "https://www.hansapurmun.gov.np/"
+    },
+    {
+        "name": "Hanumannagar Kankalini",
+        "nepali": "हनुमाननगर कंकालिनी",
+        "district": "Saptari",
+        "province": "मदेश प्रदेश",
+        "population": 45734,
+        "area": 118.19,
+        "website": "https://www.hanumannagarkankalinimun.gov.np/"
+    },
+    {
+        "name": "Haripur",
+        "nepali": "हरिपुर",
+        "district": "Sarlahi",
+        "province": "मदेश प्रदेश",
+        "population": 37351,
+        "area": 66.86,
+        "website": "https://www.haripurmun.gov.np/"
+    },
+    {
+        "name": "Haripurwa",
+        "nepali": "हरिपुर्वा",
+        "district": "Sarlahi",
+        "province": "मदेश प्रदेश",
+        "population": 36042,
+        "area": 30.5,
+        "website": "https://www.haripurwamun.gov.np/"
+    },
+    {
+        "name": "Hariwan",
+        "nepali": "हरिवन",
+        "district": "Sarlahi",
+        "province": "मदेश प्रदेश",
+        "population": 43928,
+        "area": 86.12,
+        "website": "https://www.harionmun.gov.np/"
+    },
+    {
+        "name": "Ilam",
+        "nepali": "इलाम",
+        "district": "Ilam",
+        "province": "कोशी प्रदेश",
+        "population": 48536,
+        "area": 173.32,
+        "website": "https://ilammun.gov.np/en"
+    },
+    {
+        "name": "Inaruwa",
+        "nepali": "ईनरुवा",
+        "district": "Sunsari",
+        "province": "कोशी प्रदेश",
+        "population": 63593,
+        "area": 77.92,
+        "website": "https://inaruwamun.gov.np/en"
+    },
+    {
+        "name": "Ishnath",
+        "nepali": "ईशनाथ",
+        "district": "Rautahat",
+        "province": "मदेश प्रदेश",
+        "population": 41435,
+        "area": 35.18,
+        "website": "https://www.ishnathmun.gov.np/"
+    },
+    {
+        "name": "Ishwarpur",
+        "nepali": "ईश्वरपूर",
+        "district": "Sarlahi",
+        "province": "मदेश प्रदेश",
+        "population": 59986,
+        "area": 163.83,
+        "website": "https://www.ishworpurmun.gov.np/en"
+    },
+    {
+        "name": "Jaimini",
+        "nepali": "जैमिनी",
+        "district": "Baglung",
+        "province": "गण्डकी प्रदेश",
+        "population": 31430,
+        "area": 118.71,
+        "website": "https://www.jaiminimun.gov.np/"
+    },
+    {
+        "name": "Jaleshwar",
+        "nepali": "जलेश्वर",
+        "district": "Mahottari",
+        "province": "मदेश प्रदेश",
+        "population": 58549,
+        "area": 44.26,
+        "website": "https://jaleshwarmun.gov.np/en"
+    },
+    {
+        "name": "Jaya Prithvi",
+        "nepali": "जयपृथ्वी",
+        "district": "Bajhang",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 22191,
+        "area": 166.79,
+        "website": "https://www.jayaprithvimun.gov.np/en"
+    },
+    {
+        "name": "Jiri",
+        "nepali": "जिरी",
+        "district": "Dolakha",
+        "province": "बागमती प्रदेश",
+        "population": 15515,
+        "area": 211.27,
+        "website": "https://www.jirimun.gov.np/en"
+    },
+    {
+        "name": "Kabilasi",
+        "nepali": "कविलासी",
+        "district": "Sarlahi",
+        "province": "मदेश प्रदेश",
+        "population": 42336,
+        "area": 48.11,
+        "website": "https://www.belakamun.gov.np/"
+    },
+    {
+        "name": "Kageshwari-Manohara",
+        "nepali": "कागेश्वरी मनोहरा",
+        "district": "Kathmandu",
+        "province": "बागमती प्रदेश",
+        "population": 133327,
+        "area": 27.38,
+        "website": "https://www.kageshworimanoharamun.gov.np/en"
+    },
+    {
+        "name": "Kalika",
+        "nepali": "कालिका",
+        "district": "Chitwan",
+        "province": "बागमती प्रदेश",
+        "population": 41742,
+        "area": 149.08,
+        "website": "https://kalikamun.gov.np/en"
+    },
+    {
+        "name": "Kalyanpur",
+        "nepali": "कल्याणपुर",
+        "district": "Siraha",
+        "province": "मदेश प्रदेश",
+        "population": 49288,
+        "area": 76.81,
+        "website": "https://www.kalyanpurmun.gov.np/"
+    },
+    {
+        "name": "Kamala",
+        "nepali": "कमला",
+        "district": "Dhanusha",
+        "province": "मदेश प्रदेश",
+        "population": 38877,
+        "area": 65.85,
+        "website": "https://www.kamalamun.gov.np/"
+    },
+    {
+        "name": "Kamalamai",
+        "nepali": "कमलामाई",
+        "district": "Sindhuli",
+        "province": "बागमती प्रदेश",
+        "population": 65064,
+        "area": 482.57,
+        "website": "https://kamalamaimun.gov.np/en"
+    },
+    {
+        "name": "Kamalbazar",
+        "nepali": "कमलबजार",
+        "district": "Achham",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 23738,
+        "area": 120.78,
+        "website": "https://kamalbazarmun.gov.np/en"
+    },
+    {
+        "name": "Kanchanrup",
+        "nepali": "कञ्चनरूप",
+        "district": "Saptari",
+        "province": "मदेश प्रदेश",
+        "population": 35238,
+        "area": 117.34,
+        "website": "https://www.kanchanrupmun.gov.np/en"
+    },
+    {
+        "name": "Kankai",
+        "nepali": "कन्काई",
+        "district": "Jhapa",
+        "province": "कोशी प्रदेश",
+        "population": 40141,
+        "area": 80.98,
+        "website": "https://www.kankaimun.gov.np/en"
+    },
+    {
+        "name": "Kapilvastu",
+        "nepali": "कपिलवस्तु",
+        "district": "Kapilvastu",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 76394,
+        "area": 136.91,
+        "website": "https://kapilvastumun.gov.np/en"
+    },
+    {
+        "name": "Karjanha",
+        "nepali": "कर्जन्हा",
+        "district": "Siraha",
+        "province": "मदेश प्रदेश",
+        "population": 30965,
+        "area": 76.84,
+        "website": "https://www.karjanhamun.gov.np/"
+    },
+    {
+        "name": "Katahariya",
+        "nepali": "कटहरीया",
+        "district": "Rautahat",
+        "province": "मदेश प्रदेश",
+        "population": 38413,
+        "area": 40.69,
+        "website": "https://www.katahariyamun.gov.np/"
+    },
+    {
+        "name": "Katari",
+        "nepali": "कटारी",
+        "district": "Udayapur",
+        "province": "कोशी प्रदेश",
+        "population": 56146,
+        "area": 424.89,
+        "website": "https://www.kataarimun.gov.np/en"
+    },
+    {
+        "name": "Kawasoti",
+        "nepali": "कावासोती",
+        "district": "Nawalpur",
+        "province": "गण्डकी प्रदेश",
+        "population": 62421,
+        "area": 108.34,
+        "website": "https://www.kawasotimun.gov.np/en"
+    },
+    {
+        "name": "Khadak",
+        "nepali": "खडक",
+        "district": "Saptari",
+        "province": "मदेश प्रदेश",
+        "population": 45367,
+        "area": 93.77,
+        "website": "https://www.khadakmun.gov.np/"
+    },
+    {
+        "name": "Khairhani",
+        "nepali": "खैरहनी",
+        "district": "Chitwan",
+        "province": "बागमती प्रदेश",
+        "population": 56094,
+        "area": 85.55,
+        "website": "https://www.khairhanimun.gov.np/en"
+    },
+    {
+        "name": "Khandachakra",
+        "nepali": "खाँडाचक्र",
+        "district": "Kalikot",
+        "province": "कर्णाली प्रदेश",
+        "population": 20288,
+        "area": 133.29,
+        "website": "https://khandachakramun.gov.np/"
+    },
+    {
+        "name": "Khandbari",
+        "nepali": "खादँवारी",
+        "district": "Sankhuwasabha",
+        "province": "कोशी प्रदेश",
+        "population": 31177,
+        "area": 122.78,
+        "website": "https://khandbarimun.gov.np/"
+    },
+    {
+        "name": "Kirtipur",
+        "nepali": "किर्तिपुर",
+        "district": "Kathmandu",
+        "province": "बागमती प्रदेश",
+        "population": 65602,
+        "area": 14.76,
+        "website": "https://kirtipurmun.gov.np/en"
+    },
+    {
+        "name": "Kohalpur",
+        "nepali": "कोहलपुर",
+        "district": "Banke",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 100289,
+        "area": 184.26,
+        "website": "https://www.kohalpurmun.gov.np/en"
+    },
+    {
+        "name": "Kolhabi",
+        "nepali": "कोल्हवी",
+        "district": "Bara",
+        "province": "मदेश प्रदेश",
+        "population": 43036,
+        "area": 157.4,
+        "website": "https://www.kolhabimun.gov.np/en"
+    },
+    {
+        "name": "Krishnanagar",
+        "nepali": "कृष्णनगर",
+        "district": "Kapilvastu",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 62370,
+        "area": 96.66,
+        "website": "https://www.krishnanagarmun.gov.np/en"
+    },
+    {
+        "name": "Krishnapur",
+        "nepali": "कृष्णपुर",
+        "district": "Kanchanpur",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 56643,
+        "area": 252.75,
+        "website": "https://krishnapurmun.gov.np/en"
+    },
+    {
+        "name": "Kushma",
+        "nepali": "कुश्मा",
+        "district": "Parbat",
+        "province": "गण्डकी प्रदेश",
+        "population": 39600,
+        "area": 93.18,
+        "website": "https://www.kushmamun.gov.np/en"
+    },
+    {
+        "name": "Lahan",
+        "nepali": "लहान",
+        "district": "Siraha",
+        "province": "मदेश प्रदेश",
+        "population": 102955,
+        "area": 167.17,
+        "website": "https://lahanmun.gov.np/en"
+    },
+    {
+        "name": "Lalbandi",
+        "nepali": "लालबन्दी",
+        "district": "Sarlahi",
+        "province": "मदेश प्रदेश",
+        "population": 59395,
+        "area": 238.5,
+        "website": "https://www.laalbandimun.gov.np/en"
+    },
+    {
+        "name": "Laligurans",
+        "nepali": "लालिगुराँस",
+        "district": "Terathum",
+        "province": "कोशी प्रदेश",
+        "population": 16970,
+        "area": 90.27,
+        "website": "https://laliguransmun.gov.np/en"
+    },
+    {
+        "name": "Lamahi",
+        "nepali": "लमही",
+        "district": "Dang",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 47655,
+        "area": 326.66,
+        "website": "https://www.lamahimun.gov.np/en"
+    },
+    {
+        "name": "Lamki Chuha",
+        "nepali": "लम्की चुहा",
+        "district": "Kailali",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 90941,
+        "area": 225,
+        "website": "https://www.lamkichuhamun.gov.np/en"
+    },
+    {
+        "name": "Lekbeshi",
+        "nepali": "लेकबेशी",
+        "district": "Surkhet",
+        "province": "कर्णाली प्रदेश",
+        "population": 30295,
+        "area": 180.92,
+        "website": "https://www.lekbeshimun.gov.np/"
+    },
+    {
+        "name": "Letang Bhogateni",
+        "nepali": "लेटाङ",
+        "district": "Morang",
+        "province": "कोशी प्रदेश",
+        "population": 32053,
+        "area": 219.23,
+        "website": "https://www.letangbhogatenimun.gov.np/en"
+    },
+    {
+        "name": "Loharpatti",
+        "nepali": "लोहरपट्टी",
+        "district": "Mahottari",
+        "province": "मदेश प्रदेश",
+        "population": 39579,
+        "area": 50.06,
+        "website": "https://loharpattimun.gov.np/"
+    },
+    {
+        "name": "लुम्बिनी प्रदेश Sanskritik",
+        "nepali": "लुम्बिनी सांस्कृतिक",
+        "district": "Rupandehi",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 72497,
+        "area": 112.21,
+        "website": "https://www.लुम्बिनी प्रदेशsanskritikmun.gov.np/"
+    },
+    {
+        "name": "Madhav Narayan",
+        "nepali": "माधव नारायण",
+        "district": "Rautahat",
+        "province": "मदेश प्रदेश",
+        "population": 35175,
+        "area": 48.53,
+        "website": "https://www.nagrainmun.gov.np/"
+    },
+    {
+        "name": "Madhuwan",
+        "nepali": "मधुवन",
+        "district": "Bardiya",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 46437,
+        "area": 129.73,
+        "website": "https://www.madhuwanmun.gov.np/"
+    },
+    {
+        "name": "Madhya Nepal",
+        "nepali": "मध्यनेपाल",
+        "district": "Lamjung",
+        "province": "गण्डकी प्रदेश",
+        "population": 23385,
+        "area": 113.86,
+        "website": "https://madhyanepalmun.gov.np/en"
+    },
+    {
+        "name": "Madhyabindu",
+        "nepali": "मध्यविन्दु",
+        "district": "Nawalpur",
+        "province": "गण्डकी प्रदेश",
+        "population": 54140,
+        "area": 233.35,
+        "website": "https://madhyabindumun.gov.np/en"
+    },
+    {
+        "name": "Madhyapur Thimi",
+        "nepali": "मध्यपुर थिमी",
+        "district": "Bhaktapur",
+        "province": "बागमती प्रदेश",
+        "population": 119955,
+        "area": 11.47,
+        "website": "https://madhyapurthimimun.gov.np/en"
+    },
+    {
+        "name": "Madi",
+        "nepali": "माडी",
+        "district": "Chitwan",
+        "province": "बागमती प्रदेश",
+        "population": 37683,
+        "area": 218.24,
+        "website": "https://www.maddimun.gov.np/en"
+    },
+    {
+        "name": "Madi",
+        "nepali": "मादी",
+        "district": "Sankhuwasabha",
+        "province": "कोशी प्रदेश",
+        "population": 14470,
+        "area": 110.1,
+        "website": "https://www.madimun.gov.np/en"
+    },
+    {
+        "name": "Mahagadhimai",
+        "nepali": "महागढीमाई",
+        "district": "Bara",
+        "province": "मदेश प्रदेश",
+        "population": 54474,
+        "area": 55.32,
+        "website": "https://www.mahagadimaimun.gov.np/en"
+    },
+    {
+        "name": "Mahakali",
+        "nepali": "माहाकाली",
+        "district": "Kanchanpur",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 39253,
+        "area": 56.84,
+        "website": "https://www.mahakalimunkanchanpur.gov.np/"
+    },
+    {
+        "name": "Mahakali",
+        "nepali": "महाकाली",
+        "district": "Darchula",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 21231,
+        "area": 135.11,
+        "website": "https://www.mahakalimundarchula.gov.np/"
+    },
+    {
+        "name": "Mahalaxmi",
+        "nepali": "महालक्ष्मी",
+        "district": "Lalitpur",
+        "province": "बागमती प्रदेश",
+        "population": 118710,
+        "area": 26.51,
+        "website": "https://www.mahalaxmimun.gov.np/en"
+    },
+    {
+        "name": "Mahalaxmi",
+        "nepali": "महालक्ष्मी",
+        "district": "Dhankuta",
+        "province": "कोशी प्रदेश",
+        "population": 24800,
+        "area": 126.3,
+        "website": "https://www.mahalaxmimundhankuta.gov.np/"
+    },
+    {
+        "name": "Maharajganj",
+        "nepali": "महाराजगंज",
+        "district": "Kapilvastu",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 54800,
+        "area": 112.21,
+        "website": "https://maharajgunjmun.gov.np/"
+    },
+    {
+        "name": "Mai",
+        "nepali": "माई",
+        "district": "Ilam",
+        "province": "कोशी प्रदेश",
+        "population": 32576,
+        "area": 246.11,
+        "website": "https://www.maimun.gov.np/"
+    },
+    {
+        "name": "Malangwa",
+        "nepali": "मलङ्गवा",
+        "district": "Sarlahi",
+        "province": "मदेश प्रदेश",
+        "population": 46516,
+        "area": 30.44,
+        "website": "https://malangwamun.gov.np/?language=en"
+    },
+    {
+        "name": "Manara Shiswa",
+        "nepali": "मनरा शिसवा",
+        "district": "Mahottari",
+        "province": "मदेश प्रदेश",
+        "population": 49692,
+        "area": 49.73
+    },
+    {
+        "name": "Mandandeupur",
+        "nepali": "मण्डनदेउपुर",
+        "district": "Kavrepalanchok",
+        "province": "बागमती प्रदेश",
+        "population": 32659,
+        "area": 89,
+        "website": "https://www.mandandeupurmun.gov.np/"
+    },
+    {
+        "name": "Mangalsen",
+        "nepali": "मंगलसेन",
+        "district": "Achham",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 32331,
+        "area": 220.14,
+        "website": "https://www.mangalsenmun.gov.np/en"
+    },
+    {
+        "name": "Manthali",
+        "nepali": "मन्थली",
+        "district": "Ramechhap",
+        "province": "बागमती प्रदेश",
+        "population": 45416,
+        "area": 211.78,
+        "website": "https://www.manthalimun.gov.np/en"
+    },
+    {
+        "name": "Matihani",
+        "nepali": "मटिहानी",
+        "district": "Mahottari",
+        "province": "मदेश प्रदेश",
+        "population": 31026,
+        "area": 29.02,
+        "website": "https://matihanimun.gov.np/"
+    },
+    {
+        "name": "Maulapur",
+        "nepali": "मौलापुर",
+        "district": "Rautahat",
+        "province": "मदेश प्रदेश",
+        "population": 26431,
+        "area": 34.75,
+        "website": "https://www.maulapurmun.gov.np/"
+    },
+    {
+        "name": "Mechinagar",
+        "nepali": "मेचीनगर",
+        "district": "Jhapa",
+        "province": "कोशी प्रदेश",
+        "population": 131520,
+        "area": 192.85,
+        "website": "https://mechinagarmun.gov.np/"
+    },
+    {
+        "name": "Melamchi",
+        "nepali": "मेलम्ची",
+        "district": "Sindhupalchok",
+        "province": "बागमती प्रदेश",
+        "population": 45343,
+        "area": 158.17,
+        "website": "https://www.melamchimun.gov.np/en"
+    },
+    {
+        "name": "Melauli",
+        "nepali": "मेलौली",
+        "district": "Baitadi",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 22545,
+        "area": 119.43,
+        "website": "https://www.melaulimun.gov.np/"
+    },
+    {
+        "name": "Mirchaiya",
+        "nepali": "मिर्चैया",
+        "district": "Siraha",
+        "province": "मदेश प्रदेश",
+        "population": 50079,
+        "area": 91.97,
+        "website": "https://www.mirchaiyamun.gov.np/en"
+    },
+    {
+        "name": "Mithila",
+        "nepali": "मिथिला",
+        "district": "Dhanusha",
+        "province": "मदेश प्रदेश",
+        "population": 45164,
+        "area": 187.93,
+        "website": "https://www.mithilamun.gov.np/en"
+    },
+    {
+        "name": "Mithila Bihari",
+        "nepali": "मिथिला बिहारी",
+        "district": "Dhanusa",
+        "province": "मदेश प्रदेश",
+        "population": 33521,
+        "area": 37.6,
+        "website": "https://www.mithilabiharimun.gov.np/"
+    },
+    {
+        "name": "Musikot",
+        "nepali": "मुसिकोट",
+        "district": "Western Rukum",
+        "province": "कर्णाली प्रदेश",
+        "population": 32939,
+        "area": 136.06,
+        "website": "https://www.musikotmun.gov.np/en"
+    },
+    {
+        "name": "Musikot",
+        "nepali": "मुसिकोट",
+        "district": "Gulmi",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 32802,
+        "area": 114.74,
+        "website": "https://www.musikotmungulmi.gov.np/"
+    },
+    {
+        "name": "Myanglung",
+        "nepali": "म्याङलुङ",
+        "district": "Terathum",
+        "province": "कोशी प्रदेश",
+        "population": 19659,
+        "area": 100.21,
+        "website": "https://www.myanglungmun.gov.np/en"
+    },
+    {
+        "name": "Nagarain",
+        "nepali": "नगराईन",
+        "district": "Dhanusha",
+        "province": "मदेश प्रदेश",
+        "population": 35630,
+        "area": 39,
+        "website": "https://www.nagrainmun.gov.np/"
+    },
+    {
+        "name": "Nagarjun",
+        "nepali": "नागार्जुन",
+        "district": "Kathmandu",
+        "province": "बागमती प्रदेश",
+        "population": 115507,
+        "area": 29.85,
+        "website": "https://www.nagarjunmun.gov.np/en"
+    },
+    {
+        "name": "Nalgad",
+        "nepali": "नलगाड",
+        "district": "Jajarkot",
+        "province": "कर्णाली प्रदेश",
+        "population": 25597,
+        "area": 387.44,
+        "website": "https://tribeninalgaadmun.gov.np/"
+    },
+    {
+        "name": "Namobuddha",
+        "nepali": "नमोबुद्ध",
+        "district": "Kavrepalanchok",
+        "province": "बागमती प्रदेश",
+        "population": 29519,
+        "area": 102,
+        "website": "https://www.namobuddhamun.gov.np/"
+    },
+    {
+        "name": "Narayan",
+        "nepali": "नारायण",
+        "district": "Dailekh",
+        "province": "कर्णाली प्रदेश",
+        "population": 27037,
+        "area": 110.63,
+        "website": "https://narayanmun.gov.np/en"
+    },
+    {
+        "name": "Nijgadh",
+        "nepali": "निजगढ",
+        "district": "Bara",
+        "province": "मदेश प्रदेश",
+        "population": 35335,
+        "area": 289.43,
+        "website": "https://www.nijgadhmun.gov.np/en"
+    },
+    {
+        "name": "Nilkantha",
+        "nepali": "निलकण्ठ",
+        "district": "Dhading",
+        "province": "बागमती प्रदेश",
+        "population": 58515,
+        "area": 197.7,
+        "website": "https://www.nilkanthamun.gov.np/en"
+    },
+    {
+        "name": "Pacharauta",
+        "nepali": "पचरौता",
+        "district": "Bara",
+        "province": "मदेश प्रदेश",
+        "population": 34175,
+        "area": 44.01,
+        "website": "https://www.pachrautamun.gov.np/"
+    },
+    {
+        "name": "Pakhribas",
+        "nepali": "पाख्रिवास",
+        "district": "Dhankuta",
+        "province": "कोशी प्रदेश",
+        "population": 22078,
+        "area": 144.29,
+        "website": "https://www.pakhribasmun.gov.np/en"
+    },
+    {
+        "name": "Palungtar",
+        "nepali": "पालुङटार",
+        "district": "Gorkha",
+        "province": "गण्डकी प्रदेश",
+        "population": 38174,
+        "area": 158.62,
+        "website": "https://www.palungtarmun.gov.np/en"
+    },
+    {
+        "name": "Panchadewal Binayak",
+        "nepali": "पञ्चदेवल विनायक",
+        "district": "Achham",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 27485,
+        "area": 147.75,
+        "website": "https://www.panchadewalbinayakmun.gov.np/"
+    },
+    {
+        "name": "Panchapuri",
+        "nepali": "पञ्चपुरी",
+        "district": "Surkhet",
+        "province": "कर्णाली प्रदेश",
+        "population": 32231,
+        "area": 329.9,
+        "website": "https://www.bidehamun.gov.np/"
+    },
+    {
+        "name": "Panchkhal",
+        "nepali": "पाँचखाल",
+        "district": "Kavrepalanchok",
+        "province": "बागमती प्रदेश",
+        "population": 37997,
+        "area": 103,
+        "website": "https://www.panchkhalmun.gov.np/en"
+    },
+    {
+        "name": "Panchkhapan",
+        "nepali": "पाँचखपन",
+        "district": "Sankhuwasabha",
+        "province": "कोशी प्रदेश",
+        "population": 17521,
+        "area": 148.03,
+        "website": "https://www.panchkhapanmun.gov.np/"
+    },
+    {
+        "name": "Paroha",
+        "nepali": "परोहा",
+        "district": "Rautahat",
+        "province": "मदेश प्रदेश",
+        "population": 37453,
+        "area": 37.45,
+        "website": "https://www.parohamun.gov.np/"
+    },
+    {
+        "name": "Parsagadhi",
+        "nepali": "पर्सागढी",
+        "district": "Parsa",
+        "province": "मदेश प्रदेश",
+        "population": 38067,
+        "area": 99.69,
+        "website": "https://www.parsagadhimun.gov.np/"
+    },
+    {
+        "name": "Parshuram",
+        "nepali": "परशुराम",
+        "district": "Dadeldhura",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 34983,
+        "area": 414.07,
+        "website": "https://www.parasurammun.gov.np/en"
+    },
+    {
+        "name": "Patan",
+        "nepali": "पाटन",
+        "district": "Baitadi",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 30435,
+        "area": 219.26,
+        "website": "https://www.patanmun.gov.np/en"
+    },
+    {
+        "name": "Pathari-Shanischare",
+        "nepali": "पथरी शनिश्चरे",
+        "district": "Morang",
+        "province": "कोशी प्रदेश",
+        "population": 62440,
+        "area": 79.81,
+        "website": "https://www.patharishanishcharemun.gov.np/en"
+    },
+    {
+        "name": "Paunauti",
+        "nepali": "पनौती",
+        "district": "Kavrepalanchok",
+        "province": "बागमती प्रदेश",
+        "population": 46595,
+        "area": 118,
+        "website": "https://panautimun.gov.np/en"
+    },
+    {
+        "name": "Phalewas",
+        "nepali": "फलेवास",
+        "district": "Parbat",
+        "province": "गण्डकी प्रदेश",
+        "population": 24687,
+        "area": 85.7,
+        "website": "https://www.phalewasmun.gov.np/"
+    },
+    {
+        "name": "Phatuwa Bijayapur",
+        "nepali": "फतुवाबिजयपुर",
+        "district": "Rautahat",
+        "province": "मदेश प्रदेश",
+        "population": 36533,
+        "area": 65.24,
+        "website": "https://www.phatuwabijaypurmun.gov.np/"
+    },
+    {
+        "name": "Phidim",
+        "nepali": "फिदिम",
+        "district": "Pancthar",
+        "province": "कोशी प्रदेश",
+        "population": 49201,
+        "area": 192.5,
+        "website": "https://www.phidimmun.gov.np/en"
+    },
+    {
+        "name": "Pokhariya",
+        "nepali": "पोखरिया",
+        "district": "Parsa",
+        "province": "मदेश प्रदेश",
+        "population": 32885,
+        "area": 32.47,
+        "website": "https://www.pokhariyamun.gov.np/en"
+    },
+    {
+        "name": "Punarbas",
+        "nepali": "पुनर्वास",
+        "district": "Kanchanpur",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 53633,
+        "area": 103.71,
+        "website": "https://www.punarbasmun.gov.np/en"
+    },
+    {
+        "name": "Purchaudi",
+        "nepali": "पुर्चौडी",
+        "district": "Baitadi",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 39174,
+        "area": 198.52,
+        "website": "https://www.purchaudimun.gov.np/"
+    },
+    {
+        "name": "Putalibazar",
+        "nepali": "पुतलीबजार",
+        "district": "Syangja",
+        "province": "गण्डकी प्रदेश",
+        "population": 44876,
+        "area": 147.21,
+        "website": "https://putalibazarmun.gov.np/en"
+    },
+    {
+        "name": "Pyuthan",
+        "nepali": "प्यूठान",
+        "district": "Pyuthan",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 38449,
+        "area": 128.96,
+        "website": "https://www.pyuthanmun.gov.np/en"
+    },
+    {
+        "name": "Rainas",
+        "nepali": "रार्इनास",
+        "district": "Lamjung",
+        "province": "गण्डकी प्रदेश",
+        "population": 18527,
+        "area": 71.97,
+        "website": "https://rainasmun.gov.np/en"
+    },
+    {
+        "name": "Rajapur",
+        "nepali": "राजापुर",
+        "district": "Bardiya",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 59553,
+        "area": 127.08,
+        "website": "https://www.rajapurmun.gov.np/en"
+    },
+    {
+        "name": "Rajbiraj",
+        "nepali": "राजविराज",
+        "district": "Saptari",
+        "province": "मदेश प्रदेश",
+        "population": 69086,
+        "area": 55.64,
+        "website": "https://www.rajbirajmun.gov.np/en"
+    },
+    {
+        "name": "Rajdevi",
+        "nepali": "राजदेवी",
+        "district": "Rautahat",
+        "province": "मदेश प्रदेश",
+        "population": 31292,
+        "area": 28.21,
+        "website": "https://www.rajdevimun.gov.np/"
+    },
+    {
+        "name": "Rajpur",
+        "nepali": "राजपुर",
+        "district": "Rautahat",
+        "province": "मदेश प्रदेश",
+        "population": 41078,
+        "area": 31.41,
+        "website": "https://www.rajpurmunrautahat.gov.np/"
+    },
+    {
+        "name": "Ramdhuni",
+        "nepali": "रामधुनी",
+        "district": "Sunsari",
+        "province": "कोशी प्रदेश",
+        "population": 51752,
+        "area": 91.69,
+        "website": "https://ramdhunibhasimun.gov.np/en/"
+    },
+    {
+        "name": "Ramechhap",
+        "nepali": "रामेछाप",
+        "district": "Ramechhap",
+        "province": "बागमती प्रदेश",
+        "population": 28612,
+        "area": 202.45,
+        "website": "https://www.ramechhapmun.gov.np/en"
+    },
+    {
+        "name": "Ramgopalpur",
+        "nepali": "रामगोपालपुर",
+        "district": "Mahottari",
+        "province": "मदेश प्रदेश",
+        "population": 29612,
+        "area": 39.58,
+        "website": "https://ramgopalpurmun.gov.np/"
+    },
+    {
+        "name": "Ramgram",
+        "nepali": "रामग्राम",
+        "district": "Parasi",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 59455,
+        "area": 128.32,
+        "website": "https://ramgrammun.gov.np/en"
+    },
+    {
+        "name": "Rampur",
+        "nepali": "रामपुर",
+        "district": "Palpa",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 35396,
+        "area": 123.34,
+        "website": "https://www.rampurmun.gov.np/en"
+    },
+    {
+        "name": "Rangeli",
+        "nepali": "रंगेली",
+        "district": "Morang",
+        "province": "कोशी प्रदेश",
+        "population": 52013,
+        "area": 111.78,
+        "website": "https://www.rangelimun.gov.np/en"
+    },
+    {
+        "name": "Rapti",
+        "nepali": "राप्ती",
+        "district": "Chitwan",
+        "province": "बागमती प्रदेश",
+        "population": 57107,
+        "area": 212.31,
+        "website": "https://raptimun.gov.np/en"
+    },
+    {
+        "name": "Raskot",
+        "nepali": "रास्कोट",
+        "district": "Kalikot",
+        "province": "कर्णाली प्रदेश",
+        "population": 16272,
+        "area": 59.73,
+        "website": "https://raskotmun.gov.np/"
+    },
+    {
+        "name": "Ratnanagar",
+        "nepali": "रत्ननगर",
+        "district": "Chitwan",
+        "province": "बागमती प्रदेश",
+        "population": 69848,
+        "area": 68.68,
+        "website": "https://www.ratnanagarmunicipality.gov.np/"
+    },
+    {
+        "name": "Ratuwamai",
+        "nepali": "रतुवामाई",
+        "district": "Morang",
+        "province": "कोशी प्रदेश",
+        "population": 55380,
+        "area": 142.15,
+        "website": "https://ratuwamaimun.gov.np/"
+    },
+    {
+        "name": "Resunga",
+        "nepali": "रेसुङ्गा",
+        "district": "Gulmi",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 32545,
+        "area": 83.74,
+        "website": "https://www.resungamun.gov.np/en"
+    },
+    {
+        "name": "Rolpa",
+        "nepali": "रोल्पा",
+        "district": "Rolpa",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 32759,
+        "area": 270.42,
+        "website": "https://www.rolpamun.gov.np/"
+    },
+    {
+        "name": "Rupakot Majhuwagadhi",
+        "nepali": "रुपाकोट–मजुवागढी",
+        "district": "Khotang",
+        "province": "कोशी प्रदेश",
+        "population": 46903,
+        "area": 246.51,
+        "website": "https://www.rupakotmajhuwagadhimun.gov.np/"
+    },
+    {
+        "name": "Sabaila",
+        "nepali": "सवैला",
+        "district": "Dhanusha",
+        "province": "मदेश प्रदेश",
+        "population": 45879,
+        "area": 64.47,
+        "website": "https://www.sabailamun.gov.np/en"
+    },
+    {
+        "name": "Sainamaina",
+        "nepali": "सैनामैना",
+        "district": "Rupandehi",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 55822,
+        "area": 162.18,
+        "website": "https://www.sainamainamun.gov.np/en"
+    },
+    {
+        "name": "Sandhikharka",
+        "nepali": "सन्धिखर्क",
+        "district": "Arghakhanchi",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 41079,
+        "area": 129.42,
+        "website": "https://sandhikharkamun.gov.np/en"
+    },
+    {
+        "name": "Sanphebagar",
+        "nepali": "साफेबगर",
+        "district": "Achham",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 33788,
+        "area": 166.71,
+        "website": "https://www.sanfebagarmun.gov.np/en"
+    },
+    {
+        "name": "Saptakoshi",
+        "nepali": "सप्तकोशी",
+        "district": "Saptari",
+        "province": "मदेश प्रदेश",
+        "population": 21131,
+        "area": 60.25,
+        "website": "https://www.saptakoshimun.gov.np/"
+    },
+    {
+        "name": "Shaarda",
+        "nepali": "शारदा",
+        "district": "Salyan",
+        "province": "कर्णाली प्रदेश",
+        "population": 33730,
+        "area": 198.34,
+        "website": "https://www.shaaradamun.gov.np/en"
+    },
+    {
+        "name": "Shadanand",
+        "nepali": "षडानन्द",
+        "district": "Bhojpur",
+        "province": "कोशी प्रदेश",
+        "population": 31610,
+        "area": 241.15,
+        "website": "https://www.shadanandmun.gov.np/en"
+    },
+    {
+        "name": "Shahidnagar",
+        "nepali": "शहिद नगर",
+        "district": "Dhanusha",
+        "province": "मदेश प्रदेश",
+        "population": 43007,
+        "area": 57.37,
+        "website": "https://www.shahidnagarmun.gov.np/"
+    },
+    {
+        "name": "Shailyashikhar",
+        "nepali": "शैल्यशिखर",
+        "district": "Darchula",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 22060,
+        "area": 117.81,
+        "website": "https://www.shailyashikharmun.gov.np/"
+    },
+    {
+        "name": "Shambhunath",
+        "nepali": "शम्भुनाथ",
+        "district": "Saptari",
+        "province": "मदेश प्रदेश",
+        "population": 38018,
+        "area": 108.71,
+        "website": "https://www.shambhunathmun.gov.np/"
+    },
+    {
+        "name": "Shankharapur",
+        "nepali": "शङ्खरापुर",
+        "district": "Kathmandu",
+        "province": "बागमती प्रदेश",
+        "population": 25338,
+        "area": 60.21,
+        "website": "https://www.shankharapurmun.gov.np/en"
+    },
+    {
+        "name": "Shikhar",
+        "nepali": "शिखर",
+        "district": "Doti",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 31801,
+        "area": 285.37,
+        "website": "https://www.shikharmun.gov.np/"
+    },
+    {
+        "name": "Shivaraj",
+        "nepali": "शिवराज",
+        "district": "Kapilvastu",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 66781,
+        "area": 284.07,
+        "website": "https://www.shivarajmun.gov.np/en"
+    },
+    {
+        "name": "Shivasatakshi",
+        "nepali": "शिवसताक्षि",
+        "district": "Jhapa",
+        "province": "कोशी प्रदेश",
+        "population": 64596,
+        "area": 145.87,
+        "website": "https://www.shivasataximun.gov.np/en"
+    },
+    {
+        "name": "Shuklaगण्डकी प्रदेश",
+        "nepali": "शुक्लागण्डकी",
+        "district": "Tanahun",
+        "province": "गण्डकी प्रदेश",
+        "population": 48456,
+        "area": 165,
+        "website": "https://www.shuklaगण्डकी प्रदेशmun.gov.np/en"
+    },
+    {
+        "name": "Shuklaphanta",
+        "nepali": "शुक्लाफाँटा",
+        "district": "Kanchanpur",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 46834,
+        "area": 162.57,
+        "website": "https://www.shuklaphantamun.gov.np/"
+    },
+    {
+        "name": "Siddharthanagar",
+        "nepali": "सिद्धार्थनगर",
+        "district": "Rupandehi",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 63483,
+        "area": 36.03,
+        "website": "https://siddharthanagarmun.gov.np/en"
+    },
+    {
+        "name": "Siddhicharan",
+        "nepali": "सिद्दिचरण",
+        "district": "Okhaldhunga",
+        "province": "कोशी प्रदेश",
+        "population": 28374,
+        "area": 167.88,
+        "website": "https://www.siddhicharanmun.gov.np/en"
+    },
+    {
+        "name": "Simraungadh",
+        "nepali": "सिम्रोनगढ",
+        "district": "Bara",
+        "province": "मदेश प्रदेश",
+        "population": 49939,
+        "area": 42.65,
+        "website": "https://www.simraungadhmun.gov.np/en"
+    },
+    {
+        "name": "Siraha",
+        "nepali": "सिरहा",
+        "district": "Siraha",
+        "province": "मदेश प्रदेश",
+        "population": 82531,
+        "area": 94.2,
+        "website": "https://sirahamun.gov.np/en"
+    },
+    {
+        "name": "Sitganga",
+        "nepali": "सितगंगा",
+        "district": "Arghakhanchi",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 43373,
+        "area": 610.43,
+        "website": "https://www.shitagangamun.gov.np/"
+    },
+    {
+        "name": "Solu Dudhkunda",
+        "nepali": "सोलुदुधकुण्ड",
+        "district": "Solukhumbu",
+        "province": "कोशी प्रदेश",
+        "population": 20399,
+        "area": 528.09,
+        "website": "https://www.solududhkundamun.gov.np/"
+    },
+    {
+        "name": "Sukhipur",
+        "nepali": "सुखीपुर",
+        "district": "Siraha",
+        "province": "मदेश प्रदेश",
+        "population": 37592,
+        "area": 54.78,
+        "website": "https://www.sukhipurmun.gov.np/"
+    },
+    {
+        "name": "Sunawarshi",
+        "nepali": "सुनवर्षी",
+        "district": "Morang",
+        "province": "कोशी प्रदेश",
+        "population": 50758,
+        "area": 106.4,
+        "website": "https://sunawarshimun.gov.np/"
+    },
+    {
+        "name": "Sundar Haraincha",
+        "nepali": "सुन्दरहरैंचा",
+        "district": "Morang",
+        "province": "कोशी प्रदेश",
+        "population": 121305,
+        "area": 110.16,
+        "website": "https://www.sundardularimun.gov.np/en"
+    },
+    {
+        "name": "Sundarbazar",
+        "nepali": "सुन्दरबजार",
+        "district": "Lamjung",
+        "province": "गण्डकी प्रदेश",
+        "population": 26861,
+        "area": 72.05,
+        "website": "https://www.sundarbazarmun.gov.np/en"
+    },
+    {
+        "name": "Sunwal",
+        "nepali": "सुनवल",
+        "district": "Parasi",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 55424,
+        "area": 139.1,
+        "website": "https://www.sunwalmun.gov.np/en"
+    },
+    {
+        "name": "Surunga",
+        "nepali": "सुरुङ्गा",
+        "district": "Saptari",
+        "province": "कोशी प्रदेश",
+        "population": 44221,
+        "area": 107.04,
+        "website": "https://www.surungamun.gov.np/"
+    },
+    {
+        "name": "Suryabinayak",
+        "nepali": "सूर्यविनायक",
+        "district": "Bhaktapur",
+        "province": "बागमती प्रदेश",
+        "population": 137971,
+        "area": 42.45,
+        "website": "https://www.suryabinayakmun.gov.np/en"
+    },
+    {
+        "name": "Suryodaya",
+        "nepali": "सूर्योदय",
+        "district": "Ilam",
+        "province": "कोशी प्रदेश",
+        "population": 56691,
+        "area": 252.52,
+        "website": "https://www.suryodayamun.gov.np/en"
+    },
+    {
+        "name": "Swargadwari",
+        "nepali": "स्वर्गद्वारी",
+        "district": "Pyuthan",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 30940,
+        "area": 224.7,
+        "website": "https://www.swargadwarimun.gov.np/"
+    },
+    {
+        "name": "Tansen",
+        "nepali": "तानसेन",
+        "district": "Palpa",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 50405,
+        "area": 109.8,
+        "website": "https://tansenmun.gov.np/en"
+    },
+    {
+        "name": "Taplejung(Phungling)",
+        "nepali": "फुङलिङ",
+        "district": "Taplejung",
+        "province": "कोशी प्रदेश",
+        "population": 26406,
+        "area": 125.57,
+        "website": "https://www.phunglingmun.gov.np/"
+    },
+    {
+        "name": "Tarakeshwar",
+        "nepali": "तारकेश्वर",
+        "district": "Kathmandu",
+        "province": "बागमती प्रदेश",
+        "population": 151508,
+        "area": 54.95,
+        "website": "https://www.tarakeshwormun.gov.np/en"
+    },
+    {
+        "name": "Thaha",
+        "nepali": "थाहा",
+        "district": "Makawanpur",
+        "province": "बागमती प्रदेश",
+        "population": 41623,
+        "area": 191.12,
+        "website": "https://www.thahamun.gov.np/en"
+    },
+    {
+        "name": "Thakurbaba",
+        "nepali": "ठाकुरबाबा",
+        "district": "Bardiya",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 44361,
+        "area": 104.57,
+        "website": "https://www.thakurbabamun.gov.np/"
+    },
+    {
+        "name": "Thuli Bheri",
+        "nepali": "ठूली भेरी",
+        "district": "Dolpa",
+        "province": "कर्णाली प्रदेश",
+        "population": 8370,
+        "area": 421.34,
+        "website": "https://www.thulibherimun.gov.np/"
+    },
+    {
+        "name": "Tikapur",
+        "nepali": "टिकापुर",
+        "district": "Kailali",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 90115,
+        "area": 121.92,
+        "website": "https://tikapurmun.gov.np/en"
+    },
+    {
+        "name": "Tilagupha",
+        "nepali": "तिलागुफा",
+        "district": "Kalikot",
+        "province": "कर्णाली प्रदेश",
+        "population": 15766,
+        "area": 262.56,
+        "website": "https://www.tilagufamun.gov.np/"
+    },
+    {
+        "name": "Tilottama",
+        "nepali": "तिलोत्तमा",
+        "district": "Rupandehi",
+        "province": "लुम्बिनी प्रदेश",
+        "population": 149657,
+        "area": 126.19,
+        "website": "https://www.tilottamamun.gov.np/en"
+    },
+    {
+        "name": "Tokha",
+        "nepali": "टोखा",
+        "district": "Kathmandu",
+        "province": "बागमती प्रदेश",
+        "population": 135741,
+        "area": 17.11,
+        "website": "https://www.tokhamun.gov.np/en"
+    },
+    {
+        "name": "Tribeni",
+        "nepali": "त्रिवेणी",
+        "district": "Bajura",
+        "province": "सुदूरपश्चिम प्रदेश",
+        "population": 18363,
+        "area": 170.32,
+        "website": "https://trivenimunbajura.gov.np/"
+    },
+    {
+        "name": "Tripura Sundari",
+        "nepali": "त्रिपुरासुन्दरी",
+        "district": "Dolpa",
+        "province": "कर्णाली प्रदेश",
+        "population": 10104,
+        "area": 393.54,
+        "website": "https://www.tripurasundarimundolpa.gov.np/"
+    },
+    {
+        "name": "Triyuga",
+        "nepali": "त्रियुगा",
+        "district": "Udayapur",
+        "province": "कोशी प्रदेश",
+        "population": 104375,
+        "area": 547.43,
+        "website": "https://www.triyugamun.gov.np/en"
+    },
+    {
+        "name": "Urlabari",
+        "nepali": "उर्लावारी",
+        "district": "Morang",
+        "province": "कोशी प्रदेश",
+        "population": 54696,
+        "area": 74.62,
+        "website": "https://www.urlabarimun.gov.np/en"
+    },
+    {
+        "name": "Vyas",
+        "nepali": "व्यास",
+        "district": "Tanahun",
+        "province": "गण्डकी प्रदेश",
+        "population": 70335,
+        "area": 248,
+        "website": "https://vyasmun.gov.np/en"
+    },
+    {
+        "name": "Waling",
+        "nepali": "वालिङ",
+        "district": "Syangja",
+        "province": "गण्डकी प्रदेश",
+        "population": 51143,
+        "area": 128.4,
+        "website": "https://walingmun.gov.np/?language=en"
+    }
+]

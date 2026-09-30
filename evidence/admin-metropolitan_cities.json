@@ -1,0 +1,68 @@
+[
+    {
+        "rank": 1,
+        "name": "Kathmandu",
+        "nepali": "काठमाडौँ",
+        "district": "Kathmandu",
+        "province": "बागमती प्रदेश",
+        "population": 845767,
+        "area": 49.45,
+        "density": 17103,
+        "website": "https://kathmandu.gov.np"
+    },
+    {
+        "rank": 2,
+        "name": "Pokhara",
+        "nepali": "पोखरा",
+        "district": "Kaski",
+        "province": "गण्डकी प्रदेश",
+        "population": 518452,
+        "area": 464.28,
+        "density": 1117,
+        "website": "https://pokharamun.gov.np"
+    },
+    {
+        "rank": 3,
+        "name": "Bharatpur",
+        "nepali": "भरतपुर",
+        "district": "Chitwan",
+        "province": "बागमती प्रदेश",
+        "population": 369377,
+        "area": 432.95,
+        "density": 853,
+        "website": "https://bharatpurmun.gov.np/"
+    },
+    {
+        "rank": 4,
+        "name": "Lalitpur",
+        "nepali": "ललितपुर",
+        "district": "Lalitpur",
+        "province": "बागमती प्रदेश",
+        "population": 299843,
+        "area": 36.12,
+        "density": 8301,
+        "website": "https://lalitpurmun.gov.np/"
+    },
+    {
+        "rank": 5,
+        "name": "Birgunj",
+        "nepali": "वीरगञ्ज",
+        "district": "Parsa",
+        "province": "मदेश प्रदेश",
+        "population": 268273,
+        "area": 132.07,
+        "density": 2031,
+        "website": "https://birgunjmun.gov.np"
+    },
+    {
+        "rank": 6,
+        "name": "Biratnagar",
+        "nepali": "विराटनगर",
+        "district": "Morang",
+        "province": "कोशी प्रदेश",
+        "population": 244750,
+        "area": 77,
+        "density": 3179,
+        "website": "https://biratnagarmun.gov.np/"
+    }
+]

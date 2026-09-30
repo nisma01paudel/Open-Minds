@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import json
 import math
+import unicodedata
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -31,6 +32,7 @@ TIMELINE = "web/public/data/timeline.json"
 # guess, and a letter to the wrong office is worse than no letter - it teaches the citizen that
 # complaining does not work.
 MAX_ROUTE_M = 3000.0
+ADMIN = "web/public/data/administration.json"
 
 CATEGORIES = {
     "crack": ("A crack has opened", "जमिन चिरा परेको"),
@@ -61,6 +63,7 @@ class Complaint:
     authority: str | None = None
     office: str | None = None
     legal_basis: str | None = None
+    admin: dict | None = None
     refused_because: str | None = None
     letter_ne: str = ""
     letter_en: str = ""
@@ -68,6 +71,48 @@ class Complaint:
 
     def as_dict(self) -> dict[str, Any]:
         return {k: v for k, v in self.__dict__.items() if v not in (None, "", [])}
+
+
+def _norm(s: str) -> str:
+    s = unicodedata.normalize("NFKD", (s or "").lower())
+    for drop in (" municipality", " rural municipality", " sub-metropolitan city",
+                 " metropolitan city", " nagarpalika", " gaunpalika", ".", ",", "'", "-"):
+        s = s.replace(drop, " ")
+    return " ".join(s.split())
+
+
+_ADMIN_CACHE: dict | None = None
+
+
+def resolve_admin(slope_title: str) -> dict | None:
+    """Name the local unit a documented slope sits in, and its official website.
+
+    "Ward Committee under the Ward Chair" is a true description of the duty and a useless address.
+    Nepal's 753 local units each have a name, a district and an official gov.np site, and the slope
+    titles already carry the unit - "Landslide at Jaimini Municipality-10" - so the letter can name
+    Jaimini, Baglung, and the page that office actually answers.
+    """
+    global _ADMIN_CACHE
+    if _ADMIN_CACHE is None:
+        try:
+            _ADMIN_CACHE = json.loads((ROOT / ADMIN).read_text(encoding="utf-8"))
+        except Exception:                                    # noqa: BLE001
+            _ADMIN_CACHE = {"units": [], "districts": {}}
+    title = _norm(slope_title)
+    if not title:
+        return None
+    units = sorted(_ADMIN_CACHE.get("units", []), key=lambda u: -len(_norm(u["name"])))
+    for u in units:
+        n = _norm(u["name"])
+        if n and n in title:
+            d = _ADMIN_CACHE.get("districts", {}).get(_norm(u.get("district") or ""), {})
+            return {"unit": u["name"], "unit_ne": u.get("name_ne"), "kind": u.get("kind"),
+                    "district": u.get("district") or d.get("district"),
+                    "district_ne": d.get("district_ne"), "headquarters": d.get("headquarters"),
+                    "province_ne": u.get("province_ne") or d.get("province_ne"),
+                    "website": u.get("website") or d.get("website"),
+                    "population": u.get("population") or d.get("population")}
+    return None
 
 
 def _load() -> list[dict]:
@@ -91,8 +136,12 @@ def _letter_ne(s: dict, c: Complaint, note: str) -> str:
         f"श्रीमान्/श्रीमती प्रमुखज्यू,\n\n"
         f"मैले {s['lat']:.5f}, {s['lon']:.5f} निर्देशांकको ढलानमा "
         f"{CATEGORIES[c.category][1]} देखेको छु। {note}\n\n"
-        f"यो स्थान {s['office']} को कार्यक्षेत्रभित्र पर्छ। स्थानीय सरकार सञ्चालन ऐन, २०७४ को "
-        f"धारा १२(२)(ग) बमोजिम सडकसँग जोडिएको पहिरो हटाउने दायित्व उहाँहरूको हो।\n\n"
+        + (f"यो स्थान {c.admin['unit']}"
+           + (f" ({c.admin['unit_ne']})" if c.admin.get('unit_ne') else "")
+           + (f", {c.admin['district']} जिल्ला" if c.admin.get('district') else "")
+           + f" भित्र पर्छ।\n\n" if c.admin else "")
+        + f"स्थानीय सरकार सञ्चालन ऐन, २०७४ को धारा १२(२)(ग) बमोजिम सडकसँग जोडिएको पहिरो "
+          f"हटाउने दायित्व {s['office']} को हो।\n\n"
         f"कृपया यो स्थानको निरीक्षण गरी आवश्यक व्यवस्था मिलाउनुहुन अनुरोध गर्दछु। "
         f"यो पत्र स्वचालित रूपमा तयार भएको हो र यसले कुनै कानुनी कारबाही सुरु गर्दैन।\n\n"
         f"भवदीय,\n[तपाईंको नाम]\n[सम्पर्क नम्बर]\n[मिति]\n"
@@ -106,8 +155,12 @@ def _letter_en(s: dict, c: Complaint, note: str) -> str:
         f"Dear Sir/Madam,\n\n"
         f"I am reporting {CATEGORIES[c.category][0].lower()} at {s['lat']:.5f}, {s['lon']:.5f}. "
         f"{note}\n\n"
-        f"This location falls within the area of {s['office']}. Under the Local Government Operation "
-        f"Act 2074, s.12(2)(c), the duty to remove landslides affecting roads rests with that office.\n\n"
+        + (f"This location falls in {c.admin['unit']}, "
+           f"{c.admin.get('district') or ''} district"
+           f"{', ' + c.admin['province_ne'] if c.admin.get('province_ne') else ''}"
+           f" ({c.admin['website']}).\n\n" if c.admin else "")
+        + f"Under the Local Government Operation Act 2074, s.12(2)(c), the duty to remove landslides "
+        f"affecting roads rests with {s['office']}.\n\n"
         f"I request an inspection and appropriate action. This letter was drafted automatically and "
         f"does not by itself start any legal proceeding.\n\n"
         f"Yours faithfully,\n[Your name]\n[Contact number]\n[Date]\n"
@@ -133,12 +186,18 @@ def draft(lat: float, lon: float, category: str = "other", note: str = "",
 
     c.slope_id, c.slope_title, c.distance_m = s["id"], s["title"], round(d)
     c.authority, c.office, c.legal_basis = s["authority"], s["office"], s["legal_basis"]
+    c.admin = resolve_admin(s["title"])
     c.letter_ne = _letter_ne(s, c, note)
     c.letter_en = _letter_en(s, c, note)
     c.caveats = [
         "The office shown is the routing key's DEFAULT duty holder for a local road, not a "
         "per-parcel legal determination. Where the slope is on a highway, a forest, or private "
         "land the responsible body differs.",
+        ("The local unit was matched from the slope's own title against Nepal's 753 unit "
+         "gazetteer, so it is the unit the record names and not a survey of the ground."
+         if c.admin else
+         "No local unit could be matched from the slope's title, so only the generic duty holder "
+         "is named. Address the letter to the ward office directly."),
         "The nearest documented slope may not be the slope you are standing on. Check the "
         "coordinates in the letter before sending it.",
         "Nothing here has been filed, signed, or received. Send it yourself and keep the receipt.",

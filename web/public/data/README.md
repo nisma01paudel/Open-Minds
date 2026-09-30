@@ -14,8 +14,29 @@ once, and `bus-parks.geojson` was exactly that until round 27.
 | `timeline.json` | `scripts/build_timeline.py` | **yes** |
 | `observability-sites.json` | `scripts/build_observability.py` | **yes** - from `reports/observability-monsoon.json` |
 | `observability-by-month.json` | `scripts/build_observability.py` | **yes** |
+| `administration.json` | `scripts/build_administration.py` | **yes** - cached in `evidence/`, no network |
 | `seasons.json` | `scripts/build_seasons.py` | **yes** - Open-Meteo ERA5; `--fetch` |
 | `terrain-texture.jpg` | `scripts/build_terrain_texture.py` | **in kind** - exact geometry, reconstructed palette |
+
+## administration.json is somebody else's good data, and it closed a real gap
+
+77 districts and 753 local units, each with a Nepali name, a district, a province and an **official
+gov.np website**. Source: [rgtstha/NEPAL-QUEST-DATA](https://github.com/rgtstha/NEPAL-QUEST-DATA),
+community-maintained open data. Fetched once, cached in `evidence/`, compiled offline.
+
+It exists because I had been solving this from first principles and failing at it twice: Overpass
+returned four of six regions as empty, and the gazetteer that came out was an Annapurna list. This
+repository had the whole country all along.
+
+**What it fixed.** The complaint drafter used to say *"Ward Committee under the Ward Chair"* - a true
+description of the duty and a useless address. Now it reads the slope's own title, matches it against
+the 753 units, and names the office that exists:
+
+    Landslide at Lamekhat, Jaljala Rural Municipality-4
+      ->  Jaljala, Parbat district, गण्डकी प्रदेश, https://jaljalamun.gov.np/
+
+494 of the 613 documented slopes resolve. The other 119 name a unit the gazetteer does not carry or
+in a form that does not match, and the letter says so rather than inventing one.
 
 ## seasons.json is mostly valid and says so
 
