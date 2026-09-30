@@ -392,3 +392,9 @@ kbd { background: rgba(148,163,184,.16); border: 1px solid rgba(148,163,184,.25)
 .adminfoot code { color: #7dd3fc; }
 .adminfoot b { color: #94a3b8; }
 .dim { color: #64748b; }
+
+/* A data layer that failed to load. It must be visible: an incomplete map and a complete one look
+   the same, and this product's whole argument is that they must not. */
+.loaderrors { position: absolute; top: .5rem; left: 50%; transform: translateX(-50%);
+  z-index: 6; background: #7f1d1d; color: #fee2e2; border: 1px solid #ef4444;
+  border-radius: 6px; padding: .35rem .7rem; font-size: .78rem; max-width: 90vw; text-align: center; }

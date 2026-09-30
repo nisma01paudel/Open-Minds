@@ -95,6 +95,13 @@ export default function Page() {
   const [speed, setSpeed] = useState(120); // ms per day
   const [err, setErr] = useState("");
   const [obs, setObs] = useState<Obs | null>(null);
+  // Every optional data layer records its own failure here instead of vanishing. A layer that fails
+  // to load and a layer with nothing to show are the same screen, and this product's argument is
+  // that a user must be able to tell "nothing is here" from "we could not look" - which has to hold
+  // for the app's own furniture, not only for the map data.
+  const [loadErrors, setLoadErrors] = useState<string[]>([]);
+  const noteLoadFailure = (what: string) =>
+    setLoadErrors((prev) => (prev.includes(what) ? prev : [...prev, what]));
   const [focus, setFocus] = useState<{ lon: number; lat: number; zoom?: number } | null>(null);
   const [adv, setAdv] = useState<any>(null);
   const [picked, setPicked] = useState<any>(null);
@@ -152,7 +159,10 @@ export default function Page() {
         Places
       </button>
     }).catch(() => setErr("timeline not built yet"));
-    fetch("/data/observability-by-month.json").then((r) => r.json()).then(setObs).catch(() => {});
+    fetch("/data/observability-by-month.json")
+      .then((r) => { if (!r.ok) throw new Error(String(r.status)); return r.json(); })
+      .then(setObs)
+      .catch(() => noteLoadFailure("the observability layer"));
     fetch("/data/advisories.json").then((r) => r.json())
       .then((a) => {
         advisories.current = a.advisories ?? {};
@@ -164,7 +174,8 @@ export default function Page() {
           setPicked({ id, title: v.title, r24: v.r24, state: "exceeded" });
           setAdv(v);
         }
-      }).catch(() => {});
+      })
+      .catch(() => noteLoadFailure("the slope advisories"));
   }, []);
 
   const threshold = tl?.threshold_mm_24h ?? 118.8;
@@ -189,7 +200,10 @@ export default function Page() {
   const [liveFC, setLiveFC] = useState<AnyFC | null>(null);
   useEffect(() => {
     if (mode !== "live" || !frames[liveIdx]) return;
-    fetch(`/data/${frames[liveIdx].file}`).then((r) => r.json()).then(setLiveFC).catch(() => {});
+    fetch(`/data/${frames[liveIdx].file}`)
+      .then((r) => { if (!r.ok) throw new Error(String(r.status)); return r.json(); })
+      .then(setLiveFC)
+      .catch(() => noteLoadFailure("this day's slope layer"));
   }, [mode, liveIdx, frames]);
 
   const replayFC = useMemo(
@@ -240,6 +254,12 @@ export default function Page() {
 
   return (
     <div className="stage">
+      {loadErrors.length > 0 && (
+        <div className="loaderrors" role="status"
+             title="These sections could not be loaded, so what you see is incomplete.">
+          Could not load {loadErrors.join(", ")} — what you see is incomplete.
+        </div>
+      )}
       <SlopeMap
         data={mode === "replay" ? replayFC : liveFC}
         focus={focus}
