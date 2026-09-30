@@ -129,9 +129,15 @@ The shared parts, which a parity check exists to keep shared:
 
 ## What is still NOT done
 
-- **The client loads the sealing layer and can seal, but the compose path is not switched over.**
-  `syncMeshToApi()` still posts message bodies in the clear. What remains is sealing at compose
-  time, and deciding where keys live — a product decision, not a code one.
+- **The gateway accepts sealed frames; the client still sends plaintext.**
+  `POST /api/v1/mesh/messages` now takes `{"sealed": {...}}` frames when the server is started with
+  `--seal-key <hex>`; without a key it **refuses** them with a reason rather than dropping them,
+  because silence looks identical to an empty mesh. What remains is switching `syncMeshToApi()`
+  over to sealing at compose time and deciding where keys live — a product decision, not a code
+  one.
+- **The client uses AES-GCM and the Python default is ChaCha20-Poly1305.** The gateway uses
+  AES-GCM for sealed frames because that is what WebCrypto provides. A deployment must pick one and
+  state it; nothing in the frame says which.
 - **The client uses AES-GCM and the Python default is ChaCha20-Poly1305.** They interoperate
   through AES-GCM; a deployment must pick one and state it. Nothing in the frame says which.
 - Nothing has been reviewed by a cryptographer.

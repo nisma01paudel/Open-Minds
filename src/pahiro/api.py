@@ -40,6 +40,8 @@ from typing import Any
 from urllib.parse import parse_qs, urlparse
 
 from . import navigate, shelter, triage
+from .mesh import pipeline as mesh_pipeline
+from .mesh import seal as mesh_seal
 
 from .locate import Reading, estimate_position
 from .mesh.protocol import MeshMessage
@@ -359,6 +361,16 @@ class _Handler(BaseHTTPRequestHandler):
 
     # ---- handlers ---------------------------------------------------------------------
 
+    # Set by make_server when the deployment is sealing. None means "not a sealing gateway", and
+    # a sealed frame is then refused loudly rather than silently dropped - a gateway that quietly
+    # discards what it cannot read is worse than one that says so.
+    seal_key: bytes | None = None
+    seal_guard: Any = None
+    # AES-GCM, because the browser client must use an AEAD WebCrypto actually provides and
+    # ChaCha20-Poly1305 is not one of them. The envelope is shared; the primitive is a
+    # deployment agreement. See docs/SEALING.md.
+    seal_cipher: Any = None
+
     def _ingest_mesh(self, data: dict[str, Any]) -> None:
         items = data.get("messages")
         if not isinstance(items, list):
@@ -376,7 +388,9 @@ class _Handler(BaseHTTPRequestHandler):
         rejected_ids: list[str] = []
         for raw in items:
             try:
-                if isinstance(raw, dict):
+                if mesh_pipeline.accepts_sealed(raw):
+                    msg = self._open_sealed(raw)
+                elif isinstance(raw, dict):
                     msg = MeshMessage.from_dict(raw)
                 elif isinstance(raw, str):
                     msg = MeshMessage.from_bytes(raw.encode("utf-8"))
@@ -384,10 +398,12 @@ class _Handler(BaseHTTPRequestHandler):
                     msg = None
                 if msg is None:
                     raise ValueError("each item must be an object or a JSON frame string")
-            except (ValueError, KeyError) as exc:
+            except (ValueError, KeyError, mesh_seal.SealError) as exc:
                 rejected += 1
-                if isinstance(raw, dict) and raw.get("id"):
-                    rejected_ids.append(str(raw["id"]))
+                if isinstance(raw, dict):
+                    ident = raw.get("id") or (raw.get("sealed") or {}).get("id")
+                    if ident:
+                        rejected_ids.append(str(ident))
                 self.store.reject(f"mesh: {exc}", raw)
                 continue
             if self.store.ingest_message(msg):
@@ -400,6 +416,25 @@ class _Handler(BaseHTTPRequestHandler):
                                 "rejected": rejected, "ids": ids,
                                 "duplicate_ids": duplicate_ids,
                                 "rejected_ids": rejected_ids})
+
+    def _open_sealed(self, frame: dict) -> MeshMessage:
+        """Unseal one frame, or refuse it with a reason someone can act on.
+
+        A gateway without a key does not silently drop what it cannot read - it says so. Silence
+        here would look identical to an empty mesh, and a deployment would believe it was
+        receiving while every sealed message was being discarded.
+        """
+        if not self.seal_key:
+            raise ValueError(
+                "this gateway holds no sealing key, so it cannot read a sealed frame. Start it "
+                "with --seal-key, or the message is unreadable by design and is being refused "
+                "rather than dropped")
+        cipher = self.seal_cipher
+        if cipher is None:
+            from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+            cipher = mesh_seal.AeadCipher(AESGCM, "aes-256-gcm")
+        sealed = mesh_pipeline.from_frame(frame)
+        return mesh_pipeline.open_bundle(sealed, self.seal_key, cipher, guard=self.seal_guard)
 
     def _ingest_sos(self, data: dict[str, Any]) -> None:
         device = (data.get("device_id") or self.headers.get("X-Device-Id") or "").strip()
@@ -572,8 +607,14 @@ def _as_int(v: Any) -> int | None:
 
 
 def make_server(port: int = 8080, host: str = "127.0.0.1", store: FieldStore | None = None,
-                verbose: bool = False) -> ThreadingHTTPServer:
-    handler = type("Handler", (_Handler,), {"store": store or FieldStore()})
+                verbose: bool = False, seal_key: bytes | None = None) -> ThreadingHTTPServer:
+    handler = type("Handler", (_Handler,), {
+        "store": store or FieldStore(),
+        # A replay guard per server, because a replayed SOS authenticates correctly at every
+        # layer above this - if it is not caught here it is not caught.
+        "seal_key": seal_key,
+        "seal_guard": mesh_seal.ReplayGuard() if seal_key else None,
+    })
     httpd = ThreadingHTTPServer((host, port), handler)
     httpd.verbose = verbose          # type: ignore[attr-defined]
     return httpd
@@ -587,10 +628,20 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--port", type=int, default=8080)
     ap.add_argument("--data", default="evidence/field.json")
     ap.add_argument("--verbose", action="store_true")
+    ap.add_argument("--seal-key", default=None,
+                    help="hex-encoded 32-byte key; enables accepting sealed mesh frames. "
+                         "Without it, a sealed frame is refused with a reason rather than "
+                         "dropped.")
     a = ap.parse_args(argv)
 
     store = FieldStore(a.data)
-    httpd = make_server(a.port, a.host, store, verbose=a.verbose)
+    seal_key = bytes.fromhex(a.seal_key) if a.seal_key else None
+    if seal_key is not None and len(seal_key) != mesh_seal.KEY_BYTES:
+        ap.error(f"--seal-key must be {mesh_seal.KEY_BYTES} bytes of hex "
+                 f"({mesh_seal.KEY_BYTES * 2} characters)")
+    httpd = make_server(a.port, a.host, store, verbose=a.verbose, seal_key=seal_key)
+    if seal_key:
+        print("sealed mesh frames: ACCEPTED (aes-256-gcm)")
     print(f"Pahiro field API on http://{a.host}:{a.port}/api/v1")
     print(f"  state: {a.data}   openapi: /api/v1/openapi.json")
     try:

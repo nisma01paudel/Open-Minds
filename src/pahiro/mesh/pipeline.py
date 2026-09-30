@@ -117,6 +117,39 @@ def seal_bytes(message: MeshMessage, content: bytes, key: bytes, cipher: Cipher,
     )
 
 
+def _encode_message(bundle: MeshMessage) -> bytes:
+    """The whole message, not just its text.
+
+    Sealing only the body loses `people`, `lat`, `lon` and `battery` - the structured fields a
+    coordinator actually dispatches on - because they travel as separate columns on the wire.
+    A test caught that: the message arrived, and the headcount was None. So the envelope carries
+    the whole record as JSON, and everything a rescue needs is inside the seal.
+    """
+    import json
+
+    return json.dumps({
+        "body": bundle.body,
+        "people": bundle.people,
+        "lat": bundle.lat,
+        "lon": bundle.lon,
+        "accuracy_m": bundle.accuracy_m,
+        "battery": bundle.battery,
+        "origin_name": bundle.origin_name,
+    }, ensure_ascii=False, sort_keys=True).encode("utf-8")
+
+
+def _decode_message(raw: bytes) -> dict:
+    import json
+
+    try:
+        got = json.loads(raw.decode("utf-8"))
+    except (UnicodeDecodeError, ValueError) as exc:
+        raise SealError("sealed payload is not a readable message record") from exc
+    if not isinstance(got, dict) or "body" not in got:
+        raise SealError("sealed payload is missing its body")
+    return got
+
+
 def seal_bundle(bundle: MeshMessage, key: bytes, cipher: Cipher, *,
                 sender_key: bytes, content_type: str = seal.CONTENT_TEXT) -> SealedBundle:
     """Seal a message so the phones that carry it cannot read it.
@@ -127,7 +160,7 @@ def seal_bundle(bundle: MeshMessage, key: bytes, cipher: Cipher, *,
     """
     # The ttl travels INSIDE the sealed payload as one leading byte, so a relay can decrement
     # the outer ttl freely while nobody can increase it past what the sender set.
-    sealed = seal.seal(bundle.id, bundle.kind, _wrap(bundle.ttl, bundle.body.encode("utf-8")),
+    sealed = seal.seal(bundle.id, bundle.kind, _wrap(bundle.ttl, _encode_message(bundle)),
                        key, cipher,
                        sender_key=sender_key, content_type=content_type, ttl=bundle.ttl)
     return SealedBundle(
@@ -159,9 +192,13 @@ def open_bundle(sealed: SealedBundle, key: bytes, cipher: Cipher, *,
         raise SealError(
             f"bundle is {sealed.content_type}, not text - use open_bytes and hand it to a "
             f"player or a viewer")
-    return MeshMessage(kind=sealed.kind, body=raw.decode("utf-8"), origin=sealed.sender,
+    got = _decode_message(raw)
+    return MeshMessage(kind=sealed.kind, body=str(got["body"]), origin=sealed.sender,
+                       origin_name=str(got.get("origin_name") or ""),
                        id=sealed.id, created_at=sealed.created_at, ttl=sealed.ttl,
-                       hops=sealed.hops, path=list(sealed.path))
+                       hops=sealed.hops, path=list(sealed.path),
+                       people=got.get("people"), lat=got.get("lat"), lon=got.get("lon"),
+                       accuracy_m=got.get("accuracy_m"), battery=got.get("battery"))
 
 
 def open_bytes(sealed: SealedBundle, key: bytes, cipher: Cipher, *,
@@ -203,3 +240,64 @@ def carrier_view(sealed: SealedBundle) -> dict:
         "content_type": sealed.content_type,
         "created_at": sealed.created_at.isoformat(),
     }
+
+
+# ---- the wire frame, for a JSON transport -------------------------------------------------------
+
+def to_frame(sealed: SealedBundle) -> dict:
+    """What goes on the wire. Base64 because the transport is JSON.
+
+    A relay can build this and read every field of it without holding a key - which is the point:
+    the frame is routing metadata plus an opaque blob.
+    """
+    import base64
+
+    return {
+        "sealed": {
+            "id": sealed.id,
+            "kind": sealed.kind,
+            "content_type": sealed.content_type,
+            "sender": sealed.sender,
+            "ttl": sealed.ttl,
+            "hops": sealed.hops,
+            "size": sealed.size,
+            "created_at": sealed.created_at.isoformat(),
+            "payload_b64": base64.b64encode(sealed.payload).decode("ascii"),
+        }
+    }
+
+
+def from_frame(frame: dict) -> SealedBundle:
+    """Rebuild a sealed bundle from the wire. Validates rather than trusting the transport."""
+    import base64
+
+    inner = frame.get("sealed")
+    if not isinstance(inner, dict):
+        raise SealError("a sealed frame must carry a 'sealed' object")
+    for required in ("id", "kind", "payload_b64"):
+        if required not in inner:
+            raise SealError(f"sealed frame is missing {required!r}")
+    try:
+        payload = base64.b64decode(inner["payload_b64"], validate=True)
+    except Exception as exc:
+        raise SealError("sealed payload is not valid base64") from exc
+
+    created = inner.get("created_at")
+    try:
+        when = datetime.fromisoformat(str(created).replace("Z", "+00:00")) if created \
+            else datetime.now(timezone.utc)
+    except ValueError as exc:
+        raise SealError("sealed frame has an unparseable created_at") from exc
+
+    return SealedBundle(
+        id=str(inner["id"]), kind=str(inner["kind"]),
+        content_type=str(inner.get("content_type", seal.CONTENT_TEXT)),
+        sender=str(inner.get("sender", "")), ttl=int(inner.get("ttl", 0)),
+        hops=int(inner.get("hops", 0)), size=int(inner.get("size", 0)),
+        created_at=when, payload=payload,
+    )
+
+
+def accepts_sealed(frame: dict) -> bool:
+    """Whether an incoming item is a sealed frame, for a gateway that must decide."""
+    return isinstance(frame, dict) and isinstance(frame.get("sealed"), dict)

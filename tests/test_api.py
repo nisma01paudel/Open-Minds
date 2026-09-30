@@ -185,3 +185,124 @@ def test_slopes_endpoint_exposes_the_warning_data(api):
     if "error" in body:
         pytest.skip("slope data not built in this checkout")
     assert body["count"] > 0 and body["slopes"][0]["id"]
+
+
+# ---- sealed mesh ingest -------------------------------------------------------------------------
+
+pytest.importorskip("cryptography", reason="the crypto extra is not installed")
+
+
+def _sealed_server(monkeypatch, key: bytes):
+    """A server that holds a key, plus a client that seals like the browser does."""
+    from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+
+    from pahiro.api import FieldStore, make_server
+    from pahiro.mesh import pipeline, seal
+    from pahiro.mesh.protocol import MeshMessage
+
+    store = FieldStore()
+    srv = make_server(0, "127.0.0.1", store, seal_key=key)
+    port = srv.server_address[1]
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    cipher = seal.AeadCipher(AESGCM, "aes-256-gcm")
+    msg = MeshMessage(kind="sos", body="six trapped under the bus at KM 42",
+                      origin="dev-alpha", people=6, lat=28.21, lon=83.98)
+    sealed = pipeline.seal_bundle(msg, key, cipher, sender_key=b"client-key")
+    frame = pipeline.to_frame(sealed)
+    return srv, port, frame, store, msg
+
+
+def test_a_sealed_frame_is_accepted_and_read_by_a_gateway_holding_the_key():
+    import urllib.request
+
+    key = seal_key_bytes()
+    srv, port, frame, store, msg = _sealed_server(None, key)
+    try:
+        req = urllib.request.Request(
+            f"http://127.0.0.1:{port}/api/v1/mesh/messages",
+            data=json.dumps({"messages": [frame]}).encode(),
+            headers={"Content-Type": "application/json"}, method="POST")
+        with urllib.request.urlopen(req, timeout=10) as r:
+            body = json.loads(r.read())
+        assert body["accepted"] == 1, body
+        assert body["rejected"] == 0
+        # and the gateway read it: the plaintext is now on the board
+        trapped = store.trapped()
+        assert trapped and trapped[0]["people"] == 6
+        assert "trapped" not in json.dumps(frame), "the frame itself never carried the words"
+    finally:
+        srv.shutdown()
+
+
+def test_a_gateway_with_no_key_refuses_a_sealed_frame_rather_than_dropping_it():
+    """Silence would look identical to an empty mesh, and every sealed message would vanish."""
+    import urllib.request
+
+    from pahiro.api import FieldStore, make_server
+    from pahiro.mesh import pipeline
+
+    key = seal_key_bytes()
+    srv, _, frame, _, _ = _sealed_server(None, key)
+    srv.shutdown()
+
+    plain = make_server(0, "127.0.0.1", FieldStore())   # no seal key
+    port = plain.server_address[1]
+    threading.Thread(target=plain.serve_forever, daemon=True).start()
+    try:
+        req = urllib.request.Request(
+            f"http://127.0.0.1:{port}/api/v1/mesh/messages",
+            data=json.dumps({"messages": [frame]}).encode(),
+            headers={"Content-Type": "application/json"}, method="POST")
+        with urllib.request.urlopen(req, timeout=10) as r:
+            body = json.loads(r.read())
+        assert body["accepted"] == 0
+        assert body["rejected"] == 1, "a sealed frame must be refused loudly, not dropped"
+        assert body["rejected_ids"] == [frame["sealed"]["id"]]
+    finally:
+        plain.shutdown()
+
+
+def test_a_replayed_sealed_frame_is_refused():
+    import urllib.request
+
+    key = seal_key_bytes()
+    srv, port, frame, store, _ = _sealed_server(None, key)
+    try:
+        for expect_accepted in (1, 0):
+            req = urllib.request.Request(
+                f"http://127.0.0.1:{port}/api/v1/mesh/messages",
+                data=json.dumps({"messages": [frame]}).encode(),
+                headers={"Content-Type": "application/json"}, method="POST")
+            with urllib.request.urlopen(req, timeout=10) as r:
+                body = json.loads(r.read())
+            assert body["accepted"] == expect_accepted, body
+        # the second attempt is rejected as a replay, not silently deduplicated
+        assert body["rejected"] == 1
+    finally:
+        srv.shutdown()
+
+
+def test_a_tampered_sealed_frame_is_refused():
+    import urllib.request
+
+    key = seal_key_bytes()
+    srv, port, frame, _, _ = _sealed_server(None, key)
+    try:
+        import base64
+        raw = bytearray(base64.b64decode(frame["sealed"]["payload_b64"]))
+        raw[-1] ^= 0x01
+        frame["sealed"]["payload_b64"] = base64.b64encode(bytes(raw)).decode()
+        req = urllib.request.Request(
+            f"http://127.0.0.1:{port}/api/v1/mesh/messages",
+            data=json.dumps({"messages": [frame]}).encode(),
+            headers={"Content-Type": "application/json"}, method="POST")
+        with urllib.request.urlopen(req, timeout=10) as r:
+            body = json.loads(r.read())
+        assert body["rejected"] == 1
+        assert body["accepted"] == 0
+    finally:
+        srv.shutdown()
+
+
+def seal_key_bytes() -> bytes:
+    return bytes(range(32))
