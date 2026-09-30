@@ -21,9 +21,9 @@ Read this file and you have everything. Ten minutes end to end.
 ## Run it
 
 ```bash
-uv venv .venv && uv pip install --python .venv/bin/python -e '.[geo,dev]'
-python -m pytest -q                       # 120 tests
-python scripts/verify_repo.py             # submission readiness: files, references, tests
+uv venv .venv && uv pip install --python .venv/bin/python -e '.[geo,dev,crypto]'
+.venv/bin/python -m pytest -q             # the whole suite, no skips
+.venv/bin/python scripts/verify_repo.py   # submission readiness: files, references, tests
 
 # ONE COMMAND: starts the open-weight model, runs the whole pipeline, prints the
 # trace and the Nepali advisory. Verified from a cold start.

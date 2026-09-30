@@ -29,7 +29,13 @@ reports/video/voice*/
 # Generated media. These were committed BEFORE this rule existed, so .gitignore alone did
 # not stop them - they stayed tracked and put 353 MB into the repository, which every
 # judge then had to clone. Untracked and purged from history separately.
-reports/video/
+# The film and its narration source ARE the submission (deliverable 4), so they are tracked.
+# The build inputs - stills, per-beat clips, voice wavs - are regenerable and stay ignored.
+reports/video/*
+!reports/video/pahiro-narrated-web.mp4
+!reports/video/voice/
+reports/video/voice/*
+!reports/video/voice/narration.txt
 reports/timelapse/frames/
 # Flutter
 mobile/.dart_tool/
