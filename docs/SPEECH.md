@@ -466,6 +466,111 @@ not two. That is asserted in the tests, not hoped for.
 
 ---
 
+### N5 · The phone carrying your message cannot read it
+
+> *Nothing to click. Tell it, then say the sentence in bold and pause.*
+
+Think about what we have built. Your distress call is carried by **strangers**. A Bluetooth
+advertisement is collected by whoever walks past. A Wi-Fi hop is relayed by whoever is in the
+chain. The courier is a person.
+
+That is the point of a mesh. It is also the reason the message has to be sealed, and it is why
+this is the design decision I would defend hardest.
+
+**A carrier can move your bundle. A carrier cannot read it.**
+
+**〔beat〕**
+
+What a relay is allowed to know is two short lists, and we wrote them down:
+
+> **may see** — id, kind, size, ttl, sender fingerprint, content type, when it was created
+> **may not see** — the body. Not the text. Not a voice note. Not a photograph.
+
+The sealed bundle has **no body attribute at all.** Not "we don't log it" — the field does not
+exist, so there is no method a tired developer can call at 3am that leaks it. That interface *is*
+the guarantee, and we have a test that fails if someone adds one.
+
+**〔beat〕**
+
+And the attacks. Sealing stops a carrier *reading*. It does not stop them *re-sending*, so a
+recorded SOS replayed an hour later sends a team somewhere nothing is happening — and every relay
+would authenticate it correctly. It is caught at the door.
+
+Then the one I like most, because it is the attack a naive design misses entirely: a carrier takes
+a valid body and **changes the kind from `chat` to `sos`**, or extends the ttl. Both are bound
+into the tag. Altering either, and the message simply refuses to open.
+
+**〔beat〕**
+
+One more, and this is the sentence for the judges who understand crypto:
+
+**We found a bug by wiring two correct layers together that made the whole thing useless.**
+The ttl was authenticated. But a ttl **decrements at every hop** — so the tag failed the moment a
+relay did its job. A sealed bundle could not be relayed *even once*. Every unit test on both sides
+passed. The layers were individually right and jointly broken, and nothing but actually joining
+them would ever have shown it.
+
+That is the kind of bug you only find by building the thing.
+
+### N6 · The phone is wet, flat, cracked, or switched off
+
+> *Nothing to click. This is the beat that makes engineers in the room sit up.*
+
+Every design I have described assumes a working handset. Here is the truth about the one in the
+valley: it has been **under water**, or it is at **4 percent** because the power went three days
+ago, or it is face-down in mud with a **cracked screen**.
+
+So we wrote down the failures, in two columns. The second column is the one that earns trust:
+
+**What software cannot fix:** a phone that is switched off transmits nothing, on any band. A wet
+capacitive screen does not register touches. A cracked display shows nothing. A battery at zero
+runs no scan. Water in a speaker makes speech unintelligible.
+
+**What we did about each one.** A wet screen forces a **spoken-only interface** and a physical
+button. No GPS fix means **RSSI-only locating** and a position **persisted to disk**. A dead
+battery means the last known position is written *before* anything is transmitted, because a
+durable write survives a shutdown and a radio frame can die mid-send.
+
+**〔beat〕**
+
+Then the mode ladder, and the opinion inside it. **NORMAL → CONSERVE → LAST_GASP → SILENT.**
+The model dies first. Then the map. Then the screen. Continuous scanning drops to a quarter duty
+cycle — the single largest saving this app has.
+
+**The model dies first because nothing that saves a life depends on it.** That is not a slogan; it
+is enforced by a test that fails the build if anyone ever puts routing behind an AI.
+
+**〔beat〕**
+
+And the last one. A phone at 1 percent gets **one rung, and it is SMS** — the only transport that
+crosses any distance with no chain and no help. Spending a final transmission on a thirty-metre
+advertisement that needs a stranger standing in the right place is waste.
+
+**〔beat〕**
+
+Now the question nobody in this room has asked yet, and the one that decides whether this is real.
+
+**No tower. No SIM. No network. No energy.**
+
+Four of those five are gone and **software cannot bring any of them back.** So here is the honest
+answer. A charged phone with no SIM is *still a working relay*, because Bluetooth and Wi-Fi Aware
+need neither. And when the charge is gone too — the answer is a person and a piece of paper.
+
+Our software's entire job at that point is making what they carry worth carrying:
+
+> **persist the position** — the only thing that survives the phone
+> **boot on charge** — sixty seconds of power spends itself on the message, not the interface.
+> That is the difference between a tracker and a toy.
+> **write it down** — `28.20961, 83.98561` on paper. A phone that will not switch on is a note
+> waiting to be written.
+
+**〔beat〕**
+
+And whatever happens, the system records **why** a handset went quiet. So that nobody, later,
+reads the silence as a decision not to call.
+
+---
+
 ## The applause close
 
 > *Say this last. Slow. Put the paper with the 40 back on the table if you still have it.*
@@ -586,6 +691,25 @@ and we credit it. What we wrote is the *instructions* it speaks — and a native
 **not** checked our pronunciation, which is in [LIMITATIONS.md](LIMITATIONS.md) and which we
 would rather you knew than discovered.
 
+**16. "Is it encrypted?"**
+The sealing layer is real and tested: ChaCha20-Poly1305, X25519 key agreement, and a carrier that
+provably cannot read what it moves. **But the browser client does not seal yet** — the Python mesh
+path carries sealed bundles and the field client still posts in the clear. So the true sentence is
+"the sealing layer is built, tested against a real AEAD, and on the Python mesh path", **not** "the
+system is end-to-end encrypted". A judge who finds that gap after you claimed otherwise is worse
+than one who hears it from you.
+
+**17. "What if the phone is dead?"**
+Then nothing transmits — that is physics, and it is written down rather than hidden. What the
+system does: persist the last known position **before** transmitting anything, spend sixty seconds
+of charge on the message rather than the interface, hand a person something worth carrying, and
+record *why* the handset went quiet so nobody later reads the silence as a decision not to call.
+
+**18. "What if there is no tower, no SIM, no network and no charge?"**
+Four of those five cannot be restored by software and we say so. The fifth — a person walking out —
+needs none of them. And a charged phone with no SIM is still a working relay, because Bluetooth and
+Wi-Fi Aware need neither a SIM nor a tower.
+
 **If you get a question you cannot answer:** say "I don't know — it is written down as uncertain in
 [LIMITATIONS.md](LIMITATIONS.md)", and move on. That answer has never lost a competition. A confident
 wrong answer has.
@@ -681,6 +805,16 @@ Every figure you say out loud, and where it lives.
 | The property that makes it a network | with no transport available the bundle is **held, not dropped** — asserted by test, not hoped for | same |
 | First-place claim on the ladder | Wi-Fi Aware. The research answer for long-range offline is LoRa, which needs hardware and is out of scope — so the software ladder is the honest contribution | same |
 | Models | Qwen2.5-1.5B-Instruct Q4_K_M, SmolVLM-256M, DINOv2-S/14 int8 — all open weights | [docs/MODELS.md](MODELS.md) |
+| Sealing — what a carrier may see | **may:** id, kind, size, ttl, sender fingerprint, content type, created_at. **may not:** the body. `SealedBundle` has **no body attribute**, asserted by test | [docs/SEALING.md](SEALING.md), `src/pahiro/mesh/pipeline.py` |
+| Sealing — the real cipher | ChaCha20-Poly1305 via `cryptography` 50.0.1 (the `crypto` extra), X25519 + HKDF for per-recipient sealing. Chosen over AES-GCM: constant time in software, and these handsets are old | same |
+| Sealing — attacks refused | tampering · **promoting a `chat` to an `sos`** · extending the ttl · replay · forged sender · truncation | same |
+| The bug worth quoting | ttl was authenticated, but a ttl **decrements at every hop** — so the tag failed the moment a relay worked, and **a sealed bundle could not be relayed even once**. Both layers' unit tests passed | same |
+| Sealing — what is NOT done | the **browser client does not seal**. The Python mesh path carries sealed bundles; the field client posts in the clear. **Do not claim end-to-end encryption today.** No cryptographer has reviewed it | same |
+| Endurance modes | **NORMAL → CONSERVE → LAST_GASP → SILENT.** Model dies first, then map, then screen; scanning drops to a **25%** duty cycle. Unknown battery = CONSERVE, never NORMAL | `src/pahiro/endurance.py` |
+| Last gasp | **one rung, and it is SMS** (no chain needed). Position is persisted **before** any transmission: a durable write survives a shutdown, a radio frame can die mid-send | same |
+| Admitted physical limits | switched-off transmits nothing · wet screen ignores touches · cracked display shows nothing · 0% runs no scan · wet speaker is unintelligible · Bluetooth does not go through rock. **Each one names the design choice it forced** | same |
+| Total blackout | no tower, no SIM, no network, no energy → **software cannot restore any of them.** A charged phone with no SIM is still a relay (BLE/Wi-Fi Aware need neither). Otherwise: a person and paper — persist, boot-on-charge, write it down, record why it went quiet | same |
+
 | Not tested | real handsets, real valley, real dispatch; Bluetooth through rock | [docs/LIMITATIONS.md](LIMITATIONS.md) |
 
 ---
