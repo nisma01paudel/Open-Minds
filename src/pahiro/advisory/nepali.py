@@ -97,3 +97,52 @@ def render(
             "प्रमाणित भएपछि मात्र पठाइनेछ।"
         )
     return "\n".join(lines)
+
+
+# The monsoon case: rain has primed the slope but nothing can see it. This is the
+# most honest and most useful thing the product can say in July.
+PRIMED_UNOBSERVED = (
+    "पहिरो जोखिम सूचना — वर्षाका कारण ढलान संवेदनशील बनेको छ, तर पछिल्लो अवलोकन उपलब्ध छैन। "
+    "स्याटेलाइटले यो ढलान हेर्न सकेको छैन, त्यसैले परिवर्तनको पुष्टि गर्न सकिँदैन।"
+)
+
+LABELS_PRIMED = {
+    "rain": "वर्षाको अवस्था",
+    "why": "किन महत्त्वपूर्ण",
+    "inspect": "पहिले जाँच्नुहोस्",
+    "authority": "जिम्मेवार निकाय",
+    "legal_basis": "कानुनी आधार",
+}
+
+
+def primed_unobserved_text(
+    *,
+    location: str,
+    as_of: str,
+    rainfall_state: str,
+    inspect_first: list[str],
+    authority_institution: str | None = None,
+    authority_office: str | None = None,
+    legal_basis: str | None = None,
+    needs_review: bool = False,
+) -> str:
+    """Advisory for: the rainfall trigger is up, but ground evidence is not available.
+
+    Saying this out loud is the point. In July an optical system has nothing to show,
+    and silence is indistinguishable from safety. Rain says the slope is primed; we
+    say we cannot see it; a human decides.
+    """
+    lines = [PRIMED_UNOBSERVED, "", f"{LABELS['location']}: {location}",
+             f"{LABELS['date']}: {as_of}", "",
+             f"{LABELS_PRIMED['rain']}: {rainfall_state}"]
+    lines.append(f"{LABELS_PRIMED['why']}: यो अवस्थामा ढलान अस्थिर हुन सक्छ, तर हामीसँग "
+                 "पछिल्लो उपग्रह प्रमाण छैन — त्यसैले यो सूचना जोखिमको संकेत हो, पुष्टि होइन।")
+    if inspect_first:
+        lines.append(f"{LABELS_PRIMED['inspect']}: " + "; ".join(inspect_first))
+    if authority_institution and legal_basis:
+        office = f" ({authority_office})" if authority_office else ""
+        lines.append(f"{LABELS_PRIMED['authority']}: {authority_institution}{office}")
+        lines.append(f"{LABELS_PRIMED['legal_basis']}: {legal_basis}")
+    elif needs_review:
+        lines.append(f"{LABELS_PRIMED['authority']}: यकिन गर्न बाँकी — प्रमाणित भएपछि मात्र पठाइनेछ।")
+    return "\n".join(lines)
