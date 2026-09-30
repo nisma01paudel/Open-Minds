@@ -540,8 +540,13 @@ def test_every_data_file_is_named_in_the_provenance_page():
     # Whatever CANNOT be rebuilt must SAY so rather than being quietly listed. The list changes as
     # gaps get closed - the observability pair was on it for two rounds and no longer is - so this
     # asserts the property rather than a count.
-    assert "no committed generator" in provenance
-    assert "terrain-texture.jpg" in provenance, "the file still without a generator must be named"
+    # Every file now has a recipe, so the earlier "no committed generator" assertion is the
+    # opposite of the truth. The property that holds is: each file's row names how it is made.
+    assert "Produced by" in provenance
+    assert "terrain-texture.jpg" in provenance, "the backdrop must be named"
+    assert "reconstructed" in provenance, (
+        "the texture's palette is a reconstruction and the page must say so rather than implying "
+        "the served file can be reproduced exactly")
     for closed in ("observability-sites.json", "observability-by-month.json"):
         assert closed in provenance
     assert "build_observability.py" in provenance, (

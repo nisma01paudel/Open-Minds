@@ -14,27 +14,31 @@ once, and `bus-parks.geojson` was exactly that until round 27.
 | `timeline.json` | `scripts/build_timeline.py` | **yes** |
 | `observability-sites.json` | `scripts/build_observability.py` | **yes** - from `reports/observability-monsoon.json` |
 | `observability-by-month.json` | `scripts/build_observability.py` | **yes** |
-| `terrain-texture.jpg` | **no committed generator** | **no** |
+| `terrain-texture.jpg` | `scripts/build_terrain_texture.py` | **in kind** - exact geometry, reconstructed palette |
 
-## The one that still cannot be rebuilt
+## Every file here now has a recipe
 
-`terrain-texture.jpg` is the backdrop of the 3D flythrough, beat 6, and **no committed generator
-produces it.** The rest of the file has been rebuilt independently by
-`scripts/build_observability.py`, which reproduces the two observability files exactly from
-`reports/observability-monsoon.json`.
+Round 28 found four files with no generator: the bus stops, and the two observability files, and the
+flythrough backdrop. All four have one now.
 
-### How those two were closed, because the way they were closed matters
+### terrain-texture.jpg is reconstructed, not reproduced
 
-They were listed here as unreproducible. A first attempt to rebuild them filtered the report to
-2024 and produced a `by_month` block of the wrong size - **37 months instead of 5**, with August and
-September percentages that would have quietly replaced the two figures live-demo beat 5b turns on.
-It ran cleanly and its output looked plausible; the only thing that caught it was diffing against
-the committed file.
+It is 2048x1260, and 2048/1260 is 1.625 - exactly the 832x512 aspect of the bundled DEM - so it is
+a colour-shaded render of that same grid. `scripts/build_terrain_texture.py` renders it from
+`terrain.bin` and produces the **same dimensions and the same geography**. What it cannot reproduce
+is the original's **palette**: the colormap that made the committed file was not kept, so this draws
+its own hypsometric ramp.
 
-The correct aggregation is **all years, by calendar month, restricted to the monsoon months**: 415 /
-518 / 518 / 403 / 167 scenes, **2,021 in total** - the number the data file itself states, which is
-now an assertion in the script. If that total ever stops matching, the script **refuses to write**
-rather than overwriting the demo's figures.
+**The served file is therefore left alone.** Regenerating it would change how the 3D flythrough
+looks, and replacing a working backdrop with a differently-shaded one to make a table tidier is the
+same class of mistake as the observability attempt that would have silently swapped two quoted
+figures. The script writes to a scratch path by default; the served path is opt-in.
+
+### The other three were closed outright
+
+Both observability files, and the bus stops. `scripts/build_observability.py` reproduces them
+**exactly** from `reports/observability-monsoon.json` - JSON-equal to the committed files - and
+refuses to write if the monsoon total stops matching 2,021 scenes.
 
 ## Licence
 

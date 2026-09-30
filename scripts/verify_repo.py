@@ -32,7 +32,8 @@ REQUIRED = [
     # The daily-use half. A clone that loses one of these would still have passed this check.
     "src/pahiro/trails.py", "src/pahiro/access.py", "src/pahiro/trip_agent.py",
     "scripts/build_trails.py", "scripts/build_bus_stops.py",
-    "scripts/build_observability.py", "scripts/plan_trip.py",
+    "scripts/build_observability.py", "scripts/build_terrain_texture.py",
+    "scripts/plan_trip.py",
     "web/public/data/trails.geojson", "web/public/data/bus-parks.geojson",
     "scripts/check_beacon_parity.py", "scripts/check_seal_parity.py",
     "scripts/build_event_benchmark.py", "scripts/build_controls.py",
