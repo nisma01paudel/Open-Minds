@@ -16,3 +16,9 @@ web/node_modules/
 web/.next/
 web/out/
 web/next-env.d.ts
+
+# Generated video: large, and reproducible from scripts/build_video.sh
+reports/video/clips/
+reports/video/stills/
+reports/video/*.mp4
+reports/timelapse/frames/
