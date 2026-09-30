@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'package:pahiro_field/duty.dart';
+
 // The screens, and the first thing anyone sees: choose a language.
 //
 // A foreigner opens this app in Nepal and the first screen is in Nepali, or a Nepali speaker
@@ -75,6 +78,7 @@ Future<void> tapPlan(WidgetTester tester, escape.Dem? dem) async {
 }
 
 void main() {
+  dutyPanelTests();
   group('the language gate', () {
     testWidgets('is the first screen when no language has been chosen', (tester) async {
       await tester.pumpWidget(app());
@@ -248,5 +252,84 @@ void main() {
       final ascending = [...sizes]..sort();
       expect(sizes, ascending.reversed.toList());
     });
+  });
+}
+
+// ---------------------------------------------------------------------------------------------
+// The draft complaint, tapped BY NAME rather than by pixel.
+// ---------------------------------------------------------------------------------------------
+
+class _FixtureDuty implements DutyLoader {
+  const _FixtureDuty();
+  @override
+  Future<DutyIndex> load() async => DutyIndex.parse(
+      File('assets/complaint-index.json').readAsStringSync());
+}
+
+Widget _dutyPanel(AppLang lang) => MaterialApp(
+      home: Scaffold(
+        body: SingleChildScrollView(
+          child: DutyPanel(
+            strings: 'x', lat: 27.7047, lon: 85.3146,
+            title: L10n(lang)['duty.title']!,
+            caption: L10n(lang)['duty.where']!,
+            noAddress: L10n(lang)['duty.noAddress']!,
+            defaultNote: L10n(lang)['duty.default']!,
+            draftButton: L10n(lang)['duty.draft']!,
+            letterNote: L10n(lang)['duty.letterNote']!,
+            nepali: lang == AppLang.ne,
+            loader: const _FixtureDuty(),
+          ),
+        ),
+      ),
+    );
+
+void dutyPanelTests() {
+  testWidgets('the draft complaint opens when its button is pressed', (tester) async {
+    // Four attempts to press this button on the emulator all missed, because it sits below three
+    // other panels and its y-coordinate moves with the content above it while I read the position
+    // off a scaled screenshot. That is a bad instrument, not bad luck: a test that taps a widget BY
+    // NAME cannot miss, and it runs in a second without a device.
+    //
+    // The panel is pumped directly with a fixture loader, because it reads its own asset and
+    // rootBundle does not resolve assets inside a widget test - which is itself the reason the panel
+    // is injectable now.
+    tester.view.physicalSize = const Size(1200, 3000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    await tester.pumpWidget(_dutyPanel(AppLang.ne));
+    await tester.pumpAndSettle();
+
+    final button = find.text('उजुरीको मस्यौदा देखाउनुहोस्');
+    expect(button, findsOneWidget, reason: 'the draft button did not render');
+
+    await tester.ensureVisible(button);
+    await tester.pumpAndSettle();
+    await tester.tap(button);
+    await tester.pumpAndSettle();
+
+    // The letter itself - the thing four emulator attempts never captured.
+    expect(find.textContaining('धारा १२(२)(ग)'), findsOneWidget,
+        reason: 'the draft did not open, or it does not cite the section');
+    expect(find.textContaining('स्वचालित रूपमा तयार भएको'), findsOneWidget,
+        reason: 'the letter must say it was drafted automatically');
+    expect(find.textContaining('वडा समिति'), findsWidgets,
+        reason: 'the Nepali office name is not in the letter');
+    expect(button, findsOneWidget, reason: 'pressing it should not remove the control');
+  });
+
+  testWidgets('the duty holder is Nepali in the Nepali interface', (tester) async {
+    tester.view.physicalSize = const Size(1200, 3000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    await tester.pumpWidget(_dutyPanel(AppLang.ne));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('वडा समिति'), findsOneWidget,
+        reason: 'the office is not shown in Nepali');
+    expect(find.textContaining('Ward Committee under the Ward Chair'), findsNothing,
+        reason: 'the English office string is rendered in the Nepali interface');
   });
 }

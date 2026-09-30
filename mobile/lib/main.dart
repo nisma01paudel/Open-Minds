@@ -981,6 +981,17 @@ class _PanoramaViewState extends State<PanoramaView> {
 ///
 /// It says what it does not know: 119 of the 613 documented slopes name a unit the national
 /// gazetteer does not carry, and for those it reports the office without inventing an address.
+abstract class DutyLoader {
+  Future<DutyIndex> load();
+}
+
+class AssetDutyLoader implements DutyLoader {
+  const AssetDutyLoader();
+  @override
+  Future<DutyIndex> load() async =>
+      DutyIndex.parse(await rootBundle.loadString('assets/complaint-index.json'));
+}
+
 class DutyPanel extends StatefulWidget {
   final String strings;
   final double lat;
@@ -992,10 +1003,17 @@ class DutyPanel extends StatefulWidget {
   final String draftButton;
   final String letterNote;
   final bool nepali;
+
+  /// Injectable for the same reason the trail, season and DEM loaders are: a panel that reads an
+  /// asset directly hides itself when the asset cannot be resolved, which in a widget test means the
+  /// feature is untestable by name and in production means a missing file is a missing panel with
+  /// no signal anywhere.
+  final DutyLoader loader;
   const DutyPanel({super.key, required this.strings, required this.lat, required this.lon,
                    required this.title, required this.caption, required this.noAddress,
                    required this.defaultNote, required this.draftButton,
-                   required this.letterNote, required this.nepali});
+                   required this.letterNote, required this.nepali,
+                   this.loader = const AssetDutyLoader()});
 
   @override
   State<DutyPanel> createState() => _DutyPanelState();
@@ -1015,8 +1033,7 @@ class _DutyPanelState extends State<DutyPanel> {
 
   Future<void> _load() async {
     try {
-      final raw = await rootBundle.loadString('assets/complaint-index.json');
-      final idx = DutyIndex.parse(raw);
+      final idx = await widget.loader.load();
       final d = idx.nearest(widget.lat, widget.lon);
       if (!mounted) return;
       setState(() {

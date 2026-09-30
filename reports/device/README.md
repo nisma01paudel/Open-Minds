@@ -45,20 +45,36 @@ One entry in one table in src/pahiro/complaints.py, because there is exactly one
 across all 613 slopes. Read by the Python letter and by the phone's derived index, so the letter and
 the card above it cannot end up in two languages.
 
-## STILL NOT CAPTURED: THE EXPANDED LETTER ON THE DEVICE
+## The expanded letter, tested by name instead of by pixel
 
-Four attempts, four misses. The draft button sits below the demo panel, the duty panel and the place
-selector, so its position moves whenever the content above it changes - and I read the coordinate off
-a scaled preview (872x1890) against a 1080x2340 device, which is the same error that produced a false
-bug report three rounds ago and a false "does not work" two rounds ago.
+Four emulator attempts to press the draft button all missed, because it sits below three other panels
+and its y-coordinate moves with the content above it while I read the position off a scaled
+screenshot. The conclusion last round was that the instrument was wrong, not the aim.
 
-What IS verified: the letter's text, by three Python tests including one that asserts the English
-office no longer appears inside the Nepali letter; and the panel fix above, on the device. What is NOT:
-a device frame of the expanded letter. The text is asserted; the rendering is not.
+The replacement does not guess a coordinate at all:
 
-The lesson is not "measure more carefully". It is that driving a scrolling screen by blind
-coordinates is a bad instrument, and a UI test that scrolls to and taps a widget by name would not
-have this failure mode at all.
+    await tester.ensureVisible(button);
+    await tester.tap(button);
+
+`find.text('उजुरीको मस्यौदा देखाउनुहोस्')` cannot miss, and the assertions after it are about the letter
+that four device attempts never captured:
+
+    धारा १२(२)(ग)              the section, in Devanagari
+    स्वचालित रूपमा तयार भएको    it says it was drafted automatically
+    वडा समिति                   the Nepali office name
+
+And a second test asserts the English office string is NOT rendered in the Nepali interface - the
+regression that the device showed me last round.
+
+FINDING IT REQUIRED MAKING THE PANEL INJECTABLE
+
+The panel read its asset with rootBundle directly, so inside a widget test the load failed, the
+catch swallowed it, and the panel returned an empty box - the feature was untestable AND, in
+production, a missing asset would be a missing panel with no signal anywhere.
+
+It now takes a `DutyLoader` defaulting to the asset one, matching the trail, season and DEM loaders.
+That is the fourth time in this project that "make it injectable" was the precondition for being able
+to check it at all.
 
 ## Major places, on the phone
 
