@@ -108,6 +108,7 @@ Full list of limitations and honest gaps: [docs/LIMITATIONS.md](docs/LIMITATIONS
 | Prior art and the gap | [docs/DIFERENTIATION.md](docs/DIFERENTIATION.md) |
 | The competitive field | [docs/COMPETITION.md](docs/COMPETITION.md) |
 | How inspection actually reaches a road in Nepal | [docs/research/nepal-slope-reporting-chain.md](docs/research/nepal-slope-reporting-chain.md) |
+| Who is legally responsible, statute by statute | [docs/research/nepal-slope-responsibility-map.md](docs/research/nepal-slope-responsibility-map.md) |
 
 ## Licence
 

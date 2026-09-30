@@ -30,19 +30,22 @@ Pre-warm the model before recording, and keep a cached run as a fallback.
 
 ### 0:50–1:40 — The product, running live
 
-**On screen:** terminal, then the dashboard.
+**On screen:** the terminal, in a large font. (There is no dashboard - the deliverable is the
+command, the trace and the advisory. Nothing here should be shown that does not exist.)
 
 > "A report arrives: *'a rural road built by a municipality on the slope above a national highway has
 > failed and blocked the highway.'*"
 
-Run: `python scripts/demo_end_to_end.py --report "..." --lon 85.0575 --lat 27.7620 --as-of 2024-07-20`
+Run: `./scripts/demo.sh`  (defaults to 2024-09-28, the day our benchmark records 167 landslides)
 
 > "The system resolves the location from government geospatial data — **Ward 11, Thakre, Dhading**.
 >
 > Then the open-weight model triages it. Watch which asset it names as failing: **the municipal rural
 > road — not the highway it damaged.** That distinction is the whole point, and it is the case that
-> killed sixty-two people at Simaltal in July 2024, because the upslope road belonged to a municipality
-> and everyone was looking at the highway."
+> swept two buses carrying sixty-two people into the Trishuli at Simaltal in July 2024 - nineteen bodies
+> recovered, forty never found. The fatal slope was a rural road built by Bharatpur Metropolitan City;
+> the buses were on a federal national highway. Everyone was looking at the highway.
+> (Sourced: `docs/research/nepal-slope-responsibility-map.md`, §4.3.)"
 
 **On screen:** the Nepali advisory.
 
@@ -51,22 +54,25 @@ Run: `python scripts/demo_end_to_end.py --report "..." --lon 85.0575 --lat 27.76
 > escalation path and the register payload. The fields we cannot evidence are listed as
 > **required from the office**, never invented."
 
-### 1:40–2:10 — The honesty layer
+### 1:40–2:10 — The honesty layer, and the distinction behind it
 
-**On screen:** the same command at `--as-of 2024-09-28` — the day BIPAD records 167 landslides.
+**On screen:** the same slope on a second date, verified to behave differently:
+`./scripts/demo.sh --as-of 2024-07-20`
 
-> "Now the part I am proudest of. Run it for the twenty-eighth of September, the day our benchmark records
-> a hundred and sixty-seven landslides. The rain trigger is **exceeded** — a hundred and ninety millimetres
-> in forty-eight hours against a hundred and forty-two.
+> "Now the part I am proudest of, and it is not a refusal - it is a distinction. Look at the first run
+> again. The rain trigger was **exceeded**: a hundred and ninety millimetres in forty-eight hours against
+> a hundred and forty-two. And the system still **refused to claim a detection**:
 >
-> And the system **refuses to claim a detection**:
+> *'वर्षाका कारण ढलान संवेदनशील बनेको छ, तर पछिल्लो अवलोकन उपलब्ध छैन'* - the slope has been made
+> sensitive by rainfall, but no recent observation is available. It calls its own output **a signal of
+> risk, not a confirmation of it**, and still addresses it to the office that owns the asset.
 >
-> *'वर्षाका कारण ढलान संवेदनशील बनेको छ, तर पछिल्लो अवलोकन उपलब्ध छैन'* — the slope has been made
-> sensitive by rainfall, but no recent observation is available. It says plainly that this is **a signal of
-> risk, not a confirmation of it**.
+> Now run the same slope in July, with no rain. Same blindness - the last usable optical look is
+> twenty-seven days old, worse than September's twelve. And this time it issues **nothing at all**.
 >
-> In July an optical system has nothing to show. Silence is indistinguishable from safety. This is the
-> state no existing tool produces."
+> That is the whole design. A system that abstains on both dates is useless. One that warns on both is
+> crying wolf every cloudy day of the monsoon. This one separates *'this slope is primed and I cannot see
+> it'* from *'nothing is raising this slope and I cannot see it'*."
 
 ### 2:10–2:40 — The differentiator: where to build instead
 
@@ -85,9 +91,14 @@ Run: `python scripts/demo_end_to_end.py --report "..." --lon 85.0575 --lat 27.76
 
 **On screen:** the ablation table and the E1 routing score.
 
-> "This is measured, not asserted. Optical-only, the system can speak on eighty-nine point six percent of
-> days, with a hidden **thirty-four day silence** across the monsoon. Adding radar closes it — plus
-> fifty-eight points in July.
+> "This is measured, not asserted. Optical-only, the system can speak on **ninety point four percent** of
+> days, with a hidden **thirty-four day silence** across the monsoon. Adding radar closes it - plus
+> fifty-eight points in July, and the result replicates in a second, independent area.
+>
+> Across a hundred and thirty-five documented sites stratified over thirty-five year-months, optical
+> usability through the monsoon is **thirty-three percent**, and twelve percent of those sites are never
+> observable at all. That is the honest scale of the blindness, and it is why the layer says so rather
+> than going quiet.
 >
 > And on routing accuracy against twenty-one expert-labelled scenarios: **61.9% end to end, 76.2% on asset
 > identification — with zero confident misroutes across road tiers and 100% abstention precision.** We got
@@ -104,9 +115,10 @@ Run: `python scripts/demo_end_to_end.py --report "..." --lon 85.0575 --lat 27.76
 |---|---|---|
 | 1 | Per-AOI clear-fraction table | `reports/eval-v0.md` §1 |
 | 2 | OPML recommendation + BIPAD counts | `docs/research/nepal-slope-reporting-chain.md` |
-| 3 | Live end-to-end run, 7 tool calls | `scripts/agent_demo.py --as-of 2024-09-28` |
-| 4 | Nepali advisory, fully Nepali | `evidence/agent-2024-09-28-v4.log` |
-| 5 | `primed-unobserved` state | the same run: trigger EXCEEDED, evidence abstained |
+| 3 | Live end-to-end run, 7 tool calls | `./scripts/demo.sh` (2024-09-28, the default) |
+| 4 | Nepali advisory, fully Nepali | the same run's output |
+| 5 | `primed-unobserved`: trigger EXCEEDED, no detection claimed | the same run |
+| 5b | **Full abstain**: trigger below, equally blind, nothing issued | `./scripts/demo.sh --as-of 2024-07-20` |
 | 6 | **Siting recommendation** | `सिफारिस (स्थान)` line: 195 m upslope, +75 m |
 | 7 | Ablation + gap table | `reports/eval-v1.md` |
 | 8 | E1 routing score | `reports/routing-ablation.md` — 38.1% → 61.9%, three arms |
