@@ -10,3 +10,30 @@ screening 150 scenes by AOI clear fraction
   [90/150] ...
   [100/150] ...
   [110/150] ...
+  [120/150] ...
+  [130/150] ...
+  [140/150] ...
+  [150/150] ...
+
+AOI clear fraction by month (the honest monsoon measure):
+month     scenes   median   >50%   >80%
+2024-01       12     0.83  100.0   75.0
+2024-02       14     0.64   57.1   21.4
+2024-03       12     0.85   83.3   75.0
+2024-04       12     0.99   83.3   83.3
+2024-05       12     0.86  100.0   58.3
+2024-06       12     0.44   50.0   25.0
+2024-07       12     0.00    0.0    0.0
+2024-08       12     0.01   16.7   16.7
+2024-09       12     0.02   33.3   16.7
+2024-10       14     0.83  100.0   57.1
+2024-11       14     0.90   85.7   78.6
+2024-12       12     0.66   83.3   16.7
+
+JJAS pooled: 48 scenes, 25.0% >50% clear, 14.6% >80% clear
+  month 06: 12 scenes, 25.0% >80% clear
+  month 07: 12 scenes, 0.0% >80% clear
+  month 08: 12 scenes, 16.7% >80% clear
+  month 09: 12 scenes, 16.7% >80% clear
+
+wrote evidence/screen-dhading-2024.jsonl / .csv (150 scenes)
