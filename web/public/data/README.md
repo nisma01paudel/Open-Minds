@@ -14,6 +14,7 @@ once, and `bus-parks.geojson` was exactly that until round 27.
 | `timeline.json` | `scripts/build_timeline.py` | **yes** |
 | `observability-sites.json` | `scripts/build_observability.py` | **yes** - from `reports/observability-monsoon.json` |
 | `observability-by-month.json` | `scripts/build_observability.py` | **yes** |
+| `panoramas/*.png` | `scripts/render_panorama.py` | **yes** - rendered from the DEM, offline |
 | `susceptibility.json` | `scripts/build_susceptibility.py` | **yes** - 688 MB Zenodo raster, sampled |
 | `administration.json` | `scripts/build_administration.py` | **yes** - cached in `evidence/`, no network |
 | `seasons.json` | `scripts/build_seasons.py` | **yes** - Open-Meteo ERA5; `--fetch` |

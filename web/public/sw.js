@@ -22,6 +22,13 @@ const SHELL = ["/", "/ar/", "/manifest.webmanifest",
 // and a partial cache is worse than an honest download because it fails at the moment it is
 // needed rather than at the moment it is installed.
 const DATA = [
+  "/data/panoramas/kathmandu.png",
+  "/data/panoramas/khumbu.png",
+  "/data/panoramas/annapurna.png",
+  "/data/panoramas/langtang.png",
+  "/data/panoramas/manaslu.png",
+  "/data/panoramas/mustang.png",
+
   "/data/frames.json",
   "/data/timeline.json",
   "/data/observability-by-month.json",

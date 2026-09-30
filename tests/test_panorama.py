@@ -53,3 +53,37 @@ def test_it_says_it_is_a_silhouette():
     src = (ROOT / "scripts/render_panorama.py").read_text()
     assert "silhouette" in src
     assert "no trees, no buildings" in src
+
+
+def test_it_does_not_sample_closer_than_the_grid_resolves():
+    """The bug that made Manaslu a vertical cliff.
+
+    The ray march began about 25 m from the eye. On a ~1 km grid, one adjacent cell standing 100 m
+    higher reads as a wall at 76 degrees, so the Manaslu panorama came out with an 85-degree
+    horizon - not a valley, the quantisation of the grid mistaken for a cliff. Beni hid it; only
+    checking all six exposed it.
+    """
+    m = _mod()
+    assert m.MIN_RANGE_M >= 400.0, "the ray march is sampling below the grid's own resolution"
+    meta, grid = m.load_dem()
+    for name, lat, lon in [("kathmandu", 27.75, 85.32), ("manaslu", 28.60, 84.65),
+                           ("annapurna", 28.50, 84.00), ("mustang", 28.85, 83.90),
+                           ("khumbu", 27.80, 86.80), ("langtang", 28.15, 85.50)]:
+        _, hz, eye = m.render(meta, grid, lat, lon, width=360)
+        assert hz.max() < 75.0, (
+            f"{name} has a horizon at {hz.max():.0f} degrees - that is grid quantisation, "
+            f"not terrain")
+
+
+def test_the_six_regions_are_ordered_as_the_country_is():
+    """A sanity check on the whole set, because one plausible-looking point proves nothing.
+
+    Kathmandu sits in a broad low valley; Annapurna and Manaslu sit in deep high gorges. If the
+    renderer ever reports the valley as steeper than the gorges, something is wrong with it.
+    """
+    m = _mod()
+    meta, grid = m.load_dem()
+    _, kath, _ = m.render(meta, grid, 27.75, 85.32, width=360)
+    _, manaslu, _ = m.render(meta, grid, 28.60, 84.65, width=360)
+    assert manaslu.max() > kath.max(), (
+        "the Manaslu gorge renders flatter than the Kathmandu valley")

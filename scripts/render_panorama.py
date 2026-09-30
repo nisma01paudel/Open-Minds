@@ -35,6 +35,7 @@ DEM_META = "web/public/data/terrain.json"
 WIDTH = 2048                 # equirectangular: width is 360 degrees
 RAY_STEPS = 240              # samples along each bearing
 MAX_RANGE_M = 60000.0        # how far the eye looks; beyond this a 1 km grid says nothing useful
+MIN_RANGE_M = 600.0          # and how close it may look, which the grid resolution decides
 
 
 def load_dem():
@@ -59,7 +60,11 @@ def horizon_profile(meta: dict, grid: np.ndarray, lat: float, lon: float, n_az: 
     az = np.radians(np.arange(n_az) * 360.0 / n_az)
     horizon = np.full(n_az, -90.0)
     for step in range(1, RAY_STEPS + 1):
-        r = MAX_RANGE_M * (step / RAY_STEPS) ** 1.4      # denser near the viewer
+        # NEVER SAMPLE CLOSER THAN THE GRID CAN RESOLVE. The first version started about 25 m from
+        # the eye, where one ~1 km cell standing 100 m higher reads as a wall at 76 degrees. Beni
+        # hid it; Manaslu came out with an 85-degree horizon, which is not a valley, it is the
+        # quantisation of the grid being mistaken for a cliff.
+        r = MIN_RANGE_M + (MAX_RANGE_M - MIN_RANGE_M) * (step / RAY_STEPS) ** 1.4
         dlat = (r * np.cos(az)) / m_per_deg_lat
         dlon = (r * np.sin(az)) / m_per_deg_lon
         yy = np.clip(((north - (lat + dlat)) / (north - south) * (h - 1)).astype(int), 0, h - 1)
