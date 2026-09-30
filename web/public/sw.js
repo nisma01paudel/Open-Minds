@@ -17,7 +17,7 @@ const SHELL = ["/", "/ar/", "/manifest.webmanifest",
 // one that never toggled the trails on had no trail network. "Works offline" was true of the
 // paths someone had already walked.
 //
-// 4.2 MB in total: 1.7 MB of JSON and terrain, 2.6 MB of trail vectors, 1.1 MB of slope geometry.
+// 4.2 MB in total: 1.7 MB of JSON and terrain, 4.5 MB of trail vectors, 1.1 MB of slope geometry.
 // That is a deliberate cost. This app is meant to be installed and then work with the radio off,
 // and a partial cache is worse than an honest download because it fails at the moment it is
 // needed rather than at the moment it is installed.

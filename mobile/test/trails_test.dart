@@ -19,7 +19,7 @@ void main() {
   });
 
   test('the bundled network loads at the scale the data has', () {
-    expect(net.trails.length, 6135);
+    expect(net.trails.length, 20176);
     expect(net.attribution, contains('OpenStreetMap'));
     expect(net.attribution, contains('ODbL'));
   });
@@ -40,7 +40,7 @@ void main() {
   });
 
   test('length differs from Python by the amount junction snapping removes, and no more', () {
-    // Python reports 6177.2 / 4024.2 / 3989.5 m; Dart reports 6457.3 / 4246.1 / 4068.6 m.
+    // Python reports 6192.5 / 4031.7 / 3941.6 m; Dart reports 6472.6 / 4253.6 / 4020.7 m.
     //
     // They are measuring different things and both are right for their purpose. Python walks the
     // SNAPPED GRAPH, where vertices within 25 m of each other are merged into one junction - so
@@ -50,7 +50,7 @@ void main() {
     // The test asserts the size of the gap rather than pretending it is not there: if the
     // difference ever grows past a few per cent, something has changed and nobody would see it.
     final got = net.nearby(85.3620, 27.7750, radiusM: 3000, limit: 3);
-    const pythonLengths = [6177.2, 4024.2, 3989.5];
+    const pythonLengths = [6192.5, 4031.7, 3941.6];
     for (var i = 0; i < 3; i++) {
       final gap = (got[i].lengthM - pythonLengths[i]) / pythonLengths[i];
       expect(gap, greaterThan(0), reason: 'the drawn line should be the longer of the two');
@@ -94,9 +94,9 @@ void main() {
   });
 
   test('fragments shorter than the minimum are not offered as a walk', () {
-    // The bundle keeps every way - Python counts all 6,135 - and the minimum is applied when a
+    // The bundle keeps every way - Python counts all 20,176 - and the minimum is applied when a
     // walk is OFFERED, not when the data is read.
-    expect(net.trails.length, 6135);
+    expect(net.trails.length, 20176);
     final offered = net.nearby(85.3620, 27.7750, radiusM: 3000, limit: 50);
     expect(offered, isNotEmpty);
     for (final t in offered) {

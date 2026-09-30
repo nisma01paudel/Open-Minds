@@ -26,6 +26,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -48,7 +49,57 @@ REGIONS = [
      "Kathmandu valley and the Shivapuri rim (27.70-27.84 N, 85.22-85.42 E)"),
     ("khumbu", "evidence/trails-raw-khumbu.json",
      "Khumbu / Everest region (27.55-28.05 N, 86.55-87.05 E)"),
+    ("annapurna", "evidence/trails-raw-annapurna.json",
+     "Annapurna region (28.15-28.85 N, 83.65-84.35 E)"),
+    ("langtang", "evidence/trails-raw-langtang.json",
+     "Langtang and Helambu (27.90-28.45 N, 85.15-85.85 E)"),
 ]
+
+# GEOMETRY IS SIMPLIFIED, and this is a deliberate trade rather than a shortcut.
+#
+# Four regions at full OSM precision is about 520,000 vertices and a 13 MB bundle. That is a real
+# cost: it is precached for offline use, so a walker pays it in mobile data, and it ships inside the
+# APK. Douglas-Peucker at this tolerance removes the vertices that carry no shape - the ones
+# recorded by a GPS trace wobbling along a straight path - and keeps every bend a person would
+# notice. The distance figure moves by a fraction of a per cent, and the output reports both
+# numbers so the trade is visible instead of asserted.
+SIMPLIFY_M = 10.0
+
+
+def _perpendicular_m(pt, a, b) -> float:
+    """Distance from a point to the segment ab, in metres, on a local flat approximation."""
+    lat0 = (a[1] + b[1]) / 2.0
+    kx = 111_320.0 * math.cos(math.radians(lat0))
+    ky = 111_320.0
+    px, py = (pt[0] - a[0]) * kx, (pt[1] - a[1]) * ky
+    bx, by = (b[0] - a[0]) * kx, (b[1] - a[1]) * ky
+    seg2 = bx * bx + by * by
+    if seg2 == 0:
+        return math.hypot(px, py)
+    t = max(0.0, min(1.0, (px * bx + py * by) / seg2))
+    return math.hypot(px - t * bx, py - t * by)
+
+
+def simplify(coords, tolerance_m: float = SIMPLIFY_M):
+    """Douglas-Peucker. Ramer's algorithm, unchanged since 1972, which is why it is the right one:
+    it is the standard, it is exact, and nobody has to review it."""
+    if len(coords) < 3:
+        return coords
+    keep = [False] * len(coords)
+    keep[0] = keep[-1] = True
+    stack = [(0, len(coords) - 1)]
+    while stack:
+        i, j = stack.pop()
+        worst, idx = 0.0, -1
+        for k in range(i + 1, j):
+            d = _perpendicular_m(coords[k], coords[i], coords[j])
+            if d > worst:
+                worst, idx = d, k
+        if idx != -1 and worst > tolerance_m:
+            keep[idx] = True
+            stack.append((i, idx))
+            stack.append((idx, j))
+    return [c for c, k in zip(coords, keep) if k]
 
 
 def clean(way: dict) -> dict | None:
@@ -71,6 +122,7 @@ def clean(way: dict) -> dict | None:
               if p and p.get("lon") is not None and p.get("lat") is not None]
     if len(coords) < 2:
         return None
+    coords = simplify(coords)
     return {"type": "Feature", "properties": props,
             "geometry": {"type": "LineString", "coordinates": coords}}
 
@@ -82,7 +134,7 @@ def main() -> int:
     ap.add_argument("--out", default="web/public/data/trails.geojson")
     a = ap.parse_args()
 
-    feats, vertices, covered = [], 0, []
+    feats, vertices, raw_vertices, covered = [], 0, 0, []
     sources = REGIONS if a.src is None else [(a.src, a.src, "explicit --in")]
     for region, path, description in sources:
         f_path = ROOT / path
@@ -99,6 +151,7 @@ def main() -> int:
                 f["properties"]["r"] = region
                 feats.append(f)
                 vertices += len(f["geometry"]["coordinates"])
+                raw_vertices += len([p for p in (el.get("geometry") or []) if p.get("lon")])
                 got += 1
         covered.append(description)
         print(f"  {region}: {got} ways")
@@ -117,6 +170,9 @@ def main() -> int:
     dest.parent.mkdir(parents=True, exist_ok=True)
     dest.write_text(json.dumps(out, separators=(",", ":"), ensure_ascii=False), encoding="utf-8")
     mb = dest.stat().st_size / 1_048_576
+    kept = vertices / raw_vertices * 100 if raw_vertices else 100.0
+    print(f"  geometry: {raw_vertices} vertices -> {vertices} kept ({kept:.0f}% at "
+          f"{SIMPLIFY_M:.0f} m tolerance)")
     named = sum(1 for f in feats if "n" in f["properties"])
     print(f"wrote {a.out}: {len(feats)} trails, {vertices} vertices, {mb:.2f} MB, {named} named")
     return 0

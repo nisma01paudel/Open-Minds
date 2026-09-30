@@ -26,7 +26,7 @@ Not a plan — running code, verified against live services:
 | **Siting advice** (repair here, or move above the source zone) | **working** — Copernicus DEM, live |
 | BIPAD government integration | **working** — coordinate → ward; real road-blockage register |
 | Evaluation harnesses (routing accuracy, kappa, gap calibration) | **working** |
-| **Offline hiking trails** (6,135 OSM ways, Kathmandu valley) | **working** — 2.64 MB, bundled, no network |
+| **Offline hiking trails** (20,176 OSM ways, four regions of Nepal) | **working** — 4.49 MB, bundled, no network |
 | **Trip planning + bus access** (which park, what fare) | **working** — Rs 24 Bagmati minimum, April 2026, DOTM |
 | **Ask in your own words** (open-weight model → deterministic engine) | **working** — the model reads, the engine decides |
 
@@ -52,7 +52,7 @@ under Rs 40 · wants view` — read by the open-weight model, then planned by a 
 that validates every field the model returns. It works with no model server too, and says which
 reader answered.
 
-**6,135 mapped footpaths, 141 bus stops, all of it offline** — on the web app and on the phone.
+**20,176 mapped footpaths, 141 bus stops, all of it offline** — on the web app and on the phone.
 Trail data © OpenStreetMap contributors, ODbL 1.0. Coverage is incomplete, the terrain grid is
 1 km, and bus schedules are not known here: all three are stated in the output rather than hidden.
 
