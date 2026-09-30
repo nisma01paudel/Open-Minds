@@ -856,3 +856,18 @@ def test_the_submission_states_the_honesty_rather_than_only_the_features():
     sub = read("SUBMISSION.md")
     for claim in ("unvalidated", "not proof that nobody walks here", "nothing is here"):
         assert claim in sub, f"the submission dropped its own honesty: {claim!r}"
+
+
+def test_the_readme_names_every_feature_by_the_word_a_reader_would_search_for():
+    """A feature described but not named is a feature nobody finds.
+
+    The README listed the season guide as "when to go" and the panorama as "a 360-degree render",
+    which reads well and means that searching the front page for "panorama" or "season" returns
+    nothing. The words matter as much as the description.
+    """
+    readme = read("README.md")
+    for term in ("panorama", "season", "complaint", "places", "flood", "offline"):
+        assert term in readme.lower(), (
+            f"the README does not contain {term!r} - a reader searching the front page for it "
+            f"would conclude the feature does not exist")
+    assert "reports/device" in readme, "the README does not link the on-device frames"

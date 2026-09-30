@@ -56,6 +56,25 @@ reader answered.
 Trail data © OpenStreetMap contributors, ODbL 1.0. Coverage is incomplete, the terrain grid is
 1 km, and bus schedules are not known here: all three are stated in the output rather than hidden.
 
+### And what else it answers, all offline
+
+| | |
+|---|---|
+| **Season guide — when to go** | twelve months of measured rain, dry days and temperature for the nearest of six regions. **No month is called good or bad.** The four monsoon months are cross-checked against our own CHIRPS measurement and drawn green; the other eight are grey and marked unvalidated; and Kathmandu's own figures carry a warning not to quote them, because ERA5 puts nearly twice the measured monsoon there. |
+| **Panorama VR — look around the valley** | a 360-degree equirectangular render of the real terrain, draggable, six regions, **264 KB inside the APK.** Not a photograph, and the caption says so: a silhouette from the elevation grid, no trees, no buildings, gradient sky. |
+| **Major places** | 277 of Nepal's 753 local units with bilingual names, population, district, documented slope count and **each unit's own official gov.np website.** The caption states that it is 277 of 753 and that a position is the mean of the documented slopes inside a unit, not a town centre. |
+| **Who is responsible for this ground** | the specific office the routing key holds responsible, the local unit it belongs to and the statutory section - so a request cannot be bounced as "not ours" without somebody deciding that on paper. |
+| **Complaint portal** | drafted on the phone in Nepali, citing **धारा १२(२)(ग)**, with the coordinates and the district, and a line on its face that it was drafted automatically and starts no proceeding. The citizen sends it and keeps the receipt. |
+| **Flood demo — when a flood comes** | the six steps of the 2024 monsoon, each labelled **computed on this phone** or **cited from a measurement made elsewhere**. Four are live; two are cited. |
+
+Every one of those has a frame in [reports/device/](reports/device/), taken from the release APK on an
+Android device. The app distinguishes **saved for offline / working from cache / NOT saved** rather
+than showing a green tick either way, because an app that is quietly not offline is worse than one
+that says so.
+
+**A user of this app can always tell "nothing is here" from "we could not look."** Most software
+cannot, and it is the thing worth looking at first.
+
 ## Start here
 
 New to the repo? Read **[SUBMISSION.md](SUBMISSION.md)** — it lists the five required submission items,
