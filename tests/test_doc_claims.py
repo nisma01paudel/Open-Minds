@@ -1056,3 +1056,46 @@ def test_the_readmes_measured_numbers_trace_to_a_report():
     # that research states its own caveat, and the caveat must survive
     assert "count" in chain and "broken" in chain, (
         "the pagination caveat on the 7,081 figure is gone from the research document")
+
+
+def test_the_speech_timing_claim_still_matches_the_speech():
+    """A presenter reads "10:48" and plans the room around it.
+
+    The table states 1,455 words across the six sections at 140 words per minute. Counting the spoken
+    text - headings, stage directions and 〔beat〕 markers excluded - gives 1,466, so the claim is
+    right to within a percent and belongs to whoever wrote it.
+
+    What matters is that it cannot drift. A round that adds a paragraph to the main script and leaves
+    a table saying ten minutes is exactly the stale-number failure this session has fixed in six
+    artefacts, and here it would be read aloud by somebody with a clock.
+    """
+    import re
+    from pathlib import Path
+
+    speech = read("docs/SPEECH.md")
+    body = re.search(r"## The main script(.*?)## The two-minute cut", speech, re.S).group(1)
+    spoken = re.sub(r"^#.*$", "", body, flags=re.M)
+    spoken = re.sub(r"^>.*$", "", spoken, flags=re.M)
+    spoken = re.sub(r"〔[^〕]*〕", "", spoken)
+    words = len([w for w in re.split(r"\s+", spoken) if w.strip()])
+
+    claimed = re.search(r"([\d,]+) words across six sections", speech)
+    assert claimed, "the speech no longer states a word count"
+    stated = int(claimed.group(1).replace(",", ""))
+
+    drift = abs(words - stated) / stated
+    assert drift < 0.05, (
+        f"the speech states {stated:,} words and now holds {words:,} ({drift:.0%} apart). "
+        f"Either the script changed and the table did not, or the other way round - and a presenter "
+        f"reads this number with a clock in front of them.")
+
+    # and the minute figure has to be consistent with the words at the stated pace
+    pace = re.search(r"Measured at (\d+) words per minute", speech)
+    assert pace, "the speech no longer states its pace"
+    minutes = words / int(pace.group(1))
+    total = re.search(r"\| \*\*10 min\*\* \| everything \| ([\d:]+) \|", speech)
+    if total:
+        h, m = (int(x) for x in total.group(1).split(":"))
+        assert abs((h * 60 + m) - minutes * 60) < 90, (
+            f"the table says {total.group(1)} and the script works out at "
+            f"{int(minutes)}m{int(minutes * 60 % 60):02d}s")
