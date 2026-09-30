@@ -197,7 +197,12 @@ def test_the_speech_the_caption_and_the_narration_agree_on_the_load_bearing_numb
     # (label, in the speech, in the captions, in the Nepali narration)
     for label, in_speech, in_caption, in_narration in (
         ("613 slopes", "613", "613", "छ सय तेह्र"),
-        ("305 above threshold", "305", "305", "तीन सय पाँच"),
+        # Was ("305 above threshold", "305", "305", "तीन सय पाँच"). All three agreed on a number
+        # that was wrong, so the test ENFORCED it - and after round 43 corrected the caption,
+        # the caption assertion still passed because the correction COMMENT in the build script
+        # contains the string "305". A guard passing for the wrong reason while enforcing a
+        # wrong value, which is the failure this file exists to catch.
+        ("31 above threshold on the named day", "31", "31 of 613", "एकतीस"),
         ("167 landslides", "167", "167", "एक सय सतसट्ठी"),
         ("27.8% clear", "27.8", "27.8", "सत्ताईस दशमलव आठ"),
     ):
@@ -1156,3 +1161,30 @@ def test_the_tracked_file_count_is_counted_and_not_remembered():
         f"README-published.md says {stated} tracked files and the repository has {actual}. "
         f"That sentence exists to show how much has been added, so it is wrong in proportion to "
         f"how much it is right about.")
+
+
+def test_the_film_does_not_SPEAK_a_number_the_caption_contradicts():
+    """The caption was fixed in round 43 and the narration was not.
+
+    cap cd reads "31 of 613 slopes above the rainfall threshold ... peaked the day before, at 149".
+    The spoken line still said "छ सय तेह्र मध्ये तीन सय पाँच" - three hundred five - so the film showed
+    one number and said another in the SAME clip, in a required submission item, for twenty-six rounds.
+
+    The guard I wrote in round 43 checked the caption in the build script. It never looked at
+    voice/narration.txt, which is the half a judge HEARS. Seventh time this session that a guard was
+    scoped to the instance in front of it rather than to the claim.
+    """
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    narr = (root / "reports/video/voice/narration.txt").read_text(encoding="utf-8")
+    build = (root / "scripts/build_voiced_video.sh").read_text(encoding="utf-8")
+
+    # Devanagari numerals as words, for the numbers this film must not claim
+    assert "तीन सय पाँच" not in narr, (
+        "the narration still says 305 slopes; the caption says 31 and the peak was 149")
+    assert "एकतीस" in narr, "the corrected count is gone from the narration"
+
+    # and the caption must keep agreeing with it
+    cap = [l for l in build.splitlines() if l.startswith("cap cd ")][0]
+    assert "31 of 613" in cap and "149" in cap, "the caption and the narration have diverged again"
