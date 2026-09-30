@@ -111,6 +111,34 @@ The advisory it produced:
 Four things at once, all of them defensible: the slope is primed, we cannot currently see it, do
 not rebuild in the same place, and here is the office that owns it under the cited section.
 
+## When it has already failed: the mesh, the API, and finding people
+
+The half above warns that a slope is loaded and names the office on the hook. The other half
+is what happens after it goes — no road, no tower, and people under the slide.
+
+**A landslide takes the network with it**, so everything here works without one.
+
+```bash
+python scripts/demo_mesh_rescue.py     # SOS -> carried by hand -> located -> on the board
+python -m pahiro.api --port 8080       # the API a mobile client is built against
+```
+
+* **Bluetooth mesh chat** (`src/pahiro/mesh/`) — messages travel phone to phone, carried by
+  whoever walks within range. Real frames, real TTL and hop counts, real store-and-forward:
+  the listener does not have to be there when the message was sent. Chat is evicted before a
+  distress message when storage fills.
+* **A field API** (`src/pahiro/api.py`) — not another screen. A common place for things to
+  land, so a village phone, a rescuer's phone and the district desk see one picture. Every
+  write is idempotent, reads take `?since=`, and there are no sessions, because a session is
+  a thing that expires while you are under a rock.
+* **Locating a buried handset** (`src/pahiro/locate.py`) — from RSSI alone, when GPS cannot
+  see the sky. It answers with a **search radius, not a point**, and with two receivers it
+  refuses to triangulate rather than invent one.
+
+Measured: the estimator recovers a placed target to **under 25 m**, and the end-to-end demo
+lands **20 m** off with a 15 m search radius. Full design, including the trade-offs and what
+is *not* implemented: **[docs/MESH.md](docs/MESH.md)**.
+
 ## What this project does NOT claim
 
 We do not claim to detect landslides better, to predict failure, or to be first at anything except a
