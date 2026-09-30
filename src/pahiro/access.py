@@ -47,10 +47,43 @@ FARE_PER_KM_RS = 3.0            # linear approximation beyond that
 # Fallback parks, used only when the OSM extract is absent. Coordinates are APPROXIMATE - good
 # enough to pick the right side of the valley, not good enough to navigate to. The OSM file
 # replaces them when present.
-# Names that identify nothing. OSM has plenty of stops literally called "Bus Stop" or "Bus Park",
-# and printing that as the destination is worse than printing where it is - a person can navigate
-# to coordinates and cannot navigate to "Bus Stop".
+# A NAME A PERSON CAN NAVIGATE TO, AND WHY THIS IS TWO PATTERNS RATHER THAN A WORD LIST
+#
+# OSM bus stops carry three kinds of label: place names ("Battar buspark", "Kutumsang"), generic
+# words ("Bus Stop"), and PROSE - "Ticket bus counter", "Bus to Kathmandu". The first is a
+# destination. The other two are not: you cannot walk to a counter or to a direction.
+#
+# The obvious fix is a list of bad words, and a list of bad words is a list of the bad words
+# somebody already saw. Two structural tests do better and do not need extending every time a new
+# phrasing turns up:
+#
+#   a ROUTE names a destination:      it contains a preposition of direction - "Bus to Kathmandu"
+#   a FACILITY names a function:      it ends in a word for a thing, not a place - "Ticket counter"
+#
+# Names failing either are described by their coordinates instead, which is worse prose and better
+# navigation. This still lets real names through that merely contain such words ("Counter's
+# Junction" would pass the first test and is a place), because the tests look at the shape of the
+# name rather than at the presence of a word.
 GENERIC_NAMES = {"bus stop", "bus park", "bus station", "busstand", "bus stop.", "stop"}
+
+ROUTE_WORDS = (" to ", " from ", " towards ", " via ")
+FACILITY_TAILS = ("counter", "office", "ticket", "booking", "enquiry", "inquiry", "shed",
+                  "stand", "shelter", "gate")
+
+
+def is_a_place_name(name: str | None) -> bool:
+    """Can somebody be sent to this? Place names yes; routes and facilities no."""
+    if not name:
+        return False
+    low = " " + name.strip().lower() + " "
+    if name.strip().lower() in GENERIC_NAMES:
+        return False
+    if any(w in low for w in ROUTE_WORDS):
+        return False
+    tail = name.strip().lower().rstrip(".").split()[-1:] or [""]
+    if tail[0] in FACILITY_TAILS:
+        return False
+    return True
 
 FALLBACK_PARKS = [
     ("Ratna Park (Old Bus Park)", 27.7047, 85.3146),
@@ -141,7 +174,7 @@ def load_parks(path: str | Path | None = None) -> list[tuple[str, float, float]]
                 if not c:
                     continue
                 name = (f.get("properties") or {}).get("n")
-                if name and name.strip().lower() in GENERIC_NAMES:
+                if not is_a_place_name(name):
                     name = None
                 if not name:
                     # Describe it by where it is, not by a name we do not have.

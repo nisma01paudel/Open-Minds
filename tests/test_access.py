@@ -102,3 +102,46 @@ def test_the_fare_model_is_not_trusted_beyond_its_range():
     """A linear approximation is fine over a valley and nonsense over a country."""
     assert access.MAX_RIDE_M <= 80_000, \
         "the stop data is one valley; a 100 km 'ride' is not a bus journey"
+
+
+# ---- a name a person can navigate to -------------------------------------------------------------
+
+def test_a_route_is_not_a_place_to_stand():
+    """'Bus to Kathmandu' is a direction, not a stop. Nobody can walk to it."""
+    assert not access.is_a_place_name("Bus to Kathmandu")
+    assert not access.is_a_place_name("Bus from Pokhara")
+    assert not access.is_a_place_name("Stand towards Dhunche")
+
+
+def test_a_facility_is_not_a_place_to_stand():
+    """'Ticket bus counter' names a thing you visit, not a place you arrive at."""
+    assert not access.is_a_place_name("Ticket bus counter")
+    assert not access.is_a_place_name("Enquiry office")
+    assert not access.is_a_place_name("Booking stand")
+
+
+def test_a_real_name_survives_even_when_it_contains_those_words():
+    """The test looks at the SHAPE of a name, not at the presence of a word - which is the whole
+    reason it is two patterns rather than a blocklist that grows every time somebody sees a new
+    phrasing."""
+    for good in ("Battar buspark", "Kutumsang", "Trishuli Bus Station",
+                 "Melamchighyang Bus Stop", "Counter Junction", "Gongabu (New Bus Park)",
+                 "Machhapokhari"):
+        assert access.is_a_place_name(good), f"{good!r} is a real place and was dropped"
+
+
+def test_the_langtang_prose_names_are_described_by_where_they_are():
+    """The regression. These two came out of the OSM data as the destination for a Syaphrubesi
+    trailhead, and 'bus to Ticket bus counter' is not an instruction anybody can follow."""
+    parks = access.load_parks()
+    names = [n for n, _, _ in parks]
+    assert not any(n.strip().lower() == "bus to kathmandu" for n in names)
+    assert not any(n.strip().lower() == "ticket bus counter" for n in names)
+    # and the stop is still there, just described by its position
+    assert any(n.startswith("mapped stop at") for n in names)
+
+
+def test_dropping_a_prose_name_does_not_drop_the_stop():
+    """The stop still exists and is still reachable - it has simply lost an unusable label."""
+    before = len(access.load_parks())
+    assert before >= 335, "the stop list lost entries rather than labels"
