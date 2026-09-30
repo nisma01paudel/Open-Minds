@@ -352,7 +352,7 @@ export default function Page() {
             cue: "Now the 2024 monsoon. Press play and watch the belt move.",
             action: () => { setMode("replay"); setDay(0); setSpeed(70); setPlaying(true); setFocus(null); } },
           { title: "4 · The day — 28 September 2024",
-            cue: "305 of 613 slopes above the rainfall threshold on one day. That is the day Nepal recorded 167 landslides.",
+            cue: "305 of 613 slopes above the rainfall threshold on one day. That is the day Nepal recorded 167 landslides. Say clearly: this is not a forecast — we tested it, and the slopes that failed were not the most loaded.",
             action: () => { setMode("replay"); setPlaying(false); setDay(tl ? tl.days.indexOf("2024-09-28") : 0); setFocus(null); } },
           { title: "5 · And we could not see them",
             cue: "Here is the part that matters. In September only 27.8% of satellite imagery had clear ground. A slope can be loaded and invisible at the same time — which is the whole problem, and why the system says so instead of going quiet.",

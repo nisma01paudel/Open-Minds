@@ -93,6 +93,17 @@ The unstratified first run reported 100% and that number was an artefact - it sa
 most recent events, which are post-monsoon, exactly when optical returns. Stratifying by
 year-month is what made the result honest.
 
+## E5 — does rainfall ranking find the slopes that fail?
+
+**No.** On the two 2024 event days with enough recorded failures to test, the slopes that
+actually failed ranked at the **55th and 53rd percentile** of the rainfall ranking. Of the
+14 failures on 2024-09-28, only 4 had crossed the threshold, and their median load was
+below the median of all 613 slopes.
+
+Three independent measurements now agree that rainfall load does not identify which slope
+fails: this, the event-vs-control test (+3 points), and the 2018-08-08 case (30+ landslides
+on a 51 mm day). Full method: `reports/rainfall-ranking.md`.
+
 ## Reproduce
 
 ```bash

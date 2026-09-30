@@ -100,7 +100,8 @@ among cited rules, and the institution is read from the ontology. Both responses
 | Scenes >80% clear, Jun/Jul/Aug | **0.0 / 0.0 / 0.0 %** | same | 2024, one AOI |
 | Rainfall trigger on the 2024-09-28 event | EXCEEDED at 48/72/240 h | [docs/DATA.md](docs/DATA.md) | threshold fit rests on 43 events |
 | Event benchmark | 613 sites | `benchmark/events.csv` | 1,650 distinct coordinates from 6,579 records |
-| Controls | 180 matched sites | `benchmark/controls.csv` | absence of a record is not stability |
+| **Does rainfall ranking find the slopes that fail?** | **No — 55th percentile** | [reports/rainfall-ranking.md](reports/rainfall-ranking.md) | two event days only |
+| Controls | 1,839 matched sites | `benchmark/controls.csv` | absence of a record is not stability |
 
 ## What this project does NOT claim
 

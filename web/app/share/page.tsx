@@ -19,6 +19,11 @@ export default function Share() {
           above the rainfall threshold on a single day — 28 September. On that day Nepal
           recorded <b>167 landslides</b>. And only <b>27.8%</b> of the satellite imagery that
           month had clear ground, so most of those slopes could not be looked at at all.
+          <br /><br />
+          <b>We then tested whether that ranking finds the slopes that fail. It does not.</b> The
+          slopes that actually failed that day ranked at the 55th percentile of the rainfall
+          ranking — a coin toss. So this is not a forecast, and the map does not claim to be
+          one. It is the list of slopes under load, and the office on the hook for each.
         </p>
       </header>
 

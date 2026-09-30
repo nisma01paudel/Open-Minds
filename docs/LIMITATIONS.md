@@ -29,6 +29,24 @@ list, and it is deliberately longer than the capabilities list.
 | Radar usability | **not yet measured** — confidence is capped and labelled | `docs/MODELS.md` |
 | InSAR | not processed; LiCSAR coherence measured at **0.16**, too low to rely on | `docs/DATA.md` |
 
+## The result that constrains what we may claim
+
+**Rainfall load does not identify which slope fails.** We tested our own core assumption
+against our own benchmark: on 2024-09-28 and 2024-07-07, the slopes that actually failed
+ranked at the **55th and 53rd percentile** of the rainfall ranking — a coin toss. Of the 14
+documented failures on the peak day, only **4** had crossed the threshold, and their median
+load was *below* the median of all 613 slopes. Full method and table:
+`reports/rainfall-ranking.md`.
+
+So the national map is a list of slopes **under load**, with the office responsible for
+each. It is **not** a prediction, it does not rank by likelihood of failure, and any
+reading of it as a forecast is wrong. What the ranking does buy is regional priming —
+"the ground across this district is loaded" — not a per-slope guess.
+
+This is the third independent measurement pointing the same way, after the event-vs-control
+test (+3 points) and the 2018-08-08 case (thirty-plus landslides on a 51 mm day against a
+118.8 mm threshold).
+
 ## Honest gaps that no amount of engineering closes in four weeks
 
 1. **Radar usability is assumed, not measured.** Acquisition times are known (4–6 passes a month);
@@ -36,7 +54,10 @@ list, and it is deliberately longer than the capabilities list.
    and labelled as an upper bound.
 2. **Controls are weak evidence.** Absence of a recorded failure is not evidence of stability. Nepal's
    inventory is thin, so any false-alarm rate derived from `benchmark/controls.csv` is a **lower bound**.
-3. **The duty labels are debatable.** Maintenance versus emergency is genuinely ambiguous for a report
+3. **The rainfall field has given everything it has.** Per-slope evidence — radar change,
+   terrain, citizen reports — is what would actually improve prioritisation, and that is
+   where the next work goes. The rainfall layer cannot be tuned into it.
+4. **The duty labels are debatable.** Maintenance versus emergency is genuinely ambiguous for a report
    like "a road above the highway has failed": the failing asset needs its owner, and an event has also
    occurred. Some of the measured routing error is label ambiguity, which is exactly why E2 reports
    inter-rater agreement rather than a single score.
