@@ -343,3 +343,52 @@ kbd { background: rgba(148,163,184,.16); border: 1px solid rgba(148,163,184,.25)
 .blindnote { font-size: 11.5px; color: #cbd5e1; line-height: 1.55; background: rgba(255,45,32,.08);
   border-left: 3px solid var(--exceeded); border-radius: 0 8px 8px 0; padding: 9px 11px; }
 .blindnote b { color: #fecaca; }
+
+/* Operations panel. Read at 3am on a laptop in a tent, so: high contrast, no decoration,
+   and the arithmetic visible rather than summarised into a number nobody can argue with. */
+.adminwrap { max-width: 1080px; margin: 0 auto; padding: 22px 18px 60px; }
+.adminhead { display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start;
+  justify-content: space-between; border-bottom: 1px solid rgba(148,163,184,.2);
+  padding-bottom: 16px; }
+.adminhead h1 { margin: 0 0 4px; font-size: 22px; }
+.adminhead h1 span { color: #38bdf8; }
+.adminhead p { margin: 0; color: #94a3b8; font-size: 12.5px; max-width: 620px; line-height: 1.55; }
+.adminmeta { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; font-size: 12.5px;
+  color: #94a3b8; }
+.adminmeta b { font-size: 19px; color: #e2e8f0; }
+.adminrefresh { font: inherit; font-size: 12px; cursor: pointer; padding: 7px 12px;
+  border-radius: 8px; border: 1px solid rgba(56,189,248,.45); background: rgba(56,189,248,.12);
+  color: #7dd3fc; }
+.adminerr { margin: 16px 0; padding: 12px 14px; border-radius: 10px; font-size: 12.5px;
+  background: rgba(255,45,32,.12); border-left: 3px solid #ff2d20; color: #fecaca; }
+.admincaveat { margin: 18px 0; padding: 12px 14px; border-radius: 10px; font-size: 12.5px;
+  line-height: 1.6; background: rgba(56,189,248,.08); border-left: 3px solid #38bdf8;
+  color: #cbd5e1; }
+.adminempty { margin: 40px 0; text-align: center; color: #64748b; font-size: 13px; }
+.adminlist { display: flex; flex-direction: column; gap: 14px; margin-top: 20px; }
+.adminrow { display: flex; gap: 14px; padding: 14px 16px; border-radius: 12px;
+  background: rgba(7,11,20,.72); border: 1px solid rgba(148,163,184,.18); }
+.adminrank { display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 54px; }
+.adminnum { font-size: 22px; font-weight: 700; color: #e2e8f0; }
+.adminband { font-size: 9.5px; letter-spacing: .06em; text-transform: uppercase; color: #06121f;
+  font-weight: 800; padding: 3px 7px; border-radius: 20px; }
+.adminbody { flex: 1; min-width: 0; }
+.adminid { font-size: 14.5px; }
+.adminmsg { margin: 7px 0 9px; font-size: 12.5px; color: #cbd5e1; line-height: 1.5; }
+.adminfacts { display: flex; flex-wrap: wrap; gap: 12px; font-size: 11.5px; color: #94a3b8;
+  margin-bottom: 10px; }
+.adminwhy { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+.adminwhy td { padding: 2px 8px 2px 0; vertical-align: top; }
+.adminwhy td:first-child { color: #94a3b8; white-space: nowrap; }
+.adminpts { color: #38bdf8; font-weight: 700; text-align: right; white-space: nowrap; }
+.adminsum td { border-top: 1px solid rgba(148,163,184,.22); padding-top: 5px; font-weight: 700; }
+.adminwarn { margin: 9px 0 0; padding-left: 17px; font-size: 11.5px; color: #fbbf24;
+  line-height: 1.55; }
+.adminmore { margin: 18px auto 0; display: block; font: inherit; font-size: 12px; cursor: pointer;
+  padding: 9px 14px; border-radius: 9px; border: 1px solid rgba(148,163,184,.3);
+  background: transparent; color: #cbd5e1; }
+.adminfoot { margin-top: 30px; padding-top: 14px; font-size: 11.5px; color: #64748b;
+  line-height: 1.6; border-top: 1px solid rgba(148,163,184,.18); }
+.adminfoot code { color: #7dd3fc; }
+.adminfoot b { color: #94a3b8; }
+.dim { color: #64748b; }

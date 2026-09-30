@@ -39,7 +39,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import parse_qs, urlparse
 
-from . import navigate, shelter
+from . import navigate, shelter, triage
 
 from .locate import Reading, estimate_position
 from .mesh.protocol import MeshMessage
@@ -233,6 +233,9 @@ OPENAPI = {
             "get": {"summary": "Estimated position and search radius"},
         },
         "/api/v1/slopes": {"get": {"summary": "Documented slopes and their current state"}},
+        "/api/v1/triage": {
+            "get": {"summary": "The board, ranked for search order, with a reason per point"},
+        },
         "/api/v1/escape": {
             "get": {"summary": "Which way to run and how high, from the bundled DEM",
                     "parameters": [
@@ -335,6 +338,8 @@ class _Handler(BaseHTTPRequestHandler):
             return self._send(200, self._slopes(q))
         if path == "/api/v1/escape":
             return self._send(200, self._escape(q))
+        if path == "/api/v1/triage":
+            return self._send(200, self._triage())
         return self._send(404, {"error": "not found", "path": path})
 
     def do_POST(self):                                     # noqa: N802
@@ -501,6 +506,23 @@ class _Handler(BaseHTTPRequestHandler):
             "caveat": ("Terrain only, from a coarse national grid. It cannot see bridges, "
                        "culverts, roads or the water. Move away from the stream first."),
         }
+
+    def _triage(self) -> dict[str, Any]:
+        """The board with a ranked search order attached.
+
+        Deliberately deterministic and explainable: a coordinator has to be able to ask why one
+        call is above another and get an answer they can argue with. Every point traces to a
+        named factor, and the ranking is explicitly not a judgement about who matters.
+        """
+        rows = self.store.trapped()
+        ranked = triage.triage(rows)
+        # The board itself travels with the ranking, so the panel needs one call and cannot
+        # render a rank against a row it does not have.
+        by_id = {str(r.get("device_id")): r for r in rows}
+        for entry in ranked["ranked"]:
+            entry["report"] = by_id.get(entry["device_id"])
+        ranked["stats"] = self.store.stats()
+        return ranked
 
     def _slopes(self, q: dict[str, list[str]]) -> dict[str, Any]:
         """Expose the slope picture the earlier work already produces.
