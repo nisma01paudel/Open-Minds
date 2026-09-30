@@ -384,3 +384,90 @@ def ladder_summary() -> list[dict]:
         "needs": t.needs,
         "note": t.note,
     } for t in LADDER]
+
+
+# ---- how far, and what it costs to get there ----------------------------------------------------
+
+
+@dataclass
+class Reach:
+    """What it takes to cover a given distance over one transport."""
+
+    transport: Transport
+    target_m: float
+    hops: int
+    latency_s: float
+    cost: float
+    feasible: bool
+    note: str
+
+    def as_dict(self) -> dict:
+        return {
+            "transport": self.transport.name,
+            "target_km": round(self.target_m / 1000.0, 2),
+            "hops": self.hops,
+            "latency_s": round(self.latency_s, 1),
+            "latency_text": _human_latency(self.latency_s),
+            "covered_km": None if not math.isfinite(self.transport.range_m)
+            else round(self.hops * self.transport.range_m / 1000.0, 2),
+            "feasible": self.feasible,
+            "note": self.note,
+        }
+
+
+def _human_latency(seconds: float) -> str:
+    if seconds < 60:
+        return f"{seconds:.0f} s"
+    if seconds < 3600:
+        return f"{seconds / 60:.0f} min"
+    if seconds < 86400:
+        return f"{seconds / 3600:.1f} h"
+    return f"{seconds / 86400:.1f} days"
+
+
+def reach(transport: Transport, target_m: float, *, kind: str = "sos") -> Reach:
+    """How many hops of one transport cover `target_m`, and what that costs end to end.
+
+    This is the answer to "can software reach three kilometres", and it is uncomfortable on
+    purpose: a phone radio covers about 300 m, so three kilometres is **ten hops**, and no
+    configuration changes that. What software can do is count the hops honestly and say whether
+    the chain exists, rather than implying the radio is longer than it is.
+    """
+    hops = 1 if not math.isfinite(transport.range_m) else max(
+        1, math.ceil(target_m / transport.range_m))
+    latency = hops * transport.latency_s
+    cost = hops * transport.cost
+
+    if not math.isfinite(transport.range_m):
+        note = f"{transport.name} crosses any distance in one hop; {transport.note}"
+    elif hops == 1:
+        note = f"one {transport.name} hop covers it ({transport.range_m:.0f} m a hop)"
+    else:
+        note = (f"{hops} {transport.name} hops of {transport.range_m:.0f} m, so it needs "
+                f"{hops} phones in a chain between here and there")
+
+    return Reach(transport=transport, target_m=target_m, hops=hops, latency_s=latency,
+                 cost=cost, feasible=True, note=note)
+
+
+def reach_table(target_m: float, *, available: set[str] | None = None) -> list[Reach]:
+    """Every transport, ranked by how quickly it covers the distance.
+
+    Ranked by end-to-end latency, because that is what a rescue cares about. Cost is reported
+    rather than optimised: choosing "free but four hours late" over "costs money and arrives in
+    a minute" is a decision for a human, not for this function.
+    """
+    names = available if available is not None else {t.name for t in LADDER}
+    rows = [reach(t, target_m) for t in LADDER if t.name in names]
+    rows.sort(key=lambda r: (r.latency_s, r.cost))
+    return rows
+
+
+def best_reach(target_m: float, *, available: set[str] | None = None) -> Reach | None:
+    """The fastest way to cover the distance with what is available, or None if nothing is.
+
+    None is a real answer: the caller must hold the message rather than discard it, which is the
+    same rule `choose` follows.
+    """
+    rows = reach_table(target_m, available=available)
+    return rows[0] if rows else None

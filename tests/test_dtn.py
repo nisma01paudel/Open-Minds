@@ -271,3 +271,91 @@ def test_a_body_over_the_protocol_limit_is_truncated_and_says_so():
     b = dtn.Bundle(id="x", kind="chat", body="z" * 900)
     assert b.body.endswith("[truncated]")
     assert len(b.body) <= 480
+
+
+# ---- how far, and what it costs to get there ----------------------------------------------------
+
+def test_three_and_a_half_km_is_twelve_wifi_hops_not_one_radio():
+    """The user-facing question, answered with arithmetic instead of optimism.
+
+    A phone radio covers about 300 m. Three and a half kilometres is therefore twelve hops, and
+    no configuration changes that. What matters is that the chain EXISTS and can be counted.
+    """
+    r = dtn.reach(dtn.WIFI_AWARE, 3500.0)
+    assert r.hops == 12
+    assert r.hops * dtn.WIFI_AWARE.range_m >= 3500.0
+    assert r.latency_s == pytest.approx(12.0)
+    assert "12 phones in a chain" in r.note
+
+
+def test_bluetooth_needs_a_hundred_and_seventeen_phones_for_the_same_distance():
+    """Why Wi-Fi Aware is the rung that matters: the advertisement cannot practically chain."""
+    r = dtn.reach(dtn.BLE, 3500.0)
+    assert r.hops == 117
+    assert r.latency_s == pytest.approx(234.0)
+    assert r.hops > 100, "this is the honest cost of the smallest rung"
+
+
+def test_sms_and_the_courier_cross_any_distance_in_one_hop():
+    for t in (dtn.SMS, dtn.COURIER):
+        r = dtn.reach(t, 3500.0)
+        assert r.hops == 1
+        assert "one hop" in r.note
+        assert r.as_dict()["covered_km"] is None, "no range limit, so no multiplication"
+
+
+def test_the_fastest_route_to_three_point_five_km_is_wifi_when_radios_are_up():
+    best = dtn.best_reach(3500.0, available={"ble", "wifi_aware", "courier"})
+    assert best.transport.name == "wifi_aware"
+    assert best.hops == 12
+
+
+def test_with_no_cell_and_nobody_walking_the_radio_chain_still_works():
+    """The scenario the system exists for: no tower, no courier, phones in a line."""
+    best = dtn.best_reach(3500.0, available={"ble", "wifi_aware"})
+    assert best is not None
+    assert best.transport.name == "wifi_aware"
+    assert best.hops == 12
+
+
+def test_asking_for_a_distance_with_nothing_available_returns_none_not_a_guess():
+    assert dtn.best_reach(3500.0, available=set()) is None
+
+
+def test_reach_is_sorted_by_latency_because_that_is_what_a_rescue_cares_about():
+    rows = dtn.reach_table(3500.0)
+    latencies = [r.latency_s for r in rows]
+    assert latencies == sorted(latencies)
+    assert rows[0].transport.name == "wifi_aware"
+    assert rows[-1].transport.name == "courier"
+
+
+def test_cost_is_reported_not_optimised_so_a_human_decides():
+    """Free but four hours late versus paid and immediate is a judgement, not an algorithm."""
+    rows = {r.transport.name: r for r in dtn.reach_table(3500.0)}
+    assert rows["courier"].cost == 0.0, "a courier costs no money"
+    assert rows["courier"].latency_s > rows["sms"].latency_s, "and costs considerable time"
+
+    # Per Hop, SMS is the expensive rung: 5 against the radio's 1.
+    assert dtn.SMS.cost > dtn.WIFI_AWARE.cost
+
+    # But over 3.5 km the TOTALS invert, and that is worth knowing rather than smoothing over:
+    # one SMS at 5 beats twelve Wi-Fi hops at 12. The radio is cheaper per hop and cheaper in
+    # money only when the chain is short. It is still the faster answer, which is why the table
+    # sorts on latency and prints cost beside it instead of optimising either one.
+    assert rows["sms"].cost < rows["wifi_aware"].cost
+    assert rows["wifi_aware"].latency_s < rows["sms"].latency_s
+
+
+def test_latency_is_rendered_in_units_a_person_reads():
+    assert dtn._human_latency(12.0) == "12 s"
+    assert dtn._human_latency(900.0) == "15 min"
+    assert dtn._human_latency(21600.0) == "6.0 h"
+    assert dtn._human_latency(200000.0).endswith("days")
+
+
+def test_no_phone_radio_reaches_three_km_in_one_hop():
+    """The claim that keeps this honest: 3 km is a chain, not a transmitter."""
+    for t in (dtn.BLE, dtn.WIFI_AWARE):
+        assert t.range_m < 1000, f"{t.name} must not be sold as kilometre-capable"
+        assert dtn.reach(t, 3000.0).hops >= 10

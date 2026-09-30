@@ -59,6 +59,33 @@ honest thing is to name them and say which gap this project fills.
   software is open, and it is the only route to kilometres that runs on hardware a Nepali ward
   might already have.
 
+## Three to four kilometres, specifically
+
+The requirement was "at least 3 to 4 km". Here is exactly what it takes, computed rather than
+hoped for, by `dtn.reach_table(3500)`:
+
+| Transport | Hops to cover 3.5 km | End-to-end | What it needs |
+|---|---|---|---|
+| **Wi-Fi Aware** | **12** | **12 s** | 12 phones in a chain |
+| SMS | 1 | 30 s | a cell tower standing |
+| Bluetooth advertisement | **117** | 4 min | 117 phones in a chain |
+| Courier | 1 | 6.0 h | somebody walking out |
+
+**So yes — 3.5 km is reachable, in twelve Wi-Fi Aware hops, in about twelve seconds.** No extra
+hardware, no LoRa board, no tower. The catch is honest and it is the same catch as the whole
+design: **it needs twelve phones in a line between the two points.** On a trail or a road with
+people walking, that is a realistic chain. In an empty gorge it is not, and the courier is the
+rung that still works.
+
+Bluetooth is in the table at 117 hops to make the point: the smallest rung is for *finding*
+someone tens of metres away, not for crossing a valley.
+
+One inversion worth knowing, because it is counter-intuitive: **per hop** the radio is far cheaper
+than SMS (1 against 5), but **in total over 3.5 km** one SMS costs 5 while twelve Wi-Fi hops cost
+12. The radio is only cheaper in money when the chain is short. It is still the faster answer,
+which is why the planner sorts on latency and prints cost beside it rather than optimising
+either one.
+
 ## What that means for this project's claim
 
 The ladder in `dtn.py` is the right shape and it is honest about its ceiling:
