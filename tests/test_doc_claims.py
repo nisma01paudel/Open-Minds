@@ -320,3 +320,42 @@ def test_the_trail_layer_is_wired_into_the_map_and_the_bundle_ships():
     d = json.loads(bundle.read_text(encoding="utf-8"))
     assert "OpenStreetMap" in d["attribution"], "attribution must travel in the data too"
     assert len(d["features"]) > 1000
+
+
+# ---- the offline cache must list files that exist ------------------------------------------------
+
+def test_every_file_the_service_worker_precaches_actually_exists():
+    """`addAll` is atomic: one bad path caches NOTHING, and it was wrapped in a bare catch, so a
+    single renamed file produced a silent, empty offline cache that looked fine until the app was
+    used with the radio off.
+
+    This is the check that makes the offline claim true rather than stated. It compares the
+    worker's list against the files on disk.
+    """
+    import re
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    sw = read("web/public/sw.js")
+    listed = set(re.findall(r'"(/data/[^"]+|/icons/[^"]+|/manifest\.webmanifest)"', sw))
+    assert listed, "no precache paths found in the service worker"
+
+    missing = [u for u in sorted(listed) if not (root / "web" / "public" / u.lstrip("/")).exists()]
+    assert not missing, (
+        f"the service worker precaches paths that do not exist: {missing}. "
+        f"With addAll one missing file caches nothing at all.")
+
+    # And the data the app actually reads must be in the list, not merely cacheable on use.
+    for required in ("/data/trails.geojson", "/data/terrain.bin", "/data/timeline.json",
+                     "/data/advisories.json", "/data/bus-parks.geojson"):
+        assert required in listed, (
+            f"{required} is not precached, so a browser that goes offline before opening that "
+            f"view will not have it")
+
+
+def test_the_service_worker_does_not_answer_a_binary_file_with_json():
+    """The /data/ miss path returned '{}' with a JSON content-type for every path, including
+    terrain.bin - a binary grid. A caller reading it as terrain got a two-byte object."""
+    sw = read("web/public/sw.js")
+    assert 'endsWith(".json")' in sw and 'endsWith(".geojson")' in sw, (
+        "the fallback must distinguish JSON from binary before inventing an empty object")

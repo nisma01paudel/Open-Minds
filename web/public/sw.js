@@ -7,16 +7,58 @@
  * Data is cache-first (it does not change on a given day). HTML is network-first with a
  * cache fallback, so a stale page is never served while the network is up.
  */
-const VERSION = "pahiro-v2";
+const VERSION = "pahiro-v3";
 const SHELL = ["/", "/ar/", "/manifest.webmanifest",
                "/icons/icon-192.png", "/icons/icon-512.png"];
-const DATA = ["/data/frames.json", "/data/timeline.json", "/data/observability-by-month.json"];
+// EVERYTHING the app reads, not three files of it.
+//
+// This list used to hold three JSON files, and the others were cached only if something happened
+// to fetch them - so a browser that went offline before opening the 3D view had no terrain, and
+// one that never toggled the trails on had no trail network. "Works offline" was true of the
+// paths someone had already walked.
+//
+// 4.2 MB in total: 1.7 MB of JSON and terrain, 1.4 MB of trail vectors, 1.1 MB of slope geometry.
+// That is a deliberate cost. This app is meant to be installed and then work with the radio off,
+// and a partial cache is worse than an honest download because it fails at the moment it is
+// needed rather than at the moment it is installed.
+const DATA = [
+  "/data/frames.json",
+  "/data/timeline.json",
+  "/data/observability-by-month.json",
+  "/data/observability-sites.json",
+  "/data/advisories.json",
+  "/data/terrain.json",
+  "/data/terrain.bin",
+  "/data/trails.geojson",
+  "/data/bus-parks.geojson",
+  "/data/slopes-live-2026-09-30.geojson",
+  "/data/slopes-chirps-2024-09-28.geojson",
+  "/data/slopes-chirps-2024-07-06.geojson",
+];
 
 self.addEventListener("install", (e) => {
   e.waitUntil((async () => {
     const c = await caches.open(VERSION);
-    await c.addAll(SHELL.map((u) => new Request(u, { cache: "reload" }))).catch(() => {});
-    await c.addAll(DATA.map((u) => new Request(u, { cache: "reload" }))).catch(() => {});
+
+    // ONE AT A TIME, ON PURPOSE.
+    //
+    // `addAll` is atomic: if ANY url in the list fails, the whole call rejects and NOTHING is
+    // cached. With the previous `.catch(() => {})` on top of that, a single renamed file meant a
+    // silent, completely empty offline cache - and the app would look fine online right up until
+    // the moment it mattered. Adding individually means one bad path costs one file.
+    const failed = [];
+    for (const u of [...SHELL, ...DATA]) {
+      try {
+        await c.add(new Request(u, { cache: "reload" }));
+      } catch {
+        failed.push(u);
+      }
+    }
+    if (failed.length) {
+      // Loud, because a missing cached file is exactly the failure this worker exists to prevent.
+      console.warn("pahiro: could not precache", failed.length, "of",
+                   SHELL.length + DATA.length, "files:", failed);
+    }
     self.skipWaiting();
   })());
 });
@@ -74,9 +116,16 @@ self.addEventListener("fetch", (e) => {
         if (res.ok) cache.put(e.request, res.clone());
         return res;
       }).catch(() => null);
-      return hit ?? (await network) ?? new Response("{}", {
-        headers: { "Content-Type": "application/json" },
-      });
+      // Miss with no network: an empty JSON object for a JSON file, and a real error for
+      // anything else. The old fallback answered "{}" to every path, including terrain.bin - a
+      // binary elevation grid - so a caller that read it as terrain got a two-byte object and no
+      // indication that anything was wrong.
+      if (url.pathname.endsWith(".json") || url.pathname.endsWith(".geojson")) {
+        return hit ?? (await network) ?? new Response("{}", {
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+      return hit ?? (await network) ?? Response.error();
     })());
     return;
   }
