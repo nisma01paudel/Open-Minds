@@ -38,7 +38,7 @@ weakness attached. Reserve ten minutes.
 ## Quickstart
 
 ```bash
-uv venv .venv && uv pip install --python .venv/bin/python -e '.[geo,dev]'
+uv venv .venv && uv pip install --python .venv/bin/python -e '.[geo,dev,crypto]'
 
 python scripts/verify_data_access.py          # the founding evidence, live from anonymous STAC
 python -m pytest -q                            # the full suite

@@ -255,3 +255,34 @@ def test_the_presenter_mode_the_speech_tells_you_to_open_works():
     assert '"1"' in presenter, "?present is read but not compared to 1"
     assert "arrow" in presenter.lower() or "ArrowRight" in presenter, \
         "the speech promises arrow keys and none are handled"
+
+
+# ---- the setup instruction exists in three places and must not drift ---------------------------
+
+def test_every_copy_of_the_install_command_asks_for_the_same_extras():
+    """The install line appears in SUBMISSION.md, README.md and scripts/demo.sh.
+
+    It omitted the `crypto` extra in all three, so the sealing layer skipped on every fresh
+    clone while the suite reported success. Fixing one copy is what let the other two survive:
+    a duplicated instruction is a claim that can drift, and this one had.
+    """
+    import re
+
+    files = ("SUBMISSION.md", "README.md", "scripts/demo.sh")
+    found: dict[str, set[str]] = {}
+    for rel in files:
+        text = read(rel)
+        for extras in re.findall(r"-e '\.\[([a-z,]+)\]'", text):
+            found.setdefault(rel, set()).update(extras.split(","))
+
+    assert found, "no install command found anywhere - did the wording change?"
+    reference = found.get("SUBMISSION.md")
+    assert reference, "SUBMISSION.md must carry the install command"
+    for rel, extras in found.items():
+        assert extras == reference, (
+            f"the install line in {rel} asks for {sorted(extras)} and SUBMISSION.md asks for "
+            f"{sorted(reference)} - a fresh clone would install a different environment "
+            f"depending on which file you read")
+    assert "crypto" in reference, (
+        "the install command omits the crypto extra, so the sealing layer skips silently "
+        "on a fresh clone")

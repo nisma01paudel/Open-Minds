@@ -24,7 +24,7 @@ done
 PY=".venv/bin/python"
 if [ ! -x "$PY" ]; then
   echo "no .venv found. Create it first:" >&2
-  echo "  uv venv .venv && uv pip install --python .venv/bin/python -e '.[geo,dev]'" >&2
+  echo "  uv venv .venv && uv pip install --python .venv/bin/python -e '.[geo,dev,crypto]'" >&2
   exit 1
 fi
 
