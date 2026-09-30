@@ -62,6 +62,11 @@ flutter:
   assets:
     - assets/terrain.bin
     - assets/terrain.json
+    # The SAME trail bundle the web app serves - copied, not regenerated, so the two halves of the
+    # project cannot disagree about where a path goes. 1.4 MB for 4,423 walkable ways over the
+    # Kathmandu valley: a trail is vector geometry, which is small, stays correct at every zoom,
+    # and needs no network once it is here.
+    - assets/trails.geojson
 
   # To add assets to your application, add an assets section, like this:
   # assets:
