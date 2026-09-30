@@ -87,3 +87,22 @@ def test_search_pagination_can_be_disabled(monkeypatch):
     scenes = stac.search(stac.OPTICAL, (85.0, 27.5, 85.6, 28.0), "2024-01-01", "2024-12-31",
                          paginate=False)
     assert len(scenes) == 1 and calls["n"] == 1
+
+
+def test_s3_asset_hrefs_are_normalised_to_https():
+    """Copernicus DEM publishes s3:// URLs; dropping them loses the terrain layer."""
+    assert (stac._readable_href("s3://copernicus-dem-30m/N27/E085.tif")
+            == "https://copernicus-dem-30m.s3.amazonaws.com/N27/E085.tif")
+    assert stac._readable_href("https://x/y.tif") == "https://x/y.tif"
+    assert stac._readable_href("gs://bucket/key") is None
+    assert stac._readable_href(None) is None
+
+
+def test_scene_assets_include_s3_sources(monkeypatch):
+    feature = {"id": "d1", "properties": {"datetime": "2021-04-22T00:00:00Z"},
+               "assets": {"data": {"href": "s3://copernicus-dem-30m/a/b.tif"},
+                          "preview": {"href": "https://example.org/p.png"},
+                          "weird": {"href": "ftp://nope"}}}
+    scene = stac._scene_from_feature(feature, stac.DEM)
+    assert scene.assets["data"].startswith("https://copernicus-dem-30m.s3.amazonaws.com/")
+    assert "weird" not in scene.assets

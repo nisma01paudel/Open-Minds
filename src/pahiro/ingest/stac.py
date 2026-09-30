@@ -62,11 +62,11 @@ def _scene_from_feature(feat: dict, collection: str) -> "Scene | None":
     ts = props.get("datetime") or props.get("start_datetime")
     if not ts:
         return None
-    assets = {
-        key: a["href"]
-        for key, a in feat.get("assets", {}).items()
-        if "href" in a and a["href"].startswith("http")
-    }
+    assets = {}
+    for key, a in feat.get("assets", {}).items():
+        href = _readable_href(a.get("href"))
+        if href:
+            assets[key] = href
     proj = props.get("proj:epsg")
     return Scene(
         id=feat["id"],
@@ -149,3 +149,24 @@ def _post_json(url: str, body: dict, timeout: int = 60) -> dict:
         if attempt < RETRIES - 1:
             time.sleep(BACKOFF_SECONDS * (2 ** attempt))
     raise RuntimeError(f"STAC request failed after {RETRIES} attempts: {last}")
+
+
+def _readable_href(href: str | None) -> str | None:
+    """Normalise an asset href into something GDAL can read.
+
+    Some collections - Copernicus DEM in particular - publish `s3://bucket/key`
+    rather than an HTTPS URL. Dropping those silently loses the whole terrain layer,
+    which is what happened before this existed: the DEM query returned a tile with an
+    empty asset map. Convert to the bucket's HTTPS endpoint, which /vsicurl reads
+    directly.
+    """
+    if not href:
+        return None
+    if href.startswith("http"):
+        return href
+    if href.startswith("s3://"):
+        rest = href[len("s3://"):]
+        bucket, _, key = rest.partition("/")
+        if bucket and key:
+            return f"https://{bucket}.s3.amazonaws.com/{key}"
+    return None
