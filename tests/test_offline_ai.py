@@ -211,3 +211,43 @@ def test_the_nepali_voice_is_downloaded_and_speaks():
     w = wave.open(str(out))
     seconds = w.getnframes() / w.getframerate()
     assert seconds > 0.3, f"only {seconds:.2f}s of audio"
+
+
+def test_the_demo_film_exists_and_its_narration_is_continuous():
+    """The submission says "recorded"; this is what makes that true, and keeps it true.
+
+    The note saying "recording pending" sat in SUBMISSION.md long after the film was built,
+    because nothing checked it. A claim nobody verifies goes stale, and a stale claim in a
+    submission document is the same failure as a wrong number in a commit message.
+
+    Silence is measured rather than assumed: a 3-second gap at -45 dB would mean an unvoiced
+    beat.
+    """
+    import shutil
+    import subprocess
+    from pathlib import Path
+
+    film = (Path(__file__).resolve().parents[1]
+            / "reports" / "video" / "pahiro-narrated-web.mp4")
+    if not film.exists():
+        pytest.skip("the demo film has not been built in this checkout")
+    if shutil.which("ffprobe") is None or shutil.which("ffmpeg") is None:
+        pytest.skip("ffmpeg is not installed, so the film cannot be inspected")
+
+    duration = float(subprocess.run(
+        ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0",
+         str(film)], capture_output=True, text=True, timeout=120).stdout.strip())
+    assert 120 <= duration <= 190, (
+        f"the submission promises 2-3 minutes; the film is {duration:.0f}s")
+
+    audio = subprocess.run(
+        ["ffprobe", "-v", "error", "-select_streams", "a", "-show_entries", "stream=codec_name",
+         "-of", "csv=p=0", str(film)], capture_output=True, text=True, timeout=120).stdout.strip()
+    assert audio, "the film has no audio stream, so it is not narrated"
+
+    gaps = subprocess.run(
+        ["ffmpeg", "-v", "error", "-i", str(film), "-af", "silencedetect=noise=-45dB:d=3",
+         "-f", "null", "-"], capture_output=True, text=True, timeout=600)
+    starts = (gaps.stderr or "").count("silence_start")
+    assert starts == 0, (
+        f"{starts} stretch(es) of 3 s or more with no narration - a beat is unvoiced")
