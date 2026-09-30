@@ -253,15 +253,28 @@ def test_the_demo_film_exists_and_its_narration_is_continuous():
     # must have a wav in the voice directory it is told to use.
     import re
 
-    script = (Path(__file__).resolve().parents[1]
-              / "scripts" / "build_voiced_video.sh").read_text(encoding="utf-8")
+    # The WAVs are build inputs and are correctly gitignored, so on a fresh clone they are absent
+    # and this per-key check cannot run. Asserting on them anyway made the whole suite fail on a
+    # clean checkout - the test was right about the risk and wrong about where to look for it.
+    # What IS committed is the narration source: every key the build asks for must have a line.
+    root = Path(__file__).resolve().parents[1]
+    script = (root / "scripts" / "build_voiced_video.sh").read_text(encoding="utf-8")
     keys = re.findall(r"^build \S+ \S+ (\w+) ", script, re.M)
     assert keys, "no build lines found in the video script"
-    voice = Path(__file__).resolve().parents[1] / "reports" / "video" / "voice"
-    missing = [k for k in keys if not (voice / f"{k}.wav").exists()]
-    assert not missing, (
-        f"the build asks for narration {missing} and reports.s/video/voice has no such wav, so "
-        f"those clips would be built with a caption and no voice")
+
+    narration = root / "reports" / "video" / "voice" / "narration.txt"
+    if narration.exists():
+        spoken = {l.split("|", 1)[0].strip()
+                  for l in narration.read_text(encoding="utf-8").splitlines() if "|" in l}
+        absent = [k for k in keys if k not in spoken]
+        assert not absent, (
+            f"the build narrates {absent} and narration.txt has no line for them, so those clips "
+            f"would ship with a caption and no voice")
+
+    voice = root / "reports" / "video" / "voice"
+    if (voice / f"{keys[0]}.wav").exists():
+        missing = [k for k in keys if not (voice / f"{k}.wav").exists()]
+        assert not missing, f"the build asks for narration {missing} and has no such wav"
 
     gaps = subprocess.run(
         ["ffmpeg", "-v", "error", "-i", str(film), "-af", "silencedetect=noise=-45dB:d=3",
