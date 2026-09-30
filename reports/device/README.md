@@ -31,6 +31,7 @@ launched on an Android emulator (API 36, x86_64, `/dev/kvm`) on 2026-10-01.
 | `pahiro-small-720-walk.png` | **the season guide and places panel at 720x1280** - four green months, eight grey |
 | `pahiro-font-130-escape.png` | **1.3x accessibility text** at 720x1280 |
 | `pahiro-font-150-escape.png` | **1.5x accessibility text** - the standard, at the same size |
+| `pahiro-english-walk.png` | **the English interface** - the tourist half, first frame of it on a device |
 
 ## What this changes, and what it does not
 
@@ -69,6 +70,38 @@ month, and the major-places list beneath it. All legible at 320 dpi.
 `adb logcat` across the whole run reports no Flutter layout error. The only exceptions in the log are
 Android's own `BestClock: no network time available`, which is the emulator having no network and not
 this app.
+
+### The other language, for the other user
+
+Sixteen frames in this directory were in Nepali. The app is built for residents AND for visitors, and
+the English interface had never been looked at on a device - so a whole half of the intended audience
+was unverified while the other half was photographed fifteen times.
+
+It holds. The Walk tab in English:
+
+    Pahiro . Which way to run, and how high
+    What can I walk from here
+    at 27.7047, 85.3146
+    When to go
+    Kathmandu valley and the Shivapuri rim
+    Green months are cross-checked against this project's own measurement;
+    grey are model output only.
+    This region failed that check - its rain figures should not be quoted.
+    These twelve months were measured for here, and no month is called good or bad.
+    A farmer, a trekker and a paraglider want different weather from the same month.
+    Major places near you
+    Kathmandu 2 km . 845767 . slopes 5 . trails 3757 . kathmandu.gov.np
+    ...
+    These are 277 of Nepal's 753 local units - the ones that could be located, because a
+    position is the mean of the documented slopes inside them.
+
+Every abstention survives the translation, including the red warning that this region's rainfall figure
+should not be quoted. Nothing falls back to the other language; there is no Nepali string left in the
+English screen and no English left in the Nepali one.
+
+**Note what is deliberately absent:** the place names are English only here, not "Kathmandu .
+काठमाडौँ". The bilingual name is the affordance of the Nepali interface; showing Devanagari to a
+visitor who chose English would be decoration rather than information.
 
 ### Larger text, because the people this is for use it
 
