@@ -25,3 +25,9 @@ reports/timelapse/frames/
 
 # Generated narration audio (reproducible; also large)
 reports/video/voice*/
+
+# Generated media. These were committed BEFORE this rule existed, so .gitignore alone did
+# not stop them - they stayed tracked and put 353 MB into the repository, which every
+# judge then had to clone. Untracked and purged from history separately.
+reports/video/
+reports/timelapse/frames/
