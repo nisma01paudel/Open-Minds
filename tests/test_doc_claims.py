@@ -633,3 +633,30 @@ def test_the_video_caption_states_the_bundle_it_actually_shows():
     assert line, "the trails narration line is gone"
     assert "तेईस हजार" in line[0], (
         "the narration says twenty thousand; the bundle is twenty-three thousand")
+
+
+def test_the_map_panel_states_the_bundle_it_actually_loads():
+    """The map's trails note hardcoded "20,176 ways, 124,202 points, 4.5 MB" and "Kathmandu valley"
+    while the layer underneath loads whatever the bundle holds.
+
+    Two rounds after regions were added, the label still described the old one - four regions and a
+    count from before Manaslu and Mustang. A sentence about a number that is loaded, written by
+    hand, drifts; this compares them.
+    """
+    import json
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    data = json.loads((root / "web/public/data/trails.geojson").read_text(encoding="utf-8"))
+    n = len(data["features"])
+    regions = len({f["properties"].get("r") for f in data["features"]})
+
+    page = read("web/app/page.tsx")
+    trail_area = page[page.index("hiking trails"):page.index("hiking trails") + 2200]
+
+    assert f"{n:,}" in trail_area, (
+        f"the map panel does not state the real trail count ({n:,})")
+    assert "Kathmandu valley" not in trail_area, (
+        "the panel describes the coverage as the Kathmandu valley; it is several regions")
+    assert str(regions) in trail_area or "regions of Nepal" in trail_area, (
+        f"the panel should say how many regions ({regions}) the bundle covers")

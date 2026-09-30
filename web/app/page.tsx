@@ -573,7 +573,7 @@ export default function Page() {
         {trails && (
           <div className="blindnote">
             <b>OpenStreetMap, bundled.</b> Every mapped footpath, track and stairway in the
-            Kathmandu valley — 23,726 ways, 153,480 points, 5.4 MB. Coloured by recorded
+            six regions of Nepal — 23,726 ways, 153,480 points, 5.4 MB. Coloured by recorded
             difficulty: <b style={{ color: "#34d399" }}>easy</b>,{" "}
             <b style={{ color: "#fbbf24" }}>moderate</b>,{" "}
             <b style={{ color: "#f97316" }}>hard</b>, and neutral where OSM records none.
