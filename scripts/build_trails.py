@@ -220,9 +220,20 @@ def main() -> int:
                  "fetched yet, not one without trails."),
         "features": feats,
     }
-    dest = ROOT / a.out
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    dest.write_text(json.dumps(out, separators=(",", ":"), ensure_ascii=False), encoding="utf-8")
+    body = json.dumps(out, separators=(",", ":"), ensure_ascii=False)
+
+    # ONE BUILD, BOTH COPIES. The phone asset used to be a hand-run `cp` of this file, and the
+    # round that forgot it shipped a web bundle and a phone bundle that had stopped matching -
+    # caught by a test, caused by a manual step. A copy that a person has to remember is a copy
+    # that will eventually be forgotten, so the build writes both and they cannot diverge.
+    dests = [ROOT / a.out]
+    if (ROOT / a.out).resolve() == (ROOT / "web/public/data/trails.geojson").resolve():
+        dests.append(ROOT / "mobile/assets/trails.geojson")
+    for dest in dests:
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_text(body, encoding="utf-8")
+        print(f"  wrote {dest.relative_to(ROOT)}")
+    dest = dests[0]
     mb = dest.stat().st_size / 1_048_576
     kept = vertices / raw_vertices * 100 if raw_vertices else 100.0
     print(f"  geometry: {raw_vertices} vertices -> {vertices} kept ({kept:.0f}% at "

@@ -496,3 +496,15 @@ def test_the_daily_use_modules_are_required_by_the_readiness_check():
     for needed in ("src/pahiro/trails.py", "src/pahiro/access.py",
                    "web/public/data/trails.geojson"):
         assert needed in check, f"verify_repo.py does not require {needed}"
+
+
+def test_the_build_writes_both_copies_of_the_trail_bundle():
+    """The phone asset used to be a hand-run `cp` of the web bundle.
+
+    The round that forgot it shipped a browser and a phone with different trail data - caught by a
+    byte-identity test, caused by a manual step that had to be remembered. A copy a person has to
+    remember is a copy that will eventually be forgotten, so the builder writes both.
+    """
+    builder = read("scripts/build_trails.py")
+    assert "mobile/assets/trails.geojson" in builder, \
+        "the builder no longer writes the phone copy, so it is a manual step again"
