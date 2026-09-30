@@ -59,6 +59,10 @@ REGIONS = [
      "Annapurna region"),
     ("langtang", "evidence/trails-raw-langtang.json", "27.90,85.15,28.45,85.85",
      "Langtang and Helambu"),
+    ("manaslu", "evidence/trails-raw-manaslu.json", "28.30,84.30,28.90,85.00",
+     "Manaslu circuit"),
+    ("mustang", "evidence/trails-raw-mustang.json", "28.55,83.55,29.20,84.25",
+     "Upper Mustang and the Kali Gandaki"),
 ]
 
 OVERPASS = ["https://overpass-api.de/api/interpreter",

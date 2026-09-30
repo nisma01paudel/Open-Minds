@@ -645,7 +645,7 @@ which of the two read your sentence, because those are different qualities of ev
 
 **〔beat〕**
 
-Four thousand four hundred and twenty-three mapped footpaths, four regions of the country, **one and
+Four thousand four hundred and twenty-three mapped footpaths, six regions of the country, **one and
 a half megabytes.** They ship with the app. So does the elevation, the watches, the advisories —
 **four megabytes, all of it, on the phone, with the radio off.**
 
@@ -895,7 +895,7 @@ Every figure you say out loud, and where it lives.
 | Escape planner | direction from the **local fall line**, candidates >75° off it rejected; refuses when no reachable ground clears the rise. Bundled DEM is **832×512 over Nepal (~1.1 km a cell)**, so valley-scale only | `src/pahiro/shelter.py`, `tests/test_shelter.py` |
 | Escape planner — worked answers | Beni: E 1076 m, climb 15 m. Barhabise: E 1082 m, climb **547 m**, 82 min. **Melamchi: refused** (only higher ground is downhill, across the water). Nepalgunj: **refused** (4.8 km) | same |
 | Spoken navigation | Nepali first, English fallback. `माथि जानुहोस्` · `अझ माथि जानुहोस्` · `तल जानुभयो — फर्कनुहोस्`. Ascent check is relative to where they started, never to the summit | `src/pahiro/navigate.py`, `tests/test_navigate.py` |
-| Daily use — trails | **20,176 OSM footpaths**, 124,202 vertices, **4.49 MB**, offline on web and phone. Junction-snapped at 25 m | `src/pahiro/trails.py`, `mobile/lib/trails.dart` |
+| Daily use — trails | **23,726 OSM footpaths**, 153,480 vertices, **5.42 MB**, offline on web and phone. Junction-snapped at 25 m | `src/pahiro/trails.py`, `mobile/lib/trails.dart` |
 | Daily use — getting there | **335 mapped bus stops**, which park, and a fare from the **Rs 24** Bagmati minimum (April 2026, DOTM). Schedules and bandha are stated as **unknown** | `src/pahiro/access.py` |
 | Daily use — asking in words | Open-weight model reads the sentence; a **deterministic engine** picks trail, stop and fare. Model output is validated and clamped, and the answer says which reader produced it | `src/pahiro/trip_agent.py`, `/api/v1/plan` |
 | Offline voice | Piper `ne_NP` chitwan medium, **63 MB, MIT**, downloaded and synthesised in this repo. **RTF 0.32** measured as the video pipeline invokes it (7.3 s of Nepali in 2.3 s, best of 3), of which ~1.3 s is process start and model load; a long-lived process gets closer to 0.14. Runs on the handset — **no network, no API key** | [docs/MODELS.md](MODELS.md) |

@@ -447,7 +447,7 @@ def test_the_speech_covers_the_daily_use_half_as_well_as_the_disaster_half():
     built. A judge who hears only about landslides has no reason to think anyone would install it.
     """
     speech = read("docs/SPEECH.md").lower()
-    assert "20,176" in speech or "20176" in speech, "the pitch never gives the trail network"
+    assert "23,726" in speech or "23726" in speech, "the pitch never gives the trail network"
     assert "walk" in speech
     assert "bus" in speech, "the pitch never mentions how you get there"
     assert "dotm" in speech or "transport management" in speech, \
@@ -462,7 +462,7 @@ def test_the_readme_describes_both_halves_too():
     gap SUBMISSION.md had - so the daily-use work was invisible from the front door.
     """
     low = read("README.md").lower()
-    for needed in ("hiking trail", "bus", "20,176", "openstreetmap"):
+    for needed in ("hiking trail", "bus", "23,726", "openstreetmap"):
         assert needed in low, f"README.md never mentions {needed!r}"
     assert "clear saturday" in low, (
         "the README should carry the adoption argument, not just the feature list")

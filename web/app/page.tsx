@@ -566,14 +566,14 @@ export default function Page() {
         <label className="toggle">
           <input type="checkbox" checked={trails} onChange={(e) => setTrails(e.target.checked)} />
           <span>
-            Show <b>hiking trails</b> — 20,176 mapped paths, offline
+            Show <b>hiking trails</b> — 23,726 mapped paths, offline
           </span>
         </label>
 
         {trails && (
           <div className="blindnote">
             <b>OpenStreetMap, bundled.</b> Every mapped footpath, track and stairway in the
-            Kathmandu valley — 20,176 ways, 124,202 points, 4.5 MB. Coloured by recorded
+            Kathmandu valley — 23,726 ways, 153,480 points, 5.4 MB. Coloured by recorded
             difficulty: <b style={{ color: "#34d399" }}>easy</b>,{" "}
             <b style={{ color: "#fbbf24" }}>moderate</b>,{" "}
             <b style={{ color: "#f97316" }}>hard</b>, and neutral where OSM records none.
