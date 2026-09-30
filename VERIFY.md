@@ -75,6 +75,20 @@ Confirmed: **15 of 15 present** in the built export, including the 5.42 MB trail
 grid and the twelve other files the app reads. Every one of them is a file the browser will have
 after a single visit and keep with the radio off.
 
+And then actually serve it, because a file on disk is not a file a browser can fetch:
+
+```bash
+cd web/out && python3 -m http.server 8097
+# then fetch every URL the service worker names, plus each route
+```
+
+Confirmed: **22 of 22 return 200 with a non-empty body** - all fifteen precached URLs, the six app
+routes, and `sw.js` itself. The content types are right where they matter: the 5.68 MB trail bundle
+is served as `application/geo+json`, `terrain.bin` as `application/octet-stream`, the manifest as
+`application/manifest+json`, and the service worker as `text/javascript` - a service worker served
+with the wrong type is silently not a service worker, and the app quietly stops working offline
+while looking perfectly fine online.
+
 The last one is the one worth your time. **A passing suite is not evidence until you know it can
 fail.** `mutate_check.py` breaks six load-bearing constants on purpose — the beacon's frame
 size, the weight of a headcount in triage, the battery level at which a phone stops scanning,
