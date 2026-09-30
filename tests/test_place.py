@@ -44,3 +44,22 @@ def test_a_distant_bus_stop_is_not_offered_as_a_bus_option():
     d = place.place(28.35, 83.57).as_dict()
     assert "bus" not in d, "a bus stop 28 km away was reported as the local bus option"
     assert any("another region" in u for u in d["unresolved"])
+
+
+def test_the_one_place_screen_exists_and_shows_its_gaps():
+    """The screen the objective was pointing at, and the part of it that matters most.
+
+    A lookup that hides its gaps reads as complete when it is not. The page must print what it could
+    not answer next to what it could, or a user cannot tell "nothing is there" from "we have not
+    looked there".
+    """
+    from pathlib import Path
+    src = (Path(__file__).resolve().parents[1] / "web/app/place/page.tsx").read_text(encoding="utf-8")
+    assert "/api/v1/place" in src, "the page no longer calls the aggregate endpoint"
+    assert "What this could not answer" in src, (
+        "the screen dropped the section that says what it does not know")
+    assert "No month is labelled good or bad" in src, (
+        "the season view must leave the decision with the walker")
+    assert "Where each number came from" in src, (
+        "every figure on the screen must name its source")
+    assert "Kincey" in src, "the peer-reviewed layer must be attributed on screen"
