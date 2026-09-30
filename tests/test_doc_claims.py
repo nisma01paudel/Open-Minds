@@ -1124,3 +1124,35 @@ def test_a_superseded_report_says_so_on_its_own_first_line():
     assert "+9.6" in head or "+10.4" in head, (
         "the banner does not name the figure that differs, so a reader cannot tell what changed")
     assert "Do not quote" in head, "the banner must say which figures are no longer current"
+
+
+def test_the_tracked_file_count_is_counted_and_not_remembered():
+    """The last remembered number, found by sweeping for superseded documents.
+
+    docs/README-published.md corrects its own obsolete claims and gave a count to make the correction
+    concrete: "it carries 358 tracked files." That was true when written. By this round the repository
+    had 463, so the sentence meant to demonstrate how much had been added had itself become an example
+    of the thing this project keeps catching - a figure that was right once and was never recomputed.
+
+    A count in a sentence that argues "this has grown" is the one that will always drift, because the
+    more the repository grows the more wrong it gets.
+    """
+    import subprocess
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    r = subprocess.run(["git", "ls-files"], capture_output=True, text=True, cwd=root)
+    if r.returncode != 0:
+        return                                    # not a checkout; nothing to compare against
+    actual = len([l for l in r.stdout.splitlines() if l.strip()])
+
+    text = read("docs/README-published.md")
+    import re
+    m = re.search(r"it carries ([\d,]+) tracked files", text)
+    assert m, "the corrected file count is gone from README-published.md"
+    stated = int(m.group(1).replace(",", ""))
+
+    assert stated == actual, (
+        f"README-published.md says {stated} tracked files and the repository has {actual}. "
+        f"That sentence exists to show how much has been added, so it is wrong in proportion to "
+        f"how much it is right about.")
