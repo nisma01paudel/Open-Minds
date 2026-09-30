@@ -271,20 +271,28 @@ Widget _dutyPanel(AppLang lang) => MaterialApp(
         body: SingleChildScrollView(
           child: DutyPanel(
             strings: 'x', lat: 27.7047, lon: 85.3146,
-            title: L10n(lang)['duty.title']!,
-            caption: L10n(lang)['duty.where']!,
-            noAddress: L10n(lang)['duty.noAddress']!,
-            defaultNote: L10n(lang)['duty.default']!,
-            draftButton: L10n(lang)['duty.draft']!,
-            letterNote: L10n(lang)['duty.letterNote']!,
+            title: L10n(lang)['duty.title'],
+            caption: L10n(lang)['duty.where'],
+            noAddress: L10n(lang)['duty.noAddress'],
+            defaultNote: L10n(lang)['duty.default'],
+            draftButton: L10n(lang)['duty.draft'],
+            letterNote: L10n(lang)['duty.letterNote'],
             nepali: lang == AppLang.ne,
+            failedLabel: L10n(lang)['load.failed'],
             loader: const _FixtureDuty(),
           ),
         ),
       ),
     );
 
+class _BrokenDuty implements DutyLoader {
+  const _BrokenDuty();
+  @override
+  Future<DutyIndex> load() async => throw StateError('simulated missing asset');
+}
+
 void dutyPanelTests() {
+
   testWidgets('the draft complaint opens when its button is pressed', (tester) async {
     // Four attempts to press this button on the emulator all missed, because it sits below three
     // other panels and its y-coordinate moves with the content above it while I read the position
@@ -331,5 +339,30 @@ void dutyPanelTests() {
         reason: 'the office is not shown in Nepali');
     expect(find.textContaining('Ward Committee under the Ward Chair'), findsNothing,
         reason: 'the English office string is rendered in the Nepali interface');
+  });
+
+  testWidgets('a panel whose data is missing says so instead of disappearing', (tester) async {
+    // Three panels used to return an empty box when their asset failed, which is indistinguishable
+    // from having nothing to say. The project's whole argument is that a user must be able to tell
+    // "nothing is here" from "we could not look" - and that has to hold for the app's own furniture,
+    // not only for the map data.
+    tester.view.physicalSize = const Size(1200, 3000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    const label = 'यो भाग लोड हुन सकेन';
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: DutyPanel(
+          strings: 'x', lat: 27.7047, lon: 85.3146, title: 't', caption: 'c',
+          noAddress: 'n', defaultNote: 'd', draftButton: 'b', letterNote: 'l',
+          nepali: true, failedLabel: label, loader: const _BrokenDuty(),
+        ),
+      ),
+    ));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('लोड हुन सकेन'), findsOneWidget,
+        reason: 'a failed load rendered nothing at all');
   });
 }

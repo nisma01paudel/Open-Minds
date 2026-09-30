@@ -97,6 +97,7 @@ const Map<String, Map<String, String>> translations = {
     'walk.look': 'उपत्यका हेर्नुहोस्',
     'duty.title': 'यो जमिन कसको जिम्मामा',
     'demo.title': 'बाढी आउँदा एपले के गर्छ',
+    'load.failed': 'यो भाग लोड हुन सकेन — सामग्री भेटिएन।',
     'places.title': 'नजिकका प्रमुख ठाउँ',
     'places.caption': 'यी ७५३ मध्ये २७७ स्थानीय इकाई हुन् जसलाई यहाँ राख्न सकियो — '
         'निर्देशांक ती ठाउँका अभिलेखित ढलानहरूको औसत हो, नगर केन्द्र होइन।',
@@ -173,6 +174,7 @@ const Map<String, Map<String, String>> translations = {
     'walk.look': 'Look around the valley',
     'duty.title': 'Who is responsible for this ground',
     'demo.title': 'What the app does when a flood comes',
+    'load.failed': 'This section could not be loaded — its data is missing.',
     'places.title': 'Major places near you',
     'places.caption': 'These are 277 of Nepal\'s 753 local units - the ones that could be located, '
         'because a position is the mean of the documented slopes inside them, not a town centre.',

@@ -374,7 +374,7 @@ class _WalkScreenState extends State<WalkScreen> {
       PlacesPanel(
         title: s['places.title'], caption: s['places.caption'],
         slopesLabel: s['places.slopes'], trailsLabel: s['places.trails'],
-        nepali: s.lang == AppLang.ne, lat: _lat, lon: _lon,
+        nepali: s.lang == AppLang.ne, lat: _lat, lon: _lon, failedLabel: s['load.failed'],
       ),
       if (_seasons != null) ...[
         const SizedBox(height: 14),
@@ -480,7 +480,7 @@ class _EscapeScreenState extends State<EscapeScreen> {
         DemoPanel(
           title: s['demo.title'], blurb: s['demo.blurb'], runLabel: s['demo.run'],
           nextLabel: s['demo.next'], liveLabel: s['demo.live'], citedLabel: s['demo.cited'],
-          nepali: s.lang == AppLang.ne,
+          nepali: s.lang == AppLang.ne, failedLabel: s['load.failed'],
         ),
         const SizedBox(height: 12),
         DutyPanel(
@@ -488,7 +488,7 @@ class _EscapeScreenState extends State<EscapeScreen> {
           title: s['duty.title'], caption: s['duty.where'],
           noAddress: s['duty.noAddress'], defaultNote: s['duty.default'],
           draftButton: s['duty.draft'], letterNote: s['duty.letterNote'],
-          nepali: s.lang == AppLang.ne,
+          nepali: s.lang == AppLang.ne, failedLabel: s['load.failed'],
         ),
         const SizedBox(height: 12),
         Text(s['escape.title'],
@@ -1004,6 +1004,10 @@ class DutyPanel extends StatefulWidget {
   final String letterNote;
   final bool nepali;
 
+  /// Shown when the data could not be loaded. A panel that disappears is indistinguishable from a
+  /// panel with nothing to say, which is the "gap in the map" problem in the app's own furniture.
+  final String failedLabel;
+
   /// Injectable for the same reason the trail, season and DEM loaders are: a panel that reads an
   /// asset directly hides itself when the asset cannot be resolved, which in a widget test means the
   /// feature is untestable by name and in production means a missing file is a missing panel with
@@ -1012,7 +1016,7 @@ class DutyPanel extends StatefulWidget {
   const DutyPanel({super.key, required this.strings, required this.lat, required this.lon,
                    required this.title, required this.caption, required this.noAddress,
                    required this.defaultNote, required this.draftButton,
-                   required this.letterNote, required this.nepali,
+                   required this.letterNote, required this.nepali, required this.failedLabel,
                    this.loader = const AssetDutyLoader()});
 
   @override
@@ -1023,6 +1027,7 @@ class _DutyPanelState extends State<DutyPanel> {
   Duty? _duty;
   double? _distanceM;
   bool _tried = false;
+  bool _failed = false;
   bool _showLetter = false;
 
   @override
@@ -1044,7 +1049,7 @@ class _DutyPanelState extends State<DutyPanel> {
         _tried = true;
       });
     } catch (_) {
-      if (mounted) setState(() => _tried = true);
+      if (mounted) setState(() { _tried = true; _failed = true; });
     }
   }
 
@@ -1087,6 +1092,7 @@ class _DutyPanelState extends State<DutyPanel> {
 
   @override
   Widget build(BuildContext context) {
+    if (_failed) return _loadFailed(widget.failedLabel);
     if (!_tried || _duty == null) return const SizedBox.shrink();
     final d = _duty!;
     final km = (_distanceM ?? 0) / 1000;
@@ -1158,9 +1164,10 @@ class DemoPanel extends StatefulWidget {
   final String liveLabel;
   final String citedLabel;
   final bool nepali;
+  final String failedLabel;
   const DemoPanel({super.key, required this.title, required this.blurb, required this.runLabel,
                    required this.nextLabel, required this.liveLabel, required this.citedLabel,
-                   required this.nepali});
+                   required this.nepali, required this.failedLabel});
 
   @override
   State<DemoPanel> createState() => _DemoPanelState();
@@ -1170,6 +1177,7 @@ class _DemoPanelState extends State<DemoPanel> {
   List<Map<String, dynamic>> _steps = const [];
   int _shown = 0;
   bool _loaded = false;
+  bool _failed = false;
 
   @override
   void initState() {
@@ -1183,12 +1191,13 @@ class _DemoPanelState extends State<DemoPanel> {
       final steps = (raw['steps'] as List).cast<Map<String, dynamic>>();
       if (mounted) setState(() { _steps = steps; _loaded = true; });
     } catch (_) {
-      if (mounted) setState(() => _loaded = true);
+      if (mounted) setState(() { _loaded = true; _failed = true; });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_failed) return _loadFailed(widget.failedLabel);
     if (!_loaded || _steps.isEmpty) return const SizedBox.shrink();
     return Card(
       child: Padding(
@@ -1253,11 +1262,13 @@ class PlacesPanel extends StatefulWidget {
   final String slopesLabel;
   final String trailsLabel;
   final bool nepali;
+  final String failedLabel;
   final double lat;
   final double lon;
   const PlacesPanel({super.key, required this.title, required this.caption,
                      required this.slopesLabel, required this.trailsLabel,
-                     required this.nepali, required this.lat, required this.lon});
+                     required this.nepali, required this.lat, required this.lon,
+                     required this.failedLabel});
 
   @override
   State<PlacesPanel> createState() => _PlacesPanelState();
@@ -1266,6 +1277,7 @@ class PlacesPanel extends StatefulWidget {
 class _PlacesPanelState extends State<PlacesPanel> {
   List<(GeoPlace, double)> _near = const [];
   bool _loaded = false;
+  bool _failed = false;
 
   @override
   void initState() {
@@ -1280,12 +1292,13 @@ class _PlacesPanelState extends State<PlacesPanel> {
       final near = list.nearest(widget.lat, widget.lon, limit: 5);
       if (mounted) setState(() { _near = near; _loaded = true; });
     } catch (_) {
-      if (mounted) setState(() => _loaded = true);
+      if (mounted) setState(() { _loaded = true; _failed = true; });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_failed) return _loadFailed(widget.failedLabel);
     if (!_loaded || _near.isEmpty) return const SizedBox.shrink();
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text(widget.title, style: const TextStyle(fontWeight: FontWeight.w700)),
@@ -1319,3 +1332,15 @@ class _PlacesPanelState extends State<PlacesPanel> {
     ]);
   }
 }
+
+/// One way for a panel to say it could not load.
+///
+/// Three panels used to return an empty box when their asset failed, which is indistinguishable from
+/// having nothing to say. This project's whole argument is that a user must be able to tell "nothing
+/// is here" from "we could not look" - and that has to be true of the app's own furniture, not only
+/// of the map data.
+Widget _loadFailed(String label) => Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Text(label,
+          style: const TextStyle(fontSize: 11, color: Color(0xFFF0A0A0))),
+    );
