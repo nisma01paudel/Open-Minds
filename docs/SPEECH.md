@@ -692,12 +692,23 @@ and we credit it. What we wrote is the *instructions* it speaks — and a native
 would rather you knew than discovered.
 
 **16. "Is it encrypted?"**
-The sealing layer is real and tested: ChaCha20-Poly1305, X25519 key agreement, and a carrier that
-provably cannot read what it moves. **But the browser client does not seal yet** — the Python mesh
-path carries sealed bundles and the field client still posts in the clear. So the true sentence is
-"the sealing layer is built, tested against a real AEAD, and on the Python mesh path", **not** "the
-system is end-to-end encrypted". A judge who finds that gap after you claimed otherwise is worse
-than one who hears it from you.
+Yes, on both sides of the language boundary, and with an unusual amount of it verified. The browser
+seals with AES-GCM through WebCrypto, Python seals with ChaCha20-Poly1305, and a parity check proves
+**each language opens what the other sealed** — both directions, tampering refused. A carrier
+provably cannot read what it moves: the sealed bundle has no body attribute at all.
+
+Three things it is **not**, and say them before a judge finds them:
+- **No cryptographer has reviewed it.** Correct use of vetted primitives as far as the tests show is
+  not an audit.
+- **The client's sealing has never run in a browser.** It is verified through the client's own code
+  in node, which is not the same thing.
+- **Where keys live is undecided.** A key in `localStorage` is per-device and visible to anyone
+  holding the unlocked phone. That is a product decision, and it is the first thing a security
+  reviewer asks about.
+
+So the accurate sentence is: *the sealing layer is built and tested against a real AEAD on both
+sides, the gateway accepts sealed frames, and the client seals when a key is set.* Not "audited
+end-to-end encryption".
 
 **17. "What if the phone is dead?"**
 Then nothing transmits — that is physics, and it is written down rather than hidden. What the
@@ -809,7 +820,8 @@ Every figure you say out loud, and where it lives.
 | Sealing — the real cipher | ChaCha20-Poly1305 via `cryptography` 50.0.1 (the `crypto` extra), X25519 + HKDF for per-recipient sealing. Chosen over AES-GCM: constant time in software, and these handsets are old | same |
 | Sealing — attacks refused | tampering · **promoting a `chat` to an `sos`** · extending the ttl · replay · forged sender · truncation | same |
 | The bug worth quoting | ttl was authenticated, but a ttl **decrements at every hop** — so the tag failed the moment a relay worked, and **a sealed bundle could not be relayed even once**. Both layers' unit tests passed | same |
-| Sealing — what is NOT done | the **browser client does not seal**. The Python mesh path carries sealed bundles; the field client posts in the clear. **Do not claim end-to-end encryption today.** No cryptographer has reviewed it | same |
+| Sealing — the client | **it seals too.** AES-GCM via WebCrypto, opt-in on a 32-byte key; Python uses ChaCha20-Poly1305 and a parity check proves each opens the other's messages. With no key it sends in the clear as before | `web/public/field/seal.js`, `scripts/check_seal_parity.py` |
+| Sealing — what is NOT done | **no cryptographer has reviewed it** · **the client's sealing has never run in a browser** · **where keys live is undecided** — `localStorage` is visible to anyone holding the unlocked phone. Do not claim audited end-to-end encryption | [docs/SEALING.md](SEALING.md) |
 | Endurance modes | **NORMAL → CONSERVE → LAST_GASP → SILENT.** Model dies first, then map, then screen; scanning drops to a **25%** duty cycle. Unknown battery = CONSERVE, never NORMAL | `src/pahiro/endurance.py` |
 | Last gasp | **one rung, and it is SMS** (no chain needed). Position is persisted **before** any transmission: a durable write survives a shutdown, a radio frame can die mid-send | same |
 | Admitted physical limits | switched-off transmits nothing · wet screen ignores touches · cracked display shows nothing · 0% runs no scan · wet speaker is unintelligible · Bluetooth does not go through rock. **Each one names the design choice it forced** | same |

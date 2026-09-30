@@ -27,17 +27,27 @@ and the fatal slope was a rural road built by Bharatpur Metropolitan City.
 
 ## Status
 
-**The implementation is complete and being prepared for publication.** This repository currently carries
-only this description; the source, the evaluation harness, the cited routing key and the full
-documentation land here before the showcase.
+**The implementation has landed.** This file was the placeholder README from when the repository
+carried only a description; it is kept because the step-by-step publication was deliberate, and
+because deleting a file that once explained the plan is how a project loses the record of having
+had one.
 
-Static READMEs are cheap. When the code arrives it will be accompanied by:
+It is superseded by [README.md](../README.md). What it promised is now here:
 
-- the agent loop and its step-by-step trace, so every conclusion is auditable;
-- a cited routing key — 14 rules, each with its statutory basis;
-- measured evaluation results, each reported with the weakness that qualifies it;
-- a one-command demo that runs offline on a laptop CPU.
+- the agent loop and its step-by-step trace — [docs/AGENT.md](AGENT.md), `src/pahiro/agent.py`
+- the cited routing key, 14 rules each with its statutory basis —
+  [ontology/nepal-slope-routing.json](../ontology/nepal-slope-routing.json)
+- measured evaluation results with their weaknesses attached —
+  [reports/eval-v1.md](../reports/eval-v1.md), [reports/routing-ablation.md](../reports/routing-ablation.md)
+- a one-command demo that runs offline on a laptop CPU — [SUBMISSION.md](../SUBMISSION.md)
 
+Two things this file used to say that are **no longer true**, corrected here rather than quietly
+deleted:
+
+- *"this repository currently carries only this description"* — it carries 358 tracked files.
+- *"when the code arrives"* — it arrived.
+
+What it promised, and where each promise now lives, is listed in **Status** above.
 ## Principles
 
 - **Open-weight models only**, running locally. Free and anonymous data sources; no API keys.
