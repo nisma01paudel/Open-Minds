@@ -5,9 +5,17 @@ No account, no API key, no cost. Verified against the live service.
 from __future__ import annotations
 
 import json
+import time
+import urllib.error
 import urllib.request
 from dataclasses import dataclass, field
 from datetime import date
+
+# Public STAC endpoints occasionally return 5xx or drop a connection. A demo that
+# dies on a transient 502 is a failed demo, so every request retries with backoff.
+RETRY_STATUS = {429, 500, 502, 503, 504}
+RETRIES = 4
+BACKOFF_SECONDS = 2.0
 
 STAC_SEARCH = "https://earth-search.aws.element84.com/v1/search"
 
@@ -70,13 +78,8 @@ def search(
     if cloud_lt is not None and collection == OPTICAL:
         body["query"] = {"eo:cloud_cover": {"lt": cloud_lt}}
 
-    req = urllib.request.Request(
-        STAC_SEARCH,
-        data=json.dumps(body).encode(),
-        headers={"Content-Type": "application/json"},
-    )
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
-        payload = json.load(resp)
+    payload = _post_json(STAC_SEARCH, body, timeout)
+
 
     scenes: list[Scene] = []
     for feat in payload.get("features", []):
@@ -103,3 +106,24 @@ def search(
         )
     scenes.sort(key=lambda s: s.acquired)
     return scenes
+
+
+def _post_json(url: str, body: dict, timeout: int = 60) -> dict:
+    """POST JSON with retries on transient failures. Raises on the last attempt."""
+    last: Exception | None = None
+    for attempt in range(RETRIES):
+        req = urllib.request.Request(
+            url, data=json.dumps(body).encode(),
+            headers={"Content-Type": "application/json"})
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                return json.load(resp)
+        except urllib.error.HTTPError as exc:
+            last = exc
+            if exc.code not in RETRY_STATUS:
+                raise
+        except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
+            last = exc
+        if attempt < RETRIES - 1:
+            time.sleep(BACKOFF_SECONDS * (2 ** attempt))
+    raise RuntimeError(f"STAC request failed after {RETRIES} attempts: {last}")
