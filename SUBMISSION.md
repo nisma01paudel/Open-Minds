@@ -14,7 +14,7 @@ Read this file and you have everything. Ten minutes end to end.
 |---|---|---|---|
 | 1 | Public GitHub repository | `nisma01paudel/Open-Minds` | ✅ |
 | 2 | Documentation — README, architecture, tech, **limitations/future work** | [README.md](README.md) · [docs/AGENT.md](docs/AGENT.md) · [docs/LIMITATIONS.md](docs/LIMITATIONS.md) | ✅ |
-| 3 | Working demo | `python scripts/agent_demo.py --report "…" --lon 85.05 --lat 27.76 --as-of 2024-09-28` | ✅ runs offline after first warm-up |
+| 3 | Working demo | **`./scripts/demo.sh`** — one command, verified cold | ✅ runs offline after first warm-up |
 | 4 | 2–3 minute demo video | script with shot list: [docs/DEMO-SCRIPT.md](docs/DEMO-SCRIPT.md) | script ✅ · recording pending |
 | 5 | **AI usage disclosure** naming the exact file/function where AI output is consumed | [docs/AI-USAGE.md](docs/AI-USAGE.md) | ✅ |
 
@@ -22,16 +22,20 @@ Read this file and you have everything. Ten minutes end to end.
 
 ```bash
 uv venv .venv && uv pip install --python .venv/bin/python -e '.[geo,dev]'
-python -m pytest -q                       # 118 tests
+python -m pytest -q                       # 120 tests
 python scripts/verify_repo.py             # submission readiness: files, references, tests
 
-# the open-weight decision model, 6 threads (12 collapses throughput 5-15x on this CPU)
-scripts/serve_model.sh start
+# ONE COMMAND: starts the open-weight model, runs the whole pipeline, prints the
+# trace and the Nepali advisory. Verified from a cold start.
+./scripts/demo.sh
 
-# the whole pipeline on the day BIPAD records 167 landslides
-python scripts/agent_demo.py --as-of 2024-09-28 --lon 85.05 --lat 27.76 \
-  --report "A rural road built by a municipality runs across the slope above the national highway. Cracks have appeared and debris is falling onto the highway."
+# a mid-monsoon date instead, to see the abstain state
+./scripts/demo.sh --as-of 2024-07-20
 ```
+
+`demo.sh` starts the model server itself (6 threads - 12 collapses throughput on this
+CPU), so there is nothing to do first. Add `--stop` to shut the server down afterwards.
+Pass `--as-of`, `--lon`, `--lat` or `--report` to interrogate any slope you like.
 
 ## The demo, in seven auditable steps
 
