@@ -52,7 +52,7 @@ under Rs 40 · wants view` — read by the open-weight model, then planned by a 
 that validates every field the model returns. It works with no model server too, and says which
 reader answered.
 
-**20,176 mapped footpaths, 321 bus stops, all of it offline** — on the web app and on the phone.
+**20,176 mapped footpaths, 335 bus stops, all of it offline** — on the web app and on the phone.
 Trail data © OpenStreetMap contributors, ODbL 1.0. Coverage is incomplete, the terrain grid is
 1 km, and bus schedules are not known here: all three are stated in the output rather than hidden.
 

@@ -83,7 +83,7 @@ from where I am standing.**
 | | |
 |---|---|
 | Hiking trails | **20,176 walkable ways, 124,202 vertices, 794 named**, 4.49 MB — OpenStreetMap over the four regions of Nepal |
-| Bus access | **321 mapped bus stations** (76 named), from OSM |
+| Bus access | **335 mapped bus stations** (76 named), from OSM |
 | Fare | **Rs 24** valley minimum, April 2026, set by the Department of Transport Management. The distance component is a labelled approximation |
 | Ask in words | The **open-weight model reads the request**; a deterministic engine chooses the trail, the stop and the fare |
 | Offline | **4.2 MB precached** — the map, terrain, trails, advisories and observability layer, all of it |
