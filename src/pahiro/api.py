@@ -39,6 +39,8 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import parse_qs, urlparse
 
+from . import navigate, shelter
+
 from .locate import Reading, estimate_position
 from .mesh.protocol import MeshMessage
 
@@ -231,8 +233,39 @@ OPENAPI = {
             "get": {"summary": "Estimated position and search radius"},
         },
         "/api/v1/slopes": {"get": {"summary": "Documented slopes and their current state"}},
+        "/api/v1/escape": {
+            "get": {"summary": "Which way to run and how high, from the bundled DEM",
+                    "parameters": [
+                        {"name": "lat", "in": "query", "required": True,
+                         "schema": {"type": "number"}},
+                        {"name": "lon", "in": "query", "required": True,
+                         "schema": {"type": "number"}},
+                        {"name": "rise_m", "in": "query", "required": False,
+                         "schema": {"type": "number", "default": shelter.DEFAULT_RISE_M}},
+                    ]},
+        },
     },
 }
+
+
+_DEM = None
+_DEM_TRIED = False
+
+
+def _national_dem():
+    """Load the bundled DEM once, on first use.
+
+    Lazy and cached: the API must start and serve the mesh on a machine where the terrain
+    artefacts were never built, because an SOS relayed off a hillside matters more than a
+    flood-escape answer.
+    """
+    global _DEM, _DEM_TRIED
+    if not _DEM_TRIED:
+        _DEM_TRIED = True
+        root = Path(__file__).resolve().parents[2]
+        _DEM = shelter.load_dem(root / "web/public/data/terrain.bin",
+                                root / "web/public/data/terrain.json")
+    return _DEM
 
 
 class _Handler(BaseHTTPRequestHandler):
@@ -300,6 +333,8 @@ class _Handler(BaseHTTPRequestHandler):
             return self._send(200, est.as_dict())
         if path == "/api/v1/slopes":
             return self._send(200, self._slopes(q))
+        if path == "/api/v1/escape":
+            return self._send(200, self._escape(q))
         return self._send(404, {"error": "not found", "path": path})
 
     def do_POST(self):                                     # noqa: N802
@@ -395,6 +430,56 @@ class _Handler(BaseHTTPRequestHandler):
             gps_accuracy_m=_as_float(data.get("gps_accuracy_m")) or 5.0))
         est = self.store.locate(target)
         return self._send(201, {"target": target, "readings": n, **est.as_dict()})
+
+    def _escape(self, q: dict[str, list[str]]) -> dict[str, Any]:
+        """Which way to run and how high, for one point, from the bundled DEM.
+
+        This is the answer a warning normally leaves out. "Flash flood expected" tells someone
+        a thing is happening and leaves the only decision that matters - which way, and how
+        far up - for them to guess at, in the dark, in a minute.
+
+        Terrain only, and the response says so: a DEM cannot see bridges, culverts or the water
+        itself, and the bundled grid is about a kilometre a cell.
+        """
+        try:
+            lat = float((q.get("lat") or [""])[0])
+            lon = float((q.get("lon") or [""])[0])
+        except (TypeError, ValueError):
+            return {"error": "lat and lon are required as decimal degrees",
+                    "example": "/api/v1/escape?lat=28.35&lon=83.57&rise_m=5"}
+
+        try:
+            rise = float((q.get("rise_m") or [shelter.DEFAULT_RISE_M])[0])
+        except (TypeError, ValueError):
+            rise = shelter.DEFAULT_RISE_M
+
+        dem = _national_dem()
+        if dem is None:
+            return {"error": "the national DEM is not built in this checkout",
+                    "hint": "see scripts/build_terrain.py"}
+
+        e = shelter.plan_escape(dem, lat, lon, rise_m=rise)
+        return {
+            "query": {"lat": lat, "lon": lon, "rise_m": rise},
+            "reachable": e.reachable,
+            "from_elevation_m": round(e.from_elevation_m, 1),
+            "target": None if not e.reachable else {
+                "lat": round(e.target_lat, 6), "lon": round(e.target_lon, 6),
+                "elevation_m": round(e.target_elevation_m, 1),
+            },
+            "climb_m": None if e.climb_m is None else round(e.climb_m, 1),
+            "distance_m": None if e.distance_m is None else round(e.distance_m, 1),
+            "bearing_deg": None if e.bearing_deg is None else round(e.bearing_deg, 1),
+            "compass": e.compass,
+            "walk_minutes": None if e.walk_minutes is None else round(e.walk_minutes, 1),
+            "why": e.reason,
+            "advice_en": shelter.advice_text(e),
+            "advice_ne": shelter.advice_text(e, nepali=True),
+            "navigation": navigate.plan_summary(e),
+            "resolution_m": round(e.resolution_m, 0),
+            "caveat": ("Terrain only, from a coarse national grid. It cannot see bridges, "
+                       "culverts, roads or the water. Move away from the stream first."),
+        }
 
     def _slopes(self, q: dict[str, list[str]]) -> dict[str, Any]:
         """Expose the slope picture the earlier work already produces.
