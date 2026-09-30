@@ -79,6 +79,49 @@ Three paths near Kathmandu are unnamed in OSM, and the app prints "(unnamed path
 inventing one. The difficulty field says "not recorded" and "cannot check this from the map data"
 rather than guessing a grade from a length. The caveat paragraph names all three limits.
 
+## The three linked pages, none of which had been rendered
+
+Beats 6, 7 and 8 link away from the map, so `/fly/`, `/ar/` and `/share/` are part of the product and
+had never been looked at either.
+
+### /fly/ - the 3D flythrough
+
+A 3D-extruded Nepal with real vertical relief, the Himalaya standing as a jagged wall and the 613
+documented slopes as glowing markers over it, a timeline slider, pause and manual-camera controls, and
+a date readout. Beneath it, the two things such a view is most likely to mislead about:
+
+    Elevation: AWS Terrain Tiles . Imagery: Esri World Imagery . Rainfall: CHIRPS .
+    Vertical scale exaggerated 12x - real relief is about 1% of Nepal's width.
+    The threshold is a published local fit used as a national reference.
+
+An exaggerated-relief view that did not say so would be the same defect as a map that did not name its
+day. It says so.
+
+### /ar/ - the phone view
+
+A permission gate, and it renders the gate rather than a broken view when there is no camera - which
+is what a headless browser is.
+
+    Pahiro AR
+    Point your phone at the hillside. Every documented slope in view shows its rainfall
+    state for the selected day - and the office legally responsible for it.
+    [ Enable camera & location ]
+    No video leaves the device. No account, no key, no upload.
+
+The last line is the claim that makes a camera permission reasonable, and it is on the button's row.
+
+### /share/ - the link you send someone
+
+Confirms the round-44 correction on screen: **31 of 613 documented landslide-prone slopes were above
+the rainfall threshold on a single day - 28 September**, followed by the negative result that gives
+the project its shape:
+
+    We then tested whether that ranking finds the slopes that fail. It does not. The slopes that
+    actually failed ranked at the 53rd and 55th percentile of the rainfall ranking - a coin toss.
+
+Below it the ten-second film with download links and links onward to the live map at that day and to
+the AR view.
+
 ## Presenter mode, which is what actually wins the room
 
 `?present=1` had never been rendered either. It is the pitch: nine beats with a numbered bar and a
