@@ -68,9 +68,46 @@ required, which a browser cannot provide. Splitting the logic from the radio is 
 the logic testable at all; a protocol that can only be tested on two phones in a field is
 wrong in ways nobody finds until the field.
 
----
+### One protocol, two implementations
 
-## 2. The field API — `src/pahiro/api.py`
+The field client carries its **own** implementation of the protocol (`web/public/field/mesh.js`),
+because a phone with no API still has to compose, relay and dedupe. Same frame format, same
+TTL rule, same dedupe, same eviction order — not a simplified browser version.
+
+That is one protocol in two languages, which **will** drift, and each side will pass its own
+tests while the two disagree. At which point a JavaScript gateway phone and a Python district
+server quietly lose messages between them.
+
+So it is checked, not trusted:
+
+```bash
+python scripts/check_mesh_parity.py     # one scenario, both implementations, exact compare
+```
+
+The scenario is *data* (`SCENARIO` and `STEPS` in that file) so it cannot drift between the
+two harnesses. It asserts the full resulting state — store, hop counts, TTL, paths, stats,
+distress board, inbox — for every node. Wired into the suite.
+
+**Two contract bugs this found, both real, both in both languages:**
+
+1. `MeshRunner` called `radio.attach(...)`, but the declared `Transport` contract promises
+   only `broadcast` and `poll`. Every transport that honoured the contract crashed the
+   runner — including `BleTransport`, the one a real phone needs.
+2. The protocol declared `poll(self)` while the only caller passed a device id. The declared
+   interface and its caller disagreed in a second place.
+
+Both are fixed, and there is now a test that a bare transport honouring nothing but the
+written contract drives a node successfully.
+
+### The radio in the field client
+
+`BroadcastChannelTransport` — real, working, same-origin, across tabs on one device. Two tabs
+behave like two phones in range, which is how the demo runs. **It is not Bluetooth**, and the
+screen says so. A demo that quietly swaps the radio for something easier is how you end up
+believing your own demo.
+
+---
+ — `src/pahiro/api.py`
 
 An API, not another screen. A warning is information; what is missing in the hours after a
 slope fails is **a common place for the things that are happening to land**, so that a phone

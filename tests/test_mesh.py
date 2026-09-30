@@ -179,3 +179,24 @@ def test_messages_with_a_position_rank_above_those_without():
     node.receive(MeshMessage(kind="sos", body="fixed", origin="v2",
                              lat=27.7, lon=85.0).relay("r"))
     assert node.distress()[0].origin == "v2"
+
+
+def test_a_transport_that_only_honours_the_contract_still_works():
+    """Transport promises broadcast/poll. MeshRunner used to demand `attach` as well, which
+    made it unusable with any real radio - including the one a phone must use."""
+    class MinimalRadio:
+        def __init__(self):
+            self.sent = []
+
+        def broadcast(self, msg):
+            self.sent.append(msg)
+
+        def poll(self, device_id: str):
+            return []
+
+    node = MeshNode("phone")
+    runner = MeshRunner(node, MinimalRadio())      # must not raise
+    msg = node.sos("trapped", lat=27.7, lon=85.0)
+    runner.send(msg)
+    assert runner.radio.sent == [msg]
+    assert runner.pump() == 0

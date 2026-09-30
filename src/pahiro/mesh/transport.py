@@ -35,10 +35,16 @@ from .protocol import MeshMessage
 
 @runtime_checkable
 class Transport(Protocol):
-    """What a radio must do for `MeshNode`. Intentionally tiny."""
+    """What a radio must do for `MeshNode`. Intentionally tiny.
+
+    `poll` takes the asking device's id because a shared medium must know whose queue to
+    drain. A per-device radio ignores the argument. The previous signature omitted it while
+    `MeshRunner` passed it, so the declared interface and its only caller disagreed - the
+    same mistake as `attach` below, in a second place.
+    """
 
     def broadcast(self, msg: MeshMessage) -> None: ...
-    def poll(self) -> list[MeshMessage]: ...
+    def poll(self, device_id: str) -> list[MeshMessage]: ...
 
 
 class LoopbackRadio:
@@ -136,7 +142,7 @@ class BleTransport:
             "implement with Web Bluetooth (navigator.bluetooth.requestDevice + GATT write) "
             "or a native BLE peripheral/advertiser; see docs/MESH.md")
 
-    def poll(self) -> list[MeshMessage]:                        # pragma: no cover
+    def poll(self, device_id: str = "") -> list[MeshMessage]:   # pragma: no cover
         raise NotImplementedError("drain notifications from the GATT characteristic")
 
     def advertise(self, payload: bytes) -> None:                # pragma: no cover
@@ -158,10 +164,16 @@ class MeshRunner:
     without any radio at all.
     """
 
-    def __init__(self, node, radio: LoopbackRadio) -> None:
+    def __init__(self, node, radio) -> None:
         self.node = node
         self.radio = radio
-        radio.attach(node.device_id)
+        # `attach` belongs to the in-memory medium, which must know who is listening. A real
+        # radio does not, and `Transport` promises only broadcast/poll - so calling it
+        # unconditionally made MeshRunner unusable with every transport that honoured the
+        # contract, including BleTransport, which is the one a real phone needs.
+        attach = getattr(radio, "attach", None)
+        if callable(attach):
+            attach(node.device_id)
 
     def send(self, msg: MeshMessage) -> None:
         self.radio.broadcast(msg)

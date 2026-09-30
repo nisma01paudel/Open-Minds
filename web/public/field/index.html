@@ -110,6 +110,30 @@
     <div id="board"></div>
   </section>
 
+  <!-- ================= CHAT ================= -->
+  <section id="s-chat">
+    <h2>Mesh chat</h2>
+    <div class="card">
+      <div id="meshstate" class="muted">Mesh: starting…</div>
+      <div class="muted" style="margin-top:6px" id="meshtransport"></div>
+    </div>
+
+    <div class="card">
+      <label for="chatmsg">Message</label>
+      <textarea id="chatmsg" placeholder="Road blocked at the second bend, use the upper path"></textarea>
+      <button class="act" id="chatsend">SEND TO NEARBY PHONES</button>
+      <button class="act ghost" id="shout">SEND MY SOS ONTO THE MESH</button>
+    </div>
+
+    <h2>On this phone</h2>
+    <div id="chatlog" class="muted">No messages yet.</div>
+    <div class="note">
+      Messages travel phone to phone. You do not need signal, and the person you are
+      writing to does not need to be nearby <b>now</b> — a phone that walks past later
+      carries it on. Messages with a hop count above zero were carried by someone else.
+    </div>
+  </section>
+
   <!-- ================= SEARCH ================= -->
   <section id="s-search">
     <h2>Find a buried phone</h2>
@@ -158,10 +182,12 @@
 <nav role="tablist">
   <button role="tab" aria-selected="true" data-tab="s-sos">SOS</button>
   <button role="tab" aria-selected="false" data-tab="s-board">Board</button>
+  <button role="tab" aria-selected="false" data-tab="s-chat">Chat</button>
   <button role="tab" aria-selected="false" data-tab="s-search">Search</button>
   <button role="tab" aria-selected="false" data-tab="s-more">More</button>
 </nav>
 
+<script src="/field/mesh.js"></script>
 <script>
 "use strict";
 /* =======================================================================================
@@ -600,6 +626,118 @@ function renderEstimate(est, why) {
   $("estimate").innerHTML = html + "</div>";
 }
 
+/* --- the mesh ------------------------------------------------------------------------ */
+/* The node is the SAME implementation the district server runs, in the same protocol, with
+   the parity checked by scripts/check_mesh_parity.py. What differs is the radio: in a
+   browser on this machine it is a cross-tab channel, which is real but is not Bluetooth,
+   and the screen says so rather than letting the demo flatter itself. */
+
+var mesh = null, meshTransportName = "";
+
+function startMesh() {
+  if (typeof PahiroMesh === "undefined") {
+    $("meshstate").textContent = "Mesh: not loaded";
+    return;
+  }
+  var node = new PahiroMesh.MeshNode(deviceId, { name: $("name").value || deviceId });
+  var transport;
+  if (typeof BroadcastChannel !== "undefined") {
+    transport = new PahiroMesh.BroadcastChannelTransport(deviceId);
+    meshTransportName = "cross-tab channel (same device, all tabs) — NOT Bluetooth";
+  } else {
+    meshTransportName = "none available in this browser";
+    $("meshstate").textContent = "Mesh: no transport";
+    $("meshtransport").textContent = meshTransportName;
+    return;
+  }
+  mesh = new PahiroMesh.MeshRunner(node, transport);
+  $("meshstate").innerHTML = "Mesh: <b>listening</b> as " + esc(node.name);
+  $("meshtransport").textContent = "Radio: " + meshTransportName +
+    ". On a phone this is Bluetooth; a browser cannot advertise, so the device path is " +
+    "declared in mesh.js rather than faked.";
+
+  // Announce ourselves, so a phone that already has a backlog knows to hand it over.
+  mesh.send(node.compose("status", "hello", {}));
+  mesh.pump();
+  renderChat();
+
+  // A late arrival: open a second tab and it will be sent everything this one holds.
+  // That is store-and-forward, and it is the whole reason a mesh beats a walkie-talkie.
+  setInterval(function () { mesh.send(node.compose("status", "hello", {})); }, 8000);
+
+  setInterval(function () {
+    var got = mesh.pump();
+    var msgs = node.transcript();
+    for (var i = 0; i < msgs.length; i++) {
+      // Answer a hello with what we hold, relayed properly: TTL drops, hops rise, and the
+      // path records that WE carried it.
+      if (msgs[i].kind === "status" && msgs[i].body === "hello" &&
+          msgs[i].origin !== deviceId) {
+        var hand = node.relayable([msgs[i].origin]).slice(0, 40);
+        for (var j = 0; j < hand.length; j++) {
+          try { mesh.send(hand[j].relay(deviceId)); } catch (e) {}
+        }
+      }
+    }
+    if (got || msgs.length) { renderChat(); }
+  }, 1500);
+}
+
+function renderChat() {
+  if (!mesh) { return; }
+  var msgs = mesh.node.transcript();
+  if (!msgs.length) { $("chatlog").textContent = "No messages yet."; return; }
+  var html = "";
+  for (var i = 0; i < msgs.length; i++) {
+    var m = msgs[i];
+    if (m.kind === "status") { continue; }
+    var mine = m.origin === deviceId;
+    var carried = m.hops > 0;
+    html += "<div class='card'>";
+    html += "<div><b>" + esc(mine ? "You" : (m.origin_name || m.origin)) + "</b> ";
+    if (m.kind === "sos") { html += "<span class='pill hot'>SOS</span>"; }
+    if (carried) {
+      html += "<span class='pill good'>carried " + m.hops + " hop" + (m.hops > 1 ? "s" : "") +
+              "</span>";
+      if (m.path && m.path.length) {
+        html += "<span class='pill'>via " + esc(m.path.join(" → ")) + "</span>";
+      }
+    } else if (!mine) {
+      html += "<span class='pill'>direct</span>";
+    }
+    html += "</div>";
+    html += "<div style='margin-top:6px'>" + esc(m.body) + "</div>";
+    if (m.hasPosition()) {
+      html += "<div class='muted'>" + m.lat.toFixed(4) + ", " + m.lon.toFixed(4) + "</div>";
+    }
+    html += "<div class='muted'>" + fmtTime(m.created_at) +
+            " · ttl " + m.ttl + "</div>";
+    html += "</div>";
+  }
+  $("chatlog").innerHTML = html || "<div class='muted'>No messages yet.</div>";
+}
+
+$("chatsend").addEventListener("click", function () {
+  var body = $("chatmsg").value.trim();
+  if (!body || !mesh) { return; }
+  var m = mesh.node.chat(body);
+  mesh.send(m);
+  $("chatmsg").value = "";
+  renderChat();
+});
+
+$("shout").addEventListener("click", function () {
+  if (!mesh) { return; }
+  var body = $("msg").value.trim() || "SOS — I need help";
+  var f = { people: parseInt($("people").value, 10) || null };
+  if (fix) { f.lat = fix.lat; f.lon = fix.lon; f.accuracy_m = fix.accuracy_m; }
+  var m = mesh.node.sos(body, f);
+  mesh.send(m);
+  renderChat();
+  alert("SOS sent onto the mesh. It will be carried phone to phone until one of them has " +
+        "signal — nothing needs to happen right now.");
+});
+
 /* --- settings ------------------------------------------------------------------------ */
 $("saveapi").addEventListener("click", async function () {
   apiBase = $("api").value.trim().replace(/\/+$/, "");
@@ -618,6 +756,7 @@ $("saveapi").addEventListener("click", async function () {
 });
 
 /* --- start --------------------------------------------------------------------------- */
+startMesh();
 net();
 renderQueue();
 if (queue().length) flush();
