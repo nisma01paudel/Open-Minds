@@ -183,3 +183,75 @@ def test_the_speech_never_carries_the_old_wrong_duration_as_an_instruction():
     speech = read("docs/SPEECH.md")
     assert "The main script runs **5:40" not in speech
     assert "runs **5:40–6:10**." not in speech
+
+
+# ---- the speech and the film must not contradict each other on numbers --------------------------
+
+def test_the_speech_the_caption_and_the_narration_agree_on_the_load_bearing_numbers():
+    """Three artefacts state the same four numbers. A disagreement is a presenter contradicting
+    the screen in front of a room, which is worse than a wrong number nobody sees twice."""
+    speech = read("docs/SPEECH.md")
+    build = read("scripts/build_voiced_video.sh")
+    narration = read("reports/video/voice/narration.txt")
+
+    # (label, in the speech, in the captions, in the Nepali narration)
+    for label, in_speech, in_caption, in_narration in (
+        ("613 slopes", "613", "613", "छ सय तेह्र"),
+        ("305 above threshold", "305", "305", "तीन सय पाँच"),
+        ("167 landslides", "167", "167", "एक सय सतसट्ठी"),
+        ("27.8% clear", "27.8", "27.8", "सत्ताईस दशमलव आठ"),
+    ):
+        assert in_speech in speech, f"the speech does not state {label}"
+        assert in_caption in build, f"the film captions do not state {label}"
+        assert in_narration in narration, f"the narration does not speak {label}"
+
+
+# ---- the live beats the speech tells the presenter to press must exist --------------------------
+
+def test_every_beat_the_speech_tells_the_presenter_to_press_actually_exists():
+    """The speech instructs the presenter to press numbered beats live.
+
+    If a beat does not exist the demo fails on stage, in front of judges, with no recovery - so
+    the beat titles in the speech are checked against the array the app actually renders.
+    """
+    import re
+
+    speech = read("docs/SPEECH.md")
+    page = read("web/app/page.tsx")
+
+    titles = re.findall(r'\{ title: "([^"]+)"', page)
+    assert titles, "no beats found in web/app/page.tsx"
+
+    live = speech[speech.index("## Running it live"):]
+    live = live[:live.index("## The three that make people put their phones down")]
+
+    # every beat title the app defines should be referenced by the speech
+    for title in titles:
+        number = title.split("·")[0].strip()
+        assert number in live, (
+            f"the app defines beat {number!r} and the speech never tells the presenter to press it")
+
+    # and the speech must not name a beat number the app does not have.
+    # Matched as "**N** ·" - the beat-press form. A bare bolded number is not a beat: the speech
+    # also says "**0** above threshold", and the first version of this check read that as beat 0.
+    pressed = set(re.findall(r"\*\*(\d+b?)\*\* ·", live))
+    defined = {t.split("·")[0].strip() for t in titles}
+    assert pressed <= defined, f"the speech presses {sorted(pressed - defined)}, which do not exist"
+
+    # The count it states must be the count there is. Accept the numeral OR the word, because
+    # the speech says "nine beats" and prose is allowed to spell a number - the first version of
+    # this check demanded "9 beats" and failed on a sentence that was correct.
+    words = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven",
+             8: "eight", 9: "nine", 10: "ten", 11: "eleven", 12: "twelve"}
+    n = len(titles)
+    assert f"{n} beats" in speech or f"{words.get(n, n)} beats" in speech, (
+        f"the speech does not say there are {n} beats")
+
+
+def test_the_presenter_mode_the_speech_tells_you_to_open_works():
+    """`?present=1` is an instruction. If nothing reads that parameter it is a dead instruction."""
+    presenter = read("web/components/Presenter.tsx")
+    assert 'get("present")' in presenter, "nothing reads ?present"
+    assert '"1"' in presenter, "?present is read but not compared to 1"
+    assert "arrow" in presenter.lower() or "ArrowRight" in presenter, \
+        "the speech promises arrow keys and none are handled"
