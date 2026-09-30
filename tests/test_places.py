@@ -80,3 +80,22 @@ def test_the_builder_refuses_rather_than_writing_a_placeless_map():
     src = (ROOT / "scripts/build_places.py").read_text(encoding="utf-8")
     assert "REFUSING" in src, "the builder no longer refuses to write an empty map"
     assert "no slope title matched a local unit" in src
+
+
+def test_the_places_layer_is_wired_into_the_map_and_the_offline_shell():
+    """277 places with no way to see them is data, not a map.
+
+    The layer must exist on the map, be toggleable, and the file must be precached - because the
+    point of carrying population and district offline is to read them where there is no signal.
+    """
+    root = ROOT
+    sm = (root / "web/components/SlopeMap.tsx").read_text(encoding="utf-8")
+    assert 'id: "places"' in sm, "the map has no places layer"
+    assert "/data/places.geojson" in sm, "the layer never loads the data"
+    assert "placesRef" in sm, "the layer cannot be toggled"
+
+    page = (root / "web/app/page.tsx").read_text(encoding="utf-8")
+    assert "places={" in page and "setPlaces" in page, "the page has no places toggle"
+
+    sw = (root / "web/public/sw.js").read_text(encoding="utf-8")
+    assert "/data/places.geojson" in sw, "the places file is not in the offline precache"

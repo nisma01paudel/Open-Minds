@@ -100,6 +100,7 @@ export default function Page() {
   const [picked, setPicked] = useState<any>(null);
   const [blind, setBlind] = useState(false);
   const [trails, setTrails] = useState(false);
+  const [places, setPlaces] = useState(false);
   // Planning a walk. The engine is Python and this page is a static export, so this talks to the
   // local API. When the API is not running the panel says so instead of silently doing nothing.
   const [planQ, setPlanQ] = useState("");
@@ -146,6 +147,10 @@ export default function Page() {
       if (q.get("mode") === "replay") setMode("replay");
       if (q.get("blind") === "1") setBlind(true);
       if (q.get("trails") === "1") setTrails(true);
+      <button onClick={() => setPlaces((v) => !v)} className={places ? "on" : ""}
+              title="Major places: population, district and the office that owns the ground">
+        Places
+      </button>
     }).catch(() => setErr("timeline not built yet"));
     fetch("/data/observability-by-month.json").then((r) => r.json()).then(setObs).catch(() => {});
     fetch("/data/advisories.json").then((r) => r.json())
@@ -240,6 +245,7 @@ export default function Page() {
         focus={focus}
         blind={blind}
         trails={trails}
+        places={places}
         onPick={(p, at) => {
           const a = advisories.current[p.id];
           setPicked(p);

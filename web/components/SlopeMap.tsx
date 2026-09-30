@@ -92,6 +92,7 @@ export default function SlopeMap({
   onPick,
   blind,
   trails,
+  places,
 }: {
   data: AnyFC | null;
   popup?: boolean;
@@ -99,10 +100,12 @@ export default function SlopeMap({
   onPick?: (p: any, at?: { lon: number; lat: number }) => void;
   blind?: boolean;
   trails?: boolean;
+  places?: boolean;
 }) {
   const holder = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any>(null);
   const trailsRef = useRef(false);
+  const placesRef = useRef(false);
   const readyRef = useRef(false);
   const blindRef = useRef<boolean>(!!blind);
   const [ready, setReady] = useState(false);
@@ -248,11 +251,29 @@ export default function SlopeMap({
           },
         });
 
+        // --- major places ------------------------------------------------------------------
+        // 277 local units, each with population, district, its own gov.np site and how many
+        // documented slopes sit inside it. Sized by how many slopes are recorded there, because
+        // that is the one attribute this project measured itself.
+        map.addSource("places", { type: "geojson", data: { type: "FeatureCollection", features: [] } });
+        map.addLayer({
+          id: "places", type: "circle", source: "places",
+          minzoom: 5.5, paint: {
+            "circle-radius": ["interpolate", ["linear"], ["get", "slopes_documented"], 1, 3, 8, 9],
+            "circle-color": "#e8c87a",
+            "circle-stroke-color": "#2a2010", "circle-stroke-width": 1,
+            "circle-opacity": 0.9,
+          },
+        });
+
         // Trails start hidden: this app's first job is still the slope, and a valley of green
         // lines over it before anyone asked would be decoration.
         const trailsVis = trailsRef.current ? "visible" : "none";
         map.setLayoutProperty("trails-casing", "visibility", trailsVis);
         map.setLayoutProperty("trails", "visibility", trailsVis);
+        if (map.getLayer("places")) {
+          map.setLayoutProperty("places", "visibility", placesRef.current ? "visible" : "none");
+        }
 
         // Real place names, as plain DOM markers. Doing this in the style needed a glyph
         // server and an inline geojson source, and that combination silently killed the
@@ -352,6 +373,12 @@ export default function SlopeMap({
     let cancelled = false;
     const apply = async () => {
       try {
+        const rp = await fetch("/data/places.geojson");
+        if (rp.ok) {
+          const pj = await rp.json();
+          const src = map.getSource("places");
+          if (src) src.setData(pj);
+        }
         const r = await fetch("/data/trails.geojson");
         if (!r.ok) return;
         const trails = await r.json();
@@ -371,6 +398,7 @@ export default function SlopeMap({
   // Toggle the trails without rebuilding anything.
   useEffect(() => {
     trailsRef.current = !!trails;
+  placesRef.current = !!places;
     const map = mapRef.current;
     if (!map || !readyRef.current) return;
     for (const id of ["trails", "trails-casing"]) {
