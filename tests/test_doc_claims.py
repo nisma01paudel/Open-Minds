@@ -455,3 +455,15 @@ def test_the_speech_covers_the_daily_use_half_as_well_as_the_disaster_half():
     assert "clear saturday" in speech, (
         "the pitch must give the ADOPTION argument for the daily half - a tool nobody opens is a "
         "tool nobody has installed when it is needed")
+
+
+def test_the_readme_describes_both_halves_too():
+    """The README is the first page a judge opens. It described only the disaster half - the same
+    gap SUBMISSION.md had - so the daily-use work was invisible from the front door.
+    """
+    low = read("README.md").lower()
+    for needed in ("hiking trail", "bus", "4,423", "openstreetmap"):
+        assert needed in low, f"README.md never mentions {needed!r}"
+    assert "clear saturday" in low, (
+        "the README should carry the adoption argument, not just the feature list")
+    assert "incomplete" in low, "and the OSM coverage caveat with it"

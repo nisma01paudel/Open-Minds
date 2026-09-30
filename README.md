@@ -26,8 +26,35 @@ Not a plan — running code, verified against live services:
 | **Siting advice** (repair here, or move above the source zone) | **working** — Copernicus DEM, live |
 | BIPAD government integration | **working** — coordinate → ward; real road-blockage register |
 | Evaluation harnesses (routing accuracy, kappa, gap calibration) | **working** |
+| **Offline hiking trails** (4,423 OSM ways, Kathmandu valley) | **working** — 1.43 MB, bundled, no network |
+| **Trip planning + bus access** (which park, what fare) | **working** — Rs 24 Bagmati minimum, April 2026, DOTM |
+| **Ask in your own words** (open-weight model → deterministic engine) | **working** — the model reads, the engine decides |
 
 The full test suite passes. Every claim in this repo is reproducible from the commands below.
+
+## The other half: it is not only for the day the mountain moves
+
+**Nobody opens a landslide tool on a clear Saturday** — and a tool nobody opens is not installed on
+the Tuesday the mountain moves. So the same offline engine answers the ordinary question: which
+hiking trail, and which bus, from where I am standing.
+
+```bash
+python scripts/plan_trip.py --near 27.7750 85.3620 --origin 27.7047 85.3146
+```
+
+    trails within 3.0 km of 27.7750, 85.3620:
+        4.02 km  +833 m  2h12   Shiva puri peak trek (stairs)
+    from 27.7047, 85.3146:
+        bus to Budhanilkantha Stop (~9.3 km, about Rs 37), then 4.8 km on foot
+
+*"an easy walk, maybe a view, under forty rupees on the bus"* becomes `easy · under 1h00 · bus
+under Rs 40 · wants view` — read by the open-weight model, then planned by a deterministic engine
+that validates every field the model returns. It works with no model server too, and says which
+reader answered.
+
+**4,423 mapped footpaths, 141 bus stops, all of it offline** — on the web app and on the phone.
+Trail data © OpenStreetMap contributors, ODbL 1.0. Coverage is incomplete, the terrain grid is
+1 km, and bus schedules are not known here: all three are stated in the output rather than hidden.
 
 ## Start here
 
