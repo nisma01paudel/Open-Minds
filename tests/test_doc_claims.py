@@ -117,3 +117,69 @@ def test_the_speech_fact_sheet_numbers_are_present_in_the_code_they_cite():
     assert f"{B.ENCODED_BYTES} bytes" in speech or f"{B.ENCODED_BYTES}" in speech
     assert str(int(dtn.WIFI_AWARE.range_m)) in speech, "the 300 m Wi-Fi figure must appear"
     assert "25" in speech and E.plan(E.State(battery_pct=20)).scan_duty_cycle == 0.25
+
+
+# ---- the speech's own timings -------------------------------------------------------------------
+
+def _spoken_words(text: str) -> int:
+    """Count only what is actually said: no headings, stage directions, tables or markdown."""
+    import re
+
+    out = []
+    for line in text.splitlines():
+        s = line.strip()
+        if not s or s.startswith(("#", ">", "|", "---")) \
+                or s.startswith("**〔") or s.startswith("*Slide"):
+            continue
+        s = re.sub(r"\*\*|\*|`", "", s)
+        s = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", s)
+        out.append(s)
+    return len(" ".join(out).split())
+
+
+WPM = 140.0     # a normal rehearsed pace; the band is 130-150
+
+
+def test_the_speechs_stated_duration_matches_its_own_word_count():
+    """The stated runtime was 5:40-6:10 and the script was ~10:30.
+
+    A presenter who rehearses to the printed number gets cut off on stage, before the close,
+    which is the only part that decides anything. So the number is derived here rather than
+    asserted in prose.
+    """
+    import re
+
+    speech = read("docs/SPEECH.md")
+    # the six numbered sections, which is what "the full script" means
+    body = speech[speech.index("### 1 · Cold open"):speech.index("## The two-minute cut")]
+    words = _spoken_words(body)
+    minutes = words / WPM
+    stated = re.search(r"The full script is ~(\d+):(\d+)", speech)
+    assert stated, "the speech must state a measured duration"
+    claimed = int(stated.group(1)) * 60 + int(stated.group(2))
+    assert abs(claimed - minutes * 60) <= 45, (
+        f"the speech says ~{claimed // 60}:{claimed % 60:02d} and measures "
+        f"{int(minutes)}:{int((minutes % 1) * 60):02d} at {WPM:.0f} wpm")
+
+
+def test_the_named_cuts_are_the_length_they_claim():
+    """'The 90-second cut' was 2:04. A label nobody timed is a promise nobody kept."""
+    import re
+
+    speech = read("docs/SPEECH.md")
+    for heading, claim in (("## The two-minute cut", 120), ("## The 45-second version", 45)):
+        start = speech.index(heading)
+        nxt = speech.find("\n## ", start + 1)
+        body = speech[start:nxt if nxt != -1 else len(speech)]
+        words = _spoken_words(body)
+        seconds = words / WPM * 60
+        assert abs(seconds - claim) <= 30, (
+            f"{heading!r} claims {claim}s and measures {seconds:.0f}s "
+            f"({words} words at {WPM:.0f} wpm)")
+
+
+def test_the_speech_never_carries_the_old_wrong_duration_as_an_instruction():
+    """It may quote the old number while retracting it; it must not instruct with it."""
+    speech = read("docs/SPEECH.md")
+    assert "The main script runs **5:40" not in speech
+    assert "runs **5:40–6:10**." not in speech

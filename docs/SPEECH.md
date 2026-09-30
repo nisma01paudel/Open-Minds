@@ -12,9 +12,41 @@ that come from?"
 
 ## How to use this
 
-- The main script runs **5:40–6:10**. Beat marks are where you pause, not where you breathe.
-- If you get cut to 90 seconds, jump to [the 90-second cut](#the-90-second-cut). It still lands.
-- If a judge stops you at the door, [the 30-second version](#the-30-second-version).
+- **The full script is ~10:30, not 6 minutes.** Measured at 140 words per minute, which is a
+  normal rehearsed pace: 1,455 words across six sections. The number that used to be here said
+  5:40–6:10, and it was wrong by nearly double — which is the kind of error that gets a
+  presenter cut off mid-sentence, *before the close*, which is the whole point of the pitch.
+- **So use the cut table below and rehearse to a clock**, not to the script. Find your slot,
+  say exactly those sections, and stop.
+- Beat marks are where you pause, not where you breathe.
+- If a judge stops you at the door, [the 45-second version](#the-45-second-version).
+
+### What to say if you have less time
+
+Measured, section by section, at 140 wpm:
+
+| Section | Words | Ends at |
+|---|---|---|
+| 1 · Cold open — the number | 262 | 1:52 |
+| 2 · The turn | 257 | 3:42 |
+| 3 · Act one — the office nobody was looking at | 285 | 5:44 |
+| 4 · Act two — the test that could have embarrassed us | 270 | 7:40 |
+| 5 · Act three — the last metre | 311 | 9:53 |
+| 6 · Close | 128 | 10:48 |
+
+| Your slot | Say | Runs |
+|---|---|---|
+| **2 min** | §1 alone | 1:52 |
+| **4 min** | §1 → §2, then the close from §6 | ~4:10 |
+| **5 min** | §1 → §2, §3 trimmed to the numbers, then the close | ~5:00 |
+| **6 min** | §1 → §3, then the close | ~6:15 |
+| **8 min** | §1 → §4, then the close | ~8:10 |
+| **10 min** | everything | 10:48 |
+
+**Never cut §1 or §6.** The opener is the pitch and the close is what they remember; anything
+else can go. **Cut §5 first** — it is the most feature-shaped section, and the demo on screen
+shows it anyway. **Cut §4 last**, because the negative result is the thing no other team will
+say and the reason the rest is believed.
 - **The screen is driven by the repo's own presenter mode.** Open the app with `?present=1` and press `→`
   on the beat numbers marked in [Running it live](#running-it-live--the-words-are-wired-to-the-demo). Do
   not click around the map while you talk.
@@ -220,9 +252,10 @@ Forty people never came back from that river.
 
 ---
 
-## The 90-second cut
+## The two-minute cut
 
-*(Same order. Keep the paper, keep the two numbers.)*
+**Measured at 2:04, not 90 seconds.** It was labelled "the 90-second cut" and had never been timed.
+Keep the paper, and keep the two numbers.
 
 **Forty.** That is how many people are still in the Trishuli river. 12 July 2024, two buses, 62 people.
 Three survived. Nineteen bodies came back. Forty never did.
@@ -255,7 +288,9 @@ Forty people never came back from that river. **Let us make sure the next report
 
 ---
 
-## The 30-second version
+## The 45-second version
+
+**Measured at 0:45.**
 
 We did not build another landslide detector — Nepal can already detect. The Simaltal task force found the
 cause in 25 days and the recommendation is still pending a year later. **Nepal cannot dispatch.**
