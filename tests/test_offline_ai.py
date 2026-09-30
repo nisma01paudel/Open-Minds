@@ -282,3 +282,47 @@ def test_the_demo_film_exists_and_its_narration_is_continuous():
     starts = (gaps.stderr or "").count("silence_start")
     assert starts == 0, (
         f"{starts} stretch(es) of 3 s or more with no narration")
+
+
+def test_the_film_contains_every_beat_that_was_built():
+    """The regression from the round that added a clip and shipped a shorter film.
+
+    A beat was added, its clip was built - 15 clips on disk - and the concatenation step held its
+    own hardcoded list, so the clip was never included. The film came out exactly as long as
+    before, to the decimal, and nothing failed. The only thing that noticed was comparing the
+    duration against what it should have been.
+
+    So: the film must be about as long as the sum of the clips it is made of. A clip that is built
+    and then dropped makes the film shorter than its parts, which is what this catches.
+    """
+    import shutil
+    import subprocess
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    film = root / "reports" / "video" / "pahiro-narrated-web.mp4"
+    clips = root / "reports" / "video" / "clips-voiced"
+    if not film.exists() or not clips.exists():
+        pytest.skip("the film has not been built in this checkout")
+    if shutil.which("ffprobe") is None:
+        pytest.skip("ffprobe is not installed")
+
+    def duration(p):
+        out = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration",
+                              "-of", "csv=p=0", str(p)], capture_output=True, text=True,
+                             timeout=120).stdout.strip()
+        return float(out)
+
+    parts = sorted(clips.glob("*.mp4"))
+    assert len(parts) >= 10, f"only {len(parts)} clips on disk"
+    total = sum(duration(p) for p in parts)
+    film_s = duration(film)
+
+    # The film is the clips concatenated, so its duration should be the sum of theirs. A wider
+    # tolerance than seems necessary is deliberate: one dropped clip is 8-15 s, and anything
+    # tighter would fail on container rounding.
+    assert film_s >= total * 0.92, (
+        f"the film is {film_s:.1f}s and its clips total {total:.1f}s - about "
+        f"{total - film_s:.0f}s of built material is not in the film. A clip was built and then "
+        f"left out of the concatenation, which is exactly what happened when a hardcoded clip "
+        f"list sat next to a build function that had stopped matching it.")
