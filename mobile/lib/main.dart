@@ -23,6 +23,7 @@ import 'beacon.dart' as beacon;
 import 'escape.dart' as escape;
 import 'l10n.dart';
 import 'offline_ai.dart' as ai;
+import 'trails.dart';
 
 /// Speech, behind an interface so tests do not need a platform channel.
 abstract class Speaker {
@@ -201,11 +202,13 @@ class HomeShell extends StatefulWidget {
   final LanguageController controller;
   final Speaker speaker;
   final DemLoader demLoader;
+  final TrailLoader trailLoader;
   const HomeShell({
     super.key,
     required this.controller,
     required this.speaker,
     required this.demLoader,
+    this.trailLoader = const AssetTrailLoader(),
   });
 
   @override
@@ -235,6 +238,7 @@ class _HomeShellState extends State<HomeShell> {
                   lang: lang ?? AppLang.en,
                   speaker: widget.speaker,
                   demLoader: widget.demLoader),
+              WalkScreen(strings: s, lang: lang ?? AppLang.en, loader: widget.trailLoader),
               BeaconScreen(strings: s),
               BoardScreen(strings: s),
               SettingsScreen(strings: s, controller: widget.controller),
@@ -247,6 +251,8 @@ class _HomeShellState extends State<HomeShell> {
               NavigationDestination(
                   icon: const Icon(Icons.trending_up), label: s['tab.escape']),
               NavigationDestination(
+                  icon: const Icon(Icons.hiking), label: s['tab.walk']),
+              NavigationDestination(
                   icon: const Icon(Icons.bluetooth_searching), label: s['tab.beacon']),
               NavigationDestination(icon: const Icon(Icons.list_alt), label: s['tab.board']),
               NavigationDestination(icon: const Icon(Icons.settings), label: s['tab.settings']),
@@ -255,6 +261,109 @@ class _HomeShellState extends State<HomeShell> {
         );
       },
     );
+  }
+}
+
+/// Loads the trail bundle. Injected so a test does not need a real asset bundle, the same way
+/// [DemLoader] works for the terrain grid.
+abstract class TrailLoader {
+  Future<TrailNetwork> load();
+}
+
+class AssetTrailLoader implements TrailLoader {
+  const AssetTrailLoader();
+  @override
+  Future<TrailNetwork> load() async =>
+      TrailNetwork.fromBytes(await rootBundle.load('assets/trails.geojson')
+          .then((b) => b.buffer.asUint8List()));
+}
+
+/// पदयात्रा — which walk can I do from here, with no network.
+///
+/// This is the ordinary-day half of the app. It reads the same trail bundle the web app serves,
+/// and it answers the question a person standing at a trailhead asks. It does not do
+/// point-to-point routing: that lives in the Python engine, and a second graph router in a second
+/// language is how two implementations quietly stop agreeing.
+class WalkScreen extends StatefulWidget {
+  final L10n strings;
+  final AppLang lang;
+  final TrailLoader loader;
+  const WalkScreen({super.key, required this.strings,
+                    required this.lang, required this.loader});
+
+  @override
+  State<WalkScreen> createState() => _WalkScreenState();
+}
+
+class _WalkScreenState extends State<WalkScreen> {
+  TrailNetwork? _net;
+  String? _error;
+  bool _busy = true;
+  // Kathmandu, until the phone reports a fix. Stated in the UI rather than assumed silently.
+  double _lat = 27.7047, _lon = 85.3146;
+  double _radiusM = 3000;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    setState(() { _busy = true; _error = null; });
+    try {
+      final net = await widget.loader.load();
+      if (mounted) setState(() { _net = net; _busy = false; });
+    } catch (e) {
+      if (mounted) setState(() { _error = '$e'; _busy = false; });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final s = widget.strings;
+    if (_busy) return const Center(child: CircularProgressIndicator());
+    if (_error != null) {
+      return Center(child: Padding(padding: const EdgeInsets.all(24),
+        child: Text('${s['walk.loadfail']}\n$_error', textAlign: TextAlign.center)));
+    }
+    final net = _net!;
+    final got = net.nearby(_lon, _lat, radiusM: _radiusM, limit: 20);
+
+    return ListView(padding: const EdgeInsets.all(16), children: [
+      Text(s['walk.title'], style: Theme.of(context).textTheme.titleLarge),
+      const SizedBox(height: 4),
+      Text('${s['walk.from']} ${_lat.toStringAsFixed(4)}, ${_lon.toStringAsFixed(4)}',
+           style: Theme.of(context).textTheme.bodySmall),
+      const SizedBox(height: 12),
+      Row(children: [
+        Text('${s['walk.within']} '),
+        Expanded(child: Slider(
+          value: _radiusM, min: 500, max: 8000, divisions: 15,
+          label: '${(_radiusM / 1000).toStringAsFixed(1)} km',
+          onChanged: (v) => setState(() => _radiusM = v),
+        )),
+        Text('${(_radiusM / 1000).toStringAsFixed(1)} km'),
+      ]),
+      if (got.isEmpty)
+        Padding(padding: const EdgeInsets.symmetric(vertical: 24),
+          child: Text(s['walk.none'], style: Theme.of(context).textTheme.bodyMedium)),
+      for (final t in got) Card(
+        margin: const EdgeInsets.only(bottom: 8),
+        child: ListTile(
+          leading: const Icon(Icons.hiking),
+          title: Text(t.label),
+          subtitle: Text('${(t.lengthM / 1000).toStringAsFixed(1)} km · '
+              '${t.difficulty} · ${t.flatMinutes} min'),
+          trailing: Text('${t.nearestM.round()} m'),
+          onTap: () => setState(() { _lat = t.points.first[1]; _lon = t.points.first[0]; }),
+        ),
+      ),
+      const SizedBox(height: 12),
+      Text(s['walk.caveat'], style: Theme.of(context).textTheme.bodySmall),
+      const SizedBox(height: 8),
+      Text(net.attribution, style: Theme.of(context).textTheme.bodySmall),
+    ]);
   }
 }
 
