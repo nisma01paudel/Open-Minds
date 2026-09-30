@@ -19,8 +19,13 @@ os.environ.setdefault("CPL_VSIL_CURL_ALLOWED_EXTENSIONS", ".tif")
 os.environ.setdefault("VSI_CACHE", "TRUE")
 os.environ.setdefault("GDAL_HTTP_MULTIPLEX", "YES")
 
-# Sentinel-2 scene classification values that mean "not ground".
-SCL_BAD = (0, 1, 3, 8, 9, 10, 11)
+# Sentinel-2 scene classification (SCL) classes that represent actual ground.
+# 4 vegetation, 5 not-vegetated, 6 water, 7 unclassified.
+# Everything else is saturated/dark/cloud-shadow/cloud/cirrus/snow and is not
+# usable for change detection. Note that class 2 (topographic shadow) is
+# excluded too: on a steep Himalayan slope it can cover a large share of a patch.
+CLEAR_SCL = (4, 5, 6, 7)
+SCL_BAD = (0, 1, 2, 3, 8, 9, 10, 11)
 
 
 @dataclass
