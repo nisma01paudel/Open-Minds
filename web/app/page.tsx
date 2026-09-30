@@ -268,6 +268,7 @@ export default function Page() {
       </aside>
 
       <div className="topactions">
+        <Link href="/fly/">🥽 Fly over it in 3D</Link>
         <Link href="/share/">Share the 10-second film</Link>
         <Link href="/ar/" className="phone">📱 Open the phone view — point it at a hillside</Link>
       </div>

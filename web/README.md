@@ -71,3 +71,32 @@ which is verified. To try terrain, re-add a `raster-dem` source and uncomment th
 A cold Chromium profile with a short `--virtual-time-budget` captures the map **before
 the satellite tiles arrive**, producing an apparently blank map. This cost an hour of
 bisecting a bug that did not exist. Warm the profile, or allow a long budget.
+
+## The 3D flythrough (`/fly/`)
+
+Real elevation, real satellite imagery, real rainfall. Nothing is invented.
+
+- **Terrain**: AWS terrarium tiles, decoded to metres. `scripts/build_terrain.py` stitches
+  and decimates them to an Int16 grid (`public/data/terrain.bin`, 852 KB, 832×512, 18 m to
+  8,461 m — the Everest massif is in there).
+- **Drape**: the Esri World Imagery export for the terrain's exact extent, fetched to match
+  so the imagery lines up with the geometry.
+- **Slopes**: the same 613 sites, placed by their real coordinates, floating at the real
+  terrain height, coloured by the same multi-window trigger rule.
+
+`?step=` controls mesh density (default 4). Lower is finer; the software GL used for
+automated screenshots cannot render step 2 in reasonable time, which is why the default is
+4 rather than the finest possible.
+
+### Bugs this cost, all found by running it
+
+1. `makePoints()` returns `{ geo, mat }` and `paint()` read `pts.geometry` — a typo that
+   threw at runtime and blanked the whole view.
+2. The scene is built when the *terrain* arrives, which is before the *timeline* does. The
+   day-setter was guarded on a `tl` closure captured as `null`, so it returned immediately
+   on every call: the date advanced and the colours and counts stayed frozen on the first
+   frame. Guarded on the sites instead.
+3. Calling `paint()` from inside a `setState` updater is a side effect in a pure function.
+   The day now drives the scene from its own effect.
+4. Square point sprites. A shared radial-gradient canvas texture makes them round.
+5. The camera started inside a ridge face. Pulled back and up.
