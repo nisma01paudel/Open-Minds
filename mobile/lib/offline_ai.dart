@@ -49,12 +49,18 @@ class Tier {
   final Set<String> enables;
   final String note;
 
+  /// The same sentence in Nepali. Optional, and defaulted to empty so a tier added without a
+  /// translation falls back to English rather than failing to compile - a missing translation is a
+  /// gap to fill, not a reason the app will not build.
+  final String noteNe;
+
   const Tier({
     required this.name,
     required this.weightsMb,
     required this.components,
     required this.enables,
     required this.note,
+    this.noteNe = '',
   });
 
   double get ramMb => ramFor(weightsMb);
@@ -74,6 +80,7 @@ const Tier tierVision = Tier(
   components: ['dino_v2_s14_int8', 'decision_head', 'piper_ne_np'],
   enables: {...lifesaving, 'change_detection', 'nepali_voice'},
   note: 'sees change between two images and speaks Nepali on the handset, offline',
+  noteNe: 'दुई तस्बिरबीचको फरक देख्छ र फोनमै नेपाली बोल्छ, इन्टरनेट बिना',
 );
 
 const Tier tierSeeing = Tier(

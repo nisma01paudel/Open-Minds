@@ -706,11 +706,23 @@ class SettingsScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('${f.tier.name} — ${f.tier.note}', style: const TextStyle(height: 1.5)),
+                // THE CARD WAS ENGLISH IN A NEPALI-FIRST APP. The heading above it was
+                // "यो फोनमा के चल्छ" and the two lines under it were not translated, so a Nepali
+                // user read a Nepali question and an English answer - on the one screen that
+                // explains what the model costs them.
+                Text(
+                  strings.lang == AppLang.ne && f.tier.noteNe.isNotEmpty
+                      ? '${f.tier.name} — ${f.tier.noteNe}'
+                      : '${f.tier.name} — ${f.tier.note}',
+                  style: const TextStyle(height: 1.5),
+                ),
                 const SizedBox(height: 8),
                 Text(
-                  'needs ~${f.tier.ramMb.toStringAsFixed(0)} MB resident, '
-                  '${f.tier.weightsMb.toStringAsFixed(0)} MB on disk',
+                  strings.lang == AppLang.ne
+                      ? 'करिब ${f.tier.ramMb.toStringAsFixed(0)} MB स्मृति चाहिन्छ, '
+                          '${f.tier.weightsMb.toStringAsFixed(0)} MB डिस्कमा'
+                      : 'needs ~${f.tier.ramMb.toStringAsFixed(0)} MB resident, '
+                          '${f.tier.weightsMb.toStringAsFixed(0)} MB on disk',
                   style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
                 ),
                 if (f.tier.weightsMb == 0)

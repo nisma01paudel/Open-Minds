@@ -112,7 +112,7 @@ void boardTests() {
       expect(s['board.empty'], isNotEmpty);
       expect(s['board.empty_why'], isNotEmpty,
           reason: 'the board explains itself in ${ne ? 'Nepali' : 'English'}');
-      expect(s['board.empty_why']!.length, greaterThan(40),
+      expect(s['board.empty_why'].length, greaterThan(40),
           reason: 'a one-word explanation explains nothing');
     }
   });

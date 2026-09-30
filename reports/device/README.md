@@ -17,6 +17,7 @@ launched on an Android emulator (API 36, x86_64, `/dev/kvm`) on 2026-10-01.
 | `pahiro-offline-airplane.png` | **airplane mode on, network "none", and the trails are identical** |
 | `pahiro-beacon-frame.png` | **a real 20-byte advertisement, encoded on the device, in hex** |
 | `pahiro-board-empty.png` | the Board with no messages, **and the app explaining why** |
+| `pahiro-settings-nepali.png` | Settings after the fix: **the capability card in Nepali** |
 
 ## What this changes, and what it does not
 
@@ -27,6 +28,28 @@ a real handset" end here.
 **Unchanged, and still stated everywhere:** this is an **emulator**, not a physical phone. No radio
 figure has been measured on real hardware - Bluetooth range, Wi-Fi Aware range and battery endurance
 are all still somebody else's measurements or modelled from them. An emulator cannot measure a radio.
+
+## The screen that was half-translated
+
+The Settings tab asked a Nepali question and answered it in English:
+
+    यो फोनमा के चल्छ                    <- "what runs on this phone"
+    vision - sees change between two images and speaks Nepali on the handset, offline
+    needs ~867 MB resident, 93 MB on disk
+
+In a Nepali-first app, on the one screen that tells a user what the model costs them. The heading was
+translated, the body was two hardcoded English strings, and neither the tests nor a dozen readings of
+the Dart file had noticed - because the only way to see it is to switch the app to Nepali and scroll.
+
+Fixed, rebuilt, reinstalled and photographed:
+
+    यो फोनमा के चल्छ
+    vision - दुई तस्बिरबीचको फरक देख्छ र फोनमै नेपाली बोल्छ, इन्टरनेट बिना
+    करिब 867 MB स्मृति चाहिन्छ, 93 MB डिस्कमा
+
+The `Tier` class gained an optional `noteNe` defaulting to empty, so a tier added later without a
+translation falls back to English instead of failing to compile - a missing translation is a gap to
+fill, not a reason the app will not build.
 
 ## The empty screen the device exposed
 
