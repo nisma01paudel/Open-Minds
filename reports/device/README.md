@@ -15,6 +15,7 @@ launched on an Android emulator (API 36, x86_64, `/dev/kvm`) on 2026-10-01.
 | `pahiro-escape-refusal.png` | the escape planner **refusing** at Melamchi, in Nepali, with advice |
 | `pahiro-beacon.png` | the Beacon tab: a message that needs no pairing and no app on the carrier |
 | `pahiro-offline-airplane.png` | **airplane mode on, network "none", and the trails are identical** |
+| `pahiro-beacon-frame.png` | **a real 20-byte advertisement, encoded on the device, in hex** |
 
 ## What this changes, and what it does not
 
@@ -25,6 +26,29 @@ a real handset" end here.
 **Unchanged, and still stated everywhere:** this is an **emulator**, not a physical phone. No radio
 figure has been measured on real hardware - Bluetooth range, Wi-Fi Aware range and battery endurance
 are all still somebody else's measurements or modelled from them. An emulator cannot measure a radio.
+
+## The 20-byte claim, as bytes on a screen
+
+Pressing "नमुना फ्रेम बनाउनुहोस्" on the Beacon tab encodes a real advertisement and prints it:
+
+    20 बाइट · 4 spare of 24
+    233736760ee320002a4a5600822d22005b15b5ef
+
+    2 people · critical
+    position 27.71542, 85.31234
+    ttl 6 · hops 1 (relayed once)
+
+    A Flutter app can put bytes on the air. A browser cannot.
+
+Twelve bytes of payload inside a twenty-byte frame, four bytes under the 24-byte advertisement limit
+that a Bluetooth advertisement actually allows. This is the claim the whole mesh rests on, and it is
+now a hex string on a phone rather than a table in a document.
+
+The last line is the honest reason this half exists as a mobile app at all: a browser cannot put bytes
+on the air, so the disaster half cannot live in the web app however hard anyone tries.
+
+Note the aeroplane icon: the frame still encodes with no network, because encoding is computation and
+not transmission - which is exactly the distinction the design turns on.
 
 ## Offline, proven with the radio actually off
 
