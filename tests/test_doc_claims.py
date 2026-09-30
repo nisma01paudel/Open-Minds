@@ -596,3 +596,40 @@ def test_the_phone_app_declares_every_asset_its_offline_claim_needs():
         assert f"- {needed}" in pubspec, (
             f"{needed} is not declared under assets:, so it will not be bundled into the APK - the "
             f"app would install and then need the network")
+
+
+def test_the_video_caption_states_the_bundle_it_actually_shows():
+    """The regression. The trails beat's caption was hardcoded at 20,176 trails across four
+    regions in 4.5 MB, and the still beside it computed its own count from the data.
+
+    So when Manaslu and Mustang were added the IMAGE updated and the CAPTION did not: a required
+    submission deliverable telling the room a number that had been true three rounds earlier. The
+    narration said "twenty thousand" in Nepali for the same reason.
+
+    A number written next to a number that is computed will drift. This compares them.
+    """
+    import json
+    import re
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    data = json.loads((root / "web/public/data/trails.geojson").read_text(encoding="utf-8"))
+    n = len(data["features"])
+    regions = len({f["properties"].get("r") for f in data["features"]})
+    mb = (root / "web/public/data/trails.geojson").stat().st_size / 1_048_576
+
+    build = read("scripts/build_voiced_video.sh")
+    cap = re.search(r'cap co "([^"]*)"', build)
+    assert cap, "the trails caption is gone from the video build"
+    text = cap.group(1)
+
+    assert f"{n:,}" in text, f"the caption does not state the real trail count ({n:,}): {text!r}"
+    assert str(regions) in text, f"the caption does not state the real region count ({regions})"
+    assert f"{mb:.1f}" in text, f"the caption does not state the real bundle size ({mb:.1f} MB)"
+
+    # and the Nepali narration must not understate it either
+    narration = read("reports/video/voice/narration.txt")
+    line = [l for l in narration.splitlines() if l.startswith("o|")]
+    assert line, "the trails narration line is gone"
+    assert "तेईस हजार" in line[0], (
+        "the narration says twenty thousand; the bundle is twenty-three thousand")

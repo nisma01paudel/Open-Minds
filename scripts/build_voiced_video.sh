@@ -104,7 +104,9 @@ cap () { printf '%b' "$2" > "$CLIPS/$1.txt"; }
 echo "building narrated clips (voice: $VOICE) ..."
 # The daily-use beat. The film showed only the disaster half for twenty rounds after the app grew
 # the other one - a demo that undersells half the product misdescribes it.
-cap co "20,176 mapped footpaths, offline.\nFour regions of Nepal, in 4.5 MB.\nWhich bus, and what it costs."
+# Numbers checked against the bundle by tests/test_doc_claims.py - this caption is hardcoded
+# beside a still that computes its own count, and it went stale the moment regions were added.
+cap co "23,726 mapped footpaths, offline.\n6 regions of Nepal, in 5.4 MB.\nWhich bus, and what it costs."
 build trails 09-trails o co
 cap ca "Nepal can already detect.\nNepal cannot dispatch."
 build t0 CARD a ca
