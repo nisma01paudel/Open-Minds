@@ -359,6 +359,9 @@ export default function Page() {
         <Link href="/fly/">🥽 Fly over it in 3D</Link>
         <Link href="/share/">Share the 10-second film</Link>
         <Link href="/ar/" className="phone">📱 Open the phone view — point it at a hillside</Link>
+        {/* The other half of the project: what happens AFTER a slope fails. Warning is
+            information; this is the thing someone holds while digging. */}
+        <Link href="/field/" className="phone">🚨 Field app — SOS, the board, and the Bluetooth search</Link>
       </div>
       <Presenter
         beats={[
