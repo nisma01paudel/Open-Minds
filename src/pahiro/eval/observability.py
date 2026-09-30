@@ -147,12 +147,13 @@ def load_sites(path: str | Path, limit: int | None = None,
                months: tuple[int, ...] | None = None) -> list[dict]:
     """Load benchmark sites.
 
-    `per_month` stratifies the sample across calendar months. This matters more
-    than it looks: the multi-site days cluster in late September and October,
-    because that is when the rains end AND when optical imagery returns. Sampling
-    only the biggest clusters would quietly measure the one season when satellites
-    can see, and would overstate observability. Stratifying by month is the honest
-    choice, and the July sites are the ones that matter.
+    `per_month` stratifies the sample by YEAR-MONTH: N sites from every June, July,
+    August, September and October across all years present. This matters more than it
+    looks. The largest clusters sit in late September and October - when the rains end
+    AND when optical imagery returns - so an unstratified sample silently measures the
+    one season when satellites can see and flatters observability. Keying on year-month
+    rather than calendar month also stops a single wet year dominating the result. The
+    July sites are the ones that matter.
     """
     rows = list(csv.DictReader(open(path)))
     rows = [r for r in rows if int(r.get("day_cluster") or 0) >= min_day_cluster]
@@ -176,7 +177,10 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="Measure pre-event observability at real sites.")
     ap.add_argument("--events", default="benchmark/events.csv")
     ap.add_argument("--window", type=int, default=30)
-    ap.add_argument("--limit-sites", type=int, default=12)
+    ap.add_argument("--limit-sites", type=int, default=0,
+                    help="0 = no cap. With --per-month a cap truncates the OLDEST months "
+                         "first, because results are date-sorted, silently dropping the "
+                         "monsoon peak")
     ap.add_argument("--per-month", type=int,
                     help="stratify the sample: N sites per calendar month (honest)")
     ap.add_argument("--months", type=int, nargs="*",
@@ -185,8 +189,12 @@ def main(argv=None) -> int:
     ap.add_argument("--no-radar", action="store_true")
     a = ap.parse_args(argv)
 
-    sites = load_sites(a.events, a.limit_sites, per_month=a.per_month,
+    sites = load_sites(a.events, a.limit_sites or None, per_month=a.per_month,
                        months=tuple(a.months) if a.months else None)
+    by_month: dict[str, int] = {}
+    for r in sites:
+        by_month[r["date"][:7]] = by_month.get(r["date"][:7], 0) + 1
+    print(f"sample composition: {by_month}", file=sys.stderr)
     print(f"analysing {len(sites)} documented sites, {a.window}-day window", file=sys.stderr)
     rows = []
     for i, site in enumerate(sites, 1):
