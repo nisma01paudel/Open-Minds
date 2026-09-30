@@ -209,3 +209,136 @@ def test_the_replay_window_expires_so_the_guard_does_not_grow_forever():
 def test_generate_key_is_the_right_length_and_not_repeated():
     a, b = S.generate_key(), S.generate_key()
     assert len(a) == 32 and a != b
+
+
+# ---- the real cipher ----------------------------------------------------------------------------
+
+crypto = pytest.importorskip("cryptography", reason="the crypto extra is not installed")
+
+
+@pytest.fixture
+def real() -> S.AeadCipher:
+    return S.chacha20poly1305()
+
+
+def test_the_real_cipher_round_trips_text_voice_and_image(real):
+    key = S.generate_key()
+    for content, ctype in ((("six trapped at KM 42"), S.CONTENT_TEXT),
+                           (bytes(range(256)) * 40, S.CONTENT_VOICE),
+                           (b"\xff\xd8\xff\xe0" + bytes(range(256)) * 200, S.CONTENT_IMAGE)):
+        sealed = S.seal(f"b-{ctype}", "sos", content, key, real, sender_key=b"alpha",
+                        content_type=ctype)
+        got = S.unseal(sealed, key, real)
+        expected = content.encode("utf-8") if isinstance(content, str) else content
+        assert got == expected, f"{ctype} did not survive the round trip"
+
+
+def test_the_real_cipher_hides_the_words(real):
+    sealed = S.seal("b1", "chat", "meet at the bridge at dawn", S.generate_key(), real,
+                    sender_key=b"alpha")
+    assert b"bridge" not in sealed.payload
+    assert b"dawn" not in sealed.payload
+
+
+def test_the_real_cipher_detects_tampering(real):
+    key = S.generate_key()
+    sealed = S.seal("b1", "sos", "six trapped", key, real, sender_key=b"alpha")
+    broken = bytearray(sealed.payload)
+    broken[-1] ^= 0x01
+    damaged = S.Sealed(id=sealed.id, kind=sealed.kind, content_type=sealed.content_type,
+                       sender=sealed.sender, ttl=sealed.ttl, size=sealed.size,
+                       payload=bytes(broken), created_at=sealed.created_at)
+    with pytest.raises(S.SealError) as exc:
+        S.unseal(damaged, key, real)
+    assert "authentication failed" in str(exc.value)
+
+
+def test_the_real_cipher_refuses_the_wrong_key(real):
+    sealed = S.seal("b1", "sos", "six trapped", S.generate_key(), real, sender_key=b"alpha")
+    with pytest.raises(S.SealError):
+        S.unseal(sealed, S.generate_key(), real)
+
+
+def test_the_real_cipher_refuses_promoting_a_chat_to_an_sos(real):
+    """The attack associated data exists to stop, now checked against a real AEAD."""
+    key = S.generate_key()
+    sealed = S.seal("b1", "chat", "we are fine", key, real, sender_key=b"alpha")
+    promoted = S.Sealed(id=sealed.id, kind="sos", content_type=sealed.content_type,
+                        sender=sealed.sender, ttl=sealed.ttl, size=sealed.size,
+                        payload=sealed.payload, created_at=sealed.created_at)
+    with pytest.raises(S.SealError):
+        S.unseal(promoted, key, real)
+
+
+def test_the_real_cipher_uses_a_fresh_nonce_every_time(real):
+    """Reusing a nonce under one key is fatal for ChaCha20-Poly1305, so it is never a caller's job."""
+    key = S.generate_key()
+    a = S.seal("b1", "chat", "same words", key, real, sender_key=b"alpha")
+    b = S.seal("b2", "chat", "same words", key, real, sender_key=b"alpha")
+    assert a.payload != b.payload
+    assert a.payload[:S.NONCE_BYTES] != b.payload[:S.NONCE_BYTES]
+
+
+def test_a_truncated_real_payload_is_refused_before_decrypting(real):
+    sealed = S.seal("b1", "sos", "x", S.generate_key(), real, sender_key=b"alpha")
+    stub = S.Sealed(id=sealed.id, kind=sealed.kind, content_type=sealed.content_type,
+                    sender=sealed.sender, ttl=sealed.ttl, size=sealed.size,
+                    payload=sealed.payload[:8], created_at=sealed.created_at)
+    with pytest.raises(S.SealError):
+        S.unseal(stub, S.generate_key(), real)
+
+
+def test_the_replay_guard_works_on_real_ciphertext(real):
+    sealed = S.seal("b1", "sos", "six trapped", S.generate_key(), real, sender_key=b"alpha")
+    guard = S.ReplayGuard()
+    assert guard.accept(sealed, now=1000.0) is True
+    assert guard.accept(sealed, now=1001.0) is False
+
+
+# ---- keys between people ------------------------------------------------------------------------
+
+def test_two_parties_derive_the_same_key_and_a_third_does_not():
+    alice_priv, alice_pub = S.generate_keypair()
+    bob_priv, bob_pub = S.generate_keypair()
+    eve_priv, eve_pub = S.generate_keypair()
+
+    ab = S.shared_key(alice_priv, bob_pub)
+    ba = S.shared_key(bob_priv, alice_pub)
+    assert ab == ba, "X25519 must agree in both directions"
+    assert len(ab) == S.KEY_BYTES
+
+    assert S.shared_key(eve_priv, alice_pub) != ab
+    assert S.shared_key(alice_priv, eve_pub) != ab
+
+
+def test_the_derived_key_is_domain_separated():
+    """The same exchange must not yield the same key for two different purposes."""
+    a_priv, a_pub = S.generate_keypair()
+    b_priv, b_pub = S.generate_keypair()
+    one = S.shared_key(a_priv, b_pub, info=b"pahiro-bundle-v1")
+    two = S.shared_key(a_priv, b_pub, info=b"pahiro-something-else")
+    assert one != two
+
+
+def test_a_bundle_sealed_to_a_recipient_can_only_be_opened_by_them(real):
+    """The property that matters when a stranger's phone is the one carrying it."""
+    district_priv, district_pub = S.generate_keypair()
+    phone_priv, phone_pub = S.generate_keypair()
+    stranger_priv, stranger_pub = S.generate_keypair()
+
+    key = S.shared_key(phone_priv, district_pub)
+    sealed = S.seal("b1", "sos", "six trapped under the bus", key, real, sender_key=phone_pub)
+
+    # the district can open it with its own private key and the phone's public key
+    assert S.unseal_text(sealed, S.shared_key(district_priv, phone_pub), real) == \
+        "six trapped under the bus"
+
+    # a relay that has both PUBLIC keys still cannot
+    with pytest.raises(S.SealError):
+        S.unseal(sealed, S.shared_key(stranger_priv, phone_pub), real)
+
+
+def test_the_placeholder_is_still_refused_alongside_a_real_cipher(real):
+    """Shipping the real thing must not quietly enable the fake one."""
+    with pytest.raises(S.SealError):
+        S.InsecureTestCipher()

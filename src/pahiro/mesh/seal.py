@@ -27,24 +27,26 @@ A voice note and a photograph are byte strings, so the envelope is byte-oriented
 content type rather than assuming text. The same sealing, the same authenticity, the same replay
 guard.
 
-THE CRYPTO IS NOT WIRED, AND THIS MODULE SAYS SO OUT LOUD
----------------------------------------------------------
-There is no vetted AEAD in this environment: `cryptography`, `nacl` and `pycryptodome` are all
-absent, and `pip` is not available to add one. **Hand-rolling authenticated encryption is how
-projects ship vulnerabilities**, and doing it here - in a system intended for a disaster - would
-be indefensible.
+THE CRYPTO IS REAL, AND IS NOT YET ON THE MESSAGE PATH
+-----------------------------------------------------
+`AeadCipher` wraps a real AEAD and `chacha20poly1305()` is the one to use:
 
-So the cipher is a **dependency, injected**, and the only implementation shipped is
-`InsecureTestCipher`, which is not encryption. It exists so the envelope logic - metadata
-separation, authenticity, replay, key selection - is fully testable, and it **refuses to run
-unless the caller passes `allow_insecure=True`**, so an operational deployment fails loudly
-instead of quietly carrying plaintext.
+    cipher = seal.chacha20poly1305()
 
-    from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
-    cipher = AeadCipher(ChaCha20Poly1305, "chacha20-poly1305")
+ChaCha20-Poly1305 rather than AES-GCM because it is constant time in software without hardware
+acceleration, and the handsets this runs on are old. `generate_keypair()` and `shared_key()` add
+X25519 with HKDF, so a bundle can be sealed to a district server such that the phones relaying it
+- which include strangers - cannot read it even if one of them is compromised.
 
-That is the whole job of wiring it. `tests/test_seal.py` asserts the refusal, so the placeholder
-cannot become the shipped one by accident.
+**None of that is wired into `dtn.py` or the field client yet.** A message sent through the
+running system today is not sealed. The layer is built and tested; putting it on the path is
+separate work, and saying otherwise would be the same kind of lie this module was written to
+avoid.
+
+`InsecureTestCipher` remains for tests only and **refuses to run unless the caller passes
+`allow_insecure=True`**, so an operational deployment fails loudly instead of quietly carrying
+plaintext. A test asserts that refusal, so the placeholder cannot become the shipped one by
+accident.
 """
 from __future__ import annotations
 
@@ -261,3 +263,114 @@ class ReplayGuard:
 def generate_key() -> bytes:
     """A key for the group. `os.urandom`, so this is the one part that is already right."""
     return os.urandom(KEY_BYTES)
+
+
+# ---- the real thing -----------------------------------------------------------------------------
+
+class AeadCipher:
+    """A real authenticated cipher, wrapping whichever AEAD the caller supplies.
+
+    This is the implementation to use. It exists so that wiring production crypto is one line and
+    not a rewrite:
+
+        from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
+        cipher = AeadCipher(ChaCha20Poly1305, "chacha20-poly1305")
+
+    ChaCha20-Poly1305 is the recommendation for this system rather than AES-GCM: it is constant
+    time in software without hardware acceleration, and the handsets this runs on are old. The
+    tag covers the associated data, so the kind, content type and ttl cannot be altered in
+    flight - see `Sealed.aad`.
+
+    The nonce is generated per message by `os.urandom` and prepended. Reusing a nonce under the
+    same key is fatal for both of these ciphers, which is why it is generated here rather than
+    accepted from a caller who might reuse it.
+    """
+
+    def __init__(self, aead_class, name: str) -> None:
+        self._aead_class = aead_class
+        self.name = name
+        self._check()
+
+    def _check(self) -> None:
+        try:
+            from cryptography.exceptions import InvalidTag  # noqa: F401
+        except ImportError as exc:  # pragma: no cover - dependency is declared
+            raise SealError(
+                "the `cryptography` package is required for real sealing; install the crypto "
+                "extra (pip install '.[crypto]') or supply your own Cipher implementation"
+            ) from exc
+
+    def seal(self, plaintext: bytes, key: bytes, aad: bytes) -> bytes:
+        from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305  # noqa: F401
+
+        nonce = os.urandom(NONCE_BYTES)
+        aead = self._aead_class(key)
+        return nonce + aead.encrypt(nonce, plaintext, aad)
+
+    def open(self, ciphertext: bytes, key: bytes, aad: bytes) -> bytes:
+        from cryptography.exceptions import InvalidTag
+
+        if len(ciphertext) < NONCE_BYTES + 16:
+            raise SealError("sealed payload is too short to be valid")
+        nonce = ciphertext[:NONCE_BYTES]
+        try:
+            aead = self._aead_class(key)
+            return aead.decrypt(nonce, ciphertext[NONCE_BYTES:], aad)
+        except InvalidTag as exc:
+            # The same message for a wrong key and for altered ciphertext, deliberately: telling
+            # an attacker which one it was is free information.
+            raise SealError(
+                "authentication failed: wrong key, or the payload was altered") from exc
+
+
+def chacha20poly1305() -> AeadCipher:
+    """The recommended cipher for this system."""
+    from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
+
+    return AeadCipher(ChaCha20Poly1305, "chacha20-poly1305")
+
+
+# ---- keys between people ------------------------------------------------------------------------
+
+def generate_keypair() -> tuple[bytes, bytes]:
+    """An X25519 keypair, as (private_bytes, public_bytes).
+
+    A group key is fine for a ward's own handsets. A *pair* is what lets a bundle be sealed to a
+    district server so that the phones relaying it - which include strangers - cannot read it even
+    if one of them is compromised and the group key leaks.
+    """
+    from cryptography.hazmat.primitives import serialization
+    from cryptography.hazmat.primitives.asymmetric.x25519 import X25519PrivateKey
+
+    private = X25519PrivateKey.generate()
+    return (
+        private.private_bytes(
+            encoding=serialization.Encoding.Raw,
+            format=serialization.PrivateFormat.Raw,
+            encryption_algorithm=serialization.NoEncryption(),
+        ),
+        private.public_key().public_bytes(
+            encoding=serialization.Encoding.Raw,
+            format=serialization.PublicFormat.Raw,
+        ),
+    )
+
+
+def shared_key(private_bytes: bytes, peer_public_bytes: bytes,
+               info: bytes = b"pahiro-bundle-v1") -> bytes:
+    """Derive a 32-byte key from an X25519 exchange, through HKDF.
+
+    Raw X25519 output is not uniformly random and must not be used as a key directly; HKDF with a
+    domain-separating `info` is what makes it one, and what stops the same exchange being reused
+    as a key for something else later.
+    """
+    from cryptography.hazmat.primitives import hashes, serialization
+    from cryptography.hazmat.primitives.asymmetric.x25519 import X25519PrivateKey, X25519PublicKey
+    from cryptography.hazmat.primitives.kdf.hkdf import HKDF
+
+    private = X25519PrivateKey.from_private_bytes(private_bytes)
+    peer = X25519PublicKey.from_public_bytes(peer_public_bytes)
+    _ = serialization  # imported for parity with generate_keypair's serialisation use
+    return HKDF(
+        algorithm=hashes.SHA256(), length=KEY_BYTES, salt=None, info=info
+    ).derive(private.exchange(peer))

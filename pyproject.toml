@@ -12,6 +12,9 @@ ai = ["onnxruntime"]        # open-weight models only
 # Needed to run the suite. Without this a fresh clone cannot verify itself, which is
 # the first thing anyone - including a judge - will try to do.
 dev = ["pytest"]
+# Real authenticated encryption for the mesh. Without this the sealing layer falls back
+# to a placeholder that refuses to run, on purpose: see src/pahiro/mesh/seal.py.
+crypto = ["cryptography"]
 
 [build-system]
 requires = ["setuptools>=68"]

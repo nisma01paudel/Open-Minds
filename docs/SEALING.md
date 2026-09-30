@@ -37,25 +37,60 @@ cover a ~10 KB recording and a ~50 KB JPEG.
   stops a carrier *reading* a message, not *re-sending* it. A recorded SOS replayed an hour later
   sends a team somewhere nothing is happening, and every relay would authenticate it correctly.
 
-## The crypto is NOT wired, and this page exists to say so
+## The crypto IS wired
 
-`cryptography`, `nacl` and `pycryptodome` are all absent from this environment and `pip` is not
-available to add one. **Hand-rolling authenticated encryption is how projects ship
-vulnerabilities**, and doing it in a system intended for a disaster would be indefensible.
+`cryptography` 50.0.1 is installed and declared as the `crypto` extra:
 
-So the cipher is a **dependency, injected**. The only implementation shipped is
-`InsecureTestCipher`, which is not encryption; it exists so the envelope logic — metadata
-separation, authenticity, replay — is fully testable, and it **refuses to construct unless the
-caller passes `allow_insecure=True`**. An operational deployment therefore fails loudly instead of
-quietly carrying plaintext. A test asserts that refusal, so the placeholder cannot become the
-shipped one by accident.
-
-Wiring the real thing is one line:
-
-```python
-from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
-cipher = AeadCipher(ChaCha20Poly1305, "chacha20-poly1305")
+```
+pip install '.[crypto]'
 ```
 
-Until that line exists, **do not describe this system as end-to-end encrypted.** The envelope,
-the key handling and the replay guard are real and tested. The cipher is not present.
+`seal.chacha20poly1305()` returns a real `AeadCipher`. ChaCha20-Poly1305 is the recommendation
+here rather than AES-GCM because it is constant time in software without hardware acceleration,
+and the handsets this runs on are old. The tag covers the associated data, so the kind, content
+type and ttl cannot be altered in flight — which is what makes the anti-promotion property real
+rather than aspirational.
+
+The nonce is generated per message with `os.urandom` inside the cipher. Reusing a nonce under one
+key is fatal for both ciphers, so it is never a caller's job.
+
+### Keys between people
+
+A group key is fine for a ward's own handsets. `generate_keypair()` and `shared_key()` add X25519
+with HKDF for the case that actually matters here: **sealing a bundle to a district server so the
+phones relaying it — which include strangers — cannot read it even if one of them is compromised
+and the group key leaks.**
+
+`shared_key` runs the raw exchange through HKDF with a domain-separating `info`, because raw
+X25519 output is not uniformly random and must not be used as a key directly.
+
+A test asserts the whole property: the district can open a bundle sealed by a phone, and a third
+party holding **both public keys** cannot.
+
+### What is verified against the real AEAD
+
+- text, a ~10 KB voice note and a ~50 KB JPEG all round-trip exactly
+- the plaintext words do not appear in the ciphertext
+- tampering is refused, including **promoting a `chat` to an `sos`**
+- the wrong key is refused
+- a fresh nonce every time, so sealing the same words twice gives different bytes
+- a truncated payload is refused before decryption
+- the replay guard works on real ciphertext
+
+## What is still NOT done
+
+Being precise, because "we have encryption" and "our messages are encrypted" are different
+claims:
+
+- **The sealing layer is implemented and tested. It is not yet on the live bundle path.**
+  `dtn.py` and the field client do not call it, so a message sent through the running system today
+  is **not** sealed. Wiring it means sealing at compose time and unsealing at the destination, and
+  choosing where keys live — which is a product decision, not a code one.
+- The insecure placeholder still exists for tests and **still refuses to construct** without an
+  explicit flag. A test asserts that, so shipping the fake one by accident is not possible.
+- Nothing here has been reviewed by a cryptographer. It uses vetted primitives correctly as far
+  as the tests show, which is not the same as an audit.
+
+**So: do not tell a judge the system is end-to-end encrypted today.** The right sentence is that
+the sealing layer is built and tested against a real AEAD, and the remaining work is wiring it
+into the message path and deciding where keys live.
