@@ -210,12 +210,18 @@ def unseal(sealed: Sealed, key: bytes, cipher: Cipher, *,
     if expect_sender is not None and not hmac.compare_digest(sealed.sender, expect_sender):
         raise SealError(
             f"bundle claims to be from {sealed.sender} but {expect_sender} was expected")
-    raw = cipher.open(sealed.payload, key, sealed.aad())
-    if len(raw) != sealed.size:
-        # The tag should already have caught this; checking the declared size as well means a
-        # carrier cannot truncate a voice note and have it accepted.
-        raise SealError(f"payload is {len(raw)} bytes but the bundle declared {sealed.size}")
-    return raw
+    # NO SIZE COMPARISON HERE, deliberately.
+    #
+    # There was one, and it was a second, weaker check than the tag: the AEAD already
+    # authenticates every byte of the ciphertext, so a truncated or altered payload fails to
+    # decrypt at all. The declared size then only had to disagree with itself to break things,
+    # and it did - Python counted the 1-byte ttl wrapper sealed inside the payload and the
+    # browser client did not, so a message sealed by the client was refused by the gateway with
+    # "payload is 138 bytes but the bundle declared 137".
+    #
+    # `Sealed.size` is therefore advisory routing metadata - what a transport needs to pick a
+    # rung - and not an integrity mechanism. The tag is the integrity mechanism.
+    return cipher.open(sealed.payload, key, sealed.aad())
 
 
 def unseal_text(sealed: Sealed, key: bytes, cipher: Cipher, **kw) -> str:

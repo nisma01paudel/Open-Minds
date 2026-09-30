@@ -205,3 +205,84 @@ def test_the_field_client_loads_the_sealing_layer():
     html = (Path(__file__).resolve().parents[1]
             / "web" / "public" / "field" / "index.html").read_text(encoding="utf-8")
     assert 'src="/field/seal.js"' in html, "the field page must load the sealing layer"
+
+
+def test_a_frame_built_the_way_the_client_builds_it_is_accepted_by_the_gateway():
+    """The end-to-end check that matters: the browser's frame, opened by the Python gateway.
+
+    Without a browser in this environment, the honest way to verify the client's compose path is
+    to build the frame with the client's own code — seal.js, the same record shape, the same
+    base64 — and put it through the real ingest. If the shapes disagree, this fails here rather
+    than on stage.
+    """
+    import json
+    import shutil
+    import subprocess
+    from pathlib import Path
+
+    from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+
+    if shutil.which("node") is None:
+        pytest.skip("node not installed")
+    root = Path(__file__).resolve().parents[1]
+    key = bytes(range(32))
+
+    driver = f"""
+const S = require({json.dumps(str(root / "web/public/field/seal.js"))});
+const KEY = new Uint8Array({list(key)});
+const ID = "b1f2", KIND = "sos", TTL = 7, SENDER = "dev-alpha";
+// exactly what sealedRecord() builds in index.html
+const record = JSON.stringify({{
+  body: "six trapped under the bus at KM 42", people: 6, lat: 28.21, lon: 83.98,
+  accuracy_m: null, battery: 8, origin_name: "Bus, KM 42"
+}});
+(async () => {{
+  const payload = await S.sealText(
+    {{ id: ID, kind: KIND, contentType: "text", sender: SENDER, ttl: TTL }}, record, KEY);
+  const frame = {{ sealed: {{
+    id: ID, kind: KIND, content_type: "text", sender: SENDER, ttl: TTL, hops: 0,
+    size: record.length, created_at: "2026-09-30T12:00:00+00:00",
+    payload_b64: Buffer.from(payload).toString("base64")
+  }} }};
+  process.stdout.write(JSON.stringify(frame));
+}})().catch(e => {{ console.error(String(e)); process.exit(1); }});
+"""
+    proc = subprocess.run(["node", "-e", driver], capture_output=True, text=True, timeout=120,
+                          cwd=str(root))
+    assert proc.returncode == 0, proc.stdout + proc.stderr
+    frame = json.loads(proc.stdout)
+
+    # the frame must not carry the words, or the sealing is theatre
+    assert "trapped" not in proc.stdout
+
+    # and the gateway must open it with the structured fields intact
+    sealed = pipeline.from_frame(frame)
+    msg = pipeline.open_bundle(sealed, key, seal.AeadCipher(AESGCM, "aes-256-gcm"))
+    assert msg.body == "six trapped under the bus at KM 42"
+    assert msg.kind == "sos"
+    assert msg.people == 6, "the headcount must survive the seal"
+    assert msg.lat == 28.21 and msg.lon == 83.98
+    assert msg.battery == 8
+
+
+def test_the_field_client_actually_seals_on_its_compose_path():
+    """A sealing layer the compose path never calls is dead code, and the claim is then false."""
+    from pathlib import Path
+
+    html = (Path(__file__).resolve().parents[1]
+            / "web" / "public" / "field" / "index.html").read_text(encoding="utf-8")
+    assert "sealForTransport" in html, "the client must have a sealing path"
+    assert "buildOutgoing" in html, "and the compose path must use it"
+    assert "buildOutgoing(pending)" in html, "syncMeshToApi must call it with the pending set"
+    assert "pahiro.sealkey" in html, "the key must be stored per device"
+    assert "sealText" in html, "it must call the sealing layer"
+
+
+def test_the_client_sends_in_the_clear_when_no_key_is_set():
+    """Opt-in, so a device with no key behaves exactly as before."""
+    from pathlib import Path
+
+    html = (Path(__file__).resolve().parents[1]
+            / "web" / "public" / "field" / "index.html").read_text(encoding="utf-8")
+    assert "if (!sealingKey()) { return pending; }" in html, \
+        "without a key the pending set must pass through untouched"

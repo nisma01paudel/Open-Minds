@@ -238,6 +238,21 @@
       <div id="keystate" class="muted" style="margin-top:8px"></div>
     </div>
 
+    <h2>Mesh sealing (optional)</h2>
+    <div class="card">
+      <div class="muted" style="margin-bottom:8px">
+        <b>Optional.</b> Without a key this app posts to the field API as before. With a 32-byte
+        hex key, message bodies are sealed on this phone before they are sent, so a gateway that
+        does not hold the key cannot read them. The server must be started with the same key:
+        <code>--seal-key</code>.
+      </div>
+      <label for="sealkey">Sealing key (hex, 64 characters, stored on this phone only)</label>
+      <input id="sealkey" type="password" placeholder="leave empty to send in the clear" autocomplete="off" />
+      <button class="act ghost" id="savesealkey">Save sealing key</button>
+      <button class="act ghost" id="clearsealkey">Remove sealing key</button>
+      <div id="sealstate" class="muted" style="margin-top:8px"></div>
+    </div>
+
     <h2>This device</h2>
     <div class="card">
       <div class="muted">Device id (how the board knows you)</div>
@@ -816,6 +831,74 @@ function renderChat() {
 function syncedIds() { return store.get("pahiro.synced", {}); }
 function refusedIds() { return store.get("pahiro.refused", {}); }
 
+/* --- mesh sealing ---------------------------------------------------------------- *
+ *
+ * Optional, and off unless a key is set. With a key, a message is sealed on this phone
+ * before it is posted, so a gateway that does not hold the key cannot read it.
+ *
+ * The envelope must match src/pahiro/mesh/pipeline.py exactly or the gateway cannot open
+ * it - nonce(12) || ciphertext || tag(16), AAD = id \x1f kind \x1f contentType \x1f sender,
+ * and the ttl plus the whole message record sealed INSIDE the payload. scripts/
+ * check_seal_parity.py proves the two implementations agree.
+ */
+var SEAL_STORE = "pahiro.sealkey";
+
+function sealingKey() {
+  try { return localStorage.getItem(SEAL_STORE) || ""; } catch (e) { return ""; }
+}
+
+function hexToBytes(hex) {
+  var out = new Uint8Array(hex.length / 2);
+  for (var i = 0; i < out.length; i++) { out[i] = parseInt(hex.substr(i * 2, 2), 16); }
+  return out;
+}
+
+function bytesToBase64(bytes) {
+  var s = "";
+  for (var i = 0; i < bytes.length; i++) { s += String.fromCharCode(bytes[i]); }
+  return btoa(s);
+}
+
+/* The record a message carries, matching pipeline._encode_message field for field. Sealing
+ * only the body would lose people, lat, lon and battery - the fields a coordinator
+ * dispatches on - which is exactly the bug the Python test caught. */
+function sealedRecord(m) {
+  return JSON.stringify({
+    body: m.body, people: m.people === undefined ? null : m.people,
+    lat: m.lat === undefined ? null : m.lat, lon: m.lon === undefined ? null : m.lon,
+    accuracy_m: m.accuracy_m === undefined ? null : m.accuracy_m,
+    battery: m.battery === undefined ? null : m.battery,
+    origin_name: m.origin_name || ""
+  });
+}
+
+async function sealForTransport(m) {
+  var hex = sealingKey();
+  if (!hex || typeof PahiroSeal === "undefined") { return m; }
+  if (hex.length !== 64) { throw new Error("sealing key must be 64 hex characters"); }
+  var meta = { id: m.id, kind: m.kind, contentType: "text", sender: m.origin,
+               ttl: m.ttl === undefined ? 7 : m.ttl };
+  var record = sealedRecord(m);
+  var payload = await PahiroSeal.sealText(meta, record, hexToBytes(hex));
+  // size is BYTES, and it includes the 1-byte ttl wrapper sealText puts inside the payload.
+  // Reporting record.length (UTF-16 code units, unwrapped) is what made the gateway refuse a
+  // client frame as "138 bytes but declared 137".
+  var plaintextBytes = new TextEncoder().encode(record).length + 1;
+  return { sealed: {
+    id: meta.id, kind: meta.kind, content_type: "text", sender: meta.sender,
+    ttl: meta.ttl, hops: m.hops || 0, size: plaintextBytes,
+    created_at: m.created_at || new Date().toISOString(),
+    payload_b64: bytesToBase64(payload)
+  } };
+}
+
+async function buildOutgoing(pending) {
+  if (!sealingKey()) { return pending; }        // unchanged behaviour with no key
+  var out = [];
+  for (var i = 0; i < pending.length; i++) { out.push(await sealForTransport(pending[i])); }
+  return out;
+}
+
 async function syncMeshToApi(quiet) {
   if (!mesh || !navigator.onLine) { return 0; }
   var done = syncedIds(), refused = refusedIds();
@@ -829,9 +912,10 @@ async function syncMeshToApi(quiet) {
   if (!pending.length) { renderMeshStatus(0); return 0; }
 
   try {
+    var outgoing = await buildOutgoing(pending);
     var r = await fetch(apiBase + "/api/v1/mesh/messages", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages: pending })
+      body: JSON.stringify({ messages: outgoing })
     });
     if (!r.ok) { throw new Error("HTTP " + r.status); }
     var res = await r.json();
@@ -1285,6 +1369,36 @@ if ($("clearkey")) $("clearkey").addEventListener("click", function () {
   if ($("apimodel")) $("apimodel").value = "";
   renderKeyState();
 });
+
+function renderSealState() {
+  var el = $("sealstate");
+  if (!el) return;
+  var hex = sealingKey();
+  el.innerHTML = hex
+    ? "<b>Sealing on.</b> This phone seals before sending (" + hex.length +
+      " hex characters). The server must hold the same key."
+    : "<b>Sealing off.</b> Messages are posted in the clear, as before.";
+}
+
+if ($("savesealkey")) $("savesealkey").addEventListener("click", function () {
+  var v = ($("sealkey").value || "").trim().toLowerCase();
+  if (v && !/^[0-9a-f]{64}$/.test(v)) {
+    $("sealstate").innerHTML = "<span class='pill hot'>not saved</span> a sealing key must be " +
+      "64 hex characters (32 bytes).";
+    return;
+  }
+  try { if (v) { localStorage.setItem(SEAL_STORE, v); } else { localStorage.removeItem(SEAL_STORE); } }
+  catch (e) {}
+  $("sealkey").value = "";   // never leave a secret sitting in the DOM
+  renderSealState();
+});
+
+if ($("clearsealkey")) $("clearsealkey").addEventListener("click", function () {
+  try { localStorage.removeItem(SEAL_STORE); } catch (e) {}
+  renderSealState();
+});
+
+if ($("sealstate")) renderSealState();
 
 if ($("keystate")) {
   try {

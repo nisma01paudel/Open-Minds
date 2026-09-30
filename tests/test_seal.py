@@ -141,13 +141,27 @@ def test_the_ttl_is_deliberately_not_authenticated_here(cipher):
 
 
 def test_truncating_a_voice_note_is_detected(cipher):
+    """The real attack: cut the ciphertext short. The tag must fail, not a declared size.
+
+    A size declaration is not an integrity mechanism - the AEAD already authenticates every
+    byte, so truncation fails to decrypt at all.
+    """
     sealed = S.seal("v1", "sos", b"\x00" * 500, KEY, cipher, sender_key=SENDER,
                     content_type=S.CONTENT_VOICE)
-    short = S.Sealed(id=sealed.id, kind=sealed.kind, content_type=sealed.content_type,
-                     sender=sealed.sender, ttl=sealed.ttl, size=100,
-                     payload=sealed.payload, created_at=sealed.created_at)
+    cut = S.Sealed(id=sealed.id, kind=sealed.kind, content_type=sealed.content_type,
+                   sender=sealed.sender, ttl=sealed.ttl, size=sealed.size,
+                   payload=sealed.payload[:-32], created_at=sealed.created_at)
     with pytest.raises(S.SealError):
-        S.unseal(short, KEY, cipher)
+        S.unseal(cut, KEY, cipher)
+
+
+def test_a_declared_size_that_disagrees_is_advisory_not_fatal(cipher):
+    """Two languages computing `size` differently must not stop a rescue."""
+    sealed = S.seal("b1", "sos", "six trapped", KEY, cipher, sender_key=SENDER)
+    wrong = S.Sealed(id=sealed.id, kind=sealed.kind, content_type=sealed.content_type,
+                     sender=sealed.sender, ttl=sealed.ttl, size=1,
+                     payload=sealed.payload, created_at=sealed.created_at)
+    assert S.unseal(wrong, KEY, cipher) == b"six trapped"
 
 
 def test_a_sender_can_be_required_and_a_forgery_is_refused(cipher):
