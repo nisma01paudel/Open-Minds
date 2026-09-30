@@ -435,3 +435,23 @@ kbd { background: rgba(148,163,184,.16); border: 1px solid rgba(148,163,184,.25)
         font-size: .74rem; cursor: pointer; }
 .chip:hover { background: #334155; }
 .act { display: flex; align-items: center; gap: .3rem; }
+
+/* --- narrow viewports, where two real defects showed up at 860px --- */
+
+/* 1. The action buttons overlapped and clipped: "Fly over it in 3D" cut off, "Share the 10-second
+      film" running under the next button. Four links with no wrap and no shrink. */
+.topactions { flex-wrap: wrap; row-gap: 6px; }
+
+/* 2. The advisory panel is display:none below 900px, so a request for ?adv=<site> on a narrow
+      window produced NO advisory and NO explanation - the same silent-hide as the five panels fixed
+      on the phone. A note is not the advisory, but it is the difference between "not for you" and
+      "we could not look". */
+.advnarrow { display: none; }
+@media (max-width: 900px) {
+  /* At the BOTTOM, not the top: the first version sat at top:74px and the action buttons are at
+     top:84px, so the note covered them - a fix that introduced a defect, caught by re-rendering
+     rather than by reading the diff. */
+  .advnarrow { display: block; position: absolute; z-index: 8; bottom: 42px; right: 12px; left: 12px;
+    background: rgba(7,11,20,.93); border: 1px solid rgba(148,163,184,.22); border-radius: 10px;
+    padding: 10px 13px; font-size: 12.5px; color: #cbd5e1; }
+}

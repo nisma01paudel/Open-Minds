@@ -79,6 +79,42 @@ Three paths near Kathmandu are unnamed in OSM, and the app prints "(unnamed path
 inventing one. The difficulty field says "not recorded" and "cannot check this from the map data"
 rather than guessing a grade from a length. The caveat paragraph names all three limits.
 
+## Narrow viewports, where two defects were real
+
+Everything above was captured at 1440-1600 px. At **860 px** two things were wrong, and unlike the five
+alarms of the previous rounds, both were genuine.
+
+**1. The action buttons overlapped and clipped.** "Fly over it in 3D" cut off, "Share the 10-second
+film" running underneath the next button. Four links in a flex row with no wrap:
+
+    .topactions { position: absolute; display: flex; gap: 9px; align-items: center; }
+
+**Fixed** with `flex-wrap: wrap; row-gap: 6px`.
+
+**2. The advisory was silently absent.** `?adv=<site>` on an 860 px window produced no advisory and no
+explanation, because:
+
+    @media (max-width: 900px) { .advpanel { display: none; } }
+
+That is the same silent hide as the five panels fixed on the phone - a section that is not there and a
+section that cannot be shown look identical. **Fixed** with a note that appears only below 900 px:
+
+> The advisory for this slope is shown on a wider window (over 900 px), or in the field app, which
+> carries it offline. Nothing has been hidden except the space to print it.
+
+### And the fix introduced a defect, which re-rendering caught
+
+The note was first placed at `top: 74px`. The action buttons are at `top: 84px`, so **the note covered
+them**. Reading the CSS diff would not have shown that; re-rendering did, in one frame. It now sits at
+`bottom: 42px`, clear of everything.
+
+### And one edit silently did nothing
+
+Applying that move, the heredoc ran from the wrong directory, so `.venv/bin/python` did not resolve,
+the script never ran, and the build rebuilt unchanged CSS and exited 0. **The screenshot's byte size
+was identical to the previous capture, which is what gave it away.** Comparing artefacts is what
+caught an edit that reported success and changed nothing.
+
 ## The three linked pages, none of which had been rendered
 
 Beats 6, 7 and 8 link away from the map, so `/fly/`, `/ar/` and `/share/` are part of the product and

@@ -378,6 +378,16 @@ export default function Page() {
         </aside>
       )}
 
+      {/* Shown only below 900px, where the panel itself is display:none. Without it a request for
+          ?adv on a narrow window produced no advisory and no reason - a silent hide. Its own
+          conditional, because the block below expects a single element. */}
+      {picked && (
+        <div className="advnarrow" role="status">
+          The advisory for this slope is shown on a wider window (over 900 px), or in the field app,
+          which carries it offline. Nothing has been hidden except the space to print it.
+        </div>
+      )}
+
       {picked && (
         <aside className="advpanel">
           <button className="advx" onClick={() => { setPicked(null); setAdv(null); }}>✕</button>
