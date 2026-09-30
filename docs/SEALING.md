@@ -127,20 +127,47 @@ The shared parts, which a parity check exists to keep shared:
     aad      id \x1f kind \x1f contentType \x1f sender      (UTF-8)
     no ttl   the ttl is sealed INSIDE the payload, because a ttl decrements at every hop
 
+## The client seals on its compose path
+
+With a 32-byte hex key set on the device, `syncMeshToApi()` seals each message before posting it.
+A gateway that does not hold the key cannot read it, and says so rather than dropping it.
+
+**Opt-in.** With no key, a device behaves exactly as before — asserted by a test, because silently
+changing the default would be worse than either behaviour.
+
+The client's compose path is verified without a browser in this environment, by building the frame
+with the **client's own code** — `seal.js`, the same record shape, the same base64 — inside node
+and putting it through the real pipeline. The body, headcount, position and battery all survive,
+and the frame itself never contains the words "trapped". That is a simulation of the client, not a
+browser, and it is described as such.
+
+## The second cross-language bug, and what it taught
+
+The gateway refused a client-built frame: *"payload is 138 bytes but the bundle declared 137"*.
+Python counted the 1-byte ttl wrapper sealed inside the payload; the browser client did not. An
+equality check on that number turned a cosmetic disagreement into an undeliverable message.
+
+**The check is gone, deliberately.** The AEAD already authenticates every byte of the ciphertext,
+so a truncated or altered payload fails to decrypt at all. The declared size was a *second,
+weaker* check than the tag, and all it could do was disagree with itself. `Sealed.size` is now
+documented as **advisory routing metadata** — what a transport needs to pick a rung — and the tag
+is the integrity mechanism. The truncation test was rewritten to attack the ciphertext, which is
+the real attack, rather than to declare a smaller number.
+
 ## What is still NOT done
 
-- **The gateway accepts sealed frames; the client still sends plaintext.**
-  `POST /api/v1/mesh/messages` now takes `{"sealed": {...}}` frames when the server is started with
-  `--seal-key <hex>`; without a key it **refuses** them with a reason rather than dropping them,
-  because silence looks identical to an empty mesh. What remains is switching `syncMeshToApi()`
-  over to sealing at compose time and deciding where keys live — a product decision, not a code
-  one.
-- **The client uses AES-GCM and the Python default is ChaCha20-Poly1305.** The gateway uses
-  AES-GCM for sealed frames because that is what WebCrypto provides. A deployment must pick one and
-  state it; nothing in the frame says which.
-- **The client uses AES-GCM and the Python default is ChaCha20-Poly1305.** They interoperate
-  through AES-GCM; a deployment must pick one and state it. Nothing in the frame says which.
-- Nothing has been reviewed by a cryptographer.
-- **So do not tell a judge the message path is end-to-end encrypted today.** The sealing layer is
-  built and tested on both sides of the language boundary, and the Python mesh path carries sealed
-  bundles. The browser's compose path is still plaintext.
+- **Nothing has been reviewed by a cryptographer.** Using vetted primitives correctly as far as
+  the tests show is not an audit.
+- **The client's sealing has never run in a browser.** It is verified through the client's own
+  code in node, which is not the same thing.
+- **A deployment must agree on the cipher.** The browser uses AES-GCM because WebCrypto does not
+  standardly offer ChaCha20-Poly1305; Python's recommendation is ChaCha20-Poly1305 but the gateway
+  uses AES-GCM for sealed frames. Nothing in the frame says which — state it in the config.
+- **Where keys live is still undecided.** A key in `localStorage` is per-device and visible to
+  anyone with the unlocked phone. That is a product decision, not a code one, and it is the thing
+  a security reviewer would ask about first.
+
+**So the claim, precisely:** the sealing layer is built and tested against a real AEAD on both
+sides of the language boundary, the gateway accepts sealed frames, and the client seals on its
+compose path when a key is configured. The primitive has not been audited and the browser path has
+not run on a device.
