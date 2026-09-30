@@ -57,6 +57,66 @@ Nothing on that page is hand-written. The trace, the advisory, the siting figure
 the monthly observability table are all read out of the JSON the system actually
 produced, so the page either matches the data or it is wrong.
 
+## The other half — it is not only for the day the mountain moves
+
+Nothing in a landslide tool gets opened on a clear Saturday. A tool nobody opens is a tool nobody
+has installed when the ground gives way, and that is a real argument against building only the
+disaster half.
+
+So the same offline engine answers the ordinary question: **which hiking trail, and which bus,
+from where I am standing.**
+
+```bash
+.venv/bin/python -m pahiro.api --port 8080        # then open the map and use Plan a walk
+.venv/bin/python scripts/plan_trip.py --near 27.7750 85.3620 --origin 27.7047 85.3146
+```
+
+    trails within 3.0 km of 27.7750, 85.3620:
+        4.02 km  +833 m  2h12   Shiva puri peak trek (stairs)
+        3.59 km  +267 m  1h10   easy valley path
+
+    from 27.7047, 85.3146:
+        bus to Budhanilkantha Stop (~9.3 km, about Rs 37), then 4.8 km on foot
+
+### What it is built on
+
+| | |
+|---|---|
+| Hiking trails | **4,423 walkable ways, 53,844 vertices, 355 named**, 1.43 MB — OpenStreetMap over the Kathmandu valley and the Shivapuri rim |
+| Bus access | **141 mapped bus stations** (76 named), from OSM |
+| Fare | **Rs 24** valley minimum, April 2026, set by the Department of Transport Management. The distance component is a labelled approximation |
+| Ask in words | The **open-weight model reads the request**; a deterministic engine chooses the trail, the stop and the fare |
+| Offline | **4.2 MB precached** — the map, terrain, trails, advisories and observability layer, all of it |
+
+### The model reads. The engine decides.
+
+*"I have a free morning in Kathmandu and want an easy walk, maybe with a view, and I do not want
+to spend more than 40 rupees on the bus"* becomes:
+
+    understood as  easy; under 1h00; bus under Rs 40; wants view
+
+Every field the model returns is **validated and clamped** before the engine sees it — a difficulty
+of `extreme` is dropped, a 100,000-minute walk is dropped, an invented want is dropped, and each
+refusal is reported rather than swallowed. The failure this prevents is a language model quietly
+sending somebody up a mountain.
+
+**Without the model server it still works.** The keyword reader handles the same sentence and the
+planner is the same code — there is one code path for choosing a trail, not two. The answer says
+which reader produced it, because those are different qualities of evidence.
+
+### Stated rather than hidden
+
+- **Nepali footpath coverage is incomplete.** A trail missing here is one nobody has drawn yet.
+  Most mapped paths carry no difficulty tag, and the planner keeps them and says so rather than
+  returning nothing.
+- **Climb comes from a 1.2 km terrain grid** and is indicative — it will miss a 40 m knoll.
+- **Bus schedules are not known.** Not the timetable, not whether it runs today, not bandha, not
+  whether the route changed. The output says so and tells you to confirm at the park.
+- Two OSM footpaths often meet without sharing a node, so junctions are snapped at **25 m**; the
+  alternative was refusing to plan walks a person can plainly walk.
+- **The whole feature has never run on a phone.** It is verified from a clean checkout, in a
+  browser build, and over HTTP — not on a device in a valley.
+
 ## The demo, in seven auditable steps
 
 Every step is a recorded tool call with its arguments, result and duration. The trace is the evidence.
@@ -119,6 +179,12 @@ landslide reports ([docs/PRIOR-ART.md](docs/PRIOR-ART.md), [docs/DIFERENTIATION.
 Full list of limitations and honest gaps: [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
 
 ## Where things are
+
+The daily-use half: `src/pahiro/trails.py` (the network and routing), `src/pahiro/access.py` (bus
+stops and fares), `src/pahiro/trip_agent.py` (the model reader), `src/pahiro/api.py`
+(`/api/v1/plan`), `scripts/build_trails.py` (OSM → the offline bundle). Trail data © OpenStreetMap
+contributors, ODbL 1.0, and the attribution travels inside the bundle.
+
 
 | | |
 |---|---|

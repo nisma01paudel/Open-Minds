@@ -398,3 +398,22 @@ def test_the_plan_panel_says_whether_a_model_answered():
     page = read("web/app/page.tsx")
     assert "understood_by" in page
     assert "keyword" in page, "the UI must handle the no-model case, not only the model case"
+
+
+def test_the_submission_describes_both_halves_of_the_project():
+    """The brief makes documentation a gating item: "without a public repo, a working demo, and
+    documentation, there's nothing for judges to evaluate".
+
+    SUBMISSION.md described only the disaster half for seven rounds after the daily-use half was
+    built. A judge reading the submission document would not have known it existed.
+    """
+    sub = read("SUBMISSION.md")
+    lowered = sub.lower()
+    for needed in ("trail", "hiking", "trip", "walk", "bus"):
+        assert needed in lowered, f"SUBMISSION.md never mentions {needed!r}"
+    for module in ("trails.py", "access.py", "trip_agent.py", "/api/v1/plan"):
+        assert module in sub, f"the submission does not point at {module}"
+
+    # and the same honesty rules must apply to the new half as to the old
+    for caveat in ("OpenStreetMap", "1.2 km", "schedules", "never run on a phone"):
+        assert caveat.lower() in lowered, f"the daily-use section omits the caveat {caveat!r}"
