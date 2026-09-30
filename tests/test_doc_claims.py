@@ -359,3 +359,42 @@ def test_the_service_worker_does_not_answer_a_binary_file_with_json():
     sw = read("web/public/sw.js")
     assert 'endsWith(".json")' in sw and 'endsWith(".geojson")' in sw, (
         "the fallback must distinguish JSON from binary before inventing an empty object")
+
+
+# ---- the "plan a walk" panel must reach the endpoint that exists ---------------------------------
+
+def test_the_plan_panel_calls_the_endpoint_the_api_actually_serves():
+    """The UI and the API are in different languages and different directories, so nothing but a
+    test stops them drifting apart. The panel compiles perfectly while calling a URL that 404s."""
+    import re
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    page = read("web/app/page.tsx")
+    api = read("src/pahiro/api.py")
+
+    # the API must serve it
+    assert 'path == "/api/v1/plan"' in api, "the API does not serve /api/v1/plan"
+
+    # the panel must call the same path
+    assert "/api/v1/plan?" in page, "the panel never calls the plan endpoint"
+
+    # and it must read the fields the endpoint returns, not invented ones
+    for field in ("understood", "understood_by", "options", "caveats"):
+        assert f"planOut.{field}" in page or f"{field}" in page, (
+            f"the panel does not use {field!r} from the response")
+
+    # the bus is the point of the feature: the panel must show the stop and the fare
+    assert "o.bus.stop" in page and "o.bus.fare_rs" in page, \
+        "the panel does not show how to get there or what it costs"
+
+    # and it must tell the user what to do when the API is not running rather than failing silently
+    assert "planErr" in page and "demo.sh" in page, \
+        "a failed request must explain how to start the planner"
+
+
+def test_the_plan_panel_says_whether_a_model_answered():
+    """Different qualities of answer. The UI is where that distinction reaches a person."""
+    page = read("web/app/page.tsx")
+    assert "understood_by" in page
+    assert "keyword" in page, "the UI must handle the no-model case, not only the model case"

@@ -100,6 +100,31 @@ export default function Page() {
   const [picked, setPicked] = useState<any>(null);
   const [blind, setBlind] = useState(false);
   const [trails, setTrails] = useState(false);
+  // Planning a walk. The engine is Python and this page is a static export, so this talks to the
+  // local API. When the API is not running the panel says so instead of silently doing nothing.
+  const [planQ, setPlanQ] = useState("");
+  const [planOut, setPlanOut] = useState<any>(null);
+  const [planBusy, setPlanBusy] = useState(false);
+  const [planErr, setPlanErr] = useState("");
+
+  const runPlan = useCallback(async () => {
+    const q = planQ.trim();
+    if (!q) return;
+    setPlanBusy(true); setPlanErr(""); setPlanOut(null);
+    try {
+      // Plan from wherever the map is looking, falling back to Kathmandu.
+      const c = focus ?? { lat: 27.7047, lon: 85.3146 };
+      const r = await fetch(
+        `${apiBase()}/api/v1/plan?q=${encodeURIComponent(q)}&lat=${c.lat}&lon=${c.lon}`);
+      const body = await r.json();
+      if (body.error) setPlanErr(body.error);
+      else setPlanOut(body);
+    } catch (e: any) {
+      setPlanErr(String(e?.message ?? e));
+    } finally {
+      setPlanBusy(false);
+    }
+  }, [planQ, focus]);
   const [flood, setFlood] = useState(false);
   const [esc, setEsc] = useState<any>(null);
   const [escErr, setEscErr] = useState("");
@@ -449,6 +474,87 @@ export default function Page() {
             )}
           </div>
         )}
+
+        <div className="planbox">
+          <div className="planhead">
+            <b>Plan a walk</b>
+            <span>Ask in your own words — the open-weight model reads it, the engine decides.</span>
+          </div>
+          <div className="planrow">
+            <input
+              type="text"
+              value={planQ}
+              placeholder="easy half day walk, a view, bus under Rs 40"
+              onChange={(e) => setPlanQ(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") runPlan(); }}
+            />
+            <button className="act" disabled={planBusy || !planQ.trim()} onClick={runPlan}>
+              {planBusy ? "planning…" : "Plan"}
+            </button>
+          </div>
+          {["easy walk with a view", "a hard 6 hour climb under Rs 60", "short morning walk"]
+            .map((ex) => (
+              <button key={ex} className="chip" onClick={() => { setPlanQ(ex); }}>
+                {ex}
+              </button>
+            ))}
+
+          {planErr && (
+            <div className="planerr">
+              <b>Could not reach the planner.</b> {planErr}
+              <div style={{ marginTop: 6, opacity: 0.8 }}>
+                The trail engine runs locally: start it with <code>python -m pahiro.api</code> (or
+                <code> ./scripts/demo.sh</code>). The map, the trails and everything else on this
+                page work without it.
+              </div>
+            </div>
+          )}
+
+          {planOut && !planErr && (
+            <div className="planout">
+              <div className="planunderstood">
+                understood as <b>{planOut.understood}</b>
+                <span className="plansrc">
+                  {planOut.understood_by}.{" "}
+                  {planOut.understood_by.startsWith("keyword")
+                    ? "Start the model server for a better reading; the plan is the same engine either way."
+                    : "Its output is validated before the engine uses it."}
+                </span>
+                {planOut.refused_fields?.length > 0 && (
+                  <div style={{ marginTop: 4, opacity: 0.8 }}>
+                    ignored from the model: {planOut.refused_fields.join(", ")}
+                  </div>
+                )}
+              </div>
+              {planOut.options?.length === 0 && (
+                <div className="plainnote">
+                  Nothing matched. Loosen the request — or note that Nepali footpath data is
+                  incomplete, so a missing trail is one nobody has drawn yet.
+                </div>
+              )}
+              {planOut.options?.map((o: any, i: number) => (
+                <div className="planopt" key={i}>
+                  <div className="planoptname">{o.name}</div>
+                  <div className="planoptmeta">
+                    {(o.length_m / 1000).toFixed(1)} km · +{o.climb_m} m ·{" "}
+                    {Math.floor(o.minutes / 60)}h{String(o.minutes % 60).padStart(2, "0")} ·{" "}
+                    {o.difficulty}
+                  </div>
+                  {o.bus && (
+                    <div className="planbus">
+                      🚌 {o.bus.stop} — about <b>Rs {o.bus.fare_rs}</b>
+                      {o.bus.walk_from_stop_m > 200
+                        ? `, then ${(o.bus.walk_from_stop_m / 1000).toFixed(1)} km on foot`
+                        : ", trailhead at the stop"}
+                    </div>
+                  )}
+                  <div className="planfits">{o.fits.join(" · ")}</div>
+                </div>
+              ))}
+              <div className="plainnote">{planOut.caveats?.join(" ")}</div>
+            </div>
+          )}
+        </div>
 
         <label className="toggle">
           <input type="checkbox" checked={blind} onChange={(e) => setBlind(e.target.checked)} />
