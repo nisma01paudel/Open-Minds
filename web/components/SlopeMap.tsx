@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export type AnyFC = { type: "FeatureCollection"; features: any[] };
 
@@ -75,15 +75,19 @@ export default function SlopeMap({
   popup,
   focus,
   onPick,
+  blind,
 }: {
   data: AnyFC | null;
   popup?: boolean;
   focus?: { lon: number; lat: number; zoom?: number } | null;
   onPick?: (p: any) => void;
+  blind?: boolean;
 }) {
   const holder = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any>(null);
   const readyRef = useRef(false);
+  const blindRef = useRef<boolean>(!!blind);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -186,6 +190,34 @@ export default function SlopeMap({
             .addTo(map);
         }
 
+        // The blind-spot layer: 142 MEASURED observations of how much ground was actually
+        // visible at each site in the month it failed. This is the evidence for the claim
+        // the rest of the app is built on, so it belongs on the map rather than in a table.
+        map.addSource("observability", {
+          type: "geojson", data: "/data/observability-sites.json",
+        });
+        map.addLayer({
+          id: "blind", type: "circle", source: "observability",
+          layout: { visibility: "none" },
+          paint: {
+            // BLINDNESS is the signal, so blind sites are drawn big and observable ones
+            // small. Sizing by visibility would bury the message in a field of green.
+            "circle-radius": ["interpolate", ["linear"], ["get", "pct"],
+                              0, 30, 20, 24, 50, 15, 100, 8],
+            // red where nothing could be seen, green where the ground was observable
+            "circle-color": ["interpolate", ["linear"], ["get", "pct"],
+                             0, "#ff2d20", 20, "#ff8c00", 40, "#eab308", 70, "#4ade80", 100, "#22c55e"],
+            "circle-opacity": ["interpolate", ["linear"], ["get", "pct"], 0, 0.55, 50, 0.35, 100, 0.20],
+            "circle-blur": 0.6,
+            "circle-stroke-width": ["interpolate", ["linear"], ["get", "pct"], 0, 2.2, 100, 0.8],
+            "circle-stroke-color": ["interpolate", ["linear"], ["get", "pct"],
+                                    0, "#ff2d20", 100, "#22c55e"],
+            "circle-stroke-opacity": 0.85,
+          },
+        });
+
+        map.setLayoutProperty("blind", "visibility", blindRef.current ? "visible" : "none");
+
         map.on("mouseenter", "slopes", () => (map.getCanvas().style.cursor = "pointer"));
         map.on("mouseleave", "slopes", () => (map.getCanvas().style.cursor = ""));
         map.on("click", "slopes", (e: any) => {
@@ -206,6 +238,7 @@ export default function SlopeMap({
         });
 
         readyRef.current = true;
+        setReady(true);
         map.fire("slopes-ready");
 
       });
@@ -230,6 +263,16 @@ export default function SlopeMap({
     if (readyRef.current) apply();
     else map.once("slopes-ready", apply);
   }, [data]);
+
+  // Toggle the blind-spot layer without rebuilding anything.
+  useEffect(() => {
+    blindRef.current = !!blind;
+    const map = mapRef.current;
+    if (!map || !readyRef.current) return;   // the load handler applied the first value
+    if (map.getLayer("blind")) {
+      map.setLayoutProperty("blind", "visibility", blind ? "visible" : "none");
+    }
+  }, [blind, ready]);
 
   // A camera the presenter can aim: glide to whatever the caller focuses on.
   useEffect(() => {

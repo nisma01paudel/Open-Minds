@@ -73,6 +73,7 @@ export default function Page() {
   const [focus, setFocus] = useState<{ lon: number; lat: number; zoom?: number } | null>(null);
   const [adv, setAdv] = useState<any>(null);
   const [picked, setPicked] = useState<any>(null);
+  const [blind, setBlind] = useState(false);
   const advisories = useRef<Record<string, any>>({});
   const raf = useRef<number | null>(null);
 
@@ -88,6 +89,7 @@ export default function Page() {
       const idx = on ? t.days.indexOf(on) : Number(q.get("day"));
       setDay(Number.isFinite(idx) && idx >= 0 ? idx : Math.max(0, t.days.indexOf("2024-09-28")));
       if (q.get("mode") === "replay") setMode("replay");
+      if (q.get("blind") === "1") setBlind(true);
     }).catch(() => setErr("timeline not built yet"));
     fetch("/data/observability-by-month.json").then((r) => r.json()).then(setObs).catch(() => {});
     fetch("/data/advisories.json").then((r) => r.json())
@@ -180,6 +182,7 @@ export default function Page() {
       <SlopeMap
         data={mode === "replay" ? replayFC : liveFC}
         focus={focus}
+        blind={blind}
         onPick={(p) => {
           const a = advisories.current[p.id];
           setPicked(p);
@@ -317,6 +320,23 @@ export default function Page() {
           </div>
         )}
 
+        <label className="toggle">
+          <input type="checkbox" checked={blind} onChange={(e) => setBlind(e.target.checked)} />
+          <span>
+            Show <b>measured observability</b> — where the satellite could not see
+          </span>
+        </label>
+
+        {blind && (
+          <div className="blindnote">
+            <b>142 real measurements.</b> Each point is a documented slope, in the month it
+            failed, coloured by how much clear ground the satellite actually returned over
+            30 days — red where nothing usable was seen, green where the ground was
+            observable. In August only <b>16.8%</b> of scenes were usable; 17 of 142 sites
+            had <b>none at all</b>.
+          </div>
+        )}
+
         <div className="legend">
           <div><i className="swatch" style={{ background: "var(--exceeded)" }} /> Above the threshold — inspect</div>
           <div><i className="swatch" style={{ background: "var(--approaching)" }} /> Approaching the threshold</div>
@@ -357,12 +377,16 @@ export default function Page() {
           { title: "5 · And we could not see them",
             cue: "Here is the part that matters. In September only 27.8% of satellite imagery had clear ground. A slope can be loaded and invisible at the same time — which is the whole problem, and why the system says so instead of going quiet.",
             action: () => { setMode("replay"); setPlaying(false); setDay(tl ? tl.days.indexOf("2024-09-28") : 0); setFocus(null); } },
+          { title: "5b · Where we are blind",
+            cue: "Now the part no one else has measured. Each of these points is a documented slope, in the month it failed, coloured by how much clear ground the satellite actually returned. Red means it could not be seen at all. In August, only 16.8% of scenes were usable — and 17 of these slopes had nothing. This is the register nobody keeps.",
+            action: () => { setMode("replay"); setPlaying(false); setBlind(true);
+                            setDay(tl ? tl.days.indexOf("2024-08-15") : 0); setFocus(null); } },
           { title: "6 · Fly over it (3D)",
             cue: "Real elevation, real imagery, real rainfall. Press Enter to open the 3D view.",
-            href: "/fly/", action: () => {} },
+            href: "/fly/", action: () => setBlind(false) },
           { title: "7 · From the phone",
             cue: "Now the part nobody else has. Point a phone at a hillside and it tells you that slope's state and who owns it. Press Enter.",
-            href: "/ar/", action: () => {} },
+            href: "/ar/", action: () => setBlind(false) },
           { title: "8 · Leave them something",
             cue: "And the ten-second film, so the finding does not stay in this room. Press Enter.",
             href: "/share/", action: () => {} },
