@@ -107,6 +107,29 @@ Every panel in this list says what it cannot do, and that is the thing worth loo
 
 **A user of this app can always tell "nothing is here" from "we could not look."** Most software cannot.
 
+## Check the eligibility yourself
+
+One command, from the repository, no credentials and no team member present:
+
+```bash
+python scripts/check_eligibility.py
+```
+
+    OK    open-weight models are named with measured sizes  qwen, smolvlm, dinov2, llama
+    OK    no proprietary inference endpoint in src/         none
+    OK    README.md / SUBMISSION.md / LICENSE
+    OK    reports/video/pahiro-narrated-web.mp4
+    OK    the video is 2-3 minutes                          157 s
+    OK    the repository answers anonymously                sushant-me/work
+    MAN   at least one member in the Kathmandu valley
+    MAN   no vendor API keys anywhere in the shipped path
+
+**10/10 checkable, 0 failed.** The two lines marked `MAN` are the ones a script cannot decide, and
+they are printed rather than skipped: one is a fact about people, the other is a manual grep. An
+eligibility claim that requires the team to be in the room is not a claim, it is a promise.
+
+The script was shown to fail before it was trusted - removing `LICENSE` reports `FAIL` and exits 1.
+
 ## The five required items
 
 | # | Required | Where | State |
