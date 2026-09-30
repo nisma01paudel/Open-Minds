@@ -26,6 +26,7 @@ APPROACHING_FRACTION = 0.80   # within 20% of the threshold counts as approachin
 class Threshold:
     """Intensity-duration threshold: I = a * D^(-b), with I in mm/h and D in hours."""
     name: str
+    name_ne: str
     a: float
     b: float
     d_min_hours: float
@@ -45,13 +46,13 @@ class Threshold:
 
 # Verified from the published studies; see docs/DATA.md.
 PANCHPOKHARI = Threshold(
-    "Panchpokhari Thangpal, Sindhupalchok", 52.476, 0.743, 13, 300,
+    "Panchpokhari Thangpal, Sindhupalchok", "पाँचपोखरी थाङपाल, सिन्धुपाल्चोक", 52.476, 0.743, 13, 300,
     "Practical Action (2025); 43 landslide events")
 HELAMBU = Threshold(
-    "Helambu, Sindhupalchok", 41.029, 0.651, 14, 450,
+    "Helambu, Sindhupalchok", "हेलम्बु, सिन्धुपाल्चोक", 41.029, 0.651, 14, 450,
     "Practical Action (2025); 44 landslide events")
 DAHAL_REGIONAL = Threshold(
-    "Dahal & Hasegawa (2008), regional", 73.90, 0.79, 5, 720,
+    "Dahal & Hasegawa (2008), regional", "क्षेत्रीय (दाहाल २००८)", 73.90, 0.79, 5, 720,
     "Dahal & Hasegawa (2008)")
 
 THRESHOLDS = {t.name: t for t in (PANCHPOKHARI, HELAMBU, DAHAL_REGIONAL)}

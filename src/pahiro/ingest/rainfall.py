@@ -10,9 +10,11 @@ download step, one small window per day.
 """
 from __future__ import annotations
 
+import json
 import os
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from datetime import date, timedelta
+from pathlib import Path
 
 import numpy as np
 import rasterio
@@ -74,5 +76,45 @@ def fetch_series(bbox, start: date, end: date, timeout: int = 90) -> list[DailyR
         rec = fetch_day(day, bbox, timeout)
         if rec is not None and rec.usable:
             out.append(rec)
+        day += timedelta(days=1)
+    return out
+
+
+DEFAULT_CACHE = "cache/rainfall"
+
+
+def _cache_key(bbox, day: date) -> str:
+    return f"{bbox[0]:.2f}_{bbox[1]:.2f}_{bbox[2]:.2f}_{bbox[3]:.2f}_{day.isoformat()}.json"
+
+
+def fetch_series_cached(bbox, start: date, end: date,
+                        cache_dir: str | Path = DEFAULT_CACHE,
+                        timeout: int = 90) -> list[DailyRainfall]:
+    """Like fetch_series, but each day is cached to disk.
+
+    A live demo cannot spend minutes re-reading rainfall it has already read. The
+    first run warms the cache; every later run - including on stage with no network
+    at all - is instant. Cached misses that were genuinely unavailable are recorded
+    too, so a failed day is not retried on every run.
+    """
+    cache = Path(cache_dir)
+    cache.mkdir(parents=True, exist_ok=True)
+    out: list[DailyRainfall] = []
+    day = start
+    while day <= end:
+        path = cache / _cache_key(bbox, day)
+        if path.exists():
+            payload = json.loads(path.read_text())
+            if payload:
+                out.append(DailyRainfall(**{**payload, "day": date.fromisoformat(payload["day"])}))
+            day += timedelta(days=1)
+            continue
+        rec = fetch_day(day, bbox, timeout)
+        if rec is not None and rec.usable:
+            data = asdict(rec); data["day"] = rec.day.isoformat()
+            path.write_text(json.dumps(data))
+            out.append(rec)
+        else:
+            path.write_text("null")          # remember the miss
         day += timedelta(days=1)
     return out

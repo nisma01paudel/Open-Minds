@@ -66,3 +66,62 @@ def test_banner_is_human_readable():
     a = assess(rain, AS_OF, DAHAL_REGIONAL)
     assert "rainfall trigger" in a.banner()
     assert a.state in (BELOW, APPROACHING, EXCEEDED)
+
+
+def test_nepali_rainfall_state_has_no_english_leak():
+    from pahiro.advisory.nepali import rainfall_state_ne
+
+    rain = {AS_OF - timedelta(days=i): 20.0 for i in range(10)}
+    a = assess(rain, AS_OF, PANCHPOKHARI)
+    text = rainfall_state_ne(a)
+    assert "थ्रेसहोल्ड" in text, "the state must be in Nepali"
+    assert "exceeded" not in text and "below" not in text and "approaching" not in text
+    assert "Panchpokhari" not in text, "the threshold place name must be Nepali too"
+    assert "पाँचपोखरी" in text
+    assert "घण्टामा" in text and "मिमि" in text
+
+
+def test_nepali_rainfall_state_handles_missing_data():
+    from pahiro.advisory.nepali import rainfall_state_ne
+
+    assert "उपलब्ध छैन" in rainfall_state_ne(None)
+
+
+def test_rainfall_cache_avoids_a_second_fetch(tmp_path, monkeypatch):
+    """The cache is what makes the live demo instant, so it must actually be used."""
+    from datetime import date
+
+    from pahiro.ingest import rainfall
+
+    calls = {"n": 0}
+
+    def fake_fetch(day, bbox, timeout=90):
+        calls["n"] += 1
+        return rainfall.DailyRainfall(day=day, mean_mm=5.0, max_mm=9.0, p95_mm=7.0, pixels=4)
+
+    monkeypatch.setattr(rainfall, "fetch_day", fake_fetch)
+    bbox = (85.0, 27.5, 85.6, 28.0)
+    first = rainfall.fetch_series_cached(bbox, date(2024, 9, 1), date(2024, 9, 3), tmp_path)
+    assert len(first) == 3 and calls["n"] == 3
+    second = rainfall.fetch_series_cached(bbox, date(2024, 9, 1), date(2024, 9, 3), tmp_path)
+    assert len(second) == 3
+    assert calls["n"] == 3, "the second call must come entirely from disk"
+    assert second[0].max_mm == 9.0
+
+
+def test_rainfall_cache_remembers_a_missing_day(tmp_path, monkeypatch):
+    from datetime import date
+
+    from pahiro.ingest import rainfall
+
+    calls = {"n": 0}
+
+    def unavailable(day, bbox, timeout=90):
+        calls["n"] += 1
+        return None
+
+    monkeypatch.setattr(rainfall, "fetch_day", unavailable)
+    bbox = (85.0, 27.5, 85.6, 28.0)
+    rainfall.fetch_series_cached(bbox, date(2024, 9, 1), date(2024, 9, 1), tmp_path)
+    rainfall.fetch_series_cached(bbox, date(2024, 9, 1), date(2024, 9, 1), tmp_path)
+    assert calls["n"] == 1, "a genuinely unavailable day must not be retried every run"

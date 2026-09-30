@@ -23,10 +23,10 @@ from dataclasses import asdict, dataclass, field
 from datetime import date, timedelta
 
 from pahiro.advisory.nepali import (evidence_state_ne, primed_unobserved_text,
-                                    refusal_text, render)
+                                    rainfall_state_ne, refusal_text, render)
 from pahiro.dispatch import authority_from_decision, build_dispatch
 from pahiro.ingest import stac
-from pahiro.ingest.rainfall import fetch_series
+from pahiro.ingest.rainfall import fetch_series_cached
 from pahiro.ingest.screen import screen_scene
 from pahiro.ontology import Ontology
 from pahiro.routing.abstain import Observation, staleness_gate
@@ -65,6 +65,7 @@ class AgentRun:
     rainfall_state: str | None = None
     rainfall_banner: str | None = None
     staleness: object | None = None
+    trigger: object | None = None
     routing: object | None = None
     dispatch: object | None = None
     advisory_ne: str | None = None
@@ -172,7 +173,7 @@ class SlopeChangeAgent:
         start = run.as_of - timedelta(days=self.rain_days)
 
         def call():
-            series = fetch_series(bbox, start, run.as_of)
+            series = fetch_series_cached(bbox, start, run.as_of)
             if not series:
                 raise RuntimeError("no CHIRPS days available")
             rain = {r.day: r.max_mm for r in series}
@@ -184,6 +185,7 @@ class SlopeChangeAgent:
         if a is not None:
             run.rainfall_state = a.state
             run.rainfall_banner = a.banner()
+            run.trigger = a
         return a
 
     def tool_ground_evidence(self, run: AgentRun):
@@ -256,7 +258,8 @@ class SlopeChangeAgent:
         if run.state == PRIMED_UNOBSERVED:
             return primed_unobserved_text(
                 location=where, as_of=as_of,
-                rainfall_state=run.rainfall_banner or "",
+                rainfall_state=rainfall_state_ne(getattr(run, "trigger", None)) or
+                (run.rainfall_banner or ""),
                 inspect_first=inspect, authority_institution=who,
                 authority_office=office, legal_basis=basis, needs_review=needs_review)
         if run.staleness is None or not getattr(run.staleness, "may_issue", False):

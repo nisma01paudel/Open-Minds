@@ -146,3 +146,26 @@ def primed_unobserved_text(
     elif needs_review:
         lines.append(f"{LABELS_PRIMED['authority']}: यकिन गर्न बाँकी — प्रमाणित भएपछि मात्र पठाइनेछ।")
     return "\n".join(lines)
+
+
+TRIGGER_STATE_NE = {
+    "below": "थ्रेसहोल्डभन्दा तल",
+    "approaching": "थ्रेसहोल्ड नजिक",
+    "exceeded": "थ्रेसहोल्ड नाघ्यो",
+}
+
+
+def rainfall_state_ne(assessment) -> str:
+    """Render the rainfall trigger in Nepali.
+
+    The same defect class as the evidence line: an advisory that drops into English
+    at its most important sentence is not a Nepali advisory. The threshold name is
+    rendered in Nepali too, not transliterated from the English label.
+    """
+    if assessment is None:
+        return "वर्षाको तथ्याङ्क उपलब्ध छैन।"
+    state = TRIGGER_STATE_NE.get(assessment.state, assessment.state)
+    name = getattr(assessment.threshold, "name_ne", None) or assessment.threshold.name
+    parts = [f"{w.duration_hours} घण्टामा {w.accumulation_mm:.0f}/{w.threshold_mm:.0f} मिमि"
+             for w in assessment.windows]
+    return f"{state} ({name})" + (" — " + ", ".join(parts) if parts else "")
