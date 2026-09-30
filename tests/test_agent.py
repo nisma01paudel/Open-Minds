@@ -118,3 +118,40 @@ def test_trace_serialises_for_the_demo():
     assert payload["state"] == PRIMED_CONFIRMED
     assert len(payload["trace"]) == 6
     assert payload["as_of"] == AS_OF.isoformat()
+
+
+def test_a_hung_tool_times_out_and_the_agent_carries_on():
+    """A single blocked network read must never hang the whole run."""
+    import time as _time
+    agent = build_agent(trigger_state="exceeded", evidence_ok=True)
+    agent.tool_timeout = 1
+
+    def hang(run):
+        _time.sleep(10)
+        return "never returned"
+
+    agent.tool_rainfall_trigger = hang
+    run = agent.run("report", 85.05, 27.76, AS_OF)
+    rain = next(t for t in run.trace if t.name == "rainfall_trigger")
+    assert rain.ok is False and "timed out" in rain.result
+    # The evidence tool still succeeded, so the agent has something to say and says
+    # only that: fresh evidence, no trigger reading. It does not invent a trigger.
+    assert run.state == MONITORED
+    assert len(run.trace) == 6, "the remaining steps still ran"
+
+
+def test_a_tool_exception_is_recorded_not_swallowed():
+    agent = build_agent(trigger_state="exceeded", evidence_ok=True)
+
+    def boom(run):
+        raise RuntimeError("upstream 502 after retries")
+
+    agent.tool_ground_evidence = boom
+    run = agent.run("report", 85.05, 27.76, AS_OF)
+    step = next(t for t in run.trace if t.name == "ground_evidence")
+    assert step.ok is False and "502" in step.result
+    # The trigger says primed and the observation step failed. That IS the
+    # primed-unobserved condition: we know the slope is primed and we could not look.
+    # Reporting it is the whole point; silently downgrading to "nothing to say" would
+    # be the failure mode this project exists to avoid.
+    assert run.state == PRIMED_UNOBSERVED

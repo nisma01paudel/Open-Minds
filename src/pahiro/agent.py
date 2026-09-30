@@ -17,6 +17,7 @@ cannot see it" is more useful than either a false all-clear or a confident guess
 from __future__ import annotations
 
 import json
+import threading
 import time
 from dataclasses import asdict, dataclass, field
 from datetime import date, timedelta
@@ -110,28 +111,53 @@ class SlopeChangeAgent:
 
     def __init__(self, ontology: Ontology | None = None, router: Router | None = None,
                  threshold=PANCHPOKHARI, rain_days: int = 10,
-                 evidence_days: int = 45, max_scenes: int = 24):
+                 evidence_days: int = 45, max_scenes: int = 24,
+                 tool_timeout: int = 180):
         self.ontology = ontology if ontology is not None else Ontology([])
         self.router = router if router is not None else Router(None)
         self.threshold = threshold
         self.rain_days = rain_days
         self.evidence_days = evidence_days
         self.max_scenes = max_scenes
+        self.tool_timeout = tool_timeout
 
     # -- tools -------------------------------------------------------------
-    def _record(self, run: AgentRun, name: str, args: dict, fn):
+    def _record(self, run: AgentRun, name: str, args: dict, fn, timeout: int | None = None):
+        """Run one tool, recording what happened - including if it hung.
+
+        Every tool is bounded. A live demo dies if a single network read blocks
+        forever, and an agent that cannot say "that step timed out" is not auditable.
+        The worker runs on a daemon thread so an abandoned call cannot keep the
+        process alive at exit.
+        """
+        timeout = timeout if timeout is not None else self.tool_timeout
         start = time.time()
-        try:
-            result = fn()
-            summary = result[0] if isinstance(result, tuple) else str(result)
-            payload = result[1] if isinstance(result, tuple) else result
-            run.trace.append(ToolCall(name, args, summary, True,
-                                      int((time.time() - start) * 1000)))
-            return payload
-        except Exception as exc:
-            run.trace.append(ToolCall(name, args, f"{type(exc).__name__}: {exc}", False,
-                                      int((time.time() - start) * 1000)))
+        box: dict = {}
+
+        def worker():
+            try:
+                box["value"] = fn()
+            except Exception as exc:                       # noqa: BLE001
+                box["error"] = exc
+
+        thread = threading.Thread(target=worker, daemon=True)
+        thread.start()
+        thread.join(timeout)
+        elapsed = int((time.time() - start) * 1000)
+
+        if thread.is_alive():
+            run.trace.append(ToolCall(name, args, f"timed out after {timeout}s", False, elapsed))
             return None
+        if "error" in box:
+            exc = box["error"]
+            run.trace.append(ToolCall(name, args, f"{type(exc).__name__}: {exc}", False, elapsed))
+            return None
+
+        result = box.get("value")
+        summary = result[0] if isinstance(result, tuple) else str(result)
+        payload = result[1] if isinstance(result, tuple) else result
+        run.trace.append(ToolCall(name, args, summary, True, elapsed))
+        return payload
 
     def tool_resolve_location(self, run: AgentRun) -> RoutingContext | None:
         ctx = self._record(run, "resolve_location", {"lon": run.lon, "lat": run.lat},
@@ -281,16 +307,49 @@ class SlopeChangeAgent:
         run.priority = priority
         return f"dispatch {d.status} priority={priority} problems={d.validate() or 'none'}", d
 
+    # -- call-site guard ---------------------------------------------------
+    def _call_tool(self, run: AgentRun, name: str, fn):
+        """Protect a tool call regardless of how the tool is implemented.
+
+        The per-tool timeout inside each tool only guards the work *inside* it. The
+        guard belongs at the call site, so a tool that hangs, raises, or is replaced
+        by something that does either is still bounded and still recorded. Without
+        this, one blocked read takes the whole run down.
+        """
+        before = len(run.trace)
+        box: dict = {}
+
+        def worker():
+            try:
+                box["value"] = fn(run)
+            except Exception as exc:                       # noqa: BLE001
+                box["error"] = exc
+
+        thread = threading.Thread(target=worker, daemon=True)
+        thread.start()
+        thread.join(self.tool_timeout)
+
+        if thread.is_alive():
+            run.trace.append(ToolCall(name, {}, f"timed out after {self.tool_timeout}s", False,
+                                      self.tool_timeout * 1000))
+            return None
+        if "error" in box:
+            exc = box["error"]
+            if len(run.trace) == before:      # the tool did not record it itself
+                run.trace.append(ToolCall(name, {}, f"{type(exc).__name__}: {exc}", False, 0))
+            return None
+        return box.get("value")
+
     # -- the loop ----------------------------------------------------------
     def run(self, report: str, lon: float, lat: float, as_of: date) -> AgentRun:
         run = AgentRun(report=report, lon=lon, lat=lat, as_of=as_of)
 
-        self.tool_resolve_location(run)
-        trigger = self.tool_rainfall_trigger(run)
-        evidence = self.tool_ground_evidence(run)
+        self._call_tool(run, "resolve_location", self.tool_resolve_location)
+        self._call_tool(run, "rainfall_trigger", self.tool_rainfall_trigger)
+        evidence = self._call_tool(run, "ground_evidence", self.tool_ground_evidence)
         run.state = decide_state(run.rainfall_state or "", bool(
             getattr(evidence, "may_issue", False)))
-        self.tool_route_report(run)
-        run.advisory_ne = self.tool_compose_advisory(run)
-        self.tool_emit_dispatch(run)
+        self._call_tool(run, "route_report", self.tool_route_report)
+        run.advisory_ne = self._call_tool(run, "compose_advisory", self.tool_compose_advisory)
+        self._call_tool(run, "emit_dispatch", self.tool_emit_dispatch)
         return run

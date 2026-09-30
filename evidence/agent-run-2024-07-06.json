@@ -1,0 +1,144 @@
+{
+  "report": "A rural road built by a municipality runs across the slope above the national highway. Cracks have appeared and debris is falling onto the highway.",
+  "lon": 85.05,
+  "lat": 27.76,
+  "as_of": "2024-07-06",
+  "trace": [
+    {
+      "name": "resolve_location",
+      "args": {
+        "lon": 85.05,
+        "lat": 27.76
+      },
+      "result": "Ward 11, Thakre, DHADING, Province 3  [cache]",
+      "ok": true,
+      "ms": 0
+    },
+    {
+      "name": "rainfall_trigger",
+      "args": {
+        "days": 10,
+        "threshold": "Panchpokhari Thangpal, Sindhupalchok"
+      },
+      "result": "rainfall trigger BELOW (Panchpokhari Thangpal, Sindhupalchok): 24h 46/119mm, 48h 46/142mm, 72h 109/158mm, 240h 149/215mm",
+      "ok": true,
+      "ms": 528398
+    },
+    {
+      "name": "ground_evidence",
+      "args": {
+        "days": 45,
+        "max_scenes": 24
+      },
+      "result": "18 optical scenes (10 usable), 7 radar -> abstain",
+      "ok": true,
+      "ms": 39581
+    },
+    {
+      "name": "route_report",
+      "args": {
+        "chars": 147
+      },
+      "result": "Rural/Urban Municipality (Ward Committee)  [local-road-maintenance]",
+      "ok": true,
+      "ms": 4112
+    },
+    {
+      "name": "compose_advisory",
+      "args": {
+        "state": "abstain"
+      },
+      "result": "nepali advisory composed",
+      "ok": true,
+      "ms": 0
+    },
+    {
+      "name": "emit_dispatch",
+      "args": {
+        "state": "abstain"
+      },
+      "result": "nothing issued: no trigger and no fresh evidence",
+      "ok": true,
+      "ms": 0
+    }
+  ],
+  "state": "abstain",
+  "ctx": {
+    "lon": 85.05,
+    "lat": 27.76,
+    "ward": "11",
+    "municipality": "Thakre",
+    "district": "DHADING",
+    "province": "3",
+    "centre": "Mahadevbesi, Thakre 3",
+    "source": "cache",
+    "attributes": {
+      "municipali": 30012,
+      "province": 3,
+      "district": 26
+    }
+  },
+  "rainfall_state": "below",
+  "rainfall_banner": "rainfall trigger BELOW (Panchpokhari Thangpal, Sindhupalchok): 24h 46/119mm, 48h 46/142mm, 72h 109/158mm, 240h 149/215mm",
+  "staleness": {
+    "status": "abstain",
+    "confidence": "none",
+    "ages": {
+      "sentinel-2-l2a": 13,
+      "sentinel-1-grd": 4
+    },
+    "fresh": [
+      "sentinel-2-l2a",
+      "sentinel-1-grd"
+    ],
+    "reasons": [
+      "no optical or radar observation inside the freshness window"
+    ]
+  },
+  "routing": {
+    "case_id": "local-road-maintenance",
+    "priority": "high",
+    "asset_type": "local-road",
+    "role": "maintenance",
+    "institution": "Rural/Urban Municipality (Ward Committee)",
+    "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+    "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+    "escalation": [
+      "Ward Chair",
+      "Municipal CAO",
+      "Mayor/Chair",
+      "LDMC (Mayor)",
+      "DDMC (CDO)",
+      "Provincial committee",
+      "NDRRMA"
+    ],
+    "confidence": "verified",
+    "rationale": "The rural road built by a municipality is at risk due to the presence of cracks and the potential for debris falling onto the highway.",
+    "candidates": [
+      "local-road-maintenance",
+      "local-road-emergency",
+      "strategic-road-maintenance",
+      "strategic-road-emergency",
+      "provincial-road-maintenance",
+      "private-land-maintenance",
+      "public-building-maintenance",
+      "riverbank-maintenance",
+      "warning-any",
+      "assessment-any",
+      "coordination-district",
+      "coordination-local",
+      "coordination-national",
+      "provincial-road-emergency"
+    ],
+    "used_model": true,
+    "fallback_used": false,
+    "numeric_claim_withheld": false,
+    "notes": [
+      "Ward road duties are defaults applying until the municipal executive prescribes otherwise. Internal branch names vary between municipalities."
+    ]
+  },
+  "dispatch": null,
+  "advisory_ne": "नयाँ अवलोकन छैन — यो ढलानको पछिल्लो उपलब्ध अवलोकन sentinel-1-grdको 4 दिन अघि थियो। प्रमाण पर्याप्त नभएकोले सूचना जारी गरिएको छैन।",
+  "register_payload": null,
+  "priority": null
+}
