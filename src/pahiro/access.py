@@ -47,6 +47,11 @@ FARE_PER_KM_RS = 3.0            # linear approximation beyond that
 # Fallback parks, used only when the OSM extract is absent. Coordinates are APPROXIMATE - good
 # enough to pick the right side of the valley, not good enough to navigate to. The OSM file
 # replaces them when present.
+# Names that identify nothing. OSM has plenty of stops literally called "Bus Stop" or "Bus Park",
+# and printing that as the destination is worse than printing where it is - a person can navigate
+# to coordinates and cannot navigate to "Bus Stop".
+GENERIC_NAMES = {"bus stop", "bus park", "bus station", "busstand", "bus stop.", "stop"}
+
 FALLBACK_PARKS = [
     ("Ratna Park (Old Bus Park)", 27.7047, 85.3146),
     ("Gongabu (New Bus Park)", 27.7345, 85.3080),
@@ -63,7 +68,8 @@ BUS_FILE = "web/public/data/bus-parks.geojson"
 
 # WHERE THE BUS DATA STOPS, AND WHY THIS IS A REFUSAL RATHER THAN A NUMBER
 #
-# The stop dataset covers the Kathmandu valley. The trail network covers four regions of Nepal.
+# The stop dataset covers the Kathmandu and Pokhara valleys. The trail network covers four
+# regions of Nepal.
 # Those two facts together produced this, for a trailhead at Namche:
 #
 #     bus to mapped stop at 27.7124, 85.4746 (~122.4 km, about Rs 377),
@@ -135,6 +141,8 @@ def load_parks(path: str | Path | None = None) -> list[tuple[str, float, float]]
                 if not c:
                     continue
                 name = (f.get("properties") or {}).get("n")
+                if name and name.strip().lower() in GENERIC_NAMES:
+                    name = None
                 if not name:
                     # Describe it by where it is, not by a name we do not have.
                     name = f"mapped stop at {float(c[1]):.4f}, {float(c[0]):.4f}"
@@ -166,9 +174,10 @@ def to_trailhead(trail_lat: float, trail_lon: float, from_lat: float, from_lon: 
             False,
             reason=(f"no bus information for this area. The nearest mapped stop is "
                     f"{nearest_any/1000:.0f} km away, which means the stop data does not cover "
-                    f"this region rather than that no bus goes there - the stop list is currently "
-                    f"the Kathmandu valley, while the trails cover four regions of Nepal"),
-            notes=["Fares and stops are known for the Kathmandu valley only.",
+                    f"this region rather than that no bus goes there - the stop list covers the "
+                    f"Kathmandu and Pokhara valleys, while the trails cover four regions of Nepal. "
+                    f"For some places that gap is the truth: there is no bus to Namche."),
+            notes=["Fares and stops are known for the Kathmandu and Pokhara valleys.",
                    "For other regions, ask locally: the district bus park is the usual answer, "
                    "and this app does not know where it is."])
 

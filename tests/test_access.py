@@ -30,7 +30,7 @@ def test_the_fare_carries_its_date_and_source():
 def test_the_bundled_stops_are_the_real_ones_from_openstreetmap():
     parks = access.load_parks()
     assert len(parks) > 50, f"only {len(parks)} stops bundled"
-    # The valley has around 141 mapped bus stations; the fallback list has 9.
+    # The valley has around 321 mapped bus stations; the fallback list has 9.
     assert len(parks) > 20, "the OSM extract is missing and the fallback list is being used"
 
 
@@ -85,7 +85,8 @@ def test_a_trailhead_outside_the_stop_data_is_refused_rather_than_given_a_number
     a = access.to_trailhead(27.807, 86.714, 27.807, 86.714)     # Namche Bazaar, Khumbu
     assert not a.ok, "a Khumbu trailhead was given a Kathmandu bus route"
     assert "does not cover this region" in a.reason
-    assert "Kathmandu valley" in a.reason, "the refusal must name what IS covered"
+    assert "Kathmandu" in a.reason and "Pokhara" in a.reason, \
+        "the refusal must name what IS covered, and that changed when Pokhara was added"
     assert a.fare_rs is None, "a refused answer must not carry a fabricated fare"
 
 
