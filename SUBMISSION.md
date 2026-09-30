@@ -82,7 +82,7 @@ from where I am standing.**
 
 | | |
 |---|---|
-| Hiking trails | **4,423 walkable ways, 53,844 vertices, 355 named**, 1.43 MB — OpenStreetMap over the Kathmandu valley and the Shivapuri rim |
+| Hiking trails | **6,135 walkable ways, 105,166 vertices, 355 named**, 2.64 MB — OpenStreetMap over the Kathmandu valley and the Shivapuri rim |
 | Bus access | **141 mapped bus stations** (76 named), from OSM |
 | Fare | **Rs 24** valley minimum, April 2026, set by the Department of Transport Management. The distance component is a labelled approximation |
 | Ask in words | The **open-weight model reads the request**; a deterministic engine chooses the trail, the stop and the fare |

@@ -19,7 +19,7 @@ void main() {
   });
 
   test('the bundled network loads at the scale the data has', () {
-    expect(net.trails.length, 4423);
+    expect(net.trails.length, 6135);
     expect(net.attribution, contains('OpenStreetMap'));
     expect(net.attribution, contains('ODbL'));
   });
@@ -94,9 +94,9 @@ void main() {
   });
 
   test('fragments shorter than the minimum are not offered as a walk', () {
-    // The bundle keeps every way - Python counts all 4,423 - and the minimum is applied when a
+    // The bundle keeps every way - Python counts all 6,135 - and the minimum is applied when a
     // walk is OFFERED, not when the data is read.
-    expect(net.trails.length, 4423);
+    expect(net.trails.length, 6135);
     final offered = net.nearby(85.3620, 27.7750, radiusM: 3000, limit: 50);
     expect(offered, isNotEmpty);
     for (final t in offered) {
