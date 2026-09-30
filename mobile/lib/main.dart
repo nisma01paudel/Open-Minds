@@ -1052,7 +1052,7 @@ class _DutyPanelState extends State<DutyPanel> {
           'जोखिम देखेको छु।\n\n'
           '$place\n\n'
           'स्थानीय सरकार सञ्चालन ऐन, २०७४ को धारा १२(२)(ग) बमोजिम सडकसँग जोडिएको पहिरो '
-          'हटाउने दायित्व ${d.office} को हो।\n\n'
+          'हटाउने दायित्व ${d.officeFor(true)} को हो।\n\n'
           'कृपया यो स्थानको निरीक्षण गरी आवश्यक व्यवस्था मिलाउनुहुन अनुरोध गर्दछु। '
           'यो पत्र स्वचालित रूपमा तयार भएको हो र यसले कुनै कानुनी कारबाही सुरु गर्दैन।\n\n'
           '[तपाईंको नाम]\n[सम्पर्क नम्बर]\n[मिति]';
@@ -1093,7 +1093,10 @@ class _DutyPanelState extends State<DutyPanel> {
             Text(widget.noAddress,
                 style: const TextStyle(fontSize: 11, color: Color(0xFFF0A0A0))),
           const SizedBox(height: 8),
-          Text(d.office, style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8))),
+          // Same translation table as the letter: fixing the caption and leaving the card
+          // English would be two vocabularies on one screen.
+          Text(d.officeFor(widget.nepali),
+              style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8))),
           const SizedBox(height: 4),
           Text(d.legal, style: const TextStyle(fontSize: 10, color: Color(0xFF64748B))),
           const SizedBox(height: 8),

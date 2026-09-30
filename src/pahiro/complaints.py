@@ -34,6 +34,29 @@ TIMELINE = "web/public/data/timeline.json"
 MAX_ROUTE_M = 3000.0
 ADMIN = "web/public/data/administration.json"
 
+# ONE TRANSLATION TABLE, IN ONE PLACE.
+#
+# The routing key names the duty in English, and there is exactly one distinct office string across
+# all 613 slopes. So the Nepali belongs here rather than wrapped around the letter in a widget: a
+# caption localised while the source stays English produces two vocabularies that drift, which is the
+# mistake the beacon card taught. Both the Python letter and the phone's derived index read this.
+OFFICE_NE = {
+    "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it":
+        "वडा समिति (वडा अध्यक्षको नेतृत्वमा); माथि नगर/गाउँ कार्यपालिका (प्रमुख/अध्यक्ष)",
+    "Rural/Urban Municipality (Ward Committee)":
+        "गाउँ/नगरपालिका (वडा समिति)",
+}
+
+
+def office_ne(office: str | None) -> str | None:
+    """The duty holder in Nepali, or None when no translation is held.
+
+    None rather than the English: a letter that silently falls back to English in the middle of a
+    Nepali paragraph is worse than one that leaves a gap somebody will notice.
+    """
+    return OFFICE_NE.get(office or "")
+
+
 CATEGORIES = {
     "crack": ("A crack has opened", "जमिन चिरा परेको"),
     "slump": ("The ground is moving", "जमिन सर्दै गरेको"),
@@ -141,7 +164,7 @@ def _letter_ne(s: dict, c: Complaint, note: str) -> str:
            + (f", {c.admin['district']} जिल्ला" if c.admin.get('district') else "")
            + f" भित्र पर्छ।\n\n" if c.admin else "")
         + f"स्थानीय सरकार सञ्चालन ऐन, २०७४ को धारा १२(२)(ग) बमोजिम सडकसँग जोडिएको पहिरो "
-          f"हटाउने दायित्व {s['office']} को हो।\n\n"
+          f"हटाउने दायित्व {office_ne(s['office']) or s['office']} को हो।\n\n"
         f"कृपया यो स्थानको निरीक्षण गरी आवश्यक व्यवस्था मिलाउनुहुन अनुरोध गर्दछु। "
         f"यो पत्र स्वचालित रूपमा तयार भएको हो र यसले कुनै कानुनी कारबाही सुरु गर्दैन।\n\n"
         f"भवदीय,\n[तपाईंको नाम]\n[सम्पर्क नम्बर]\n[मिति]\n"

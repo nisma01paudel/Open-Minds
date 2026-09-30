@@ -128,3 +128,41 @@ def test_the_gazetteer_covers_the_whole_country():
     assert d["counts"]["districts"] == 77, "Nepal has 77 districts"
     assert d["counts"]["units"] == 753, "Nepal has 753 local units"
     assert d["counts"]["with_website"] >= 700
+
+
+def test_the_duty_holder_is_named_in_nepali_in_the_nepali_letter():
+    """The office inside a Nepali letter was English, because the routing key names it in English.
+
+    There is exactly one distinct office string across all 613 slopes, so the fix is one translation
+    in one place - here, not wrapped around the letter in a widget. A caption localised while the
+    source stays English produces two vocabularies that drift, which is what the beacon card taught.
+    """
+    c = C.draft(28.35, 83.57, "crack")
+    assert c.office in C.OFFICE_NE, "the office string changed and the table did not"
+
+    # the Nepali letter carries Nepali
+    assert C.OFFICE_NE[c.office] in c.letter_ne
+    assert c.office not in c.letter_ne, (
+        "the English office is still inside the Nepali letter")
+
+    # and the English letter still carries English - the fix ADDED a language
+    assert c.office in c.letter_en
+
+
+def test_an_untranslated_office_is_left_visible_rather_than_guessed():
+    """None rather than the English: a Nepali paragraph that silently reverts to English mid-sentence
+    is worse than a gap somebody will notice and fix."""
+    assert C.office_ne("Some office nobody translated") is None
+    assert C.office_ne(None) is None
+    assert C.office_ne("") is None
+
+
+def test_every_slope_in_the_index_carries_both_names():
+    """The phone reads the derived index, so the Nepali has to be IN it, not looked up later."""
+    import json
+    from pathlib import Path
+    idx = json.loads((Path(__file__).resolve().parents[1] /
+                      "web/public/data/complaint-index.json").read_text(encoding="utf-8"))
+    assert idx["counts"]["slopes"] == 613
+    with_ne = sum(1 for s in idx["slopes"] if s.get("officeNe"))
+    assert with_ne == 613, f"only {with_ne} of 613 rows carry a Nepali office name"

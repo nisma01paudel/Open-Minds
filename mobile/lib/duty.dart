@@ -19,6 +19,10 @@ class Duty {
   final double lat;
   final double lon;
   final String office;
+
+  /// The same duty in Nepali, from the one translation table in src/pahiro/complaints.py. Null when
+  /// no translation is held - the letter falls back to the English there rather than inventing one.
+  final String? officeNe;
   final String legal;
   final String? unit;
   final String? district;
@@ -30,6 +34,7 @@ class Duty {
     required this.lat,
     required this.lon,
     required this.office,
+    required this.officeNe,
     required this.legal,
     required this.unit,
     required this.district,
@@ -42,6 +47,7 @@ class Duty {
         lat: (j['lat'] as num).toDouble(),
         lon: (j['lon'] as num).toDouble(),
         office: j['office'] as String,
+        officeNe: j['officeNe'] as String?,
         legal: j['legal'] as String,
         unit: j['unit'] as String?,
         district: j['district'] as String?,
@@ -49,6 +55,9 @@ class Duty {
       );
 
   bool get hasAddress => unit != null && unit!.isNotEmpty;
+
+  /// What to put in a Nepali letter: the Nepali when it is held, otherwise the English.
+  String officeFor(bool nepali) => (nepali && officeNe != null) ? officeNe! : office;
 }
 
 class DutyIndex {

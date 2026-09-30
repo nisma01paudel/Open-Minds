@@ -40,6 +40,7 @@ def main() -> int:
             "lat": round(s["lat"], 5),
             "lon": round(s["lon"], 5),
             "office": s["office"],
+            "officeNe": C.office_ne(s["office"]),
             "legal": s["legal_basis"],
             "unit": (admin or {}).get("unit"),
             "district": (admin or {}).get("district"),
