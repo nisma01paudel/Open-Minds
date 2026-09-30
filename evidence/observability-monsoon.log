@@ -136,3 +136,12 @@ analysing 142 documented sites, 30-day window
   [134/142] 2018-08-06 optical 6/14 usable, best 1.00, radar 5
   [135/142] 2018-07-13 optical 8/16 usable, best 0.98, radar 5
   [136/142] 2018-07-12 optical 7/20 usable, best 1.00, radar 11
+  [137/142] 2018-07-10 optical 10/21 usable, best 0.96, radar 8
+  [138/142] 2018-07-02 optical 5/7 usable, best 1.00, radar 6
+  [139/142] 2018-06-17 optical 7/9 usable, best 1.00, radar 8
+  [140/142] 2018-06-17 optical 8/9 usable, best 1.00, radar 8
+  [141/142] 2018-06-17 optical 12/18 usable, best 1.00, radar 8
+  [142/142] 2018-06-17 optical 6/9 usable, best 0.99, radar 5
+
+125/142 sites had a usable optical look in the 30 days before failure (88.0%)
+wrote reports/observability-monsoon.json and reports/observability-monsoon.md

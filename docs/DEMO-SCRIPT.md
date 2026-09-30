@@ -95,10 +95,12 @@ Run: `./scripts/demo.sh`  (defaults to 2024-09-28, the day our benchmark records
 > days, with a hidden **thirty-four day silence** across the monsoon. Adding radar closes it - plus
 > fifty-eight points in July, and the result replicates in a second, independent area.
 >
-> Across a hundred and thirty-five documented sites stratified over thirty-five year-months, optical
-> usability through the monsoon is **thirty-three percent**, and twelve percent of those sites are never
-> observable at all. That is the honest scale of the blindness, and it is why the layer says so rather
-> than going quiet.
+> And I pushed that measurement further: a hundred and forty-two documented failure sites, two thousand
+> and twenty-one scenes screened in the thirty days before each one. **A third of those scenes were
+> usable. In August, a sixth.** Seventeen of those hundred and forty-two slopes - twelve percent - had
+> **no usable look at all** in the month before they failed. Radar had a pass over every one of them.
+>
+> That is the honest scale of the blindness, and it is why the layer says so rather than going quiet.
 >
 > And on routing accuracy against twenty-one expert-labelled scenarios: **61.9% end to end, 76.2% on asset
 > identification — with zero confident misroutes across road tiers and 100% abstention precision.** We got

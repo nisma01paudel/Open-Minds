@@ -71,9 +71,27 @@ Full analysis and interpretation: `reports/trigger-discrimination.md`.
 
 ## E4 — observability at documented sites
 
-**Pending.** 142 sites stratified across June–October of 2018–2026 are being analysed. The unstratified
-first run reported 100% observability and that number was an artefact: it sampled the most recent events,
-which are post-monsoon, exactly when optical returns. The stratified run is the honest one.
+**Complete: 142 sites over 37 year-months, 2018-06 to 2026-09**, each screened over the 30 days
+before its recorded failure. Two thousand and twenty-one scenes.
+
+| Denominator | Value |
+|---|---|
+| Sites with at least one usable look | **125 / 142 = 88.0%** |
+| Sites with **no usable look at all** | **17 / 142 = 12.0%** |
+| Sites with a radar pass | 142 / 142 = 100% |
+| Scenes usable (observation level) | **676 / 2,021 = 33.4%** |
+| August, the worst month (observation level) | **16.8%** |
+| Median usable observations per site | 4 |
+| Median days since the last usable look | 8, but **29 sites were over two weeks stale** |
+
+Both denominators matter and neither replaces the other: 88% of sites had *something*
+usable, which is why the system does not simply refuse everything; 12% had *nothing*,
+which is why it has to say so. Full per-site table and monthly breakdown:
+`reports/observability-monsoon.md`.
+
+The unstratified first run reported 100% and that number was an artefact - it sampled the
+most recent events, which are post-monsoon, exactly when optical returns. Stratifying by
+year-month is what made the result honest.
 
 ## Reproduce
 
