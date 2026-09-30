@@ -238,6 +238,13 @@ OPENAPI = {
         "/api/v1/triage": {
             "get": {"summary": "The board, ranked for search order, with a reason per point"},
         },
+        "/api/v1/complaint": {
+            "summary": ("Draft a complaint to the office legally obliged to act on a slope"),
+            "params": "lat, lon, category, note, urgent",
+            "note": ("Resolves the specific office carrying the statutory duty and cites the "
+                     "section, so it cannot be bounced as 'not ours'. Refuses when no documented "
+                     "slope is within 3 km rather than writing to the wrong office."),
+            "example": "/api/v1/complaint?lat=27.7047&lon=85.3146&category=crack&urgent=1"},
         "/api/v1/plan": {
             "summary": "Plan a walk from a sentence, offline",
             "parameters": [
@@ -351,6 +358,10 @@ class _Handler(BaseHTTPRequestHandler):
             return self._send(200, self._escape(q))
         if path == "/api/v1/triage":
             return self._send(200, self._triage())
+        if path == "/api/v1/complaint":
+            code, body = _complaint(q)
+            return self._send(code, body)
+
         if path == "/api/v1/plan":
             return self._send(200, self._plan(q))
         return self._send(404, {"error": "not found", "path": path})
@@ -668,6 +679,26 @@ class _Handler(BaseHTTPRequestHandler):
         return {"day": days[idx] if days else None,
                 "threshold_mm_24h": blob.get("threshold_mm_24h"),
                 "count": len(rows), "slopes": rows}
+
+
+
+def _complaint(q: dict) -> tuple[int, dict]:
+    """Draft a complaint addressed to the office that carries the statutory duty for this ground.
+
+    Not a contact form: it resolves the specific office and cites the section, so the complaint
+    cannot be bounced as "not ours" without somebody deciding that on paper.
+    """
+    from . import complaints as C
+
+    try:
+        lat = float(q["lat"][0])
+        lon = float(q["lon"][0])
+    except (KeyError, IndexError, TypeError, ValueError):
+        return 400, {"error": "lat and lon are required"}
+
+    c = C.draft(lat, lon, (q.get("category") or ["other"])[0],
+                (q.get("note") or [""])[0], (q.get("urgent") or ["0"])[0] == "1")
+    return 200, c.as_dict()
 
 
 def _as_float(v: Any) -> float | None:
