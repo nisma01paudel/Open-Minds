@@ -59,6 +59,16 @@ holds so many recorded failures.
 **61.9%** exact case accuracy, **76.2%** asset identification, **100%** abstention precision, and **zero**
 misroutes across road tiers. Three-arm ablation and diagnosis in `routing-ablation.md`.
 
+## E4a — does the rainfall trigger discriminate?
+
+22 event days against 66 matched controls on identical dates: **13.6% of event sites exceeded the
+published local threshold against 10.6% of controls — a three-point edge.** Weak.
+
+The case that explains it: on 2018-08-08, thirty-plus landslide sites were recorded on a day whose
+maximum 24-hour rainfall across those sites was **51 mm**, well under the 118.8 mm threshold.
+
+Full analysis and interpretation: `reports/trigger-discrimination.md`.
+
 ## E4 — observability at documented sites
 
 **Pending.** 142 sites stratified across June–October of 2018–2026 are being analysed. The unstratified
