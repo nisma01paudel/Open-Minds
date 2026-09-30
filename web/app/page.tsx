@@ -267,7 +267,10 @@ export default function Page() {
         </div>
       </aside>
 
-      <Link href="/ar/" className="phone">📱 Open the phone view — point it at a hillside</Link>
+      <div className="topactions">
+        <Link href="/share/">Share the 10-second film</Link>
+        <Link href="/ar/" className="phone">📱 Open the phone view — point it at a hillside</Link>
+      </div>
       <div className="hint">Drag to rotate · scroll to zoom · click a slope for the responsible office</div>
     </div>
   );

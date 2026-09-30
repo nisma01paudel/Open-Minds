@@ -26,27 +26,27 @@ html, body {
 #map { position: absolute; inset: 0; }
 
 /* ---------- header ---------- */
-header {
+.stage header {
   position: absolute; z-index: 5; top: 0; left: 0; right: 0;
   display: flex; align-items: center; gap: 16px;
   padding: 14px 20px;
   background: linear-gradient(180deg, rgba(7,11,20,.92), rgba(7,11,20,0));
   pointer-events: none;
 }
-header .brand { pointer-events: auto; }
-header h1 {
+.stage header .brand { pointer-events: auto; }
+.stage header h1 {
   margin: 0; font-size: 19px; letter-spacing: -.02em; font-weight: 650;
   display: flex; align-items: baseline; gap: 8px;
 }
-header h1 span { font-weight: 400; color: var(--muted); font-size: 15px; }
+.stage header h1 span { font-weight: 400; color: var(--muted); font-size: 15px; }
 /* The panel is 336px wide and starts at the left; the subtitle must not run under it. */
-header { padding-left: 376px; }
-header p { margin: 2px 0 0; font-size: 12.5px; color: #cbd5e1; max-width: 70ch;
+.stage header { padding-left: 376px; }
+.stage header p { margin: 2px 0 0; font-size: 12.5px; color: #cbd5e1; max-width: 70ch;
            text-shadow: 0 1px 3px rgba(0,0,0,.9), 0 0 12px rgba(0,0,0,.8); }
-header h1 { text-shadow: 0 1px 3px rgba(0,0,0,.9); }
+.stage header h1 { text-shadow: 0 1px 3px rgba(0,0,0,.9); }
 @media (max-width: 1100px) {
-  header { padding-left: 20px; }
-  header p { display: none; }
+  .stage header { padding-left: 20px; }
+  .stage header p { display: none; }
 }
 
 /* ---------- panel ---------- */
@@ -221,3 +221,26 @@ button.present:hover { background: rgba(34,211,238,.3); color: #fff; }
   border: 1px solid rgba(148,163,184,.2); border-radius: 999px; padding: 5px 11px;
   backdrop-filter: blur(8px); }
 .pwa i { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+
+/* ---------- share ---------- */
+.sharewrap { max-width: 1100px; margin: 0 auto; padding: 34px 22px 70px; }
+.sharehead h1 { font-size: 32px; margin: 0 0 10px; letter-spacing: -.02em; }
+.sharehead h1 span { color: var(--accent); font-weight: 400; }
+.sharehead p { color: #cbd5e1; font-size: 17px; line-height: 1.65; max-width: 78ch; }
+.sharehead b { color: #fff; }
+.sharemedia video { width: 100%; border-radius: 14px; border: 1px solid rgba(148,163,184,.18);
+  box-shadow: 0 20px 60px rgba(0,0,0,.5); display: block; background: #000; }
+.sharelinks { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.sharelinks a { text-decoration: none; font-size: 13.5px; color: #04222a; background: var(--accent);
+  padding: 9px 15px; border-radius: 999px; font-weight: 600; }
+.sharelinks a:nth-child(1), .sharelinks a:nth-child(2) { background: rgba(148,163,184,.16); color: #e2e8f0; }
+.sharefoot { margin-top: 34px; border-top: 1px solid rgba(148,163,184,.15); padding-top: 22px; }
+.sharefoot p { color: #cbd5e1; font-size: 16px; max-width: 78ch; }
+.sharefoot .dim { color: var(--muted); font-size: 13px; }
+.topactions { position: absolute; z-index: 7; top: 84px; right: 20px; display: flex; gap: 9px;
+  align-items: center; }
+.topactions a:not(.phone) { text-decoration: none; font-size: 13px; color: #e2e8f0;
+  background: rgba(12,18,32,.86); border: 1px solid rgba(148,163,184,.28); padding: 9px 15px;
+  border-radius: 999px; font-weight: 550; backdrop-filter: blur(10px); }
+.topactions a:not(.phone):hover { border-color: var(--accent); color: #fff; }
+.phone { position: static; text-decoration: none; }
