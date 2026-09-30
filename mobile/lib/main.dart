@@ -23,6 +23,7 @@ import 'beacon.dart' as beacon;
 import 'dart:convert';
 
 import 'duty.dart';
+import 'places.dart';
 import 'seasons.dart' as seasons;
 import 'escape.dart' as escape;
 import 'l10n.dart';
@@ -369,6 +370,12 @@ class _WalkScreenState extends State<WalkScreen> {
            style: Theme.of(context).textTheme.bodySmall),
       const SizedBox(height: 12),
       if (_seasons != null) seasonStrip(s, _seasons!, _lat, _lon),
+      const SizedBox(height: 14),
+      PlacesPanel(
+        title: s['places.title'], caption: s['places.caption'],
+        slopesLabel: s['places.slopes'], trailsLabel: s['places.trails'],
+        nepali: s.lang == AppLang.ne, lat: _lat, lon: _lon,
+      ),
       if (_seasons != null) ...[
         const SizedBox(height: 14),
         PanoramaView(
@@ -1208,5 +1215,87 @@ class _DemoPanelState extends State<DemoPanel> {
         ]),
       ),
     );
+  }
+}
+
+/// Major places near you, on the phone, offline.
+///
+/// A list rather than the web app's map: there is no map widget in this app, and adding a mapping
+/// library to draw 277 dots would be a dependency the offline bundle carries for one screen. The
+/// data is the same file either way.
+///
+/// It says how many of the country's units it has: 277 of 753, because a unit only has a position
+/// here if documented slopes inside it name it. And it repeats the file's own accuracy note - a
+/// position is the mean of those slopes, not a town centre.
+class PlacesPanel extends StatefulWidget {
+  final String title;
+  final String caption;
+  final String slopesLabel;
+  final String trailsLabel;
+  final bool nepali;
+  final double lat;
+  final double lon;
+  const PlacesPanel({super.key, required this.title, required this.caption,
+                     required this.slopesLabel, required this.trailsLabel,
+                     required this.nepali, required this.lat, required this.lon});
+
+  @override
+  State<PlacesPanel> createState() => _PlacesPanelState();
+}
+
+class _PlacesPanelState extends State<PlacesPanel> {
+  List<(GeoPlace, double)> _near = const [];
+  bool _loaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    try {
+      final raw = await rootBundle.loadString('assets/places.geojson');
+      final list = PlaceList.parse(raw);
+      final near = list.nearest(widget.lat, widget.lon, limit: 5);
+      if (mounted) setState(() { _near = near; _loaded = true; });
+    } catch (_) {
+      if (mounted) setState(() => _loaded = true);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_loaded || _near.isEmpty) return const SizedBox.shrink();
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text(widget.title, style: const TextStyle(fontWeight: FontWeight.w700)),
+      const SizedBox(height: 6),
+      for (final (place, metres) in _near)
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Row(children: [
+              Expanded(
+                child: Text(widget.nepali && place.nameNe != null
+                        ? '${place.nameNe} · ${place.name}'
+                        : place.name,
+                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+              ),
+              Text('${(metres / 1000).toStringAsFixed(0)} km',
+                  style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8))),
+            ]),
+            Text([
+              if (place.district != null) place.district!,
+              if (place.population != null) '${place.population}',
+              '${widget.slopesLabel} ${place.slopes}',
+              '${widget.trailsLabel} ${place.trails}',
+            ].join(' · '),
+                style: const TextStyle(fontSize: 11, color: Color(0xFF64748B))),
+            if (place.hasWebsite)
+              Text(place.site!, style: const TextStyle(fontSize: 10, color: Color(0xFF38BDF8))),
+          ]),
+        ),
+      Text(widget.caption, style: const TextStyle(fontSize: 10, color: Color(0xFF64748B))),
+    ]);
   }
 }

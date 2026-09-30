@@ -97,6 +97,11 @@ const Map<String, Map<String, String>> translations = {
     'walk.look': 'उपत्यका हेर्नुहोस्',
     'duty.title': 'यो जमिन कसको जिम्मामा',
     'demo.title': 'बाढी आउँदा एपले के गर्छ',
+    'places.title': 'नजिकका प्रमुख ठाउँ',
+    'places.caption': 'यी ७५३ मध्ये २७७ स्थानीय इकाई हुन् जसलाई यहाँ राख्न सकियो — '
+        'निर्देशांक ती ठाउँका अभिलेखित ढलानहरूको औसत हो, नगर केन्द्र होइन।',
+    'places.slopes': 'ढलान',
+    'places.trails': 'पदमार्ग',
     'demo.blurb': 'हरियो चरण यही फोनमै गणना हुन्छ; खैरा यही परियोजनाको अन्त कतै गरिएको नाप हो।',
     'demo.run': 'परिदृश्य चलाउनुहोस्',
     'demo.next': 'अर्को चरण',
@@ -168,6 +173,11 @@ const Map<String, Map<String, String>> translations = {
     'walk.look': 'Look around the valley',
     'duty.title': 'Who is responsible for this ground',
     'demo.title': 'What the app does when a flood comes',
+    'places.title': 'Major places near you',
+    'places.caption': 'These are 277 of Nepal\'s 753 local units - the ones that could be located, '
+        'because a position is the mean of the documented slopes inside them, not a town centre.',
+    'places.slopes': 'slopes',
+    'places.trails': 'trails',
     'demo.blurb': 'Green steps are computed on this phone; grey ones are measurements made '
         'elsewhere in this project and cited here.',
     'demo.run': 'Run the scenario',

@@ -24,6 +24,7 @@ launched on an Android emulator (API 36, x86_64, `/dev/kvm`) on 2026-10-01.
 | `pahiro-duty.png` | **who is responsible for the ground, with a real gov.np address and the statute** |
 | `pahiro-complaint.png` | **the complaint itself, drafted on the phone, citing the section** |
 | `pahiro-demo-panel.png` | the flood scenario: **Run the scenario**, labelled live vs cited |
+| `pahiro-places.png` | **major places: bilingual names, population, district, gov.np sites** |
 
 ## What this changes, and what it does not
 
@@ -34,6 +35,28 @@ a real handset" end here.
 **Unchanged, and still stated everywhere:** this is an **emulator**, not a physical phone. No radio
 figure has been measured on real hardware - Bluetooth range, Wi-Fi Aware range and battery endurance
 are all still somebody else's measurements or modelled from them. An emulator cannot measure a radio.
+
+## Major places, on the phone
+
+    काठमाडौँ · Kathmandu     2 km   Kathmandu · 845767 · ढलान 5 · पदमार्ग 3757 · kathmandu.gov.np
+    किर्तिपुर · Kirtipur     4 km   Kathmandu ·  65602 · ढलान 1 · पदमार्ग 3243 · kirtipurmun.gov.np
+    ललितपुर · Lalitpur      5 km   Lalitpur · 299843 · ढलान 5 · पदमार्ग 3023 · lalitpurmun.gov.np
+    चन्द्रागिरि · Chandragiri 8 km Kathmandu · 136928 · ढलान 2 · पदमार्ग 2460 · chandragirimun.gov.np
+    गोदावरी · Godawari      12 km  Lalitpur · 100972 · ढलान 3 · पदमार्ग 0 · godawarimunlalitpur.gov.np
+
+    यी ७५३ मध्ये २७७ स्थानीय इकाई हुन् जसलाई यहाँ राख्न सकियो — निर्देशांक ती ठाउँका अभिलेखित
+    ढलानहरूको औसत हो, नगर केन्द्र होइन।
+
+Bilingual names, population, district, how many slopes are documented there, how densely OSM has
+mapped trails nearby, and the unit's own official website. Every field is one a machine checked -
+there is no prose in the file, because prose about a place is the one thing nothing here can verify.
+
+A list, not the web app's map: there is no map widget in this app, and adding a mapping library to
+draw 277 dots would be a dependency the offline bundle carries for one screen. The data is the same
+file either way, and the caption says which it is.
+
+Godawari shows **पदमार्ग 0** - no mapped trails within ten kilometres - which is the same "gap in the
+map, not proof that nobody walks here" case the trail list reports, rendered here as a zero.
 
 ## The flood scenario, on the phone
 
