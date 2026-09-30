@@ -137,10 +137,13 @@ void boardTests() {
     // A missing key renders as the key itself or throws, depending on the lookup - either way the
     // user sees a failure the developer never did. This walks the keys the source actually uses.
     final src = File('lib/main.dart').readAsStringSync();
-    // `strings[...]` in the shell and `s[...]` inside a screen are both lookups, and the first
-    // version of this only matched the literal word `strings` - so every key a screen asked for was
-    // exempt. It would have missed the four added with the duty panel.
-    final used = RegExp(r"""[a-zA-Z_][a-zA-Z0-9_]*\['([a-z0-9_.]+)'\]""")
+    // `strings[...]` in the shell and `s[...]` inside a screen are both lookups. The first version
+    // matched only the literal word `strings`, so every key a screen asked for was exempt - it would
+    // have missed the four added with the duty panel.
+    //
+    // Widening it to ANY identifier was too far: `raw['steps']` and `j['slopes']` are map lookups
+    // into JSON, not strings, and the guard failed on them. It matches the L10n names only.
+    final used = RegExp(r"""\b(?:s|strings)\[\'([a-z0-9_.]+)\'\]""")
         .allMatches(src)
         .map((m) => m.group(1)!)
         .toSet();

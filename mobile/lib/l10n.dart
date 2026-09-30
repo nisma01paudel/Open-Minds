@@ -96,6 +96,12 @@ const Map<String, Map<String, String>> translations = {
     'board.title': 'बोर्ड',
     'walk.look': 'उपत्यका हेर्नुहोस्',
     'duty.title': 'यो जमिन कसको जिम्मामा',
+    'demo.title': 'बाढी आउँदा एपले के गर्छ',
+    'demo.blurb': 'हरियो चरण यही फोनमै गणना हुन्छ; खैरा यही परियोजनाको अन्त कतै गरिएको नाप हो।',
+    'demo.run': 'परिदृश्य चलाउनुहोस्',
+    'demo.next': 'अर्को चरण',
+    'demo.live': 'यही फोनमै गणना',
+    'demo.cited': 'यहाँ उद्धृत',
     'duty.draft': 'उजुरीको मस्यौदा देखाउनुहोस्',
     'duty.letterNote': 'यो मस्यौदा हो। एपले पठाउँदैन, हस्ताक्षर गर्दैन र प्राप्ति पनि गर्दैन — '
         'तपाईंले पठाउनुहोस् र रसिद राख्नुहोस्।',
@@ -161,6 +167,13 @@ const Map<String, Map<String, String>> translations = {
     'board.title': 'Board',
     'walk.look': 'Look around the valley',
     'duty.title': 'Who is responsible for this ground',
+    'demo.title': 'What the app does when a flood comes',
+    'demo.blurb': 'Green steps are computed on this phone; grey ones are measurements made '
+        'elsewhere in this project and cited here.',
+    'demo.run': 'Run the scenario',
+    'demo.next': 'Next step',
+    'demo.live': 'computed here',
+    'demo.cited': 'cited',
     'duty.draft': 'Show a draft complaint',
     'duty.letterNote': 'This is a draft. The app does not send it, sign it or receive it — you send '
         'it and keep the receipt.',

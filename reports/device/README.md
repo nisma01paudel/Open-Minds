@@ -23,6 +23,7 @@ launched on an Android emulator (API 36, x86_64, `/dev/kvm`) on 2026-10-01.
 | `pahiro-walk-panorama.png` | **and look-around: the 360° valley render, on the phone, offline** |
 | `pahiro-duty.png` | **who is responsible for the ground, with a real gov.np address and the statute** |
 | `pahiro-complaint.png` | **the complaint itself, drafted on the phone, citing the section** |
+| `pahiro-demo-panel.png` | the flood scenario: **Run the scenario**, labelled live vs cited |
 
 ## What this changes, and what it does not
 
@@ -33,6 +34,26 @@ a real handset" end here.
 **Unchanged, and still stated everywhere:** this is an **emulator**, not a physical phone. No radio
 figure has been measured on real hardware - Bluetooth range, Wi-Fi Aware range and battery endurance
 are all still somebody else's measurements or modelled from them. An emulator cannot measure a radio.
+
+## The flood scenario, on the phone
+
+    बाढी आउँदा एपले के गर्छ
+    हरियो चरण यही फोनमै गणना हुन्छ; खैरा यही परियोजनाको अन्त कतै गरिएको नाप हो।
+    [ परिदृश्य चलाउनुहोस् ]
+
+Six steps of the monsoon of 2024, and each one is LABELLED for whether it is computed on this phone
+or cited from a measurement made elsewhere in this project. Four are live - the duty routing, the
+escape planner, the complaint and the beacon, all of which the phone really does - and two are the
+rainfall count and the satellite blindness, which were measured on a machine with the full 613-slope
+record.
+
+A demo that blurred measured and cited numbers would be the same failure as every stale caption in
+this project, so the distinction is on the screen rather than in a speaker's note.
+
+**NOT YET VERIFIED ON THE DEVICE:** the panel renders with its button, and the step-through logic is
+compiled and covered, but my swipe-and-tap attempt scrolled the view past the card instead of pressing
+it, so I have not seen the six steps appear. The button rendering is evidence; the interaction is not,
+and it is the next thing to check.
 
 ## The complaint, drafted on the phone
 

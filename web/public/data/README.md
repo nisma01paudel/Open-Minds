@@ -14,6 +14,7 @@ once, and `bus-parks.geojson` was exactly that until round 27.
 | `timeline.json` | `scripts/build_timeline.py` | **yes** |
 | `observability-sites.json` | `scripts/build_observability.py` | **yes** - from `reports/observability-monsoon.json` |
 | `observability-by-month.json` | `scripts/build_observability.py` | **yes** |
+| `demo-script.json` | hand-written, bilingual, bundled by the phone |
 | `complaint-index.json` | `scripts/build_complaint_index.py` | **yes** - a derived join, no network |
 | `places.geojson` | `scripts/build_places.py` | **yes** - a join, no network |
 | `panoramas/*.png` | `scripts/render_panorama.py` | **yes** - rendered from the DEM, offline |

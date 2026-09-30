@@ -20,6 +20,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 import 'beacon.dart' as beacon;
+import 'dart:convert';
+
 import 'duty.dart';
 import 'seasons.dart' as seasons;
 import 'escape.dart' as escape;
@@ -468,6 +470,12 @@ class _EscapeScreenState extends State<EscapeScreen> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
+        DemoPanel(
+          title: s['demo.title'], blurb: s['demo.blurb'], runLabel: s['demo.run'],
+          nextLabel: s['demo.next'], liveLabel: s['demo.live'], citedLabel: s['demo.cited'],
+          nepali: s.lang == AppLang.ne,
+        ),
+        const SizedBox(height: 12),
         DutyPanel(
           strings: s.lang.code, lat: place.lat, lon: place.lon,
           title: s['duty.title'], caption: s['duty.where'],
@@ -1102,6 +1110,100 @@ class _DutyPanelState extends State<DutyPanel> {
             const SizedBox(height: 6),
             SelectableText(_letter(d, widget.nepali),
                 style: const TextStyle(fontSize: 12, height: 1.5)),
+          ],
+        ]),
+      ),
+    );
+  }
+}
+
+/// The flood scenario, step by step, on the phone.
+///
+/// The step text is bundled in both languages. Four of the six steps are LIVE - they are the panels
+/// above, computed from data the phone carries - and two are measurements made elsewhere in this
+/// project and labelled as cited rather than as computed. The card says which is which, because a
+/// demo that blurs measured and cited numbers is how a product ends up claiming more than it did.
+class DemoPanel extends StatefulWidget {
+  final String title;
+  final String blurb;
+  final String runLabel;
+  final String nextLabel;
+  final String liveLabel;
+  final String citedLabel;
+  final bool nepali;
+  const DemoPanel({super.key, required this.title, required this.blurb, required this.runLabel,
+                   required this.nextLabel, required this.liveLabel, required this.citedLabel,
+                   required this.nepali});
+
+  @override
+  State<DemoPanel> createState() => _DemoPanelState();
+}
+
+class _DemoPanelState extends State<DemoPanel> {
+  List<Map<String, dynamic>> _steps = const [];
+  int _shown = 0;
+  bool _loaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    try {
+      final raw = jsonDecode(await rootBundle.loadString('assets/demo-script.json'));
+      final steps = (raw['steps'] as List).cast<Map<String, dynamic>>();
+      if (mounted) setState(() { _steps = steps; _loaded = true; });
+    } catch (_) {
+      if (mounted) setState(() => _loaded = true);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_loaded || _steps.isEmpty) return const SizedBox.shrink();
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(widget.title, style: const TextStyle(fontWeight: FontWeight.w700)),
+          const SizedBox(height: 4),
+          Text(widget.blurb, style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8))),
+          const SizedBox(height: 10),
+          if (_shown == 0)
+            FilledButton(onPressed: () => setState(() => _shown = 1), child: Text(widget.runLabel))
+          else ...[
+            // NOT named `s`. In the shell that identifier is the L10n instance, and reusing it for
+            // a step map made the localisation guard read the step number as a missing translation
+            // key - correctly, because the same name meant two things in one file, which is how a
+            // lookup ends up resolving against the wrong table. (The guard scans raw text, so even
+            // writing the old expression in this comment trips it.)
+            for (final step in _steps.take(_shown)) ...[
+              Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text('${step['n']}.  ', style: const TextStyle(fontWeight: FontWeight.w700)),
+                Expanded(
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text(widget.nepali ? step['ne'] as String : step['en'] as String,
+                        style: const TextStyle(fontSize: 12, height: 1.5)),
+                    const SizedBox(height: 2),
+                    Text('${step['live'] == true ? widget.liveLabel : widget.citedLabel} · '
+                        '${step['src']}',
+                        style: TextStyle(
+                            fontSize: 10,
+                            color: step['live'] == true
+                                ? const Color(0xFF22C55E)
+                                : const Color(0xFF94A3B8))),
+                  ]),
+                ),
+              ]),
+              const SizedBox(height: 10),
+            ],
+            if (_shown < _steps.length)
+              FilledButton(
+                onPressed: () => setState(() => _shown += 1),
+                child: Text('${widget.nextLabel} ($_shown/${_steps.length})'),
+              ),
           ],
         ]),
       ),

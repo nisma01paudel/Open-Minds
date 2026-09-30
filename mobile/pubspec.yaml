@@ -70,6 +70,7 @@ flutter:
     - assets/seasons.json
     - assets/panoramas/
     - assets/complaint-index.json
+    - assets/demo-script.json
 
   # To add assets to your application, add an assets section, like this:
   # assets:
