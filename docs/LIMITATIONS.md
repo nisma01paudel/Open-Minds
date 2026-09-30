@@ -87,3 +87,28 @@ test (+3 points) and the 2018-08-08 case (thirty-plus landslides on a 51 mm day 
 6. **Extend the routing key** beyond roads: schools and health posts are partly covered, and the
    private-land case has a genuine legal gap that no code can close.
 7. **A Nepali-reading expert panel** to review every template line before any operational use.
+
+## The film is older than the product
+
+`reports/video/pahiro-narrated-web.mp4` is a required submission item and it was cut before the
+daily-use half existed. It shows the disaster pipeline and the trip planner; it does **not** show the
+3D flythrough, the walk planner or the field app.
+
+**The stills directory is gitignored** (`reports/video/stills/`, "regenerable and stays ignored"), so
+the film's inputs are not in the repository and neither are any additions to them. Extending the film
+is a local build step, not a repository change, and a reader of this repository cannot tell from it
+whether the film was ever extended.
+
+To extend it, three edits go together:
+
+1. a `cap <letter> "<caption>"` line in `scripts/build_voiced_video.sh`
+2. a matching `<letter>|Nepali text` line in `reports/video/voice/narration.txt`
+3. an entry in the clip order
+
+then rebuild, which re-synthesises the narration and re-encodes about three minutes.
+
+The build **aborts if a clip is missing** rather than silently shortening the film, and the committed
+film is restorable with `git checkout`, so a failed attempt is safe. Note that
+`reports/video/stills/` already contains **two sets** numbered 07-09 - `07-agent`, `08-limit`,
+`09-trails` and, locally, `07-fly`, `08-plan`, `09-field` - so the clip letters and the caption keys
+must be chosen against the build script rather than against the filenames.
