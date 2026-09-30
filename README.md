@@ -29,6 +29,12 @@ Not a plan — running code, verified against live services:
 
 54 tests pass. Every claim in this repo is reproducible from the commands below.
 
+## Start here
+
+New to the repo? Read **[SUBMISSION.md](SUBMISSION.md)** — it lists the five required submission items,
+where each lives, the one command that runs the whole pipeline, and every measured result with its own
+weakness attached. Reserve ten minutes.
+
 ## Quickstart
 
 ```bash

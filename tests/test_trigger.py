@@ -125,3 +125,35 @@ def test_rainfall_cache_remembers_a_missing_day(tmp_path, monkeypatch):
     rainfall.fetch_series_cached(bbox, date(2024, 9, 1), date(2024, 9, 1), tmp_path)
     rainfall.fetch_series_cached(bbox, date(2024, 9, 1), date(2024, 9, 1), tmp_path)
     assert calls["n"] == 1, "a genuinely unavailable day must not be retried every run"
+
+
+def test_sample_point_reads_the_right_pixel():
+    """Read once, sample many - the sampling must land on the right cell."""
+    import numpy as np
+    from affine import Affine
+
+    from pahiro.ingest.rainfall import sample_point
+
+    arr = np.arange(100, dtype="float32").reshape(10, 10)
+    transform = Affine.translation(85.0, 28.0) * Affine.scale(0.05, -0.05)
+    # origin is the top-left corner; the first row is the northern edge
+    assert sample_point(arr, transform, 85.001, 27.999) == arr[0, 0]
+    # 27.851 falls in row 2 (which spans 27.90-27.85), not row 3
+    assert sample_point(arr, transform, 85.151, 27.851) == arr[2, 3]
+    # outside the window is NaN, never a wrong number
+    assert sample_point(arr, transform, 80.0, 20.0) != sample_point(arr, transform, 80.0, 20.0)
+
+
+def test_trigger_eval_scores_events_against_controls():
+    from pahiro.eval.trigger_eval import SiteResult, summarise
+
+    rows = [SiteResult("e1", "event", "2024-09-28", 27.7, 85.3, 130.0, 190.0, "exceeded", True),
+            SiteResult("e2", "event", "2024-09-28", 27.8, 85.4, 60.0, 90.0, "below", False),
+            SiteResult("c1", "control", "2024-09-28", 27.9, 85.5, 20.0, 30.0, "below", False),
+            SiteResult("c2", "control", "2024-09-28", 27.6, 85.6, 10.0, 15.0, "below", False)]
+    rep = summarise(rows)
+    assert rep["event_trigger_rate_pct"] == 50.0
+    assert rep["control_trigger_rate_pct"] == 0.0
+    assert rep["difference_pct_points"] == 50.0
+    assert any("lower bound" in x for x in rep["limitations"])
+    assert "does it discriminate" in __import__("pahiro.eval.trigger_eval", fromlist=["markdown"]).markdown(rep)

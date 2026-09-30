@@ -16,8 +16,11 @@ from dataclasses import asdict, dataclass
 from datetime import date, timedelta
 from pathlib import Path
 
+import math
+
 import numpy as np
 import rasterio
+from affine import Affine
 from rasterio.windows import from_bounds
 
 os.environ.setdefault("GDAL_DISABLE_READDIR_ON_OPEN", "EMPTY_DIR")
@@ -118,3 +121,71 @@ def fetch_series_cached(bbox, start: date, end: date,
             path.write_text("null")          # remember the miss
         day += timedelta(days=1)
     return out
+
+
+# --------------------------------------------------------------------------- #
+# Read once, sample many.
+#
+# Reading a small window per site means one GDAL open per site per day. For a
+# country-wide comparison across hundreds of sites that is thousands of opens. The
+# CHIRPS tile is global and cheap to read in full over a regional box, so we read the
+# whole box once per day and sample every site from memory instead.
+# --------------------------------------------------------------------------- #
+
+NEPAL_BBOX = (80.0, 26.0, 89.0, 31.0)
+
+
+def fetch_window(day: date, bbox: tuple[float, float, float, float] = NEPAL_BBOX,
+                 timeout: int = 120):
+    """The whole rainfall window for one day as (array, transform). None if unavailable."""
+    href = f"/vsigzip//vsicurl/{chirps_url(day)}"
+    try:
+        with rasterio.open(href) as ds:
+            win = from_bounds(*bbox, transform=ds.transform)
+            arr = ds.read(1, window=win).astype("float32")
+            transform = ds.window_transform(win)
+    except Exception:
+        return None
+    arr[arr < 0] = np.nan
+    if not np.isfinite(arr).any():
+        return None
+    return arr, transform
+
+
+def fetch_window_cached(day: date, bbox=NEPAL_BBOX, cache_dir: str | Path = "cache/rain-window"):
+    """Cached window read, stored as .npy with its transform in the filename sidecar."""
+    cache = Path(cache_dir)
+    cache.mkdir(parents=True, exist_ok=True)
+    arr_path = cache / f"{bbox[0]:.0f}_{bbox[1]:.0f}_{bbox[2]:.0f}_{bbox[3]:.0f}_{day}.npy"
+    meta_path = arr_path.with_suffix(".meta")
+    if arr_path.exists() and meta_path.exists():
+        arr = np.load(arr_path)
+        meta = json.loads(meta_path.read_text())
+        if meta.get("missing"):
+            return None
+        return arr, Affine(*meta["transform"])
+    result = fetch_window(day, bbox)
+    if result is None:
+        np.save(arr_path, np.zeros((1, 1), dtype="float32"))
+        meta_path.write_text(json.dumps({"missing": True, "transform": [1, 0, 0, 0, -1, 0]}))
+        return None
+    arr, transform = result
+    np.save(arr_path, arr)
+    t = transform
+    meta_path.write_text(json.dumps({"missing": False,
+                                     "transform": [t.a, t.b, t.c, t.d, t.e, t.f]}))
+    return arr, transform
+
+
+def sample_point(arr: np.ndarray, transform, lon: float, lat: float) -> float:
+    """Nearest-pixel rainfall at a coordinate, or NaN if outside the window."""
+    if transform.a == 0 or transform.e == 0:
+        return float("nan")
+    # floor, not int(): int() truncates toward zero, which is wrong west of the
+    # window's origin and silently returns a neighbouring cell instead of a miss.
+    col = math.floor((lon - transform.c) / transform.a)
+    row = math.floor((lat - transform.f) / transform.e)
+    if not (0 <= row < arr.shape[0] and 0 <= col < arr.shape[1]):
+        return float("nan")
+    value = float(arr[row, col])
+    return value if np.isfinite(value) else float("nan")
