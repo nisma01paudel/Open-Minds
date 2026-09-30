@@ -1,0 +1,2 @@
+case accuracy: 61.9%  (routable: 55.6%)  tier misroutes: 0
+wrote reports/routing-reproduce.json and reports/routing-reproduce.md

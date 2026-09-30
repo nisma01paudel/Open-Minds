@@ -37,6 +37,18 @@ python scripts/verify_repo.py             # submission readiness: files, referen
 CPU), so there is nothing to do first. Add `--stop` to shut the server down afterwards.
 Pass `--as-of`, `--lon`, `--lat` or `--report` to interrogate any slope you like.
 
+## See it in a browser
+
+```bash
+python scripts/build_demo_page.py        # renders reports/demo.html from the real JSON
+python3 -m http.server 8099 --bind 127.0.0.1
+# open http://127.0.0.1:8099/reports/demo.html
+```
+
+Nothing on that page is hand-written. The trace, the advisory, the siting figures and
+the monthly observability table are all read out of the JSON the system actually
+produced, so the page either matches the data or it is wrong.
+
 ## The demo, in seven auditable steps
 
 Every step is a recorded tool call with its arguments, result and duration. The trace is the evidence.
