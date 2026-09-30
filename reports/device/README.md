@@ -12,6 +12,8 @@ launched on an Android emulator (API 36, x86_64, `/dev/kvm`) on 2026-10-01.
 | `pahiro-1.png` | the language gate: पहिरो · Pahiro, "कहाँ भाग्ने, र कति माथि", Nepali first |
 | `pahiro-3.png` | the escape screen **entirely in Nepali**, place मेलम्ची, water-rise slider |
 | `pahiro-walk.png` | the Walk tab: six trails from a 5.4 MB bundle read out of the APK |
+| `pahiro-escape-refusal.png` | the escape planner **refusing** at Melamchi, in Nepali, with advice |
+| `pahiro-beacon.png` | the Beacon tab: a message that needs no pairing and no app on the carrier |
 
 ## What this changes, and what it does not
 
@@ -22,6 +24,19 @@ a real handset" end here.
 **Unchanged, and still stated everywhere:** this is an **emulator**, not a physical phone. No radio
 figure has been measured on real hardware - Bluetooth range, Wi-Fi Aware range and battery endurance
 are all still somebody else's measurements or modelled from them. An emulator cannot measure a radio.
+
+## The refusal, on a device, is the best evidence in the repository
+
+Pressing "यहाँबाट कहाँ जाने?" at Melamchi returns:
+
+    नजिकै सुरक्षित उचाइ छैन
+    "There is no safe height nearby. Within walking distance there is no ground an estimated 5 m
+    higher, or that direction is not uphill. दौडन नखोज्नुहोस् - do not try to run: find a strong
+    building and go to the highest floor you can. पहिले खोलाबाट टाढा जानुहोस् - first move away
+    from the stream. This map is based on a grid of about 1082 metres, so treat it as regional."
+
+The app would rather tell somebody not to run than point them at ground that is not higher. That is
+the whole design, and it is now a screenshot rather than an intention.
 
 ## One thing the device showed that no test did
 
