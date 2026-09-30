@@ -197,7 +197,11 @@ input[type=range] { width: 100%; accent-color: var(--accent); }
   font-size: 13px; color: #04222a; background: var(--accent); padding: 9px 15px; border-radius: 999px;
   font-weight: 600; box-shadow: 0 8px 26px rgba(34,211,238,.28); }
 .phone:hover { filter: brightness(1.08); }
-@media (max-width: 760px) { .phone { display: none; } }
+/* The phone view is redundant on a phone and is hidden there. The FIELD APP is not: /field/ is a web
+   page, the SOS is for the device most likely to need it, and hiding it below 760px removed the entry
+   point to the other half of the project on exactly the screen somebody would be holding. */
+@media (max-width: 760px) { .phone:not(.fieldapp) { display: none; } }
+@media (max-width: 760px) { .phone.fieldapp { position: static; margin: 6px 0 0; display: inline-block; } }
 
 button.present { background: rgba(34,211,238,.16); border-color: rgba(34,211,238,.5); color: #a5f3fc; font-weight: 600; }
 button.present:hover { background: rgba(34,211,238,.3); color: #fff; }

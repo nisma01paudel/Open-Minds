@@ -675,7 +675,7 @@ export default function Page() {
         <Link href="/ar/" className="phone">📱 Open the phone view — point it at a hillside</Link>
         {/* The other half of the project: what happens AFTER a slope fails. Warning is
             information; this is the thing someone holds while digging. */}
-        <Link href="/field/" className="phone">🚨 Field app — SOS, the board, and the Bluetooth search</Link>
+        <Link href="/field/" className="phone fieldapp">🚨 Field app — SOS, the board, and the Bluetooth search</Link>
       </div>
       <Presenter
         beats={[

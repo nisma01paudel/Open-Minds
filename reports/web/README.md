@@ -79,6 +79,33 @@ Three paths near Kathmandu are unnamed in OSM, and the app prints "(unnamed path
 inventing one. The difficulty field says "not recorded" and "cannot check this from the map data"
 rather than guessing a grade from a length. The caveat paragraph names all three limits.
 
+## The SOS link that was hidden on phones
+
+Sweeping the stylesheet for other responsive hides after the advisory one turned up two more, both at
+760px:
+
+    @media (max-width: 760px) { .phone { display: none; } }
+    @media (max-width: 760px) { .stage header p { display: none; } }
+
+`.phone` is used by two links. Hiding the first is right:
+
+    "Open the phone view - point it at a hillside"   -> /ar/
+
+You are already on a phone. Hiding the second is not:
+
+    "Field app - SOS, the board, and the Bluetooth search"   -> /field/
+
+/field/ is a web page, the SOS is for the device most likely to need it, and the rule removed the
+entry point to the other half of the project on exactly the screen somebody would be holding. At
+700px that half of the product was unreachable from the front page.
+
+**Fixed** by distinguishing the two: `.phone:not(.fieldapp)` is still hidden below 760px, and
+`.phone.fieldapp` moves into the flow instead. Re-rendered at 700px and the SOS button is there, on
+its own row, while "Open the phone view" correctly stays hidden.
+
+`.stage header p` remains hidden below 760px. That is a judgement about space rather than a defect,
+and it is recorded here rather than changed.
+
 ## Narrow viewports, where two defects were real
 
 Everything above was captured at 1440-1600 px. At **860 px** two things were wrong, and unlike the five
