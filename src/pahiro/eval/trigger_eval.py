@@ -43,6 +43,35 @@ def _load(path: str) -> list[dict]:
     return [r for r in csv.DictReader(open(path, encoding="utf-8"))]
 
 
+def sample_across_dates(events: list[dict], distinct_dates: int = 15,
+                        per_date: int = 2) -> list[dict]:
+    """Take a few events from each of many event days, not the first N rows.
+
+    The benchmark file opens with one large multi-site cluster, so a naive head(N)
+    samples a single storm and compares it against its own controls - which is what
+    happened on the first run: all thirty "events" fell on 2018-08-08. Spread the
+    sample across event days instead, or the comparison measures one afternoon.
+    """
+    by_date: dict[str, list[dict]] = {}
+    for e in events:
+        by_date.setdefault(e["date"], []).append(e)
+    chosen: list[dict] = []
+    all_days = sorted(by_date)
+    # Span the whole range, endpoints included. Taking the earliest N dates samples the
+    # oldest years only - the same bias as taking the first N rows, one level up.
+    if len(all_days) <= distinct_dates:
+        picked_days = all_days
+    else:
+        n = distinct_dates - 1
+        idx = sorted({round(i * (len(all_days) - 1) / n) for i in range(distinct_dates)})
+        picked_days = [all_days[i] for i in idx]
+    for day in picked_days:
+        group = sorted(by_date[day], key=lambda r: r.get("incident_id", ""))
+        step = max(1, len(group) // per_date)
+        chosen.extend(group[::step][:per_date])
+    return chosen
+
+
 def evaluate_sites(sites: list[tuple[str, str, dict]], threshold=PANCHPOKHARI,
                    days: int = 4, verbose: bool = False) -> list[SiteResult]:
     """sites: list of (site_id, kind, row) where row has lat, lon and date."""
@@ -107,6 +136,10 @@ def summarise(results: list[SiteResult]) -> dict:
             "control rate is a lower bound and the measured difference is conservative",
             "the sample is small and the sites span several years of one region",
             "this measures the rainfall trigger only, not the whole system",
+            "the threshold is LOCAL: Practical Action fitted it to Helambu and Panchpokhari "
+            "Thangpal in Sindhupalchok, and it is used here as a national reference because no "
+            "equivalent published curve exists for every district - district-specific thresholds "
+            "would change the absolute rates, though not the event-vs-control comparison",
         ],
         "results": [asdict(r) for r in results],
     }
@@ -142,19 +175,25 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="Event vs control trigger discrimination.")
     ap.add_argument("--events", default="benchmark/events.csv")
     ap.add_argument("--controls", default="benchmark/controls.csv")
-    ap.add_argument("--limit-events", type=int, default=30)
+    ap.add_argument("--distinct-dates", type=int, default=15,
+                    help="spread the sample over this many event days; sampling a single "
+                         "cluster measures one storm, not the trigger")
+    ap.add_argument("--per-date", type=int, default=2)
     ap.add_argument("--days", type=int, default=4)
     ap.add_argument("--out", default="reports/trigger-discrimination.json")
     a = ap.parse_args(argv)
 
-    events = _load(a.events)[: a.limit_events]
+    events = sample_across_dates(_load(a.events), distinct_dates=a.distinct_dates,
+                                 per_date=a.per_date)
     controls = _load(a.controls)
     keep = {str(e.get("incident_id")) for e in events}
     controls = [c for c in controls if c.get("matched_event_id") in keep]
 
     sites = [(f"evt-{e['incident_id']}", "event", e) for e in events]
     sites += [(f"ctl-{c['control_id']}", "control", c) for c in controls]
-    print(f"evaluating {len(events)} events and {len(controls)} controls over {a.days} days",
+    days = sorted({e["date"] for e in events})
+    print(f"evaluating {len(events)} events across {len(days)} event days "
+          f"({days[0]} to {days[-1]}) and {len(controls)} controls, {a.days}-day window",
           file=sys.stderr)
 
     results = evaluate_sites(sites, days=a.days, verbose=True)

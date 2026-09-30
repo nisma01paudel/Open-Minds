@@ -157,3 +157,27 @@ def test_trigger_eval_scores_events_against_controls():
     assert rep["difference_pct_points"] == 50.0
     assert any("lower bound" in x for x in rep["limitations"])
     assert "does it discriminate" in __import__("pahiro.eval.trigger_eval", fromlist=["markdown"]).markdown(rep)
+
+
+def test_sampling_spreads_across_event_days():
+    """A head(N) sample lands inside one storm; that is what the first run did."""
+    from pahiro.eval.trigger_eval import sample_across_dates
+
+    events = []
+    for day in ("2018-08-08", "2019-07-12", "2024-09-28"):
+        for i in range(10):
+            events.append({"incident_id": f"{day}-{i}", "date": day, "lat": "27.7", "lon": "85.3"})
+    picked = sample_across_dates(events, distinct_dates=3, per_date=2)
+    assert len(picked) == 6
+    assert len({e["date"] for e in picked}) == 3, "every event day must be represented"
+
+
+def test_sampling_spans_the_whole_range_not_just_the_earliest():
+    from pahiro.eval.trigger_eval import sample_across_dates
+
+    events = [{"incident_id": str(i), "date": f"{2018 + i}-07-01", "lat": "27.7", "lon": "85.3"}
+              for i in range(8)]
+    picked = sample_across_dates(events, distinct_dates=4, per_date=1)
+    years = sorted({e["date"][:4] for e in picked})
+    assert years[0] == "2018", f"must include the earliest, got {years}"
+    assert years[-1] == "2025", f"must include the latest, got {years}"
