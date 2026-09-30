@@ -153,6 +153,22 @@
       <div id="bterr"></div>
     </div>
 
+    <h2>Distress beacons — heard without connecting</h2>
+    <div class="card">
+      <div class="muted" style="margin-bottom:8px">
+        A trapped handset broadcasts a <b>20-byte</b> frame inside the Bluetooth advertisement
+        itself — no pairing, no connection, and nothing required of the phone that carries it.
+        Walk anywhere near one and it appears here.
+      </div>
+      <div id="beaconstate" class="muted">Beacon scan: not started</div>
+      <button class="act" id="beaconscan">LISTEN FOR DISTRESS BEACONS</button>
+      <button class="act ghost" id="beaconloop">LOOPBACK TEST — ENCODE, SEND, DECODE</button>
+      <div id="beaconerr"></div>
+    </div>
+
+    <h2>Beacons heard</h2>
+    <div id="beacons" class="muted">None yet.</div>
+
     <h2>Nearby devices</h2>
     <div id="devices" class="muted">None yet.</div>
 
@@ -193,6 +209,7 @@
 </nav>
 
 <script src="/field/mesh.js"></script>
+<script src="/field/beacon.js"></script>
 <script>
 "use strict";
 /* =======================================================================================
@@ -885,6 +902,144 @@ $("saveapi").addEventListener("click", async function () {
     $("apitest").innerHTML = "<span class='pill hot'>unreachable</span> " + esc(e.message) +
       " — reports will be queued on this phone.";
   }
+});
+
+/* --- distress beacons over Bluetooth advertisements ---------------------------------- *
+ *
+ * The frame is 20 bytes carried inside the advertisement itself. There is no connection and
+ * no pairing, so the phone that carries it needs nothing installed and nothing open - which
+ * is the point, because the handset that emitted it is buried and the people walking past
+ * are strangers.
+ *
+ * Two paths, and they are labelled differently because they are different:
+ *   - the real scan uses Web Bluetooth's requestLEScan, which the platform may not offer
+ *   - the loopback encodes a frame and decodes it again, proving the codec end to end on a
+ *     stage with no radio. It is a test, and it says so.
+ */
+var beaconsHeard = {}, beaconScan = null;
+
+function beaconKey(b) { return b.origin() + "/" + b.messageId(); }
+
+function metresFromRssi(rssi, txPower, n) {
+  if (rssi === null || rssi === undefined) return null;
+  return Math.pow(10, (txPower - rssi) / (10 * n));
+}
+
+function heardBeacon(b, rssi, how) {
+  var k = beaconKey(b);
+  var rec = beaconsHeard[k] || { first: Date.now(), how: how || "radio" };
+  rec.b = b;
+  rec.rssi = (rssi === null || rssi === undefined) ? rec.rssi : rssi;
+  rec.last = Date.now();
+  rec.how = how || rec.how;
+  beaconsHeard[k] = rec;
+  renderBeacons();
+}
+
+function renderBeacons() {
+  var keys = Object.keys(beaconsHeard);
+  var box = $("beacons");
+  if (!box) return;
+  if (!keys.length) { box.className = "muted"; box.textContent = "None yet."; return; }
+  box.className = "";
+  keys.sort(function (a, c) { return beaconsHeard[c].last - beaconsHeard[a].last; });
+
+  // The first question a rescue coordinator asks is not "where" but "how many".
+  var devices = {};
+  keys.forEach(function (k) { devices[beaconsHeard[k].b.origin()] = 1; });
+  var distinct = Object.keys(devices).length;
+
+  var html = "<p class='muted'>" + keys.length + " beacon frame(s) from <b>" + distinct +
+    "</b> distinct device(s). " + keys.length + " frames is not " + keys.length + " people.</p>";
+
+  keys.forEach(function (k) {
+    var r = beaconsHeard[k], b = r.b;
+    var age = Math.round((Date.now() - r.last) / 1000);
+    var d = metresFromRssi(r.rssi, -59, 3.2);
+    html += "<div class='card'>" +
+      "<div><b>" + esc(b.peopleText()) + "</b> · " + esc(b.severity.toUpperCase()) + " " +
+      esc(b.kind) + (b.lowBattery ? " · <span class='pill hot'>low battery</span>" : "") + "</div>" +
+      "<div class='muted'>" + esc(b.origin()) + " · " + esc(b.messageId()) + "</div>" +
+      "<div>" + (b.hasPosition()
+        ? "last fix <b>" + b.lat.toFixed(5) + ", " + b.lon.toFixed(5) + "</b>"
+        : "<i>no position fix — RSSI only</i>") + "</div>" +
+      "<div class='muted'>emitted " + esc(b.created.toISOString().slice(11, 16)) + "Z · aged " +
+      age + "s" + (r.rssi === null || r.rssi === undefined ? "" :
+        " · " + r.rssi + " dBm, roughly " + (d === null ? "?" : d.toFixed(1)) + " m at free air") +
+      " · heard by " + esc(r.how) + "</div>" +
+      "<button class='act' data-beacon='" + esc(k) + "'>PUT ON THE BOARD</button>" +
+      "</div>";
+  });
+  box.innerHTML = html;
+}
+
+/* Hand a heard beacon to the mesh, so it reaches the Board and the gateway like any other
+ * message. This is the join: the advertisement was only ever a carrier. */
+function beaconToBoard(key) {
+  var r = beaconsHeard[key];
+  if (!r || !mesh) return;
+  var b = r.b;
+  var body = b.severity.toUpperCase() + " " + b.kind + ": " + b.peopleText();
+  if (b.hasPosition()) body += " at " + b.lat.toFixed(5) + "," + b.lon.toFixed(5);
+  body += " — heard over a Bluetooth advertisement, " + b.hops + " hop(s) away";
+  mesh.send(mesh.node.compose("sos", body, { lat: b.lat, lon: b.lon,
+                                             people: b.people || null }));
+  mesh.pump();
+  renderChat();
+}
+
+function startBeaconScan() {
+  var st = $("beaconstate"), err = $("beaconerr");
+  if (typeof PahiroBeacon === "undefined") {
+    st.textContent = "Beacon codec: not loaded"; return;
+  }
+  if (!PahiroBeacon.canScan()) {
+    st.innerHTML = "Beacon scan: <b>this browser cannot scan advertisements</b>. " +
+      "Web Bluetooth offers requestLEScan on Android Chrome; on desktop it is usually absent.";
+    err.innerHTML = "<div class='muted'>The codec itself is here and tested — use the " +
+      "loopback button to see a frame encoded and decoded.</div>";
+    return;
+  }
+  st.textContent = "Beacon scan: asking for permission…";
+  PahiroBeacon.watchAdvertisements(function (b, rssi) { heardBeacon(b, rssi, "radio"); })
+    .then(function (scan) {
+      beaconScan = scan;
+      st.innerHTML = "Beacon scan: <b>listening</b> for any advertisement carrying a " +
+        "Pahiro frame. No pairing, no connection.";
+    })
+    .catch(function (e) {
+      st.textContent = "Beacon scan: refused or unavailable (" + e.message + ")";
+    });
+}
+
+/* Encode a frame, carry it through a relay, decode it, and show the bytes. A demonstration
+ * needs to run on a stage with no radio, and it must be obvious that this is a loopback and
+ * not a received distress call. */
+function beaconLoopback() {
+  var st = $("beaconstate");
+  if (typeof PahiroBeacon === "undefined") { st.textContent = "Beacon codec: not loaded"; return; }
+  var lat = 27.71542, lon = 85.31234;
+  var frame = PahiroBeacon.encode("handset-loopback", "msg-loopback-" + Date.now(), {
+    kind: "sos", lat: lat, lon: lon, people: 2, severity: "critical", lowBattery: true
+  });
+  var relayed = PahiroBeacon.relay(frame);
+  var b = PahiroBeacon.decode(relayed);
+  var hex = Array.from(frame).map(function (x) { return ("0" + x.toString(16)).slice(-2); }).join("");
+  st.innerHTML = "Loopback: " + frame.length + " bytes (of " + PahiroBeacon.MAX_AD_BYTES +
+    " available), relayed once, decoded → <b>" + b.peopleText() + "</b> at " +
+    b.lat.toFixed(5) + "," + b.lon.toFixed(5) + " (ttl " + b.ttl + ", hop " + b.hops + ")." +
+    "<div class='muted' style='font-family:ui-monospace,monospace;word-break:break-all'>" +
+    hex + "</div>" +
+    "<div class='muted'>This is a test frame produced and decoded on this device, not a " +
+    "received distress call.</div>";
+  heardBeacon(b, null, "loopback test");
+}
+
+if ($("beaconscan")) $("beaconscan").addEventListener("click", startBeaconScan);
+if ($("beaconloop")) $("beaconloop").addEventListener("click", beaconLoopback);
+if ($("beacons")) $("beacons").addEventListener("click", function (ev) {
+  var k = ev.target && ev.target.getAttribute && ev.target.getAttribute("data-beacon");
+  if (k) beaconToBoard(k);
 });
 
 /* --- start --------------------------------------------------------------------------- */
