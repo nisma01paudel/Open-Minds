@@ -1,30 +1,83 @@
 # Pahiro (पहिरो) — from detection to dispatch
 
 > **Nepal can already *detect*. Nepal cannot *dispatch*.**
-> This is the missing last metre: turning a slope signal into a specific, readable,
-> authority-addressed inspection request in Nepali — with the data gap stated honestly.
+> Pahiro is the missing last metre: it turns a slope signal into a specific, readable,
+> authority-addressed inspection request in Nepali — and says so when it cannot see.
 
-**Status: Week 0 scaffold.** Under active development for Frogtoberfest 2026 (Oct 1–30, 2026).
-Nothing here is a working product yet; this README grows with the build.
+A detection is not an instruction. A ward chair cannot act on a raster; a division road engineer cannot
+act on "elevated hazard probability". Pahiro takes a slope signal — satellite change, radar, rainfall, or
+a citizen's report — and produces a **dispatch object**: what changed, how stale the evidence is, which
+named office is responsible under which cited legal provision, what to inspect first, and whether to
+repair in place or relocate the asset above the deformation zone.
 
-## The problem
+## What runs today
 
-Nepal has world-class landslide science and operational rainfall-threshold warnings. What it lacks is the
-step after detection: a detection is not an instruction. A ward chair cannot act on a raster. A division
-road engineer cannot act on "elevated hazard probability".
+Not a plan — running code, verified against live services:
 
-Pahiro takes a slope signal — satellite change, rainfall accumulation, or a citizen's report — and emits a
-**dispatch object**: what changed, how stale the evidence is, which named office is responsible under which
-mandate, what to inspect first, and, where the evidence supports it, whether to repair in place or relocate
-the asset above the deformation zone.
+| Component | State |
+|---|---|
+| Free satellite ingest (Sentinel-2, Sentinel-1, DEM, CHIRPS) | **working**, anonymous, no keys |
+| Per-AOI cloud screening (the honest measure) | **working** — 150 scenes screened, July = 0.0% clear |
+| Staleness gate (issue / degraded / **abstain**) | **working**, measured: 34-day monsoon blind streak |
+| Dispatch object with validation | **working** — an authority without a cited section is structurally invalid |
+| Nepali advisory renderer | **working** — fully Nepali, including the evidence state |
+| **AI routing / triage** (open-weight, on CPU) | **working** — real model, citation-locked |
+| BIPAD government integration | **working** — coordinate → ward; real road-blockage register |
+| Evaluation harnesses (routing accuracy, kappa, gap calibration) | **working** |
+
+54 tests pass. Every claim in this repo is reproducible from the commands below.
+
+## Quickstart
+
+```bash
+uv venv .venv && uv pip install --python .venv/bin/python -e '.[geo]'
+
+python scripts/verify_data_access.py          # the founding evidence, live from anonymous STAC
+python -m pytest -q                            # 54 tests
+
+# end-to-end: a real coordinate, real observations, a real Nepali advisory
+python scripts/demo_end_to_end.py --lon 85.0575 --lat 27.7620 --as-of 2024-07-20 \
+    --obs evidence/screen-dhading-2024.jsonl --radar evidence/s1-radar-dates.jsonl
+
+# with the open-weight decision model (see scripts/serve_model.sh)
+python scripts/demo_end_to_end.py --lon 85.0575 --lat 27.7620 --as-of 2024-07-20 \
+    --obs evidence/screen-dhading-2024.jsonl --report "a rural road above a national highway has failed"
+```
+
+## Why this matters — with numbers we measured
+
+**In July, 0.0% of Sentinel-2 scenes over eleven years had more than 80% clear ground at our study slope.**
+Not few — zero. July is when Nepal's landslides kill. Optical-only monitoring is blind exactly when it
+matters, and radar is the only thing still looking (4–6 passes every month of every year).
+
+Measured consequence: under an optical-only policy the system can speak on **89.6%** of days, with a
+**hidden 34-day silence** across the monsoon. Adding radar closes it — **+58 points in July**.
+
+And the intake side is broken too: BIPAD holds **7,081 citizen hazard reports of which zero are
+verified**, 323 are uncleaned SQL-injection probes, and genuine reports (`सडकमा क्षति`, damage to the
+road, ×46) were never actioned. Nepal's own 2020 review recommended the missing function and it was
+never built.
+
+## What the AI actually does
+
+The guidelines' test: *"if you deleted the AI call from your codebase, would the product still do its
+job? If yes, it doesn't qualify."*
+
+**It does not.** Geometry, thresholds and every number stay deterministic. The open-weight model owns the
+decision chain: severity triage, which asset is failing, which duty applies, which cited rule governs,
+and the addressed advisory. Delete it and a free-text report yields no authority, no priority and no
+dispatch — asserted in `tests/test_router.py::test_without_the_model_nothing_is_routed`.
+
+Crucially, **the model is never asked what it knows.** Asked to name the responsible authority from its
+own knowledge, it invented *Indian* ministries for a Nepali road. So it is constrained to **choose among
+cited rules retrieved from the ontology**, and the institution and legal basis are read from the ontology
+record — never from the model. Both responses are kept in `evidence/grounding-contrast.md`.
 
 ## What this project does NOT claim
 
-We do not claim to detect landslides better, to predict failure, or to have built the first Nepali hazard
-app. Detection is a solved, open, published field and we use it rather than re-derive it. See
-`docs/PRIOR-ART.md` for the works we build on and cite — including two 2026 papers that already use
-open-weight LLMs to write priority-ranked landslide reports. Our contribution is the translation and
-dispatch layer, not the sensing.
+We do not claim to detect landslides better, to predict failure, or to be first at anything except a
+machine-readable routing key. Detection is solved and published; we use it and credit it
+(`docs/PRIOR-ART.md`, `docs/DIFERENTIATION.md`). Our contribution is the translation and dispatch layer.
 
 ## Architecture
 
@@ -32,93 +85,48 @@ dispatch layer, not the sensing.
 INPUTS (borrowed, credited)                THE LAST METRE (ours)
   Sentinel-2 / Sentinel-1  ──┐
   CHIRPS rainfall            │   ingest tools → structured change features
-  Copernicus DEM             ├─▶ (+ per-sensor observation age)
+  Copernicus DEM             ├─▶ (+ per-sensor observation age and verification state)
   susceptibility (Kincey)    │            │
   citizen reports (photo)  ──┘            ▼
-                              ROUTING (AI)   RAG over the cited mandate ontology
-                                             → institution + escalation + priority
-                              ADVISORY (AI)  constrained Nepali template, slot-filled
-                              ABSTAIN (AI)   refuses to issue when evidence is stale
+                              TRIAGE + ROUTING (AI)  choose among cited rules from
+                                             ontology/nepal-slope-routing.json
+                              ADVISORY (AI)  constrained Nepali template
+                              ABSTAIN (AI)   refuses when evidence is stale
                                              │
                                              ▼
                               ★ DISPATCH OBJECT (schema-validated JSON) ★
                                              │
-                    ranked queue · Nepali advisory · work order · siting advice
+                    ranked queue · Nepali advisory · work order · BIPAD register payload
                     alerts · append-only provenance (scene IDs, model, ontology version)
 ```
 
-## AI usage (open-weight only)
+## Documentation
 
-No proprietary AI API is called anywhere in this repository. No OpenAI, Anthropic, Google or Azure AI —
-including embeddings and auxiliary classification.
-
-*(Full disclosure naming the exact file/function where AI output is consumed programmatically is required
-for eligibility and will be completed as the modules land. Placeholder: `docs/AI-USAGE.md`.)*
-
-## Status — what is verified working today
-
-| Component | State | Evidence |
-|---|---|---|
-| Anonymous free data access | **verified live** | `scripts/verify_data_access.py` — Sentinel-2, Sentinel-1, Copernicus DEM, CHIRPS; no account, no key |
-| Satellite ingest + cloud masking | **working** | `src/pahiro/ingest/` — reads a COG window over HTTP (range requests), masks via the SCL band |
-| Real observation series | **built** | `evidence/dhading-2024-obs.csv` — 12 monthly passes over the Dhading corridor, 2024 |
-| Staleness gate (abstain / degraded / ok) | **working, tested** | `src/pahiro/routing/abstain.py`, 11 passing tests in `tests/test_abstain.py` |
-| Routing ontology | **in progress** | `docs/AUTHORITY-MAP.md` — citations being verified |
-| Evaluation harness | planned | design in the plan; routing accuracy + expert-rated advisories + kappa |
-
-A real run over the Dhading corridor (best available scene per month, 2024):
-
-```
-2024-01 usable 1.000   2024-05 usable 0.709   2024-09 usable 0.859
-2024-02 usable 0.753   2024-06 usable 0.791   2024-10 usable 1.000
-2024-03 usable 1.000   2024-07 usable 0.218  <- BLIND   2024-11 usable 0.947
-2024-04 usable 1.000   2024-08 usable 0.864   2024-12 usable 0.996
-```
-
-`usable` is the fraction of the study patch left after cloud masking. In July 2024 **even the least-cloudy
-scene available** left only 22% usable. Across 2019–2025 not one scene met a 20% cloud threshold in July
-or August — while Sentinel-1 radar delivered 4–6 usable looks every month of every year.
-
-Honest nuance: optical coverage in the monsoon is **sporadic and unreliable**, not uniformly zero —
-August 2024's best available scene reached 86% usable. The system therefore reports the state rather
-than promising a look.
-
-## Quickstart
-
-```bash
-uv venv .venv && uv pip install --python .venv/bin/python -e '.[geo]'
-.venv/bin/python scripts/verify_data_access.py                 # the founding evidence
-.venv/bin/python -m pytest -q                                  # 11 tests
-.venv/bin/python -m pahiro.ingest.series \
-    --bbox 84.95 27.75 85.10 27.90 --from 2024-01-01 --to 2024-12-31 \
-    --max-cloud 100 --best-per-month --out evidence/run
-```
-
-## Reproduce the founding evidence
-
-```bash
-python3 scripts/verify_data_access.py            # live; needs only the standard library
-```
-
-This prints, from live anonymous STAC data, the finding that drives the design: over the Dhading
-corridor, **zero usable Sentinel-2 scenes in July and August across seven years**, versus 4–6
-cloud-free Sentinel-1 radar looks every month.
-
-## Data sources (all free, no account, no key)
-
-| Source | Access |
+| Document | What it holds |
 |---|---|
-| Sentinel-2 L2A, Sentinel-1 GRD, Copernicus DEM 30 m | anonymous STAC — `earth-search.aws.element84.com/v1` |
-| CHIRPS daily rainfall | `data.chc.ucsb.edu` |
+| `docs/AI-USAGE.md` | the required disclosure, naming the exact file/function where AI output is consumed |
+| `docs/MODELS.md` | the pinned stack with measured latencies and licences |
+| `docs/DATA.md` | verified data access, measured monsoon climatology, and the traps |
+| `docs/PRIOR-ART.md` · `docs/DIFERENTIATION.md` | what exists, what we add, and the evidence |
+| `docs/AUTHORITY-MAP.md` · `ontology/nepal-slope-routing.json` | who is responsible, under which section |
+| `docs/COMPETITION.md` | the field, and what winning requires |
+| `reports/eval-v0.md` · `reports/routing-eval.md` | measurements: gap calibration, routing accuracy |
+| `docs/DEMO-SCRIPT.md` | the 2–3 minute demo video script |
 
-## Limitations
+## Limitations — stated, not buried
 
-- Retrospective prototype on pilot corridors; **operational skill is unvalidated.**
-- Rapid, shallow failures are out of scope for the satellite path and belong to existing rainfall-threshold
-  warning systems.
-- Sentinel-1 revisit and terrain geometry mean latency, not real-time coverage.
-- *(expanded in `docs/LIMITATIONS.md` before submission)*
+- **Not validated for prediction.** This is a retrospective prototype on pilot corridors; no claim is
+  made that it would have predicted any landslide. It measures whether the system can *speak*, and how
+  accurately it *routes*.
+- **Radar usability is unmeasured**, so radar-derived confidence is capped and labelled.
+- **Single pilot AOI** for the monsoon numbers. The method transfers; the numbers must be re-measured.
+- **The ontology is cited but not yet legally reviewed.** A Nepal-based legal reviewer must check every
+  row before operational use. Where the law is silent we say so — e.g. no provision was found letting a
+  municipality compel a landowner to stabilise a *bare slope*.
+- **Nepali is template-based, not free-generated.** A purpose-built 1B English–Nepali model scores at
+  chance, so the model selects among human-reviewed sentences rather than writing prose.
+- **InSAR compliance is out of scope**; LiCSAR products are available for slow-creep validation.
 
-## License
+## Licence
 
-MIT — see `LICENSE`. Model licenses documented in `docs/AI-USAGE.md`.
+MIT — see `LICENSE`. Model licences are documented in `docs/MODELS.md`. This is not legal advice.
