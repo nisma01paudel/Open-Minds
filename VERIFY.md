@@ -115,6 +115,31 @@ The pattern in every row: the thing was verified where it was built, and broken 
 used. That is why the commands above are run from a clean clone, and why
 `verify_repo.py` treats a **skipped** cross-language check as a failure rather than a pass.
 
+## The safety-critical path, exercised live
+
+The escape planner is the feature a life depends on, so it is worth seeing rather than trusting. With
+the API running:
+
+```bash
+curl -s "http://127.0.0.1:8080/api/v1/escape?lat=28.35&lon=83.57&rise_m=5"
+```
+
+    reachable  true
+    target     28.348115, 83.589478  at 1058 m   (you are at 1043 m)
+    climb      15 m over 1076 m, bearing 90 east, about 18 minutes
+    why        uphill ground that clears the expected 5 m rise by 2 m;
+               the local fall line runs 125 degrees
+    advice     "... This is terrain-only, from a 1077 m grid, and it cannot see bridges,
+               culverts or the water itself. Move away from the stream first, then uphill."
+
+Three things to notice. It gives a **direction, a distance and a height**, not a point on a map. It
+says **why** it chose that ground. And the **caveat travels with the advice** rather than sitting in a
+document - a person reading that sentence in a flood knows exactly what the answer does not know.
+
+The same endpoint **refuses** at Melamchi, where the only higher ground is downhill and across the
+water, and at Nepalgunj, where it is 4.8 km away. A refusal that says so beats a direction that is
+wrong.
+
 ## What is deliberately NOT verified
 
 Stated here so nobody has to find it:
