@@ -67,6 +67,7 @@ flutter:
     # Kathmandu valley: a trail is vector geometry, which is small, stays correct at every zoom,
     # and needs no network once it is here.
     - assets/trails.geojson
+    - assets/seasons.json
 
   # To add assets to your application, add an assets section, like this:
   # assets:
