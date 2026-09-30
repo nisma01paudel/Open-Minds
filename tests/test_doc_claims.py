@@ -1028,3 +1028,31 @@ def test_every_headline_count_is_derived_from_its_data_not_remembered():
             expected = f"{value:,}" if "," in shown else str(value)
             assert expected in text, (
                 f"{doc} does not state {expected}, which is what {shown} is derived as now")
+
+
+def test_the_readmes_measured_numbers_trace_to_a_report():
+    """The same rule as the summary, applied to the front page's own measurement section.
+
+    Everything the README states as measured - 0.0% in July, 90.4% of days, the 34-day silence, the
+    +58 points from radar, and the 7,081 BIPAD rows - has to exist in a report, because a front page
+    is where a reviewer looks first and where an unsourced number does the most damage.
+    """
+    readme = read("README.md")
+
+    # the ones that come from the evaluation
+    ev = read("reports/eval-v1.md") + read("reports/eval-v0.md")
+    # The README writes "34-day silence" and the report writes "34 days" - the same fact hyphenated
+    # two ways. Asserting one spelling in both documents is the narrow-pattern mistake this file has
+    # now made four times; the check is on the NUMBER.
+    assert "90.4" in readme and "90.4" in ev
+    assert "34" in readme and "34 days" in ev, "the 34-day silence must trace to the evaluation"
+    assert "34-day" in readme or "34 day" in readme, "the README no longer states the silence"
+
+    # and the one that comes from the reporting-chain research, not from us
+    chain = read("docs/research/nepal-slope-reporting-chain.md")
+    assert "7,081" in readme and "7,081" in chain, (
+        "the BIPAD figure must trace to the research that measured it")
+
+    # that research states its own caveat, and the caveat must survive
+    assert "count" in chain and "broken" in chain, (
+        "the pagination caveat on the 7,081 figure is gone from the research document")
