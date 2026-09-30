@@ -1,0 +1,13 @@
+source,year,Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec
+sentinel-2-l2a_cloud_lt20,2019,10,8,12,8,14,6,0,0,0,5,19,10
+sentinel-2-l2a_cloud_lt20,2020,3,8,18,12,4,2,0,0,0,14,16,23
+sentinel-2-l2a_cloud_lt20,2021,6,20,21,17,4,0,0,0,7,8,18,21
+sentinel-2-l2a_cloud_lt20,2022,1,6,14,6,3,0,0,0,0,6,12,11
+sentinel-2-l2a_cloud_lt20,2023,4,8,8,6,9,4,0,0,0,5,9,6
+sentinel-2-l2a_cloud_lt20,2024,4,8,7,10,5,1,0,0,0,4,11,8
+sentinel-2-l2a_cloud_lt20,2025,5,9,11,9,3,0,0,0,2,11,13,10
+sentinel-2-l2a_cloud_lt20,TOTAL,33,67,91,68,42,13,0,0,9,53,98,89
+sentinel-1-grd,2023,5,4,5,5,5,5,5,5,6,4,6,5
+sentinel-1-grd,2024,5,5,5,5,5,4,5,6,4,6,4,4
+sentinel-1-grd,2025,5,5,5,5,4,5,6,5,5,5,6,4
+sentinel-1-grd,TOTAL,15,14,15,15,14,14,16,16,15,15,16,13

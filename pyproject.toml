@@ -1,0 +1,18 @@
+[project]
+name = "pahiro"
+version = "0.0.1"
+description = "From detection to dispatch: authority-addressed slope advisories for Nepal"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = []
+
+[project.optional-dependencies]
+geo = ["rasterio", "numpy", "requests", "pystac-client"]
+ai = ["onnxruntime"]        # open-weight models only
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
