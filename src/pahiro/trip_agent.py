@@ -61,6 +61,8 @@ class TripQuery:
     max_fare_rs: float | None = None
     wants: list[str] = field(default_factory=list)
     dropped: list[str] = field(default_factory=list)   # model fields refused, and why
+    inferred: list[str] = field(default_factory=list)  # fields the model added that the words
+                                                       # do not support
 
     def describe(self) -> str:
         bits = []
@@ -73,6 +75,11 @@ class TripQuery:
         if self.wants:
             bits.append("wants " + ", ".join(self.wants))
         return "; ".join(bits) or "anything walkable"
+
+
+def _mentions_money(text: str) -> bool:
+    low = text.lower()
+    return bool(re.search(r"(rs\.?|npr|rupee|रुपैयाँ|\b\d+\s*(rs|rupees?))", low))
 
 
 def _keywords(text: str) -> TripQuery:
@@ -189,6 +196,23 @@ def parse_request(text: str, backend=None) -> TripQuery:
     w = raw.get("wants")
     if isinstance(w, list):
         q.wants = [x for x in w if isinstance(x, str) and x in WANTS]
+
+    # A CONSTRAINT THE WORDS DO NOT SUPPORT IS NOT A CONSTRAINT.
+    #
+    # Validation checked VALUES - a difficulty outside the enum, an absurd duration - and never
+    # checked whether the request had asked for the field at all. So "a hard 6 hour climb" came back
+    # as "hard; under 6h00; bus under Rs 100; wants a view": two constraints the model invented, one
+    # of which silently removes every trail with a pricier bus.
+    #
+    # A hallucinated budget is not a cosmetic error - it narrows the answer using something nobody
+    # said. So a money constraint has to be grounded in the text, and one that is not is recorded
+    # rather than obeyed.
+    if q.max_fare_rs is not None and not _mentions_money(text):
+        q.inferred.append(f"bus under Rs {q.max_fare_rs:.0f} (no budget was mentioned)")
+        q.max_fare_rs = None
+    if q.wants and not any(word in text.lower() for w in q.wants for word in WANTS[w]):
+        q.inferred.append("wants " + ", ".join(q.wants) + " (not in the request)")
+        q.wants = []
 
     # Anything the model missed, the deterministic reader may have caught; and anything the
     # model invented is not added to it. The union is taken only where they agree or the keyword

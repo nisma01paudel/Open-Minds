@@ -50,8 +50,11 @@ def test_a_model_answer_is_validated_before_it_is_used():
     assert q.difficulty is None or q.difficulty == "easy", "an invalid difficulty was obeyed"
     assert q.max_minutes is None, "a 100000-minute walk was accepted"
     assert q.max_fare_rs is None, "a negative fare was accepted"
-    assert q.wants == ["view"], f"an invented want survived: {q.wants}"
+    # "view" is not in "a gentle walk" either, so it is dropped by the grounding rule as well as
+    # "dinosaurs" being outside the allowlist. Both are refusals and both are recorded.
+    assert q.wants == [], f"an unsupported want survived: {q.wants}"
     assert q.dropped, "refused fields must be recorded, not silently discarded"
+    assert q.inferred, "unsupported-but-valid fields must be recorded too"
 
 
 def test_a_broken_model_does_not_break_planning():
@@ -112,3 +115,42 @@ def test_the_understood_request_is_returned_alongside_the_options():
     q, _ = T.plan("easy 2 hour walk, bus under Rs 40", KATHMANDU)
     assert "easy" in q.describe()
     assert "Rs 40" in q.describe()
+
+
+def test_a_constraint_the_words_do_not_support_is_refused():
+    """The regression, found by asking the live model for "a hard 6 hour climb".
+
+    It answered "hard; under 6h00; bus under Rs 100; wants a view". Two of those four were invented.
+    Validation checked VALUES - difficulty inside the enum, duration sane - and never checked
+    whether the request had asked for the field at all, so a hallucinated budget quietly removed
+    every trail whose bus cost more than it.
+    """
+
+    class Inventing:
+        def available(self): return True
+
+        def decide(self, prompt, schema):
+            return {"difficulty": "hard", "max_minutes": 360,
+                    "max_fare_rs": 100, "wants": ["view"]}
+
+    q = T.parse_request("a hard 6 hour climb", Inventing())
+    assert q.difficulty == "hard", "a supported field must survive"
+    assert q.max_minutes == 360
+    assert q.max_fare_rs is None, "an invented budget was obeyed and would have filtered options"
+    assert q.wants == [], "an invented want was obeyed"
+    assert len(q.inferred) == 2, f"both inventions must be recorded, got {q.inferred}"
+
+
+def test_a_constraint_the_walker_actually_stated_is_kept():
+    """The grounding rule must not throw away real requests."""
+
+    class Fine:
+        def available(self): return True
+
+        def decide(self, prompt, schema):
+            return {"max_fare_rs": 40, "wants": ["view"]}
+
+    q = T.parse_request("easy walk with a view, bus under Rs 40", Fine())
+    assert q.max_fare_rs == 40, "a budget the walker stated was dropped"
+    assert q.wants == ["view"]
+    assert q.inferred == []

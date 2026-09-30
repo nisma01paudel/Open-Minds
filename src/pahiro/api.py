@@ -519,6 +519,9 @@ class _Handler(BaseHTTPRequestHandler):
             "understood": query.describe(),
             "understood_by": "open-weight model" if model_used else "keyword reader (no model server)",
             "refused_fields": query.dropped,
+            # Fields the model produced that the words do not support. Reported, not obeyed: an
+            # invented budget silently removes every option above it.
+            "inferred_fields": query.inferred,
             "origin": {"lat": lat, "lon": lon},
             "options": [
                 {
