@@ -8,6 +8,56 @@ Read this file and you have everything. Ten minutes end to end.
 
 ---
 
+## If you have sixty seconds
+
+**The gap nobody builds.** Nepal has world-class detection science and several working detection
+efforts. What does not exist is the *last metre*: a slope signal turned into a specific,
+authority-addressed inspection request, in Nepali, that names who is responsible and under which
+section of law. Everyone builds the detector. Nobody builds the dispatch, because it is a legal and
+organisational problem rather than a modelling one — which is exactly why it is still open.
+
+**It is anchored to a real event.** 12 July 2024, Simaltal: two buses, 62 people, 40 never
+recovered. **The fatal slope was a rural road built by a municipality**, above the national highway.
+Nobody was looking at the asset that failed.
+
+**The result that should make you sceptical of every other entry.** Everyone assumes rainfall tells
+you which slope will fail. We tested it and **it does not** — failing slopes sat at the
+**53rd/55th percentile** of rainfall load, and only 4 of 14 crossed the threshold. So this system
+**ranks, routes and recommends. It never predicts.** Said on the first slide, not buried in a
+limitations section.
+
+**It measures its own blindness.** July, August and September returned **0.0%** of whole scenes with
+more than 80% of the frame clear; site-level usability in August was **16.8%**, and **17 of 142
+documented sites were never seen at all**. The system says *"I cannot see this"* and **abstains**,
+rather than going quiet and looking like *all clear*.
+
+**It is a product, not a demo.** Nobody opens a landslide tool on a clear Saturday, and a tool nobody
+opens is not installed on the Tuesday the mountain moves. So the same engine answers the ordinary
+question too — which hiking trail, and which bus, from where I am standing. **23,726 mapped footpaths
+across six regions of Nepal, offline, on the web and on the phone.**
+
+**Open weights only, as the brief requires.** Qwen2.5-1.5B-Instruct on CPU through llama.cpp. No API
+key, no hosted service, nothing that stops working when the credit runs out. And when the model is not
+running, the planner still works on a deterministic reader — **one code path for choosing a trail,
+not two.**
+
+**Everything is checkable.** A clean clone builds, tests and verifies itself; the release APK carries
+its own map data; every file in `web/public/data/` records what produced it; and the suite has been
+**mutation-tested** — ten load-bearing constants broken on purpose, ten caught.
+
+### What this does NOT claim
+
+Stated here so you do not have to find it:
+
+- **Nothing has run on a real handset.** Every radio range figure is somebody else's measurement or
+  modelled from one. The logic is tested; the radios are not.
+- **Duty identification is the weak axis at 52.4%** — routing is 61.9% exact and 76.2% on the right
+  asset, but it abstains rather than guesses.
+- **No cryptographer has reviewed the sealing layer.**
+- Nepali footpath coverage is incomplete; the terrain grid is ~1 km; bus schedules are not known here.
+
+---
+
 ## The five required items
 
 | # | Required | Where | State |
