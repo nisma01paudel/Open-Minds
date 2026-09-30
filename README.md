@@ -83,7 +83,11 @@ record — never from the model. Both responses are kept in `evidence/grounding-
 
 ## The whole pipeline on the day of a real disaster
 
-`./scripts/demo.sh   # one command: starts the model, runs everything --lon 85.05 --lat 27.76 --as-of 2024-09-28 --report "..."`
+```bash
+./scripts/demo.sh                                        # one command: starts the model, runs everything
+./scripts/demo.sh --as-of 2024-07-20                     # a mid-monsoon date: the abstain state
+./scripts/demo.sh --lon 85.30 --lat 27.70 --report "..."  # any slope you like
+```
 
 **2024-09-28 is the day BIPAD records 167 landslides.** Seven recorded steps, all live:
 
