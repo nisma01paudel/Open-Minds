@@ -117,7 +117,10 @@ cap cb "613 documented landslide-prone slopes.\nEach carrying the routing key's 
 build map 01-map b cb
 cap cc "The 2024 monsoon."
 build season SEASON c cc
-cap cd "28 September 2024.\n305 of 613 slopes above the rainfall threshold.\nThat day Nepal recorded 167 landslides."
+# Corrected: the season peak was 149 of 613 and the named day itself had 31. The 305 that
+# used to be here was proved wrong against the timeline and fixed in the presenter cue - but not
+# here, in a required deliverable, for seven rounds.
+cap cd "28 September 2024.\n31 of 613 slopes above the rainfall threshold.\nThe season peaked the day before, at 149.\nThat day Nepal recorded 167 landslides."
 build peak 02-peak d cd
 cap ce "And only 27.8% of that month's satellite imagery had clear ground."
 build blind 03-advisory e ce

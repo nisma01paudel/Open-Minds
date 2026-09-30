@@ -907,3 +907,29 @@ def test_the_submission_states_what_the_video_does_not_cover():
         "the submission no longer states what the video omits")
     assert "older than the product it describes" in sub
     assert "reports/device" in sub
+
+
+def test_the_film_caption_states_the_counts_the_timeline_holds():
+    """The 305 that was fixed in the presenter cue and left in the film.
+
+    Round 50 proved against the timeline that no day in the 2024 monsoon has 305 slopes above the
+    threshold: the peak is 149 and the named day, 28 September, has 31. The presenter cue in
+    web/app/page.tsx was corrected. The caption burned into the required video was not, and it said
+    305 for seven more rounds - in the artefact a judge actually watches.
+    """
+    import json
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    tl = json.loads((root / "web/public/data/timeline.json").read_text(encoding="utf-8"))
+    days, th, sites = tl["days"], tl["threshold_mm_24h"], tl["sites"]
+    counts = {d: sum(1 for s in sites if s["r"][i] >= th) for i, d in enumerate(days)}
+    named, peak = counts["2024-09-28"], max(counts.values())
+
+    build = read("scripts/build_voiced_video.sh")
+    caption = [l for l in build.splitlines() if l.startswith("cap cd ")][0]
+
+    assert "305" not in caption, (
+        "the film caption claims 305 slopes; no day in the monsoon reaches it")
+    assert str(named) in caption, f"the film caption should state the real count for that day ({named})"
+    assert str(peak) in caption, f"the film caption should state the season peak ({peak})"
