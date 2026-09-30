@@ -79,6 +79,37 @@ Three paths near Kathmandu are unnamed in OSM, and the app prints "(unnamed path
 inventing one. The difficulty field says "not recorded" and "cannot check this from the map data"
 rather than guessing a grade from a length. The caveat paragraph names all three limits.
 
+## /field/ - the last surface in the product, now seen
+
+The SOS button in the header links here, and this page had never been rendered. It is the emergency
+interface rather than a map:
+
+    Pahiro Field पहिरो                                      online
+    SEND A DISTRESS REPORT
+    Location: unavailable (User denied Geolocation).
+              The report will still be sent - describe where you are.
+    [ What is happening: "House buried by the slide, two of us inside" ]
+    People with me [1]        Battery % [auto]        Name [optional]
+    [                        SEND SOS                        ]
+    Works with no signal. If the network is down the report is kept on this phone and sent the
+    moment a connection appears - or carried by someone else's phone over Bluetooth.
+    WAITING TO SEND
+    Nothing queued.
+    SOS  .  Board  .  Chat  .  Search  .  भाग्नुहोस्  .  More
+
+**The geolocation line is the one worth looking at.** A headless browser denies geolocation, so this
+frame is a real denial - and the page does not block, does not show a spinner and does not pretend to
+know where it is. It says the location is unavailable, says **why**, and tells the person the report
+will still be sent with a description instead.
+
+Every other failure in this project follows the same rule, and here it applies to someone who is
+having the worst hour of their life.
+
+`Battery %` defaults to `auto` - reading the device rather than asking a person trapped under a slide
+what their charge level is. `Nothing queued` states the queue is empty rather than leaving a blank.
+
+Every page and every tab in this product has now been rendered.
+
 ## The third responsive hide, checked and left alone
 
 Round 62 swept the stylesheet for `display: none` and found three rules. Two were defects and are
