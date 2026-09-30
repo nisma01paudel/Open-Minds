@@ -28,6 +28,20 @@ produced them was not kept.** The numbers in them are reported in `reports/eval-
 consistent with it, and the files themselves are committed and verified by the tests - but nobody,
 including the author, can regenerate them from this repository.
 
+**An attempt to close this gap failed, and the failure is worth recording.** The measurement code is
+still here (`src/pahiro/eval/observability.py`) and `reports/observability-monsoon.json` still holds
+142 site rows, so the missing piece looked like assembly. A generator was written that rebuilt
+`observability-sites.json` from those rows - and produced a **different `by_month` block**: 37
+months instead of the 5 the app serves, and August/September percentages that are the whole of
+live-demo beat 5b replaced with other numbers.
+
+The report is **not** the source. `observability-by-month.json` says it was measured on **2,021
+Sentinel-2 scenes**, against the report's per-site 30-day windows - a different computation over a
+different scene set. The generator was deleted rather than shipped, because a script named
+`build_observability.py` that silently produces different numbers is worse than no script at all.
+
+What is needed is the seasonal scene inventory, not the per-site report.
+
 That is a real gap, not a stylistic one: it means these two demo beats rest on files whose
 derivation cannot be re-run or audited line by line, which is below the standard the rest of this
 repository holds itself to. Rebuilding the observability pipeline is the honest fix, and until it
