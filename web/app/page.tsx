@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import SlopeMap, { AnyFC } from "../components/SlopeMap";
+import Presenter from "../components/Presenter";
 
 type Frame = { id: string; label: string; date: string; source: string; file: string;
                counts: Record<string, number>; worst_r24: number };
@@ -272,6 +273,34 @@ export default function Page() {
         <Link href="/share/">Share the 10-second film</Link>
         <Link href="/ar/" className="phone">📱 Open the phone view — point it at a hillside</Link>
       </div>
+      <Presenter
+        beats={[
+          { title: "1 · The national picture",
+            cue: "Every documented landslide-prone slope in Nepal — 613 of them — on real Sentinel-2 imagery, each one paired with the office legally responsible for it.",
+            action: () => { setMode("live"); setPlaying(false); setFocus(null); } },
+          { title: "2 · A quiet week",
+            cue: "Early July. Almost nothing is loaded. This is what the country looks like when it is not raining.",
+            action: () => { setMode("replay"); setPlaying(false); setDay(tl ? tl.days.indexOf("2024-07-06") : 0); setFocus(null); } },
+          { title: "3 · The season, running",
+            cue: "Now the 2024 monsoon. Press play and watch the belt move.",
+            action: () => { setMode("replay"); setDay(0); setSpeed(70); setPlaying(true); setFocus(null); } },
+          { title: "4 · The day — 28 September 2024",
+            cue: "305 of 613 slopes above the rainfall threshold on one day. That is the day Nepal recorded 167 landslides.",
+            action: () => { setMode("replay"); setPlaying(false); setDay(tl ? tl.days.indexOf("2024-09-28") : 0); setFocus(null); } },
+          { title: "5 · And we could not see them",
+            cue: "Here is the part that matters. In September only 27.8% of satellite imagery had clear ground. A slope can be loaded and invisible at the same time — which is the whole problem, and why the system says so instead of going quiet.",
+            action: () => { setMode("replay"); setPlaying(false); setDay(tl ? tl.days.indexOf("2024-09-28") : 0); setFocus(null); } },
+          { title: "6 · Fly over it (3D)",
+            cue: "Real elevation, real imagery, real rainfall. Press Enter to open the 3D view.",
+            href: "/fly/", action: () => {} },
+          { title: "7 · From the phone",
+            cue: "Now the part nobody else has. Point a phone at a hillside and it tells you that slope's state and who owns it. Press Enter.",
+            href: "/ar/", action: () => {} },
+          { title: "8 · Leave them something",
+            cue: "And the ten-second film, so the finding does not stay in this room. Press Enter.",
+            href: "/share/", action: () => {} },
+        ]}
+      />
       <div className="hint">Drag to rotate · scroll to zoom · click a slope for the responsible office</div>
     </div>
   );

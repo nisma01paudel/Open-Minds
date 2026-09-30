@@ -130,3 +130,43 @@ Run: `./scripts/demo.sh`  (defaults to 2024-09-28, the day our benchmark records
 - Never "predict". Say **detect, rank, route, recommend**.
 - Never claim we detect landslides better, or that we are first at anything except the cited routing key.
 - Never present a routing result without its confidence and, where relevant, its `needs_review` marker.
+
+---
+
+## Presenter mode — the app drives the demo
+
+The eight beats above are built into the app, so the presentation does not depend on
+remembering URLs or fumbling between windows:
+
+```
+http://localhost:8100/?present=1        then  →  to advance,  ←  back,  Esc  to exit
+```
+
+The cue card sits at the bottom of the screen, under the visual the room is looking at.
+Each beat sets the map state itself — live, a quiet week, the season running, the peak
+day, the blind-spot line — and the last three open the 3D view, the phone view and the
+film.
+
+| # | Beat | What is on screen |
+|---|---|---|
+| 1 | The national picture | 613 slopes on real Sentinel-2 imagery, live |
+| 2 | A quiet week | early July — almost nothing loaded |
+| 3 | The season, running | the 2024 monsoon plays across the country |
+| 4 | The day — 28 September 2024 | 305 of 613 above threshold |
+| 5 | And we could not see them | only 27.8% of September imagery had clear ground |
+| 6 | Fly over it (3D) | real elevation, real imagery, real rainfall |
+| 7 | From the phone | a camera view of the slope you are standing near |
+| 8 | Leave them something | the ten-second film, downloadable |
+
+### Why this exists
+
+The failure it prevents is not technical. It is standing in front of a room with five
+minutes on the clock, switching between a map, a 3D scene, a phone and a video, and
+losing thirty seconds each time. The beats are pre-set and the arrow keys are enough.
+
+### If something breaks on the day
+
+Every layer is keyless and the app is a PWA, so after one visit the whole thing runs with
+the network unplugged. The film is a local file. The one thing that needs care is the
+phone view: camera access requires HTTPS, so use `scripts/serve_https.py` — plain
+`http://<lan-ip>` will serve the page and silently refuse the camera.
