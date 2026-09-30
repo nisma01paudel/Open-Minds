@@ -61,6 +61,23 @@ FALLBACK_PARKS = [
 
 BUS_FILE = "web/public/data/bus-parks.geojson"
 
+# WHERE THE BUS DATA STOPS, AND WHY THIS IS A REFUSAL RATHER THAN A NUMBER
+#
+# The stop dataset covers the Kathmandu valley. The trail network covers four regions of Nepal.
+# Those two facts together produced this, for a trailhead at Namche:
+#
+#     bus to mapped stop at 27.7124, 85.4746 (~122.4 km, about Rs 377),
+#     then 122.1 km on foot to the trailhead
+#
+# Every number in that sentence is fabricated. There is no 122 km valley bus, Rs 377 is a linear
+# extrapolation of a fare table that does not extend that far, and telling somebody to walk 122 km
+# is worse than telling them nothing. The nearest-stop search cannot know that the reason no stop
+# is close is that nobody loaded the stops for that district.
+#
+# So beyond this radius it says so. A refusal that names the gap is information; a plausible number
+# invented to fill it is a lie with units.
+MAX_RIDE_M = 60_000.0
+
 
 @dataclass
 class Access:
@@ -141,6 +158,20 @@ def to_trailhead(trail_lat: float, trail_lon: float, from_lat: float, from_lon: 
     if not parks:
         return Access(False, reason="no bus parks are bundled")
 
+    # Before searching: if the trailhead is nowhere near the stop data at all, say that.
+    nearest_any = min(_haversine((trail_lon, trail_lat), (plon, plat))
+                      for _, plat, plon in parks)
+    if nearest_any > MAX_RIDE_M:
+        return Access(
+            False,
+            reason=(f"no bus information for this area. The nearest mapped stop is "
+                    f"{nearest_any/1000:.0f} km away, which means the stop data does not cover "
+                    f"this region rather than that no bus goes there - the stop list is currently "
+                    f"the Kathmandu valley, while the trails cover four regions of Nepal"),
+            notes=["Fares and stops are known for the Kathmandu valley only.",
+                   "For other regions, ask locally: the district bus park is the usual answer, "
+                   "and this app does not know where it is."])
+
     best = None
     for name, plat, plon in parks:
         ride = _haversine((from_lon, from_lat), (plon, plat))
@@ -166,6 +197,11 @@ def to_trailhead(trail_lat: float, trail_lon: float, from_lat: float, from_lon: 
             f"the nearest park still leaves {walk/1000:.1f} km on foot, so this trailhead is "
             f"not really a bus destination - consider a taxi from the last town, or a different "
             f"trail")
+    if ride > MAX_RIDE_M:
+        return Access(False, reason=(
+            f"the nearest mapped stop is {ride/1000:.0f} km from your start, which is outside the "
+            f"area the stop data covers; a fare estimate here would be invented"))
+
     if direct < ride:
         notes.append("your starting point is closer to the trailhead than any bus park is, so "
                      "the bus is not obviously worth it")
