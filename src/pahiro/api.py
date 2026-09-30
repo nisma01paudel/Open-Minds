@@ -238,6 +238,13 @@ OPENAPI = {
         "/api/v1/triage": {
             "get": {"summary": "The board, ranked for search order, with a reason per point"},
         },
+        "/api/v1/demo/flood": {
+            "summary": ("The whole response chain, step by step, on the 2024 monsoon as it fell"),
+            "params": "lat, lon",
+            "note": ("Not an animation: every step calls the same function the app calls in anger, "
+                     "so it cannot drift away from the product. The rain is the rain that fell on "
+                     "28 September 2024, not a synthetic curve."),
+            "example": "/api/v1/demo/flood?lat=28.35&lon=83.57"},
         "/api/v1/complaint": {
             "summary": ("Draft a complaint to the office legally obliged to act on a slope"),
             "params": "lat, lon, category, note, urgent",
@@ -358,6 +365,14 @@ class _Handler(BaseHTTPRequestHandler):
             return self._send(200, self._escape(q))
         if path == "/api/v1/triage":
             return self._send(200, self._triage())
+        if path == "/api/v1/demo/flood":
+            try:
+                lat = float(q["lat"][0]); lon = float(q["lon"][0])
+            except (KeyError, IndexError, TypeError, ValueError):
+                return self._send(400, {"error": "lat and lon are required"})
+            from . import demo as D
+            return self._send(200, D.flood_scenario(lat, lon))
+
         if path == "/api/v1/complaint":
             code, body = _complaint(q)
             return self._send(code, body)
