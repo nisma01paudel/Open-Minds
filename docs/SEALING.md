@@ -107,11 +107,34 @@ Two further interface mismatches surfaced the same way: `Custody` records respon
 `dataclasses.replace(..., custody=...)` and counts offers in `attempts`, and neither field existed
 on the sealed form.
 
+## The browser can seal too, and it is proven
+
+`web/public/field/seal.js` implements the same envelope with WebCrypto, and
+`scripts/check_seal_parity.py` proves each language opens what the other sealed — both
+directions, tampering refused, carrier view identical.
+
+**AES-GCM on the client, not ChaCha20-Poly1305**, and that is a real constraint rather than a
+preference: WebCrypto does not standardly offer ChaCha20-Poly1305. Node exposes it behind an
+experimental flag and warns; Safari and Firefox do not expose it at all. A rescue cannot be
+conditional on which browser a phone happens to run, so the client uses AES-GCM, which every
+WebCrypto implementation has. Both are AEADs with a 12-byte nonce and a 16-byte tag, so the
+*envelope* is identical and only the primitive differs — which cipher is in use is a deployment
+agreement, not something encoded in the frame.
+
+The shared parts, which a parity check exists to keep shared:
+
+    layout   nonce(12) || ciphertext || tag(16)
+    aad      id \x1f kind \x1f contentType \x1f sender      (UTF-8)
+    no ttl   the ttl is sealed INSIDE the payload, because a ttl decrements at every hop
+
 ## What is still NOT done
 
-- **The field client does not seal.** `web/public/field/index.html` composes messages and posts
-  them in the clear; the Python mesh path can now carry sealed bundles but the browser is not yet
-  sealing them. That needs WebCrypto on the client and a decision about where keys live.
+- **The client loads the sealing layer and can seal, but the compose path is not switched over.**
+  `syncMeshToApi()` still posts message bodies in the clear. What remains is sealing at compose
+  time, and deciding where keys live — a product decision, not a code one.
+- **The client uses AES-GCM and the Python default is ChaCha20-Poly1305.** They interoperate
+  through AES-GCM; a deployment must pick one and state it. Nothing in the frame says which.
 - Nothing has been reviewed by a cryptographer.
-- **So do not tell a judge the system is end-to-end encrypted today.** The sealing layer is built,
-  tested against a real AEAD, and now on the Python mesh path. The client is not sealing.
+- **So do not tell a judge the message path is end-to-end encrypted today.** The sealing layer is
+  built and tested on both sides of the language boundary, and the Python mesh path carries sealed
+  bundles. The browser's compose path is still plaintext.

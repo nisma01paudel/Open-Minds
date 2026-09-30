@@ -174,3 +174,34 @@ def test_a_small_body_still_fits_the_smallest_rung(cipher, key):
     sb = pipeline.seal_bundle(message("b:20"), key, cipher, sender_key=b"district")
     # even sealed it should be within a Wi-Fi hop, though it may not fit the advertisement
     assert sb.fits(dtn.WIFI_AWARE)
+
+
+# ---- the browser can open what Python sealed ----------------------------------------------------
+
+def test_the_browser_sealing_layer_agrees_with_python():
+    """The real proof of interop: each language opens what the other sealed.
+
+    A crypto format that drifts does not fail loudly - it fails to open at the moment somebody
+    needs it, which is why this is checked rather than assumed.
+    """
+    import shutil
+    import subprocess
+    import sys
+    from pathlib import Path
+
+    if shutil.which("node") is None:
+        pytest.skip("node not installed")
+    root = Path(__file__).resolve().parents[1]
+    proc = subprocess.run([sys.executable, str(root / "scripts" / "check_seal_parity.py")],
+                          capture_output=True, text=True, timeout=180, cwd=str(root))
+    assert proc.returncode == 0, proc.stdout + proc.stderr
+    assert "open each other's sealed messages" in proc.stdout
+
+
+def test_the_field_client_loads_the_sealing_layer():
+    """A crypto module the page never loads is dead code, and this one is the point."""
+    from pathlib import Path
+
+    html = (Path(__file__).resolve().parents[1]
+            / "web" / "public" / "field" / "index.html").read_text(encoding="utf-8")
+    assert 'src="/field/seal.js"' in html, "the field page must load the sealing layer"
