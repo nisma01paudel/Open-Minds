@@ -19,6 +19,7 @@ launched on an Android emulator (API 36, x86_64, `/dev/kvm`) on 2026-10-01.
 | `pahiro-board-empty.png` | the Board with no messages, **and the app explaining why** |
 | `pahiro-settings-nepali.png` | Settings after the fix: **the capability card in Nepali** |
 | `pahiro-beacon-nepali.png` | the frame card after the fix: **every line in Nepali** |
+| `pahiro-walk-seasons.png` | **the Walk tab with when-to-go: twelve bars, four green, Kathmandu warned** |
 
 ## What this changes, and what it does not
 
@@ -29,6 +30,25 @@ a real handset" end here.
 **Unchanged, and still stated everywhere:** this is an **emulator**, not a physical phone. No radio
 figure has been measured on real hardware - Bluetooth range, Wi-Fi Aware range and battery endurance
 are all still somebody else's measurements or modelled from them. An emulator cannot measure a radio.
+
+## When to go, on the phone
+
+The Walk tab now answers the other half of the question. Twelve bars of measured rainfall for the
+nearest region, and the honesty rendered as colour rather than as a footnote:
+
+    J 1   F 1   M 2   A 2   M 6   [J 12]  [J 26]  [A 21]  [S 13]  O 2   N 0   D 0
+    grey -------- grey --------      green: cross-checked against our own CHIRPS measurement
+
+    हरियो महिना यही परियोजनाको नापसँग जाँचिएका; खैरा केवल मोडेलको अनुमान।
+    यो क्षेत्रको वर्षाको अङ्क जाँचमा उत्तीर्ण भएन — यसलाई उद्धृत नगर्नुहोस्।
+
+That last line is Kathmandu's own failure, on the screen: ERA5 puts nearly twice the measured monsoon
+there, so the app tells the user not to quote the numbers it is drawing. Twelve confident bars with a
+happy summary would have been easier and would have been the exact claim this project exists to
+refuse.
+
+The trail list is below it and both work together - the season guide is additional information, never
+a precondition for finding a walk.
 
 ## The frame card, translated without touching the codec
 

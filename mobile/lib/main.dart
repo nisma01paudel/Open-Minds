@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 import 'beacon.dart' as beacon;
+import 'seasons.dart' as seasons;
 import 'escape.dart' as escape;
 import 'l10n.dart';
 import 'offline_ai.dart' as ai;
@@ -278,6 +279,17 @@ class AssetTrailLoader implements TrailLoader {
           .then((b) => b.buffer.asUint8List()));
 }
 
+abstract class SeasonLoader {
+  Future<seasons.SeasonGuide> load();
+}
+
+class AssetSeasonLoader implements SeasonLoader {
+  const AssetSeasonLoader();
+  @override
+  Future<seasons.SeasonGuide> load() async =>
+      seasons.SeasonGuide.parse(await rootBundle.loadString('assets/seasons.json'));
+}
+
 /// पदयात्रा — which walk can I do from here, with no network.
 ///
 /// This is the ordinary-day half of the app. It reads the same trail bundle the web app serves,
@@ -288,8 +300,13 @@ class WalkScreen extends StatefulWidget {
   final L10n strings;
   final AppLang lang;
   final TrailLoader loader;
+
+  /// When to go. Defaulted rather than required so every existing caller keeps working: the season
+  /// guide is additional information, not a precondition for finding a walk.
+  final SeasonLoader seasonLoader;
   const WalkScreen({super.key, required this.strings,
-                    required this.lang, required this.loader});
+                    required this.lang, required this.loader,
+                    this.seasonLoader = const AssetSeasonLoader()});
 
   @override
   State<WalkScreen> createState() => _WalkScreenState();
@@ -297,6 +314,7 @@ class WalkScreen extends StatefulWidget {
 
 class _WalkScreenState extends State<WalkScreen> {
   TrailNetwork? _net;
+  seasons.SeasonGuide? _seasons;
   String? _error;
   bool _busy = true;
   // Kathmandu, until the phone reports a fix. Stated in the UI rather than assumed silently.
@@ -313,7 +331,18 @@ class _WalkScreenState extends State<WalkScreen> {
     setState(() { _busy = true; _error = null; });
     try {
       final net = await widget.loader.load();
+      // The walk list is shown the moment the trails are ready. The season guide is loaded AFTER,
+      // and a failure is deliberately not fatal - but more importantly it must never hold the
+      // screen: awaiting it here left _busy true forever when the asset did not resolve, and
+      // sixteen widget tests failed on pumpAndSettle timing out behind a spinner that would not
+      // stop. A twelve-month guide is not a precondition for finding a walk this afternoon.
       if (mounted) setState(() { _net = net; _busy = false; });
+      try {
+        final sg = await widget.seasonLoader.load();
+        if (mounted) setState(() { _seasons = sg; });
+      } catch (_) {
+        // no season guide; the strip simply does not appear
+      }
     } catch (e) {
       if (mounted) setState(() { _error = '$e'; _busy = false; });
     }
@@ -335,6 +364,8 @@ class _WalkScreenState extends State<WalkScreen> {
       const SizedBox(height: 4),
       Text('${s['walk.from']} ${_lat.toStringAsFixed(4)}, ${_lon.toStringAsFixed(4)}',
            style: Theme.of(context).textTheme.bodySmall),
+      const SizedBox(height: 12),
+      if (_seasons != null) seasonStrip(s, _seasons!, _lat, _lon),
       const SizedBox(height: 12),
       Row(children: [
         Text('${s['walk.within']} '),
@@ -767,4 +798,69 @@ class SettingsScreen extends StatelessWidget {
       ],
     );
   }
+}
+
+/// When to go — twelve bars, honest about which four were checked.
+///
+/// Green months are the ones cross-checked against this project's own CHIRPS measurement; grey are
+/// model output alone. Where a region FAILED that check the strip says so rather than drawing twelve
+/// equally confident bars over a figure that should not be quoted. No month is labelled good or bad,
+/// because a farmer, a trekker and a paraglider want different weather from the same month.
+///
+/// Top-level rather than a method, so it can be appended without touching the class structure.
+Widget seasonStrip(L10n s, seasons.SeasonGuide guide, double lat, double lon) {
+  final region = guide.nearest(lat, lon);
+  if (region == null) return const SizedBox.shrink();
+  final maxRain = region.months
+      .map((m) => m.rainMmPerDay)
+      .fold<double>(0.01, (a, b) => a > b ? a : b);
+  const barMax = 84.0;
+  return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    Text(s['walk.seasons'], style: const TextStyle(fontWeight: FontWeight.w700)),
+    const SizedBox(height: 2),
+    Text(region.name, style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8))),
+    const SizedBox(height: 8),
+    SizedBox(
+      height: barMax + 22,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: region.months.map((m) {
+          final h = (m.rainMmPerDay / maxRain) * barMax;
+          return Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 1.5),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(m.rainMmPerDay.toStringAsFixed(0),
+                      style: const TextStyle(fontSize: 8, color: Color(0xFF64748B))),
+                  Container(
+                    height: h.clamp(2.0, barMax),
+                    decoration: BoxDecoration(
+                      color: m.validated
+                          ? const Color(0xFF22C55E)
+                          : const Color(0xFF475569),
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(3)),
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(m.name.substring(0, 1),
+                      style: const TextStyle(fontSize: 9, color: Color(0xFF94A3B8))),
+                ],
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    ),
+    const SizedBox(height: 6),
+    Text(s['walk.validated'], style: const TextStyle(fontSize: 11, color: Color(0xFF64748B))),
+    if (!region.reliable) ...[
+      const SizedBox(height: 4),
+      Text(s['walk.unreliable'],
+          style: const TextStyle(fontSize: 11, color: Color(0xFFF0A0A0))),
+    ],
+    const SizedBox(height: 4),
+    Text(s['walk.seasonsNote'], style: const TextStyle(fontSize: 11, color: Color(0xFF64748B))),
+  ]);
 }

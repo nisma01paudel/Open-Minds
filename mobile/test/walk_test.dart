@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pahiro_field/l10n.dart';
 import 'package:pahiro_field/main.dart';
+import 'package:pahiro_field/seasons.dart';
 import 'package:pahiro_field/trails.dart';
 
 const _net = TrailNetwork(
@@ -47,9 +48,23 @@ Future<void> pumpScreen(WidgetTester tester, TrailLoader loader) async {
 
 Widget wrap(TrailLoader loader) => MaterialApp(
       home: Scaffold(
-        body: WalkScreen(strings: const L10n(AppLang.en), lang: AppLang.en, loader: loader),
+        body: WalkScreen(strings: const L10n(AppLang.en), lang: AppLang.en, loader: loader,
+            seasonLoader: const _NoSeasons()),
       ),
     );
+
+
+/// A season guide with no regions, so the walk tests test walking.
+///
+/// The WalkScreen loads a real season guide by default. Left in, its twelve bars sit above the trail
+/// list and the assertions about walks start measuring the wrong widget - which is a sign the test
+/// was reaching for something it did not mean to. Injecting an empty guide keeps the test about the
+/// trail list and leaves the season strip to the season tests.
+class _NoSeasons implements SeasonLoader {
+  const _NoSeasons();
+  @override
+  Future<SeasonGuide> load() async => const SeasonGuide(regions: [], note: '');
+}
 
 void main() {
   boardTests();

@@ -94,6 +94,11 @@ const Map<String, Map<String, String>> translations = {
     'beacon.encode': 'नमुना फ्रेम बनाउनुहोस्',
     'beacon.bytes': 'बाइट',
     'board.title': 'बोर्ड',
+    'walk.seasons': 'कहिले जाने',
+    'walk.seasonsNote': 'यी बाह्र महिना यहाँका लागि मापन गरिएका हुन्, तर कुनै महिनालाई राम्रो वा '
+        'नराम्रो भनिएको छैन। किसान, पदयात्री र प्याराग्लाइडरले एउटै महिनाबाट फरक मौसम चाहन्छन्।',
+    'walk.validated': 'हरियो महिना यही परियोजनाको नापसँग जाँचिएका; खैरा केवल मोडेलको अनुमान।',
+    'walk.unreliable': 'यो क्षेत्रको वर्षाको अङ्क जाँचमा उत्तीर्ण भएन — यसलाई उद्धृत नगर्नुहोस्।',
     'board.empty': 'अहिले कुनै सन्देश छैन।',
     'board.empty_why': 'यो बोर्डले नजिकैका फोनबाट ब्लुटुथमा आएका सन्देश देखाउँछ। खाली हुनुको अर्थ दुईमध्ये एक हो: कसैले पठाएको छैन, वा नजिकमा अर्को फोन छैन। फोन सँगै राख्नुहोस्।',
     'settings.title': 'सेटिङ',
@@ -142,6 +147,12 @@ const Map<String, Map<String, String>> translations = {
     'beacon.encode': 'Build a sample frame',
     'beacon.bytes': 'bytes',
     'board.title': 'Board',
+    'walk.seasons': 'When to go',
+    'walk.seasonsNote': 'These twelve months were measured for here, and no month is called good or '
+        'bad. A farmer, a trekker and a paraglider want different weather from the same month.',
+    'walk.validated': 'Green months are cross-checked against this project\'s own measurement; '
+        'grey are model output only.',
+    'walk.unreliable': 'This region failed that check — its rain figures should not be quoted.',
     'board.empty_why': 'This board shows messages that arrived over Bluetooth from nearby phones. Empty means one of two things: nobody has sent one, or no other phone is close enough yet. Put phones near each other.',
     'board.empty': 'Nothing yet.',
     'settings.title': 'Settings',
