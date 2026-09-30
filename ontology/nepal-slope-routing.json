@@ -286,6 +286,27 @@
       "confidence": "verified",
       "source_url": null,
       "legal_gap": null
+    },
+    {
+      "case_id": "provincial-road-emergency",
+      "asset_type": "provincial-road",
+      "jurisdiction": "province",
+      "hazard_type": "road-blockage",
+      "role": "emergency",
+      "institution": "District Disaster Management Committee (DDMC)",
+      "office": "chaired by the Chief District Officer; secretariat = District Administration Office",
+      "legal_basis": "DRRM Act 2074 s.16(2) (SAR, EOC, relief, control movement); the district plan principle that whichever local level the event occurred in is primarily responsible, with the DDMC coordinating across levels",
+      "escalation": [
+        "Local level (LDMC)",
+        "DDMC (CDO)",
+        "Provincial committee",
+        "NDRRMA"
+      ],
+      "confidence": "verified",
+      "source_url": null,
+      "citation": "DRRM Act 2074 s.16(2); Rasuwa DPRP 2079 s.2.4(gha)",
+      "notes": "Emergency duty is the same district chain regardless of which tier owns the road - only the permanent repair differs. This is exactly the confusion the role split exists to prevent.",
+      "legal_gap": null
     }
   ]
 }

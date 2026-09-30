@@ -33,9 +33,11 @@ DIGITS = re.compile(r"\d")
 class RoutingDecision:
     case_id: str | None
     priority: str
-    institution: str | None
-    office: str | None
-    legal_basis: str | None
+    asset_type: str | None = None
+    role: str | None = None
+    institution: str | None = None
+    office: str | None = None
+    legal_basis: str | None = None
     escalation: list[str] = field(default_factory=list)
     confidence: str = "none"
     rationale: str = ""
@@ -226,7 +228,113 @@ class Router:
             notes=[n for n in (rule.notes, rule.legal_gap) if n],
         )
 
+    # -- triage from an unstructured report ---------------------------------
+    def triage_route(self, ontology: Ontology, facts: str, evidence_state: str = "",
+                     priority_hint: str = MEDIUM) -> RoutingDecision:
+        """Turn an unstructured report into a routing decision in one constrained call.
+
+        This is where the AI is genuinely load-bearing: without the model, a free-text
+        report cannot be triaged into an asset and a duty at all, so nothing can be
+        routed and nothing is dispatched. The model's answer is still locked to the
+        cited case identifiers, and the institution is read from the ontology.
+        """
+        candidates = [r for r in ontology.rules if r.citable]
+        ids = [c.case_id for c in candidates]
+        if not candidates:
+            return RoutingDecision(case_id=None, priority=priority_hint, confidence="none",
+                                   fallback_used=True,
+                                   rationale="no citable rules loaded; nothing can be routed")
+
+        if self.backend is None or not self.backend.available():
+            return RoutingDecision(
+                case_id=None, priority=priority_hint, confidence="none", fallback_used=True,
+                candidates=ids,
+                rationale=("free-text triage requires the open-weight model; without it an "
+                           "unstructured report cannot be resolved to an asset and a duty, "
+                           "so nothing is routed"),
+                notes=["the decision layer is load-bearing: remove it and the product stops"])
+
+        try:
+            raw = self.backend.decide(
+                build_triage_prompt(facts, candidates, evidence_state),
+                build_triage_schema(candidates))
+        except Exception as exc:
+            return RoutingDecision(case_id=None, priority=priority_hint, confidence="none",
+                                   fallback_used=True, candidates=ids,
+                                   rationale=f"model call failed ({type(exc).__name__}); routed nothing")
+
+        case_id = raw.get("case_id")
+        if case_id == "none" or case_id not in ids:
+            return RoutingDecision(
+                case_id=None, priority=priority_hint,
+                asset_type=raw.get("asset_type"), role=raw.get("role"),
+                confidence="none", used_model=True, candidates=ids,
+                rationale=f"abstained: {str(raw.get('rationale') or '')[:200]}",
+                notes=["the model chose to abstain rather than guess an authority"])
+
+        rule = next(c for c in candidates if c.case_id == case_id)
+        priority = raw.get("priority") if raw.get("priority") in (HIGH, MEDIUM, LOW) else priority_hint
+        rationale = str(raw.get("rationale") or "").strip()
+        withheld = bool(DIGITS.search(rationale))
+        if withheld:
+            rationale = ("model rationale withheld: it contained a numeric claim "
+                         "(measurements are computed in code, never by the model)")
+        notes = [n for n in (rule.notes, rule.legal_gap) if n]
+        chosen_asset, chosen_role = raw.get("asset_type"), raw.get("role")
+        if chosen_asset and rule.asset_type not in (chosen_asset, ANY):
+            notes.append(f"model labelled the asset {chosen_asset!r} but chose a rule for "
+                         f"{rule.asset_type!r} - the rule was applied and the mismatch recorded")
+        if chosen_role and rule.role != chosen_role:
+            notes.append(f"model labelled the role {chosen_role!r} but chose a {rule.role!r} rule")
+
+        return RoutingDecision(
+            case_id=rule.case_id, priority=priority, asset_type=rule.asset_type, role=rule.role,
+            institution=rule.institution, office=rule.office, legal_basis=rule.legal_basis,
+            escalation=list(rule.escalation), confidence=rule.confidence, rationale=rationale,
+            used_model=True, numeric_claim_withheld=withheld, candidates=ids, notes=notes)
+
     def route_emergency(self, ontology: Ontology, asset_type: str,
                         jurisdiction: str | None = None) -> RoutingDecision:
         return self.route(ontology, asset_type, role=EMERGENCY, jurisdiction=jurisdiction,
                           hazard_type="road-blockage")
+
+
+def build_triage_schema(candidates: list[AuthorityRule]) -> dict:
+    """Every answer - including abstention - is an enum value. Schemas are inlined."""
+    assets = sorted({c.asset_type for c in candidates})
+    roles = sorted({c.role for c in candidates})
+    return {
+        "type": "object",
+        "properties": {
+            "asset_type": {"type": "string", "enum": assets + ["none"]},
+            "role": {"type": "string", "enum": roles + ["none"]},
+            "case_id": {"type": "string", "enum": [c.case_id for c in candidates] + ["none"]},
+            "priority": {"type": "string", "enum": [HIGH, MEDIUM, LOW]},
+            "rationale": {"type": "string"},
+        },
+        "required": ["asset_type", "role", "case_id", "priority", "rationale"],
+        "additionalProperties": False,
+    }
+
+
+def build_triage_prompt(facts: str, candidates: list[AuthorityRule], evidence_state: str) -> str:
+    lines = [
+        "You are routing a slope-hazard report in Nepal to the office legally responsible.",
+        "First identify WHICH ASSET is failing, then WHICH DUTY applies, then choose ONE case_id.",
+        "The failing asset may not be the asset that is damaged: if a road on the slope above a",
+        "highway fails onto the highway, the failing asset is the road on the slope.",
+        "Choose case_id from the options only. If the report does not identify an asset and a",
+        "duty well enough to route safely, choose \"none\" and explain what is missing.",
+        "Do not state any number - measurements are computed elsewhere.",
+        "",
+        f"REPORT: {facts}",
+    ]
+    if evidence_state:
+        lines.append(f"EVIDENCE STATE: {evidence_state}")
+    lines += ["", "OPTIONS:"]
+    for c in candidates:
+        lines.append(f"- case_id: {c.case_id} | asset: {c.asset_type} | role: {c.role}")
+        lines.append(f"  institution: {c.institution}")
+        lines.append(f"  legal basis: {c.legal_basis}")
+    lines += ["", "Return JSON: asset_type, role, case_id, priority, rationale."]
+    return "\n".join(lines)

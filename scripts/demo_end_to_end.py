@@ -15,7 +15,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from pahiro.advisory.nepali import evidence_state_ne, refusal_text, render
-from pahiro.dispatch import build_dispatch
+from pahiro.dispatch import authority_from_decision, build_dispatch
 from pahiro.eval.gap import load_observations
 from pahiro.ontology import Ontology
 from pahiro.routing.abstain import Observation, staleness_gate
@@ -32,6 +32,8 @@ def main() -> int:
     ap.add_argument("--ontology")
     ap.add_argument("--cache", default="cache/ward-cache.json")
     ap.add_argument("--offline", action="store_true", help="use the cache only")
+    ap.add_argument("--report", help="free-text hazard report to route with the model")
+    ap.add_argument("--model-url", default="http://127.0.0.1:8081")
     a = ap.parse_args()
 
     as_of = date.fromisoformat(a.as_of)
@@ -59,17 +61,36 @@ def main() -> int:
 
     # 3. May we speak at all?
     decision = staleness_gate(optical + radar, as_of)
+    decision_banner = evidence_state_ne(decision)
     print(f"\n=== 3. staleness gate -> {decision.status.upper()} ({decision.confidence})")
     print(f"    {decision.banner()}")
     for r in decision.reasons:
         print(f"    - {r}")
 
-    # 4. Who is responsible? Only with a citation.
+    # 4. Who is responsible? Only with a citation, and only via the AI for free text.
     ontology = Ontology.load(a.ontology) if a.ontology else Ontology([])
-    rule = ontology.lookup("local-road", hazard_type="slope-instability")
-    print(f"\n=== 4. routing")
-    print(f"    ontology: {len(ontology)} rule(s) loaded"
-          f"{'' if ontology else '  -> no citable rule, dispatch will be marked needs_review'}")
+    print(f"\n=== 4. routing   (ontology: {len(ontology)} cited rules)")
+    from pahiro.routing.router import LlamaServerBackend, Router
+    backend = None if a.offline else LlamaServerBackend(a.model_url)
+    router = Router(backend)
+    authority = None
+    rule = None
+    if a.report:
+        decision = router.triage_route(ontology, a.report, evidence_state=decision_banner)
+        print(f"    report triaged by the model: {decision.used_model}")
+        print(f"    case_id    : {decision.case_id}")
+        print(f"    asset/role : {decision.asset_type} / {decision.role}")
+        print(f"    institution: {decision.institution}")
+        print(f"    legal basis: {(decision.legal_basis or '-')[:88]}")
+        print(f"    rationale  : {decision.rationale[:180]}")
+        for n in decision.notes:
+            print(f"    note       : {n[:150]}")
+        authority = authority_from_decision(decision, ontology)
+        if decision.case_id:
+            rule = next((r for r in ontology.rules if r.case_id == decision.case_id), None)
+    else:
+        rule = ontology.lookup("local-road", hazard_type="slope-instability")
+        print(f"    no --report given; deterministic lookup -> {rule.case_id if rule else 'none'}")
 
     # 5. Assemble.
     if decision.may_issue:

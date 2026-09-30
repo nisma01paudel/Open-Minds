@@ -108,6 +108,20 @@ def authority_from_rule(rule: AuthorityRule) -> dict:
     }
 
 
+def authority_from_decision(decision, ontology) -> dict | None:
+    """Turn a routing decision into a dispatch authority block, or None.
+
+    The citation is always re-read from the ontology record rather than trusted
+    from the model, so an authority can never appear without its legal basis.
+    """
+    if decision is None or not getattr(decision, "case_id", None):
+        return None
+    rule = next((r for r in ontology.rules if r.case_id == decision.case_id), None)
+    if rule is None or not rule.citable:
+        return None
+    return authority_from_rule(rule)
+
+
 def build_dispatch(
     *,
     location: str,

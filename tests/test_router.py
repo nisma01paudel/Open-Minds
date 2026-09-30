@@ -98,3 +98,31 @@ def test_emergency_role_picks_a_different_chain_than_maintenance():
     assert maint.institution.startswith("Department of Roads")
     assert emerg.institution.startswith("District Disaster")
     assert maint.case_id != emerg.case_id
+
+
+def test_without_the_model_nothing_is_routed():
+    """The eligibility litmus test, expressed as an executable assertion.
+
+    "If you deleted the AI call from your codebase, would the product still do its
+    job? If yes, it doesn't qualify." Here is the proof that it does not: with no
+    model, an unstructured report cannot be resolved to an asset and a duty, so no
+    authority is selected and nothing is dispatched.
+    """
+    o = Ontology.load(ONTOLOGY)
+    d = Router(None).triage_route(o, "A national highway is blocked by a landslide.")
+    assert d.case_id is None
+    assert d.institution is None
+    assert d.fallback_used
+    assert any("load-bearing" in n for n in d.notes)
+    assert "requires the open-weight model" in d.rationale
+
+
+def test_structured_routing_still_works_without_the_model():
+    """The deterministic path handles a report that already names the asset.
+
+    That is the honest boundary: structured input is routable without AI, free text
+    is not. Both halves are stated in docs/AI-USAGE.md.
+    """
+    o = Ontology.load(ONTOLOGY)
+    d = Router(None).route(o, "local-road", jurisdiction="municipality")
+    assert d.case_id == "local-road-maintenance" and d.fallback_used

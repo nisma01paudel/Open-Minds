@@ -26,10 +26,17 @@ Delete the AI layer and you delete the entire right-hand column: no authority is
 path is derived, no Nepali advisory is composed and addressed, and no acknowledgement can be tracked.
 What remains is a viewer with numbers on it. **Nothing is dispatched** — and dispatch is the product.
 
+**This is asserted in the test suite, not just claimed.** `tests/test_router.py::test_without_the_model_nothing_is_routed`
+constructs the router with no model and shows that a free-text report yields **no authority, no priority
+and no dispatch** — the honest boundary being that a report which *already names* its asset can still be
+routed by the deterministic path (`test_structured_routing_still_works_without_the_model`). Free text is
+where the AI is irreplaceable.
+
 ## Where each model's output is consumed programmatically
 
 | File / function | Model class | What its output drives |
 |---|---|---|
+| `src/pahiro/routing/router.py::triage_route()` | open-weight instruct, JSON-schema constrained | **the load-bearing call.** Turns an unstructured hazard report into (asset, duty, cited rule) in one constrained generation. Its `case_id` is consumed to select the authority; the institution and legal basis are then read from the ontology, never from the model |
 | `src/pahiro/routing/router.py::route()` | open-weight instruct, JSON-schema constrained | reads the retrieved cited rules from `ontology/nepal-slope-routing.json` and returns the responsible institution, office, escalation path and priority. Consumed to address and order the dispatch queue |
 | `src/pahiro/routing/router.py::route_incident()` | same | decides, for an incident with a failing asset and an affected asset, **which institutions must each be notified** |
 | `src/pahiro/advisory/nepali.py::render()` | open-weight instruct, slot-constrained | composes the Nepali advisory and work-order text consumed by the dispatch object and the register payload |
