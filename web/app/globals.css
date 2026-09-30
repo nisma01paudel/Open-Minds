@@ -402,3 +402,10 @@ kbd { background: rgba(148,163,184,.16); border: 1px solid rgba(148,163,184,.25)
 /* A VR session that could not start. The button disappearing would be indistinguishable from VR
    never having been offered, which is the silent-failure shape this project keeps finding. */
 .vrerr { margin-left: .5rem; color: #fca5a5; font-size: .8rem; }
+
+/* The plan box is structured as a heading and a note, and both were rendering inline with no
+   space between them: "Plan a walkAsk in your own words". Found by finally rendering the built
+   app rather than reading it - the class existed in the JSX and in no stylesheet. */
+.planhead b { display: block; }
+.planhead span { display: block; margin-top: .15rem; opacity: .8; }
+.planbox { margin-bottom: .6rem; }
