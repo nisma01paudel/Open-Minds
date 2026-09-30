@@ -238,6 +238,15 @@ OPENAPI = {
         "/api/v1/triage": {
             "get": {"summary": "The board, ranked for search order, with a reason per point"},
         },
+        "/api/v1/plan": {
+            "summary": "Plan a walk from a sentence, offline",
+            "parameters": [
+                {"name": "q", "in": "query", "required": True,
+                 "description": "the request in words, e.g. 'easy walk with a view under Rs 40'"},
+                {"name": "lat", "in": "query", "description": "where you are (default Kathmandu)"},
+                {"name": "lon", "in": "query"},
+            ],
+            "example": "/api/v1/plan?q=easy+walk+with+a+view&lat=27.7047&lon=85.3146"},
         "/api/v1/escape": {
             "get": {"summary": "Which way to run and how high, from the bundled DEM",
                     "parameters": [
@@ -342,6 +351,8 @@ class _Handler(BaseHTTPRequestHandler):
             return self._send(200, self._escape(q))
         if path == "/api/v1/triage":
             return self._send(200, self._triage())
+        if path == "/api/v1/plan":
+            return self._send(200, self._plan(q))
         return self._send(404, {"error": "not found", "path": path})
 
     def do_POST(self):                                     # noqa: N802
@@ -470,6 +481,70 @@ class _Handler(BaseHTTPRequestHandler):
             gps_accuracy_m=_as_float(data.get("gps_accuracy_m")) or 5.0))
         est = self.store.locate(target)
         return self._send(201, {"target": target, "readings": n, **est.as_dict()})
+
+    def _plan(self, q: dict[str, list[str]]) -> dict[str, Any]:
+        """Plan a walk from a sentence. The daily-use half of the system, over HTTP.
+
+            /api/v1/plan?q=easy+walk+with+a+view+under+Rs+40&lat=27.7047&lon=85.3146
+
+        The open-weight model reads the request when the model server is up; when it is not, the
+        deterministic keyword reader handles the same sentence less gracefully and the planner is
+        the same code either way. A capability that only works with a 1.1 GB server running is not
+        a capability for a phone in a valley.
+        """
+        text = (q.get("q") or [""])[0].strip()
+        if not text:
+            return {"error": "q is required, e.g. ?q=easy+walk+under+Rs+40&lat=27.70&lon=85.31"}
+        try:
+            lat = float((q.get("lat") or ["27.7047"])[0])
+            lon = float((q.get("lon") or ["85.3146"])[0])
+        except ValueError:
+            return {"error": "lat and lon must be numbers"}
+
+        from . import trip_agent
+
+        backend = None
+        model_used = False
+        try:
+            from .routing.router import LlamaServerBackend
+            candidate = LlamaServerBackend()
+            if candidate.available():
+                backend, model_used = candidate, True
+        except Exception:
+            backend = None          # no model server: the keyword reader is the fallback
+
+        query, options = trip_agent.plan(text, (lat, lon), backend=backend)
+        return {
+            "asked": text,
+            "understood": query.describe(),
+            "understood_by": "open-weight model" if model_used else "keyword reader (no model server)",
+            "refused_fields": query.dropped,
+            "origin": {"lat": lat, "lon": lon},
+            "options": [
+                {
+                    "name": o.trail.name,
+                    "length_m": round(o.trail.length_m),
+                    "climb_m": round(o.trail.climb_m),
+                    "minutes": o.trail.walk_minutes,
+                    "difficulty": o.trail.difficulty,
+                    "fits": o.fits,
+                    "bus": {
+                        "stop": o.access.park,
+                        "ride_m": round(o.access.ride_m or 0),
+                        "fare_rs": o.access.fare_rs,
+                        "walk_from_stop_m": round(o.access.walk_from_park_m or 0),
+                        "notes": o.access.notes,
+                    } if o.access.ok else None,
+                    "line": o.line(),
+                }
+                for o in options
+            ],
+            "caveats": [
+                "Trail data is OpenStreetMap and Nepali footpath coverage is incomplete.",
+                "Climb comes from a 1.2 km terrain grid and is indicative.",
+                "Bus fares are a dated estimate; routes and schedules are not known here.",
+            ],
+        }
 
     def _escape(self, q: dict[str, list[str]]) -> dict[str, Any]:
         """Which way to run and how high, for one point, from the bundled DEM.

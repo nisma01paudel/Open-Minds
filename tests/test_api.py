@@ -306,3 +306,69 @@ def test_a_tampered_sealed_frame_is_refused():
 
 def seal_key_bytes() -> bytes:
     return bytes(range(32))
+
+
+# ---- planning a walk over HTTP ------------------------------------------------------------------
+
+def test_plan_endpoint_answers_a_sentence():
+    """The daily-use half, reachable from the app rather than only from a terminal."""
+    import urllib.request
+
+    from pahiro.api import FieldStore, make_server
+
+    srv = make_server(0, "127.0.0.1", FieldStore())
+    port = srv.server_address[1]
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    try:
+        url = f"http://127.0.0.1:{port}/api/v1/plan?q=easy+walk+with+a+view&lat=27.7047&lon=85.3146"
+        with urllib.request.urlopen(url, timeout=60) as r:
+            body = json.loads(r.read())
+        assert "understood" in body, body
+        assert body["origin"]["lat"] == 27.7047
+        assert body["options"], "no walks offered for an ordinary request"
+        first = body["options"][0]
+        assert first["name"] and first["minutes"] > 0
+        assert first["bus"] and first["bus"]["fare_rs"] >= 24, \
+            "every option must say how to get there and what it costs"
+        # The caveats must travel with the answer, not sit in a docstring.
+        joined = " ".join(body["caveats"]).lower()
+        assert "openstreetmap" in joined and "indicative" in joined
+    finally:
+        srv.shutdown()
+
+
+def test_plan_endpoint_says_what_it_understood_and_who_understood_it():
+    """A planner that does not show its reading is a slot machine. And the caller is told whether
+    a model was involved or the keyword reader was - those are different qualities of answer."""
+    import urllib.request
+
+    from pahiro.api import FieldStore, make_server
+
+    srv = make_server(0, "127.0.0.1", FieldStore())
+    port = srv.server_address[1]
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    try:
+        url = f"http://127.0.0.1:{port}/api/v1/plan?q=a+hard+6+hour+climb+under+Rs+60"
+        with urllib.request.urlopen(url, timeout=60) as r:
+            body = json.loads(r.read())
+        assert "hard" in body["understood"]
+        assert "Rs 60" in body["understood"]
+        assert body["understood_by"] in ("open-weight model", "keyword reader (no model server)")
+    finally:
+        srv.shutdown()
+
+
+def test_plan_endpoint_refuses_an_empty_request_rather_than_guessing():
+    import urllib.request
+
+    from pahiro.api import FieldStore, make_server
+
+    srv = make_server(0, "127.0.0.1", FieldStore())
+    port = srv.server_address[1]
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    try:
+        with urllib.request.urlopen(f"http://127.0.0.1:{port}/api/v1/plan", timeout=30) as r:
+            body = json.loads(r.read())
+        assert "error" in body and "q is required" in body["error"]
+    finally:
+        srv.shutdown()
