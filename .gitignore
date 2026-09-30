@@ -10,3 +10,9 @@ cache/
 *.nc
 .ipynb_checkpoints/
 .DS_Store
+
+# Web app: dependencies and build output are reproducible from the lockfile
+web/node_modules/
+web/.next/
+web/out/
+web/next-env.d.ts
