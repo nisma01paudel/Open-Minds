@@ -35,3 +35,9 @@ reports/timelapse/frames/
 mobile/.dart_tool/
 mobile/build/
 mobile/.flutter-plugins-dependencies
+
+# Voice models are ~63 MB each and are fetched, not committed. This repo was once bloated to
+# 353 MB by committing generated artifacts; the model is a dependency, not source.
+evidence/voices/
+*.onnx
+*.onnx.json

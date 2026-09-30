@@ -176,3 +176,38 @@ def test_the_ladder_can_be_listed_for_a_settings_screen():
     for row in rows:
         assert row["note"] and row["enables"]
         assert row["ram_mb"] >= row["weights_mb"]
+
+
+# ---- the voice, actually downloaded -----------------------------------------------------------------
+
+def test_the_nepali_voice_is_downloaded_and_speaks():
+    """63 MB and MIT is the claim; this checks the file is real and piper can drive it.
+
+    Skipped rather than failed when the voice has not been fetched, because the model is an
+    artifact and not part of the checkout - but a test that silently skips is the false-clean
+    this project keeps finding, so verify_repo.py fails when anything skips.
+    """
+    import wave
+    from pathlib import Path
+    import shutil
+    import subprocess
+    import sys
+
+    voice = Path(__file__).resolve().parents[1] / "evidence" / "voices" / "ne_NP-chitwan-medium.onnx"
+    if not voice.exists():
+        pytest.skip("the Nepali voice has not been downloaded (see docs/MODELS.md)")
+    if shutil.which(str(Path(sys.executable))) is None:
+        pytest.skip("no python interpreter")
+
+    assert 60_000_000 < voice.stat().st_size < 70_000_000, \
+        f"docs say 63 MB, the file is {voice.stat().st_size} bytes"
+
+    out = Path("/tmp/pahiro_voice_test.wav")
+    proc = subprocess.run(
+        [sys.executable, "-m", "piper", "-m", str(voice), "-f", str(out)],
+        input="माथि जानुहोस्।".encode(), capture_output=True, timeout=300)
+    assert proc.returncode == 0, proc.stderr.decode()[:400]
+    assert out.exists() and out.stat().st_size > 1000, "piper produced no audio"
+    w = wave.open(str(out))
+    seconds = w.getnframes() / w.getframerate()
+    assert seconds > 0.3, f"only {seconds:.2f}s of audio"

@@ -13,7 +13,7 @@ Every entry was verified for existence and licence against the HuggingFace API, 
 | Decision head | LightGBM / logistic regression over embeddings + SSIM + index deltas | <5 MB | BSD/MIT | trains in seconds, CPU |
 | Before/after description | **SmolVLM-256M Q8_0** | 279 MB | Apache-2.0 | **3.2 s per image pair** |
 | Routing + advisory text | **Qwen2.5-1.5B-Instruct Q4_K_M** | 1117 MB | Apache-2.0 | 6.1 s / 88 tokens, **5/5 valid JSON** |
-| Nepali speech | **Piper `ne_NP` chitwan medium** | 63 MB | MIT | **1.3 s for 9.5 s audio (RTF 0.14)** |
+| Nepali speech | **Piper `ne_NP` chitwan medium** | 63 MB (62,950,044 bytes, verified) | MIT | **7.3 s of Nepali in 2.3 s (RTF 0.32)**, best of 3 one-shot CLI runs; ~1.3 s of that is process start and model load |
 
 Total ≈ **1.7 GB** on disk. Peak RAM with all five resident ≈ 3.0 GB — equal to our free RAM, so
 **load one model at a time and unload between stages.**

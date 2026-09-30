@@ -117,11 +117,27 @@ def main() -> int:
             # finding elsewhere: the cross-language parity tests skip when node is absent, so a
             # verifier that only reads "passed" would report OK on a machine where the two
             # implementations were never compared at all.
+            # A skip is a problem when it means a CHECK DID NOT RUN. It is not a problem when a
+            # test skipped because an optional artifact has not been fetched - the voice model is
+            # 63 MB and deliberately not committed.
+            #
+            # Distinguishing them by name is narrow and honest: the cross-language checks are the
+            # ones whose silence would make this verifier lie, so they are named explicitly.
             if " skipped" in output:
-                line = [x for x in output.splitlines() if " skipped" in x][-1]
-                problems.append(
-                    f"tests SKIPPED, and a skip is not a pass: {line.strip()}. "
-                    f"The cross-language parity checks need node.")
+                import re as _re
+                skipped = _re.findall(r"SKIPPED \[\d+\] ([^:]+)::", output)
+                if not skipped:
+                    skipped = [x.split("::")[-1] for x in
+                               _re.findall(r"^\S+ \S+ .*(SKIPPED|skipped).*$", output, _re.M)]
+                must_run = [s for s in skipped if "parity" in s.lower()]
+                if must_run:
+                    problems.append(
+                        f"cross-language check SKIPPED, and a skip is not a pass: "
+                        f"{', '.join(must_run)}. These need node.")
+                optional = [s for s in skipped if "parity" not in s.lower()]
+                if optional:
+                    print(f"optional test(s) skipped (artifact not fetched): "
+                          f"{', '.join(optional)}")
 
     # The two checks that prove the Python and JavaScript implementations agree. Run directly as
     # well, so the result is a sentence a reader can see rather than a line in a test summary.
