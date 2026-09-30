@@ -28,6 +28,7 @@ launched on an Android emulator (API 36, x86_64, `/dev/kvm`) on 2026-10-01.
 | `pahiro-duty-nepali.png` | **the duty holder in Nepali** - the one-place translation, on the device |
 | `pahiro-small-720-language.png` | **720x1280 at 320 dpi** - the budget-phone profile, not the flagship |
 | `pahiro-small-720-escape.png` | same profile, scrolled to the bottom: **the last button clears the tab bar** |
+| `pahiro-small-720-walk.png` | **the season guide and places panel at 720x1280** - four green months, eight grey |
 
 ## What this changes, and what it does not
 
@@ -56,6 +57,16 @@ Scrolled to the very bottom, the "यहाँबाट कहाँ जान�
 so the list's bottom padding is enough and no content is unreachable behind the navigation bar. That
 was the specific thing worth checking: a list whose last item sits under the tab bar can never be
 fully read, and it would not show on the large screen at all.
+
+The Walk tab is the other dense screen and it renders whole at the smaller size: the twelve-month
+chart with its four validated months green and eight model-only months grey, the caveat that green
+means checked against this project's own measurement, the warning not to quote this region's rainfall
+figure, the sentence about a farmer, a trekker and a paraglider wanting different weather from the same
+month, and the major-places list beneath it. All legible at 320 dpi.
+
+`adb logcat` across the whole run reports no Flutter layout error. The only exceptions in the log are
+Android's own `BestClock: no network time available`, which is the emulator having no network and not
+this app.
 
 **What this does not establish:** the AVD is still an emulator, at a size set by `wm` rather than a
 1280-pixel panel, on API 36. Font rendering, memory pressure and touch latency on a real budget
