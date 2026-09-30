@@ -114,9 +114,13 @@ export default function Page() {
   const [planOut, setPlanOut] = useState<any>(null);
   const [planBusy, setPlanBusy] = useState(false);
   const [planErr, setPlanErr] = useState("");
+  // A walk that can be linked to. ?adv=<site-id> already opens an advisory directly so a beat
+  // can be linked and the panel checked without clicking; the planner had no equivalent, which
+  // made it the one feature that could not be shown or verified from a URL.
+  const [autoPlan, setAutoPlan] = useState<string | null>(null);
 
-  const runPlan = useCallback(async () => {
-    const q = planQ.trim();
+  const runPlan = useCallback(async (override?: string) => {
+    const q = (override ?? planQ).trim();
     if (!q) return;
     setPlanBusy(true); setPlanErr(""); setPlanOut(null);
     try {
@@ -132,7 +136,18 @@ export default function Page() {
     } finally {
       setPlanBusy(false);
     }
-  }, [planQ, focus]);
+  }, [planQ, focus, apiBase]);
+
+  // ?plan=<sentence> asks the question on load, so a walk can be linked to the way an advisory can
+  // with ?adv=. It runs once: autoPlan is cleared as it is consumed, so a later edit of the text box
+  // does not re-fire the URL's request.
+  useEffect(() => {
+    if (!autoPlan) return;
+    const text = autoPlan;
+    setAutoPlan(null);
+    setPlanQ(text);
+    void runPlan(text);
+  }, [autoPlan, runPlan]);
   const [flood, setFlood] = useState(false);
   const [esc, setEsc] = useState<any>(null);
   const [escErr, setEscErr] = useState("");
@@ -154,6 +169,8 @@ export default function Page() {
       if (q.get("mode") === "replay") setMode("replay");
       if (q.get("blind") === "1") setBlind(true);
       if (q.get("trails") === "1") setTrails(true);
+      const pv = q.get("plan");
+      if (pv) setAutoPlan(pv);
       <button onClick={() => setPlaces((v) => !v)} className={places ? "on" : ""}
               title="Major places: population, district and the office that owns the ground">
         Places
@@ -515,7 +532,7 @@ export default function Page() {
               onChange={(e) => setPlanQ(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter") runPlan(); }}
             />
-            <button className="act" disabled={planBusy || !planQ.trim()} onClick={runPlan}>
+            <button className="act" disabled={planBusy || !planQ.trim()} onClick={() => runPlan()}>
               {planBusy ? "planning…" : "Plan"}
             </button>
           </div>
