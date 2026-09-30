@@ -63,7 +63,7 @@ Trail data © OpenStreetMap contributors, ODbL 1.0. Coverage is incomplete, the 
 | **Season guide — when to go** | twelve months of measured rain, dry days and temperature for the nearest of six regions. **No month is called good or bad.** The four monsoon months are cross-checked against our own CHIRPS measurement and drawn green; the other eight are grey and marked unvalidated; and Kathmandu's own figures carry a warning not to quote them, because ERA5 puts nearly twice the measured monsoon there. |
 | **Panorama VR — look around the valley** | a 360-degree equirectangular render of the real terrain, draggable, six regions, **264 KB inside the APK.** Not a photograph, and the caption says so: a silhouette from the elevation grid, no trees, no buildings, gradient sky. |
 | **Major places** | 277 of Nepal's 753 local units with bilingual names, population, district, documented slope count and **each unit's own official gov.np website.** The caption states that it is 277 of 753 and that a position is the mean of the documented slopes inside a unit, not a town centre. |
-| **Who is responsible for this ground** | the specific office the routing key holds responsible, the local unit it belongs to and the statutory section - so a request cannot be bounced as "not ours" without somebody deciding that on paper. |
+| **Who is responsible for this ground** | **494 of the 613 documented slopes resolve to a named local unit** with an official government website; the rest report the office and invent no address. Names the office the routing key holds responsible, the local unit and the statutory section - so a request cannot be bounced as "not ours" without somebody deciding that on paper. |
 | **Complaint portal** | drafted on the phone in Nepali, citing **धारा १२(२)(ग)**, with the coordinates and the district, and a line on its face that it was drafted automatically and starts no proceeding. The citizen sends it and keeps the receipt. |
 | **Flood demo — when a flood comes** | the six steps of the 2024 monsoon, each labelled **computed on this phone** or **cited from a measurement made elsewhere**. Four are live; two are cited. |
 
@@ -106,6 +106,12 @@ matters, and radar is the only thing still looking (4–6 passes every month of 
 
 Measured consequence: under an optical-only policy the system can speak on **90.4%** of days, with a
 **hidden 34-day silence** across the monsoon. Adding radar closes it — **+58 points in July**.
+
+And where our own measurement is not good enough, we use somebody else's: **534 of our 613 documented
+slopes carry a value from Kincey et al. (2023)**, a national 30-metre rainfall-triggered
+susceptibility surface published under CC-BY-4.0. It is the first number in this repository that is
+not ours, and it is reported beside our own rather than instead of them — a susceptibility model says
+where failure is more likely across a country, not whether a slope is moving today.
 
 And the intake side is broken too: BIPAD holds **7,081 citizen hazard reports of which zero are
 verified**, 323 are uncleaned SQL-injection probes, and genuine reports (`सडकमा क्षति`, damage to the

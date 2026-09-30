@@ -985,3 +985,46 @@ def test_every_stated_slope_count_matches_the_timeline():
     assert found >= 4, f"the sweep only found {found} counts, so it is not scanning"
     assert not bad, (
         "these state a slope count the timeline does not contain:\n  " + "\n  ".join(bad))
+
+
+def test_every_headline_count_is_derived_from_its_data_not_remembered():
+    """The generalisation, after the same wrong number turned up in six artefacts.
+
+    Last round's guard scanned for "N of 613". This one does not scan for a number at all: it
+    DERIVES each headline figure from the file it comes from and requires the reader-facing documents
+    to state it. That is the difference between checking an instance and checking the class.
+
+    Found by sweeping: everything agreed this time. The point is that it is now checked rather than
+    re-derived by hand each round it occurs to somebody.
+    """
+    import json
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    D = root / "web/public/data"
+
+    def n(path, key=None):
+        d = json.loads((D / path).read_text(encoding="utf-8"))
+        if key:
+            for k in key.split("."):
+                d = d[k]
+            return d
+        return len(d["features"])
+
+    headline = {
+        "23,726": n("trails.geojson"),                       # 4 regions of Nepal
+        "335": n("bus-parks.geojson"),
+        "534": n("susceptibility.json", "sampled"),
+        "494": n("complaint-index.json", "counts.resolved"),
+        "277": n("places.geojson", "counts.places"),
+        "753": n("administration.json", "counts.units"),
+        "77": n("administration.json", "counts.districts"),
+    }
+    assert headline["23,726"] == 23726, "the trail count moved; update every document that states it"
+
+    for doc in ("README.md", "SUBMISSION.md"):
+        text = read(doc)
+        for shown, value in headline.items():
+            expected = f"{value:,}" if "," in shown else str(value)
+            assert expected in text, (
+                f"{doc} does not state {expected}, which is what {shown} is derived as now")
