@@ -154,3 +154,45 @@ def test_a_constraint_the_walker_actually_stated_is_kept():
     assert q.max_fare_rs == 40, "a budget the walker stated was dropped"
     assert q.wants == ["view"]
     assert q.inferred == []
+
+
+def test_a_misread_unit_loses_to_the_literal_one():
+    """Found by asking the live model, in Nepali, for a five-hour walk.
+
+    "5 घण्टाको पदयात्रा" came back as max_minutes 5. The keyword reader had matched the Devanagari
+    unit and read 300. The model's value was perfectly VALID - positive, under the cap - so every
+    check passed, it won, and the walker was offered nothing: no trail is five minutes long.
+
+    The rule is not "trust the model" or "trust the keywords". It is that a disagreement this large
+    means a UNIT was misread, and the reader that matched an explicit unit is the one to believe.
+    """
+
+    class MinutesForHours:
+        def available(self): return True
+
+        def decide(self, prompt, schema):
+            return {"difficulty": "moderate", "max_minutes": 5}
+
+    q = T.parse_request("5 घण्टाको पदयात्रा", MinutesForHours())
+    assert q.max_minutes == 300, f"a five-hour walk was read as {q.max_minutes} minutes"
+    assert any("300" in i or "min" in i for i in q.inferred), \
+        "the misreading must be recorded, not silently corrected"
+
+
+def test_a_small_disagreement_does_not_trigger_the_unit_rule():
+    """3 hours and 175 minutes are the same request said two ways; it must not fire."""
+
+    class Near:
+        def available(self): return True
+
+        def decide(self, prompt, schema):
+            return {"max_minutes": 175}
+
+    q = T.parse_request("3 hour hike", Near())
+    assert q.max_minutes == 175, "the model's value should stand when it agrees closely enough"
+    assert not any("duration" in i for i in q.inferred)
+
+
+def test_the_nepali_hour_unit_is_read_as_hours_without_a_model():
+    q = T._keywords("5 घण्टाको पदयात्रा")
+    assert q.max_minutes == 300, f"the fallback read {q.max_minutes}"

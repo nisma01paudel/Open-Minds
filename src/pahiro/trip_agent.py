@@ -221,6 +221,21 @@ def parse_request(text: str, backend=None) -> TripQuery:
         q.difficulty = base.difficulty
     if q.max_minutes is None:
         q.max_minutes = base.max_minutes
+    elif base.max_minutes and q.max_minutes and \
+            max(q.max_minutes, base.max_minutes) / max(1, min(q.max_minutes, base.max_minutes)) > 2:
+        # A DISAGREEMENT THIS LARGE MEANS THE MODEL MISREAD A UNIT.
+        #
+        # "5 घण्टाको पदयात्रा" - five hours - came back as max_minutes 5. The keyword reader had
+        # matched the Devanagari unit and read 300. The model's value was perfectly VALID - positive,
+        # under the cap - so every check passed and it won, and a Nepali speaker asking for a
+        # five-hour walk was offered nothing, because no trail is five minutes long.
+        #
+        # When the two readers differ by more than a factor of two, the one that matched an explicit
+        # unit is the one to believe.
+        q.inferred.append(
+            f"duration {q.max_minutes} min (the words say {base.max_minutes} min; the unit was "
+            f"matched literally, so the literal reading is used)")
+        q.max_minutes = base.max_minutes
     if q.max_fare_rs is None:
         q.max_fare_rs = base.max_fare_rs
     if not q.wants:
