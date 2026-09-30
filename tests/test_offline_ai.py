@@ -245,9 +245,27 @@ def test_the_demo_film_exists_and_its_narration_is_continuous():
          "-of", "csv=p=0", str(film)], capture_output=True, text=True, timeout=120).stdout.strip()
     assert audio, "the film has no audio stream, so it is not narrated"
 
+    # A SILENCE CHECK IS NOT ENOUGH, and this is a false-clean that actually happened: the build
+    # log said "(no voice)" for four clips, the film still had no 3-second silent stretch, and the
+    # silence test passed. Silence detection cannot see a clip that was built captioned-only.
+    #
+    # So the check is the one that matches the failure: every narration key the build asks for
+    # must have a wav in the voice directory it is told to use.
+    import re
+
+    script = (Path(__file__).resolve().parents[1]
+              / "scripts" / "build_voiced_video.sh").read_text(encoding="utf-8")
+    keys = re.findall(r"^build \S+ \S+ (\w+) ", script, re.M)
+    assert keys, "no build lines found in the video script"
+    voice = Path(__file__).resolve().parents[1] / "reports" / "video" / "voice"
+    missing = [k for k in keys if not (voice / f"{k}.wav").exists()]
+    assert not missing, (
+        f"the build asks for narration {missing} and reports.s/video/voice has no such wav, so "
+        f"those clips would be built with a caption and no voice")
+
     gaps = subprocess.run(
         ["ffmpeg", "-v", "error", "-i", str(film), "-af", "silencedetect=noise=-45dB:d=3",
          "-f", "null", "-"], capture_output=True, text=True, timeout=600)
     starts = (gaps.stderr or "").count("silence_start")
     assert starts == 0, (
-        f"{starts} stretch(es) of 3 s or more with no narration - a beat is unvoiced")
+        f"{starts} stretch(es) of 3 s or more with no narration")

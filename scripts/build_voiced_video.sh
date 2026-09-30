@@ -92,7 +92,10 @@ cap () { printf '%b' "$2" > "$CLIPS/$1.txt"; }
 echo "building narrated clips (voice: $VOICE) ..."
 cap ca "Nepal can already detect.\nNepal cannot dispatch."
 build t0 CARD a ca
-cap cb "613 documented landslide-prone slopes.\nEach paired with the office responsible for it."
+# The caption is generated here, which is why editing clips-voiced/cb.txt does nothing: it is
+# an artifact. This string was the retracted overclaim - the map applies ONE documented
+# default rule to every slope, it does not route each one.
+cap cb "613 documented landslide-prone slopes.\nEach carrying the routing key's DEFAULT duty holder for a local road."
 build map 01-map b cb
 cap cc "The 2024 monsoon."
 build season SEASON c cc
