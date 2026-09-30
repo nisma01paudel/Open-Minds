@@ -55,6 +55,45 @@ including embeddings and auxiliary classification.
 *(Full disclosure naming the exact file/function where AI output is consumed programmatically is required
 for eligibility and will be completed as the modules land. Placeholder: `docs/AI-USAGE.md`.)*
 
+## Status — what is verified working today
+
+| Component | State | Evidence |
+|---|---|---|
+| Anonymous free data access | **verified live** | `scripts/verify_data_access.py` — Sentinel-2, Sentinel-1, Copernicus DEM, CHIRPS; no account, no key |
+| Satellite ingest + cloud masking | **working** | `src/pahiro/ingest/` — reads a COG window over HTTP (range requests), masks via the SCL band |
+| Real observation series | **built** | `evidence/dhading-2024-obs.csv` — 12 monthly passes over the Dhading corridor, 2024 |
+| Staleness gate (abstain / degraded / ok) | **working, tested** | `src/pahiro/routing/abstain.py`, 11 passing tests in `tests/test_abstain.py` |
+| Routing ontology | **in progress** | `docs/AUTHORITY-MAP.md` — citations being verified |
+| Evaluation harness | planned | design in the plan; routing accuracy + expert-rated advisories + kappa |
+
+A real run over the Dhading corridor (best available scene per month, 2024):
+
+```
+2024-01 usable 1.000   2024-05 usable 0.709   2024-09 usable 0.859
+2024-02 usable 0.753   2024-06 usable 0.791   2024-10 usable 1.000
+2024-03 usable 1.000   2024-07 usable 0.218  <- BLIND   2024-11 usable 0.947
+2024-04 usable 1.000   2024-08 usable 0.864   2024-12 usable 0.996
+```
+
+`usable` is the fraction of the study patch left after cloud masking. In July 2024 **even the least-cloudy
+scene available** left only 22% usable. Across 2019–2025 not one scene met a 20% cloud threshold in July
+or August — while Sentinel-1 radar delivered 4–6 usable looks every month of every year.
+
+Honest nuance: optical coverage in the monsoon is **sporadic and unreliable**, not uniformly zero —
+August 2024's best available scene reached 86% usable. The system therefore reports the state rather
+than promising a look.
+
+## Quickstart
+
+```bash
+uv venv .venv && uv pip install --python .venv/bin/python -e '.[geo]'
+.venv/bin/python scripts/verify_data_access.py                 # the founding evidence
+.venv/bin/python -m pytest -q                                  # 11 tests
+.venv/bin/python -m pahiro.ingest.series \
+    --bbox 84.95 27.75 85.10 27.90 --from 2024-01-01 --to 2024-12-31 \
+    --max-cloud 100 --best-per-month --out evidence/run
+```
+
 ## Reproduce the founding evidence
 
 ```bash

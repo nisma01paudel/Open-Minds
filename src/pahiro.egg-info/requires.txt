@@ -1,0 +1,9 @@
+
+[ai]
+onnxruntime
+
+[geo]
+rasterio
+numpy
+requests
+pystac-client

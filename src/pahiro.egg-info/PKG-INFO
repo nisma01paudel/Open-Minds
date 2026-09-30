@@ -1,0 +1,15 @@
+Metadata-Version: 2.4
+Name: pahiro
+Version: 0.0.1
+Summary: From detection to dispatch: authority-addressed slope advisories for Nepal
+License: MIT
+Requires-Python: >=3.10
+License-File: LICENSE
+Provides-Extra: geo
+Requires-Dist: rasterio; extra == "geo"
+Requires-Dist: numpy; extra == "geo"
+Requires-Dist: requests; extra == "geo"
+Requires-Dist: pystac-client; extra == "geo"
+Provides-Extra: ai
+Requires-Dist: onnxruntime; extra == "ai"
+Dynamic: license-file
