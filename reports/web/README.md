@@ -79,6 +79,37 @@ Three paths near Kathmandu are unnamed in OSM, and the app prints "(unnamed path
 inventing one. The difficulty field says "not recorded" and "cannot check this from the map data"
 rather than guessing a grade from a length. The caveat paragraph names all three limits.
 
+## Presenter mode, which is what actually wins the room
+
+`?present=1` had never been rendered either. It is the pitch: nine beats with a numbered bar and a
+counter, each beat a card over the map, advanced with arrow keys and left with Esc.
+
+    1 . The national picture
+    Every documented landslide-prone slope in Nepal - 613 of them - on real Sentinel-2 imagery,
+    each carrying the routing key's default duty holder for a local road, cited to the statute.
+    Say "default": per-report routing, which resolves the actual asset, is measured separately on
+    21 expert-labelled scenarios.
+
+The honesty caveat is in the FIRST beat, not buried in a limitations slide, and it tells the presenter
+what to say out loud ("Say 'default'") rather than leaving them to paraphrase it. That is the same
+instinct as the phone's live-versus-cited labels, applied to the person holding the clicker.
+
+### The overlap I nearly reported
+
+The beat bar at the bottom left crosses the sidebar's last line of text. I checked before writing it up
+as a defect:
+
+    .presenter { position: absolute; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(0deg, rgba(5,7,13,.94), rgba(5,7,13,0)); }
+
+The overlay is deliberately full width with a gradient that fades to transparent at its top edge, so
+content behind it shows faintly there. That is the intended effect, not a bug, and whether it reads
+well is a judgement rather than a defect.
+
+Third time in four rounds that checking before reporting turned a suspected defect into no defect.
+The pattern is now cheap enough to be a habit: every time something looks wrong, read the rule that
+produced it.
+
 ## The false finding immediately before it
 
 The first capture used `--disable-gpu`, which killed WebGL, and the map rendered as an empty white
