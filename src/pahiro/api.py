@@ -459,6 +459,22 @@ class _Handler(BaseHTTPRequestHandler):
                     "hint": "see scripts/build_terrain.py"}
 
         e = shelter.plan_escape(dem, lat, lon, rise_m=rise)
+
+        # Live guidance. The phone sends where it was when it started and where it was a moment
+        # ago; the *rule* stays here, in the tested module, rather than being reimplemented in
+        # JavaScript where it would drift. A phone that has climbed 20 m of a 200 m climb must
+        # not be told it is failing, and that judgement belongs in one place.
+        def _opt(name: str) -> float | None:
+            raw = (q.get(name) or [None])[0]
+            try:
+                return None if raw in (None, "") else float(raw)
+            except (TypeError, ValueError):
+                return None
+
+        live = navigate.update(e, dem, lat, lon,
+                               started_elevation_m=_opt("started_m"),
+                               last_elevation_m=_opt("last_m"))
+
         return {
             "query": {"lat": lat, "lon": lon, "rise_m": rise},
             "reachable": e.reachable,
@@ -476,6 +492,11 @@ class _Handler(BaseHTTPRequestHandler):
             "advice_en": shelter.advice_text(e),
             "advice_ne": shelter.advice_text(e, nepali=True),
             "navigation": navigate.plan_summary(e),
+            "live": {"kind": live.kind, "ne": live.ne, "en": live.en,
+                     "remaining_m": (None if live.remaining_m is None
+                                     else round(live.remaining_m, 1)),
+                     "elevation_now_m": (None if live.elevation_now_m is None
+                                         else round(live.elevation_now_m, 1))},
             "resolution_m": round(e.resolution_m, 0),
             "caveat": ("Terrain only, from a coarse national grid. It cannot see bridges, "
                        "culverts, roads or the water. Move away from the stream first."),

@@ -60,6 +60,31 @@ function dayFeatures(tl: Timeline, i: number, _threshold: number): AnyFC {
   return { type: "FeatureCollection", features: feats };
 }
 
+function apiBase(): string {
+  // The flood planner is the one thing here that needs the field API. It is configurable with
+  // ?api=http://host:port so the demo works against a laptop on any address, and it defaults to
+  // the documented port rather than guessing.
+  if (typeof window === "undefined") return "";
+  const q = new URLSearchParams(window.location.search).get("api");
+  return (q || "http://127.0.0.1:8080").replace(/\/+$/, "");
+}
+
+function speakNepali(text: string): "spoke" | "no-voice" | "unsupported" {
+  if (typeof window === "undefined" || !("speechSynthesis" in window)) return "unsupported";
+  const synth = window.speechSynthesis;
+  const utterance = new SpeechSynthesisUtterance(text);
+  const voices = synth.getVoices();
+  const ne = voices.find((v) => (v.lang || "").toLowerCase().startsWith("ne"));
+  // Read Nepali in a Nepali voice or not at all. A Devanagari instruction spoken by an English
+  // voice is worse than silence: the listener hears confident nonsense.
+  utterance.lang = ne ? ne.lang : "ne-NP";
+  if (ne) utterance.voice = ne;
+  utterance.rate = 0.95;
+  synth.cancel();
+  synth.speak(utterance);
+  return ne ? "spoke" : "no-voice";
+}
+
 export default function Page() {
   const [frames, setFrames] = useState<Frame[]>([]);
   const [tl, setTl] = useState<Timeline | null>(null);
@@ -74,6 +99,10 @@ export default function Page() {
   const [adv, setAdv] = useState<any>(null);
   const [picked, setPicked] = useState<any>(null);
   const [blind, setBlind] = useState(false);
+  const [flood, setFlood] = useState(false);
+  const [esc, setEsc] = useState<any>(null);
+  const [escErr, setEscErr] = useState("");
+  const [escBusy, setEscBusy] = useState(false);
   const advisories = useRef<Record<string, any>>({});
   const raf = useRef<number | null>(null);
 
@@ -183,13 +212,99 @@ export default function Page() {
         data={mode === "replay" ? replayFC : liveFC}
         focus={focus}
         blind={blind}
-        onPick={(p) => {
+        onPick={(p, at) => {
           const a = advisories.current[p.id];
           setPicked(p);
           // advisories are precomputed for one day; only show them on that day
           setAdv(a && tl && tl.days[day] === "2024-09-28" ? a : null);
+
+          // In flood mode the same click answers a different question: not "who is
+          // responsible for this slope" but "which way do I run, and how high".
+          if (!flood || !at) { setEsc(null); return; }
+          setEsc(null);
+          setEscErr("");
+          setEscBusy(true);
+          fetch(`${apiBase()}/api/v1/escape?lat=${at.lat}&lon=${at.lon}&rise_m=5`)
+            .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
+            .then((d) => { setEsc(d); if (d?.error) setEscErr(d.error); })
+            .catch((e) => setEscErr(
+              `${e.message} — is the field API running? ` +
+              `python -m pahiro.api --port 8080`))
+            .finally(() => setEscBusy(false));
         }}
       />
+
+      {flood && (esc || escBusy || escErr) && (
+        <aside className="advpanel escapepanel">
+          <button className="advx" onClick={() => { setEsc(null); setEscErr(""); }}>✕</button>
+          <h3>🌊 Where to run, and how high</h3>
+          {escBusy && <p className="advlead">Working out the ground from the bundled DEM…</p>}
+          {escErr && <p className="advlead" style={{ color: "#f59e0b" }}>{escErr}</p>}
+          {esc && !esc.error && (
+            <>
+              {esc.reachable ? (
+                <>
+                  <div className="escbig">
+                    GO <b>{String(esc.compass || "").toUpperCase()}</b>
+                    {esc.distance_m != null && <> · about <b>{Math.round(esc.distance_m)} m</b></>}
+                    {esc.climb_m != null && esc.climb_m > 1 && <> · climbing <b>{Math.round(esc.climb_m)} m</b></>}
+                  </div>
+                  <div className="advmeta">
+                    {Math.round(esc.from_elevation_m)} m now → reach at least{" "}
+                    {esc.target_elevation_m != null && Math.round(esc.target_elevation_m)} m
+                    {esc.walk_minutes != null && <> · ~{Math.round(esc.walk_minutes)} min on foot</>}
+                  </div>
+                  <p className="advlead" style={{ fontSize: 17, lineHeight: 1.5 }}>
+                    {esc.advice_ne}
+                  </p>
+                  <div className="escactions">
+                    <button
+                      className="escsp"
+                      onClick={() => {
+                        const r = speakNepali(esc.navigation?.spoken?.first_ne || esc.advice_ne);
+                        if (r !== "spoke") {
+                          setEscErr(r === "no-voice"
+                            ? "No Nepali voice is installed on this device, so the instruction is shown rather than read badly in another language."
+                            : "This browser has no speech synthesis.");
+                        }
+                      }}
+                    >
+                      🔊 सुन्नुहोस् — SPEAK IT
+                    </button>
+                    <button
+                      className="escsp ghost"
+                      onClick={() => speakNepali(esc.navigation?.spoken?.heading_ne || "")}
+                    >
+                      🔊 DIRECTION ONLY
+                    </button>
+                  </div>
+                  <ol className="escsteps">
+                    {(esc.navigation?.steps ?? []).map((s: any, i: number) => (
+                      <li key={i}><b>{s.ne}</b><span className="dim"> — {s.en}</span></li>
+                    ))}
+                  </ol>
+                </>
+              ) : (
+                <>
+                  <div className="escbig warn">NO REACHABLE HIGH GROUND</div>
+                  <p className="advlead" style={{ fontSize: 17, lineHeight: 1.5 }}>
+                    {esc.advice_ne}
+                  </p>
+                  <div className="escactions">
+                    <button className="escsp" onClick={() => speakNepali(esc.navigation?.spoken?.first_ne || esc.advice_ne)}>
+                      🔊 सुन्नुहोस् — SPEAK IT
+                    </button>
+                  </div>
+                </>
+              )}
+              <p className="advcaveat">
+                <b>{esc.caveat}</b> Ground grid about {Math.round(esc.resolution_m)} m. This is
+                terrain only — not turn-by-turn, and it cannot see the water.
+              </p>
+            </>
+          )}
+        </aside>
+      )}
 
       {picked && (
         <aside className="advpanel">
@@ -243,6 +358,18 @@ export default function Page() {
 
       <aside className="panel">
         <div className="frames">
+          <button
+            className={flood ? "flood on" : "flood"}
+            aria-pressed={flood}
+            onClick={() => {
+              setFlood((f) => !f);
+              setEsc(null); setEscErr("");
+              if (flood) { setPicked(null); setAdv(null); }
+            }}
+            title="Answer 'which way do I run, and how high' for a clicked point"
+          >
+            🌊 FLASH FLOOD — WHERE DO I GO?
+          </button>
           <button aria-pressed={mode === "live"} onClick={() => { setMode("live"); setPlaying(false); }}>
             Live · {frames[0]?.date ?? "—"}
           </button>

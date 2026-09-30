@@ -95,7 +95,7 @@ export default function SlopeMap({
   data: AnyFC | null;
   popup?: boolean;
   focus?: { lon: number; lat: number; zoom?: number } | null;
-  onPick?: (p: any) => void;
+  onPick?: (p: any, at?: { lon: number; lat: number }) => void;
   blind?: boolean;
 }) {
   const holder = useRef<HTMLDivElement>(null);
@@ -257,7 +257,10 @@ export default function SlopeMap({
           const p = e.features?.[0]?.properties;
           if (!p) return;
           const [lon, lat] = e.features[0].geometry.coordinates;
-          onPick?.(p);
+          // The coordinates travel with the properties: the flood-escape planner needs the
+          // ground the user actually clicked, and a slope's own lat/lon is not always the
+          // point they aimed at.
+          onPick?.(p, { lon, lat });
           markerPopup.setLngLat([lon, lat]).setHTML(
             `<h3>${p.title || "Documented slope"}</h3>
              <div style="color:#94a3b8">${STATE_LABEL[p.state] ?? p.state} ·

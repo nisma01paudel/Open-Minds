@@ -316,6 +316,25 @@ kbd { background: rgba(148,163,184,.16); border: 1px solid rgba(148,163,184,.25)
 .advx:hover { color: #fff; }
 @media (max-width: 900px) { .advpanel { display: none; } }
 
+/* Flood escape: the same click as a slope, answering a different question. Deliberately louder
+   than the advisory panel, because the reader is a person who has to move in the next minute. */
+.frames button.flood { border-color: rgba(56,189,248,.5); color: #7dd3fc; font-weight: 600; }
+.frames button.flood.on { background: rgba(56,189,248,.16); border-color: #38bdf8; color: #e0f2fe; }
+.escapepanel { border-color: rgba(56,189,248,.42); }
+.escbig { font-size: 25px; font-weight: 700; letter-spacing: .3px; line-height: 1.25;
+  margin: 6px 0 6px; color: #e8f6ff; }
+.escbig b { color: #38bdf8; }
+.escbig.warn { color: #ffb4a2; font-size: 21px; }
+.escactions { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0 4px; }
+.escsp { font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; padding: 9px 13px;
+  border-radius: 9px; border: 1px solid #38bdf8; background: rgba(56,189,248,.16);
+  color: #e0f2fe; }
+.escsp:hover { background: rgba(56,189,248,.28); }
+.escsp.ghost { background: transparent; color: #7dd3fc; border-color: rgba(56,189,248,.45); }
+.escsteps { margin: 11px 0 0; padding-left: 20px; font-size: 12.5px; line-height: 1.75;
+  color: #e2e8f0; }
+.escsteps .dim { color: var(--muted); }
+
 .toggle { display: flex; align-items: flex-start; gap: 9px; font-size: 12.5px; color: #cbd5e1;
   cursor: pointer; padding: 9px 10px; border-radius: 9px; background: rgba(148,163,184,.07);
   border: 1px solid rgba(148,163,184,.14); line-height: 1.4; }

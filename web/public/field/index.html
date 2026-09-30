@@ -65,6 +65,12 @@
   .note { color: #cbd5e1; background: rgba(148,163,184,.08); border-left: 3px solid var(--muted);
     padding: 9px 11px; border-radius: 0 8px 8px 0; font-size: 12px; margin-top: 10px; }
   .hidden { display: none !important; }
+  /* भाग्नुहोस् — the escape screen is read at arm's length, at night, while moving. */
+  .escbig { font-size: 27px; font-weight: 700; line-height: 1.25; letter-spacing: .3px;
+    color: #e0f2fe; margin: 4px 0 6px; }
+  .escbig.warn { font-size: 22px; color: #ffb4a2; }
+  .escactions { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0 4px; }
+  .escactions .act { width: auto; flex: 1 1 45%; margin-top: 0; }
 </style>
 </head>
 <body>
@@ -177,6 +183,33 @@
     <div id="estimate"></div>
   </section>
 
+  <!-- ================= ESCAPE ================= -->
+  <section id="s-escape">
+    <h2>भाग्नुहोस् — where to run, and how high</h2>
+    <div class="card">
+      <div class="muted" style="margin-bottom:8px">
+        A warning that says <i>"flash flood"</i> leaves out the only decision that matters:
+        which way, and how far up. This answers it from the elevation data, on the phone,
+        with the network already gone.
+      </div>
+      <label for="escrise">Expected flood rise above the stream</label>
+      <input id="escrise" type="number" min="1" max="60" step="1" value="5" />
+      <button class="act" id="escgo">WHERE DO I GO FROM HERE?</button>
+      <button class="act ghost" id="escfollow">FOLLOW ME — SPEAK AS I MOVE</button>
+      <button class="act ghost" id="escstop">STOP FOLLOWING</button>
+      <div id="escstate" class="muted" style="margin-top:8px">Not started.</div>
+    </div>
+
+    <div id="escbox"></div>
+
+    <div class="note">
+      Terrain only. Elevation says nothing about bridges, culverts, roads or where the water
+      will actually go, and the grid is about a kilometre a cell — so this is
+      <b>valley-scale guidance</b>, not turn-by-turn. Move away from the stream first, then
+      uphill. Follow local instruction over anything this screen says.
+    </div>
+  </section>
+
   <!-- ================= SETTINGS ================= -->
   <section id="s-more">
     <h2>Connection</h2>
@@ -186,6 +219,25 @@
       <button class="act ghost" id="saveapi">Save and test</button>
       <div id="apitest" class="muted" style="margin-top:8px"></div>
     </div>
+    <h2>Optional hosted model (bring your own key)</h2>
+    <div class="card">
+      <div class="muted" style="margin-bottom:8px">
+        <b>Not required.</b> Every life-saving feature on this phone — the SOS, the mesh, the
+        beacon, भाग्नुहोस् and the advisory — runs with <b>no model and no key</b>. This field is
+        only for the optional hosted fallback, which writes the advisory more fluently when a
+        network happens to exist.
+      </div>
+      <label for="apikey">API key (stored on this phone only)</label>
+      <input id="apikey" type="password" placeholder="leave empty to stay fully offline" autocomplete="off" />
+      <label for="apibase">Hosted model endpoint</label>
+      <input id="apibase" placeholder="https://api.openai.com/v1" autocomplete="off" />
+      <label for="apimodel">Model name</label>
+      <input id="apimodel" placeholder="gpt-4o-mini" autocomplete="off" />
+      <button class="act ghost" id="savekey">Save key</button>
+      <button class="act ghost" id="clearkey">Remove key</button>
+      <div id="keystate" class="muted" style="margin-top:8px"></div>
+    </div>
+
     <h2>This device</h2>
     <div class="card">
       <div class="muted">Device id (how the board knows you)</div>
@@ -205,6 +257,7 @@
   <button role="tab" aria-selected="false" data-tab="s-board">Board</button>
   <button role="tab" aria-selected="false" data-tab="s-chat">Chat</button>
   <button role="tab" aria-selected="false" data-tab="s-search">Search</button>
+  <button role="tab" aria-selected="false" data-tab="s-escape">भाग्नुहोस्</button>
   <button role="tab" aria-selected="false" data-tab="s-more">More</button>
 </nav>
 
@@ -904,6 +957,147 @@ $("saveapi").addEventListener("click", async function () {
   }
 });
 
+/* --- भाग्नुहोस्: which way to run, and how high, spoken as you move ---------------------- *
+ *
+ * The rule lives on the server, in the tested Python module, and is not reimplemented here.
+ * A phone that has climbed 20 m of a 200 m climb must not be told it is failing, and that
+ * judgement is exactly the kind of thing that drifts when it exists in two languages - the
+ * same reason the mesh has a parity check.
+ *
+ * The voice is the platform's own speechSynthesis on ne-NP: no network, no API key. Where no
+ * Nepali voice is installed we say so and show the text large, because a Devanagari
+ * instruction read aloud by an English voice is confident nonsense.
+ */
+var escWatchId = null, escStarted = null, escLast = null, escSpeakLast = "";
+
+function speakNe(text) {
+  if (!text) return "empty";
+  if (typeof speechSynthesis === "undefined") return "unsupported";
+  var u = new SpeechSynthesisUtterance(text);
+  var voices = speechSynthesis.getVoices() || [];
+  var ne = null;
+  for (var i = 0; i < voices.length; i++) {
+    if ((voices[i].lang || "").toLowerCase().indexOf("ne") === 0) { ne = voices[i]; break; }
+  }
+  u.lang = ne ? ne.lang : "ne-NP";
+  if (ne) u.voice = ne;
+  u.rate = 0.95;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+  return ne ? "spoke" : "no-voice";
+}
+
+function renderEscape(d) {
+  var box = $("escbox");
+  if (!box) return;
+  if (d.error) { box.innerHTML = "<div class='card'>" + esc(d.error) + "</div>"; return; }
+
+  var html = "<div class='card'>";
+  if (d.reachable) {
+    html += "<div class='escbig'>" + esc((d.compass || "").toUpperCase()) +
+      (d.distance_m != null ? " · " + Math.round(d.distance_m) + " मिटर" : "") +
+      (d.climb_m != null && d.climb_m > 1 ? " · +" + Math.round(d.climb_m) + " मिटर माथि" : "") +
+      "</div>";
+    html += "<div class='muted'>" + Math.round(d.from_elevation_m) + " मिटर अहिले → कम्तीमा " +
+      (d.target_elevation_m != null ? Math.round(d.target_elevation_m) : "?") + " मिटर" +
+      (d.walk_minutes != null ? " · पैदल करिब " + Math.round(d.walk_minutes) + " मिनेट" : "") +
+      "</div>";
+  } else {
+    html += "<div class='escbig warn'>नजिकै सुरक्षित उचाइ छैन</div>";
+  }
+  html += "<p style='font-size:17px;line-height:1.6;margin:12px 0'>" + esc(d.advice_ne) + "</p>";
+  html += "<div class='escactions'>" +
+    "<button class='act' id='escsay'>🔊 सुन्नुहोस्</button>" +
+    "<button class='act ghost' id='escsaydir'>🔊 दिशा मात्र</button></div>";
+  html += "<ol style='padding-left:20px;line-height:1.8'>";
+  var steps = (d.navigation && d.navigation.steps) || [];
+  for (var i = 0; i < steps.length; i++) {
+    html += "<li><b>" + esc(steps[i].ne) + "</b><div class='muted'>" + esc(steps[i].en) + "</div></li>";
+  }
+  html += "</ol>";
+  html += "<div class='muted' style='font-size:11px;margin-top:10px'>" + esc(d.caveat) +
+    " ग्रिड करिब " + Math.round(d.resolution_m) + " मिटर।</div>";
+  html += "</div>";
+  box.innerHTML = html;
+
+  $("escsay").onclick = function () {
+    var r = speakNe((d.navigation && d.navigation.spoken && d.navigation.spoken.first_ne) || d.advice_ne);
+    if (r === "no-voice") $("escstate").textContent =
+      "यो फोनमा नेपाली आवाज छैन — पाठ मात्र देखाइएको छ। (No Nepali voice installed.)";
+  };
+  $("escsaydir").onclick = function () {
+    speakNe((d.navigation && d.navigation.spoken && d.navigation.spoken.heading_ne) || "");
+  };
+
+  // Speak the plan once, automatically, because the person using this has both hands full.
+  var first = (d.navigation && d.navigation.spoken && d.navigation.spoken.first_ne) || "";
+  if (first && first !== escSpeakLast) { speakNe(first); escSpeakLast = first; }
+}
+
+function escapeQuery(lat, lon, started, last) {
+  var rise = ($("escrise") && $("escrise").value) || 5;
+  var url = apiBase + "/api/v1/escape?lat=" + lat + "&lon=" + lon + "&rise_m=" + rise;
+  if (started != null) url += "&started_m=" + started;
+  if (last != null) url += "&last_m=" + last;
+  return fetch(url, { cache: "no-store" }).then(function (r) {
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    return r.json();
+  });
+}
+
+function escapeGo() {
+  var st = $("escstate");
+  if (!navigator.geolocation) { st.textContent = "यो फोनले स्थान दिँदैन (no geolocation)."; return; }
+  st.textContent = "स्थान खोज्दै…";
+  navigator.geolocation.getCurrentPosition(function (p) {
+    st.innerHTML = "स्थान: <b>" + p.coords.latitude.toFixed(5) + ", " +
+      p.coords.longitude.toFixed(5) + "</b> (±" + Math.round(p.coords.accuracy) + " m)";
+    escapeQuery(p.coords.latitude, p.coords.longitude).then(renderEscape).catch(function (e) {
+      st.textContent = "API पुगेन: " + e.message + " — More ट्याबमा ठेगाना जाँच्नुहोस्।";
+    });
+  }, function (err) {
+    st.textContent = "स्थान अस्वीकृत: " + err.message;
+  }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 });
+}
+
+function escapeFollow() {
+  var st = $("escstate");
+  if (!navigator.geolocation) { st.textContent = "यो फोनले स्थान दिँदैन."; return; }
+  if (escWatchId !== null) { st.textContent = "पहिले नै पछ्याइरहेको छ।"; return; }
+  escStarted = null; escLast = null; escSpeakLast = "";
+  st.textContent = "पछ्याउँदै… हिँड्नुहोस्, म बाटो भन्नेछु।";
+  escWatchId = navigator.geolocation.watchPosition(function (p) {
+    escapeQuery(p.coords.latitude, p.coords.longitude, escStarted, escLast).then(function (d) {
+      if (escStarted === null && d.from_elevation_m != null) escStarted = d.from_elevation_m;
+      escLast = d.from_elevation_m;   // becomes the reference for the *next* update
+      renderEscape(d);
+      // The live line is the whole point of follow mode: it is spoken every time it changes,
+      // so a correction arrives while the person is still walking the wrong way.
+      var live = d.live && d.live.ne;
+      if (live && live !== escSpeakLast) {
+        escSpeakLast = live;
+        speakNe(live);
+        st.innerHTML = "<b>" + esc(live) + "</b>";
+      }
+    }).catch(function (e) { st.textContent = "API पुगेन: " + e.message; });
+  }, function (err) {
+    st.textContent = "स्थान अस्वीकृत: " + err.message;
+  }, { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000 });
+}
+
+function escapeStop() {
+  if (escWatchId !== null && navigator.geolocation) {
+    navigator.geolocation.clearWatch(escWatchId);
+  }
+  escWatchId = null;
+  if (typeof speechSynthesis !== "undefined") speechSynthesis.cancel();
+  if ($("escstate")) $("escstate").textContent = "रोकियो।";
+}
+
+if ($("escgo")) $("escgo").addEventListener("click", escapeGo);
+if ($("escfollow")) $("escfollow").addEventListener("click", escapeFollow);
+if ($("escstop")) $("escstop").addEventListener("click", escapeStop);
+
 /* --- distress beacons over Bluetooth advertisements ---------------------------------- *
  *
  * The frame is 20 bytes carried inside the advertisement itself. There is no connection and
@@ -1041,6 +1235,63 @@ if ($("beacons")) $("beacons").addEventListener("click", function (ev) {
   var k = ev.target && ev.target.getAttribute && ev.target.getAttribute("data-beacon");
   if (k) beaconToBoard(k);
 });
+
+/* --- optional hosted model key --------------------------------------------------------- *
+ *
+ * Stored on the handset and never sent anywhere except the endpoint the user names. It is
+ * deliberately hard to believe this is needed: the whole point of the rest of this app is that
+ * it works with nothing, so the UI says so and never implies the key is required.
+ *
+ * The value is never displayed back. A settings screen that echoes a secret is a settings
+ * screen that leaks it over a shoulder, and a masked hint is enough to confirm it saved.
+ */
+var KEY_STORE = "pahiro.apikey", BASE_STORE = "pahiro.apibase", MODEL_STORE = "pahiro.apimodel";
+
+function keyHint(k) {
+  if (!k) return "कुञ्जी सेट छैन — पूर्ण रूपमा अफलाइन। (No key: fully offline.)";
+  return "कुञ्जी सेट छ (" + k.length + " characters, ends …" + k.slice(-4) +
+    ") — hosted fallback only.";
+}
+
+function renderKeyState() {
+  var el = $("keystate");
+  if (!el) return;
+  var k = "";
+  try { k = localStorage.getItem(KEY_STORE) || ""; } catch (e) {}
+  el.innerHTML = esc(keyHint(k)) +
+    "<div style='margin-top:6px'>Hosted inference is <b>" + (k ? "available" : "off") +
+    "</b>. On-device features are unaffected either way.</div>";
+}
+
+if ($("savekey")) $("savekey").addEventListener("click", function () {
+  var v = ($("apikey").value || "").trim();
+  try {
+    if (v) localStorage.setItem(KEY_STORE, v);
+    if ($("apibase").value.trim()) localStorage.setItem(BASE_STORE, $("apibase").value.trim());
+    if ($("apimodel").value.trim()) localStorage.setItem(MODEL_STORE, $("apimodel").value.trim());
+  } catch (e) {}
+  $("apikey").value = "";   // do not leave a secret sitting in the DOM
+  renderKeyState();
+});
+
+if ($("clearkey")) $("clearkey").addEventListener("click", function () {
+  try {
+    localStorage.removeItem(KEY_STORE);
+    localStorage.removeItem(BASE_STORE);
+    localStorage.removeItem(MODEL_STORE);
+  } catch (e) {}
+  if ($("apibase")) $("apibase").value = "";
+  if ($("apimodel")) $("apimodel").value = "";
+  renderKeyState();
+});
+
+if ($("keystate")) {
+  try {
+    if ($("apibase")) $("apibase").value = localStorage.getItem(BASE_STORE) || "";
+    if ($("apimodel")) $("apimodel").value = localStorage.getItem(MODEL_STORE) || "";
+  } catch (e) {}
+  renderKeyState();
+}
 
 /* --- start --------------------------------------------------------------------------- */
 startMesh();
