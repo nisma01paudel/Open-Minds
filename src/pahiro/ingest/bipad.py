@@ -118,6 +118,31 @@ class BipadClient:
                 break
         return out[:max_records] if max_records else out
 
+    def landslide_incidents(self, page_size: int = 1000,
+                           max_records: int | None = None) -> list[dict]:
+        """Every landslide incident BIPAD holds, paginated.
+
+        This is the only Nepal source with per-event day-precision dates AND
+        coordinates. Two traps, both handled here:
+        - `count` returns int64 max on every endpoint, so pagination walks pages
+          until a short page arrives; it never trusts `count`.
+        - repeated coordinates are administrative default points, not per-event
+          sites. Deduplication is the caller's job - see build_event_benchmark.
+        """
+        out: list[dict] = []
+        offset = 0
+        while True:
+            page = self._api("incident/", hazard=LANDSLIDE_HAZARD_ID,
+                             limit=page_size, offset=offset)
+            results = page.get("results") or []
+            out.extend(results)
+            if len(results) < page_size:
+                break
+            offset += page_size
+            if max_records and len(out) >= max_records:
+                break
+        return out[:max_records] if max_records else out
+
     def landslide_blockages(self, **kw) -> list[dict]:
         """Only the road blockages BIPAD attributes to landslides."""
         return [r for r in self.road_blockages(**kw)
