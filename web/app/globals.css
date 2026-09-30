@@ -142,13 +142,16 @@ button.play { font-size: 13px; min-width: 42px; }
 button.play:hover, button.mini:hover { border-color: var(--accent); color: #fff; }
 button.mini { font-size: 11.5px; padding: 4px 9px; margin-left: auto; }
 input[type=range] { width: 100%; accent-color: var(--accent); }
-.pulse { display: flex; align-items: flex-end; gap: 1px; height: 42px;
-         background: rgba(148,163,184,.07); border-radius: 7px; padding: 4px 5px; }
-.pulse .bar { flex: 1; background: rgba(148,163,184,.45); border-radius: 1px; cursor: pointer;
-              min-height: 2px; transition: background .1s; }
+.pulse { display: flex; align-items: flex-end; gap: 1px; height: 54px;
+         background: rgba(148,163,184,.06); border-radius: 7px; padding: 5px 5px 4px; }
+.pulse .bar { flex: 1 1 0; min-width: 1px; background: rgba(148,163,184,.22); border-radius: 1px;
+              cursor: pointer; min-height: 3px; transition: background .12s; }
+.pulse .bar.has { background: rgba(255,159,10,.65); }
 .pulse .bar:hover { background: var(--accent); }
-.pulse .bar.at { background: var(--exceeded); }
-.pulselabel { font-size: 11.5px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.pulse .bar:hover { background: var(--accent); }
+.pulse .bar.at { background: var(--exceeded); box-shadow: 0 0 8px rgba(255,45,32,.8); }
+.pulselabel { font-size: 11.5px; color: var(--muted); display: flex; align-items: center;
+  gap: 6px; justify-content: space-between; }
 .pulselabel b { color: #e2e8f0; }
 
 /* ---------- AR / phone ---------- */
@@ -195,3 +198,13 @@ input[type=range] { width: 100%; accent-color: var(--accent); }
   font-weight: 600; box-shadow: 0 8px 26px rgba(34,211,238,.28); }
 .phone:hover { filter: brightness(1.08); }
 @media (max-width: 760px) { .phone { display: none; } }
+
+button.present { background: rgba(34,211,238,.16); border-color: rgba(34,211,238,.5); color: #a5f3fc; font-weight: 600; }
+button.present:hover { background: rgba(34,211,238,.3); color: #fff; }
+.worstline { font-size: 11.5px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.worstline b { color: #e2e8f0; font-weight: 600; }
+.worstline button.mini { margin-left: auto; }
+.blind { border-left: 3px solid var(--exceeded); background: rgba(255,45,32,.07);
+  border-radius: 0 8px 8px 0; padding: 8px 10px; display: flex; flex-direction: column; gap: 3px; }
+.blind b { font-size: 12.5px; color: #fecaca; }
+.blind span { font-size: 11.5px; color: #cbd5e1; }

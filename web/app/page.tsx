@@ -10,21 +10,49 @@ type Site = { id: string; title: string; lat: number; lon: number; authority?: s
               office?: string; legal_basis?: string; r: (number | null)[] };
 type Timeline = { start: string; end: string; days: string[]; source: string;
                   threshold_mm_24h: number; threshold_name: string; sites: Site[] };
+type Obs = { sites: number; months: Record<string, { name: string; scenes: number;
+             usable: number; pct: number }> };
 
-// Mirrors pahiro.trigger: above the threshold, or within 20% of it.
+// Mirrors pahiro.trigger exactly: a slope counts as loaded if ANY intensity-duration
+// window crosses its own threshold, not just the 24-hour one.
+//
+// This is not a detail. On 2024-09-28 the single-day rule gives 31 slopes; the
+// multi-window rule gives 305 - and 305 is what the agent itself reports. Using the day
+// value alone under-counted the country by ten times and made the map disagree with the
+// system it is supposed to be showing.
 const APPROACH = 0.8;
+const WINDOWS: [number, number][] = [[24, 118.8], [48, 141.9], [72, 157.5]];
 
-function dayFeatures(tl: Timeline, i: number, threshold: number): AnyFC {
+function stateFor(r: (number | null)[], i: number): { state: string; r24: number } | null {
+  const v = r[i];
+  if (v === null || v === undefined) return null;
+  const back: number[] = [];
+  for (const k of [0, 1, 2]) {
+    const x = i - k >= 0 ? r[i - k] : null;
+    if (x !== null && x !== undefined) back.push(x);
+  }
+  const sums = [back[0], back.length >= 2 ? back[0] + back[1] : null,
+                back.length >= 2 ? back[0] + back[1] + (back[2] ?? 0) : null];
+  let best = 0;      // highest fraction of any window's threshold
+  for (let w = 0; w < WINDOWS.length; w++) {
+    const sum = sums[w];
+    if (sum === null) continue;
+    best = Math.max(best, sum / WINDOWS[w][1]);
+  }
+  const state = best >= 1 ? "exceeded" : best >= APPROACH ? "approaching" : "below";
+  return { state, r24: v };
+}
+
+function dayFeatures(tl: Timeline, i: number, _threshold: number): AnyFC {
   const day = tl.days[i];
   const feats: any[] = [];
   for (const s of tl.sites) {
-    const v = s.r[i];
-    if (v === null || v === undefined) continue;
-    const state = v >= threshold ? "exceeded" : v >= threshold * APPROACH ? "approaching" : "below";
+    const got = stateFor(s.r, i);
+    if (!got) continue;
     feats.push({
       type: "Feature",
       geometry: { type: "Point", coordinates: [s.lon, s.lat] },
-      properties: { id: s.id, title: s.title, state, r24: v, day,
+      properties: { id: s.id, title: s.title, state: got.state, r24: got.r24, day,
                     authority: s.authority, office: s.office, legal_basis: s.legal_basis },
     });
   }
@@ -40,6 +68,8 @@ export default function Page() {
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState(120); // ms per day
   const [err, setErr] = useState("");
+  const [obs, setObs] = useState<Obs | null>(null);
+  const [focus, setFocus] = useState<{ lon: number; lat: number; zoom?: number } | null>(null);
   const raf = useRef<number | null>(null);
 
   useEffect(() => {
@@ -47,9 +77,15 @@ export default function Page() {
       .catch(() => setErr("could not load frames.json"));
     fetch("/data/timeline.json").then((r) => r.json()).then((t: Timeline) => {
       setTl(t);
-      const sep28 = t.days.indexOf("2024-09-28");
-      setDay(sep28 >= 0 ? sep28 : 0);
+      // ?mode=replay&day=119  or  ?mode=replay&on=2024-09-28 - so any moment in the
+      // season can be linked, screenshotted, or put on a slide.
+      const q = new URLSearchParams(location.search);
+      const on = q.get("on");
+      const idx = on ? t.days.indexOf(on) : Number(q.get("day"));
+      setDay(Number.isFinite(idx) && idx >= 0 ? idx : Math.max(0, t.days.indexOf("2024-09-28")));
+      if (q.get("mode") === "replay") setMode("replay");
     }).catch(() => setErr("timeline not built yet"));
+    fetch("/data/observability-by-month.json").then((r) => r.json()).then(setObs).catch(() => {});
   }, []);
 
   const threshold = tl?.threshold_mm_24h ?? 118.8;
@@ -60,7 +96,7 @@ export default function Page() {
     if (!tl) return [] as number[];
     return tl.days.map((_, i) => {
       let n = 0;
-      for (const s of tl.sites) { const v = s.r[i]; if (v !== null && v !== undefined && v >= threshold) n++; }
+      for (const s of tl.sites) if (stateFor(s.r, i)?.state === "exceeded") n++;
       return n;
     });
   }, [tl, threshold]);
@@ -108,11 +144,24 @@ export default function Page() {
     return { ex, ap, tot, worst };
   }, [replayFC, liveFC, mode]);
 
+  const worst = useMemo(() => {
+    if (!tl) return null;
+    let best: Site | null = null; let bestV = -1;
+    for (const s of tl.sites) {
+      const v = s.r[day];
+      if (v !== null && v !== undefined && v > bestV) { bestV = v; best = s; }
+    }
+    return best ? { site: best, mm: bestV } : null;
+  }, [tl, day]);
+
+  const monthKey = mode === "replay" && tl ? tl.days[day]?.slice(5, 7) : null;
+  const monthObs = monthKey ? obs?.months?.[monthKey] : null;
+
   const label = mode === "replay" ? tl?.days[day] ?? "—" : frames[liveIdx]?.date ?? "—";
 
   return (
     <div className="stage">
-      <SlopeMap data={mode === "replay" ? replayFC : liveFC} />
+      <SlopeMap data={mode === "replay" ? replayFC : liveFC} focus={focus} />
 
       <header>
         <div className="brand">
@@ -128,6 +177,13 @@ export default function Page() {
           </button>
           <button aria-pressed={mode === "replay"} onClick={() => setMode("replay")}>
             Monsoon 2024 {tl ? `· ${tl.days.length} days` : ""}
+          </button>
+          <button
+            className="present"
+            onClick={() => { setMode("replay"); setDay(0); setSpeed(70); setPlaying(true); }}
+            title="Play the whole season from the start"
+          >
+            ▶ Present
           </button>
         </div>
 
@@ -158,15 +214,38 @@ export default function Page() {
             <div className="pulse" title={`National pulse — peak ${pulse[peak]} slopes on ${tl.days[peak]}`}>
               {pulse.map((n, i) => (
                 <span key={i}
-                  className={"bar" + (i === day ? " at" : "")}
-                  style={{ height: `${Math.max(2, (n / Math.max(1, pulse[peak])) * 100)}%` }}
+                  className={"bar" + (i === day ? " at" : "") + (n > 0 ? " has" : "")}
+                  title={`${tl.days[i]} — ${n} above threshold`}
+                  style={{ height: `${Math.max(4, Math.sqrt(n / Math.max(1, pulse[peak])) * 100)}%` }}
                   onClick={() => { setPlaying(false); setDay(i); }} />
               ))}
             </div>
             <div className="pulselabel">
-              national pulse · peak <b>{pulse[peak]}</b> slopes on <b>{tl.days[peak]}</b>
-              <button className="mini" onClick={() => { setPlaying(false); setDay(peak); }}>jump to peak</button>
+              <span>national pulse · peak <b>{pulse[peak]}</b> on <b>{tl.days[peak]}</b>
+                {" · "}{pulse.filter((n) => n > 0).length} of {pulse.length} days had any slope loaded</span>
+              <button className="mini" onClick={() => { setPlaying(false); setDay(peak); }}>peak</button>
             </div>
+
+            {worst && (
+              <div className="worstline">
+                worst today: <b>{worst.site.title || "slope"}</b> · {Math.round(worst.mm)} mm
+                <button className="mini"
+                  onClick={() => setFocus({ lon: worst.site.lon, lat: worst.site.lat })}>
+                  fly there
+                </button>
+              </div>
+            )}
+
+            {monthObs && (
+              <div className="blind">
+                <b>{monthObs.name}: only {monthObs.pct}% of satellite scenes were usable</b>
+                <span>
+                  {monthObs.usable.toLocaleString()} of {monthObs.scenes.toLocaleString()} scenes
+                  had clear ground, measured at {obs?.sites} documented sites. A slope can be
+                  loaded and invisible at the same time — which is the whole problem.
+                </span>
+              </div>
+            )}
           </div>
         )}
 

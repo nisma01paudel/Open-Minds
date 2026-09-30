@@ -25,9 +25,11 @@ const STATE_LABEL: Record<string, string> = {
 export default function SlopeMap({
   data,
   popup,
+  focus,
 }: {
   data: AnyFC | null;
   popup?: boolean;
+  focus?: { lon: number; lat: number; zoom?: number } | null;
 }) {
   const holder = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any>(null);
@@ -153,6 +155,19 @@ export default function SlopeMap({
     if (readyRef.current) apply();
     else map.once("slopes-ready", apply);
   }, [data]);
+
+  // A camera the presenter can aim: glide to whatever the caller focuses on.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !focus || !readyRef.current) return;
+    map.flyTo({
+      center: [focus.lon, focus.lat],
+      zoom: focus.zoom ?? 9.2,
+      pitch: 66,
+      duration: 1500,
+      essential: true,
+    });
+  }, [focus]);
 
   return <div id="map" ref={holder} />;
 }
