@@ -13,3 +13,18 @@ found 23 optical scenes; observing 23
   2024-11-25  usable=1.000  ndvi=0.671  usable
   2024-11-25  usable=0.998  ndvi=0.6141  usable
   2024-11-30  usable=0.976  ndvi=0.5609  usable
+  2024-11-30  usable=0.947  ndvi=0.5238  usable
+  2024-12-10  usable=0.535  ndvi=0.3781  usable
+  2024-12-10  usable=0.700  ndvi=0.4037  usable
+  2024-12-10  usable=0.562  ndvi=0.3631  usable
+  2024-12-10  usable=0.705  ndvi=0.3956  usable
+  2024-12-15  usable=0.995  ndvi=0.5713  usable
+  2024-12-15  usable=0.996  ndvi=0.5451  usable
+  2024-12-20  usable=0.817  ndvi=0.4643  usable
+  2024-12-20  usable=0.823  ndvi=0.4728  usable
+wrote evidence/dhading-2024-q4-dense.jsonl and evidence/dhading-2024-q4-dense.csv (23 observations)
+
+usable fraction by month (the monsoon question):
+  2024-10  mean usable 0.878
+  2024-11  mean usable 0.956
+  2024-12  mean usable 0.767
