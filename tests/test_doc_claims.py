@@ -722,8 +722,16 @@ def test_the_sixty_second_summary_quotes_numbers_that_are_in_the_reports():
 
     # and the honesty section must be there, not only the achievements
     assert "does NOT claim" in summary
-    for caveat in ("real handset", "52.4%", "cryptographer"):
+    for caveat in ("physical handset", "52.4%", "cryptographer"):
         assert caveat in summary, f"the summary dropped the caveat {caveat!r}"
+
+    # The disclosure changed on 2026-10-01: the release APK was installed and run on an Android
+    # emulator. "Nothing has run on a real handset" was true for fifty rounds and is now too strong,
+    # so the summary has to carry the NARROWER claim instead of either overstating or hiding it.
+    assert "emulator" in summary, (
+        "the summary no longer mentions that the app runs on an emulator")
+    assert "cannot measure a radio" in summary, (
+        "the emulator result must not be allowed to imply the radios were verified")
 
 
 def test_the_presenter_quotes_the_day_counts_the_timeline_holds():

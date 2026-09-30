@@ -49,7 +49,7 @@ its own map data; every file in `web/public/data/` records what produced it; and
 
 Stated here so you do not have to find it:
 
-- **Nothing has run on a real handset.** Every radio range figure is somebody else's measurement or
+- **Nothing has run on a physical handset.** The release APK is installed and running on an Android emulator (see reports/device/), which shows the UI, the bundled trail data and the Nepali-first gate all work. An emulator cannot measure a radio, so every range figure below is still unverified hardware. Every radio range figure is somebody else's measurement or
   modelled from one. The logic is tested; the radios are not.
 - **Duty identification is the weak axis at 52.4%** — routing is 61.9% exact and 76.2% on the right
   asset, but it abstains rather than guesses.
