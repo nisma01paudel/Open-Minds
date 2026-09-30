@@ -893,3 +893,17 @@ def test_the_speech_names_the_four_things_a_judge_will_ask_about():
     assert "Not part of the timed script" in speech, (
         "the optional insert no longer says it is outside the timed script, so the cut table's "
         "numbers may now be wrong")
+
+
+def test_the_submission_states_what_the_video_does_not_cover():
+    """The film is a required submission item and it predates this objective's features.
+
+    A judge watching 2:36 of Nepali narration would see the disaster half and the trip planner, and
+    would not see the panorama, the season guide, the complaint portal or the places layer. Saying so
+    is better than leaving a reader to notice the omission and wonder what else is missing.
+    """
+    sub = read("SUBMISSION.md")
+    assert "does not show the season guide" in sub, (
+        "the submission no longer states what the video omits")
+    assert "older than the product it describes" in sub
+    assert "reports/device" in sub

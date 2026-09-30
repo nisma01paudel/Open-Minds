@@ -72,6 +72,26 @@ Everything below is on both platforms, works with the radio off, and has a frame
 | **The complaint itself** | drafted on the phone from the row, in Nepali, citing **धारा १२(२)(ग)**, with the coordinates, the district and a statement on its face that it was drafted automatically and starts no proceeding. The citizen sends it and keeps the receipt. | three tests, including one that taps the button by name |
 | **What the app does when a flood comes** | the six steps of the 2024 monsoon, each **labelled for whether it is computed on this phone or cited from a measurement made elsewhere**. Four are live; two are cited. A demo that blurred the two would be the same failure as every stale caption this project has caught. | on device, 1/6 to 2/6 |
 
+### What the video does and does not cover
+
+The required video is **2:36**, narrated in Nepali, and it covers the disaster half and the first half
+of the daily-use argument: detection, the abstention, the routing to a responsible office, the mesh,
+the ladder of transports, and the trip planner reading *"I have a free morning, something easy, a
+view, under forty rupees on the bus"*.
+
+**It does not show the season guide, the panorama, the complaint portal or the places layer.** Those
+were built after the film was cut, and the film was not rebuilt - so the video a judge watches is
+older than the product it describes.
+
+**Where to find them instead:** `reports/device/` has frames of each, taken from the release APK, and
+the section above describes what each does. The honest statement is that the video is incomplete
+rather than that the features are missing.
+
+**What extending it requires:** one rendered still or clip per feature, a Nepali narration line for
+each, and a rebuild of the concatenation - the clip list is derived rather than hardcoded, so a
+missing clip aborts the build rather than silently shortening the film. It is real work and it is
+named here rather than implied.
+
 ### The honesty is the feature
 
 Every panel in this list says what it cannot do, and that is the thing worth looking at:
