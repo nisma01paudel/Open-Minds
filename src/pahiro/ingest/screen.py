@@ -57,7 +57,7 @@ def main(argv: list[str] | None = None) -> int:
     bbox = tuple(a.bbox)
     # No cloud filter here on purpose: tile cloud is not our cloud.
     # A wide bbox spans several tiles, so page through to collect every scene.
-    scenes = stac.search(stac.OPTICAL, bbox, a.start, a.end, cloud_lt=None, limit=1000)
+    scenes = stac.search(stac.OPTICAL, bbox, a.start, a.end, cloud_lt=None)
     if a.limit:
         scenes = scenes[: a.limit]
     print(f"screening {len(scenes)} scenes by AOI clear fraction", file=sys.stderr)

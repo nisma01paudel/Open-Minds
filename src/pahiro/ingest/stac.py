@@ -56,18 +56,47 @@ class Scene:
         return self.cloud_cover is not None and self.cloud_cover < 20.0
 
 
+def _scene_from_feature(feat: dict, collection: str) -> "Scene | None":
+    """Build a Scene from one STAC feature, or None if it has no usable timestamp."""
+    props = feat.get("properties", {})
+    ts = props.get("datetime") or props.get("start_datetime")
+    if not ts:
+        return None
+    assets = {
+        key: a["href"]
+        for key, a in feat.get("assets", {}).items()
+        if "href" in a and a["href"].startswith("http")
+    }
+    proj = props.get("proj:epsg")
+    return Scene(
+        id=feat["id"],
+        collection=collection,
+        acquired=date.fromisoformat(ts[:10]),
+        cloud_cover=props.get("eo:cloud_cover"),
+        assets=assets,
+        platform=props.get("platform"),
+        epsg=int(proj) if proj else None,
+    )
+
+
 def search(
     collection: str,
     bbox: tuple[float, float, float, float],
     start: str,
     end: str,
     cloud_lt: float | None = 20.0,
-    limit: int = 200,
+    limit: int = 250,
+    max_items: int | None = None,
+    paginate: bool = True,
     timeout: int = 60,
 ) -> list[Scene]:
-    """Search a STAC collection anonymously.
+    """Search a STAC collection anonymously, following pagination.
 
     bbox is (min_lon, min_lat, max_lon, max_lat) in EPSG:4326.
+
+    Page size matters: on a large bbox the upstream service returns 502 rather than
+    a page when limit is too big, so pages stay modest and we follow the `next` link
+    (Earth Search puts the continuation token in links[rel=next].body, merge=False).
     """
     body: dict = {
         "collections": [collection],
@@ -78,34 +107,27 @@ def search(
     if cloud_lt is not None and collection == OPTICAL:
         body["query"] = {"eo:cloud_cover": {"lt": cloud_lt}}
 
-    payload = _post_json(STAC_SEARCH, body, timeout)
-
-
     scenes: list[Scene] = []
-    for feat in payload.get("features", []):
-        props = feat.get("properties", {})
-        ts = props.get("datetime") or props.get("start_datetime")
-        if not ts:
-            continue
-        assets = {
-            key: a["href"]
-            for key, a in feat.get("assets", {}).items()
-            if "href" in a and a["href"].startswith("http")
-        }
-        proj = props.get("proj:epsg")
-        scenes.append(
-            Scene(
-                id=feat["id"],
-                collection=collection,
-                acquired=date.fromisoformat(ts[:10]),
-                cloud_cover=props.get("eo:cloud_cover"),
-                assets=assets,
-                platform=props.get("platform"),
-                epsg=int(proj) if proj else None,
-            )
-        )
+    seen: set[str] = set()
+    while True:
+        payload = _post_json(STAC_SEARCH, body, timeout)
+        features = payload.get("features", [])
+        for feat in features:
+            scene = _scene_from_feature(feat, collection)
+            if scene is not None and scene.id not in seen:
+                seen.add(scene.id)
+                scenes.append(scene)
+        if not paginate or not features:
+            break
+        if max_items is not None and len(scenes) >= max_items:
+            break
+        nxt = next((l for l in payload.get("links", []) if l.get("rel") == "next"), None)
+        if not nxt or not isinstance(nxt.get("body"), dict):
+            break
+        body = dict(nxt["body"])
+        body.setdefault("collections", [collection])
     scenes.sort(key=lambda s: s.acquired)
-    return scenes
+    return scenes[:max_items] if max_items else scenes
 
 
 def _post_json(url: str, body: dict, timeout: int = 60) -> dict:

@@ -1,15 +1,3 @@
-Traceback (most recent call last):
-  File "<frozen runpy>", line 198, in _run_module_as_main
-  File "<frozen runpy>", line 88, in _run_code
-  File "/home/logic/win/open-minds/src/pahiro/ingest/screen.py", line 117, in <module>
-    raise SystemExit(main())
-                     ^^^^^^
-  File "/home/logic/win/open-minds/src/pahiro/ingest/screen.py", line 60, in main
-    scenes = stac.search(stac.OPTICAL, bbox, a.start, a.end, cloud_lt=None, limit=1000)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/logic/win/open-minds/src/pahiro/ingest/stac.py", line 81, in search
-    payload = _post_json(STAC_SEARCH, body, timeout)
-              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/logic/win/open-minds/src/pahiro/ingest/stac.py", line 129, in _post_json
-    raise RuntimeError(f"STAC request failed after {RETRIES} attempts: {last}")
-RuntimeError: STAC request failed after 4 attempts: HTTP Error 502: Bad Gateway
+screening 457 scenes by AOI clear fraction
+  [10/457] ...
+  [20/457] ...

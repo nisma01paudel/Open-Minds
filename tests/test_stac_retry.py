@@ -48,3 +48,42 @@ def test_gives_up_after_the_configured_retries(monkeypatch):
     with pytest.raises(RuntimeError):
         stac._post_json("http://x", {})
     assert calls["n"] == stac.RETRIES
+
+
+def test_search_follows_pagination(monkeypatch):
+    """A big bbox needs many pages; the continuation token lives in the next link."""
+    pages = [
+        {"features": [{"id": f"a{i}", "properties": {"datetime": "2024-01-0%dT00:00:00Z" % (i + 1)},
+                       "assets": {}} for i in range(3)],
+         "links": [{"rel": "next", "body": {"next": "tok1"}}]},
+        {"features": [{"id": f"b{i}", "properties": {"datetime": "2024-02-0%dT00:00:00Z" % (i + 1)},
+                       "assets": {}} for i in range(2)],
+         "links": []},
+    ]
+    calls = {"n": 0}
+
+    def fake_post(url, body, timeout=60):
+        page = pages[calls["n"]]
+        calls["n"] += 1
+        return page
+
+    monkeypatch.setattr(stac, "_post_json", fake_post)
+    scenes = stac.search(stac.OPTICAL, (85.0, 27.5, 85.6, 28.0), "2024-01-01", "2024-12-31")
+    assert len(scenes) == 5, "every page must be collected"
+    assert calls["n"] == 2, "the loop must stop when no next link is returned"
+    assert scenes[0].acquired.isoformat() == "2024-01-01", "results stay date-sorted"
+
+
+def test_search_pagination_can_be_disabled(monkeypatch):
+    calls = {"n": 0}
+
+    def fake_post(url, body, timeout=60):
+        calls["n"] += 1
+        return {"features": [{"id": "x", "properties": {"datetime": "2024-03-01T00:00:00Z"},
+                              "assets": {}}],
+                "links": [{"rel": "next", "body": {"next": "tok"}}]}
+
+    monkeypatch.setattr(stac, "_post_json", fake_post)
+    scenes = stac.search(stac.OPTICAL, (85.0, 27.5, 85.6, 28.0), "2024-01-01", "2024-12-31",
+                         paginate=False)
+    assert len(scenes) == 1 and calls["n"] == 1
