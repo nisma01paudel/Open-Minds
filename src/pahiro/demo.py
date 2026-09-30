@@ -131,8 +131,11 @@ def _obs() -> dict:
         sep = d["months"]["09"]
         return {"scenes": d["scenes"], "sites": d["sites"],
                 "august_pct_usable": m["pct"], "september_pct_usable": sep["pct"]}
-    except Exception:                                        # noqa: BLE001
-        return {}
+    except Exception as exc:                                 # noqa: BLE001
+        # NOT an empty dict. This fed step 2 of the scenario, and an empty dict rendered the step
+        # with no numbers and no reason - the abstention beat of the demo, silently blank, which is
+        # the one step whose whole point is that the system says when it cannot see.
+        return {"unavailable": True, "why": f"{type(exc).__name__}: {exc}"[:160]}
 
 
 def _escape_step(lat: float, lon: float, load_dem) -> Step:

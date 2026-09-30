@@ -59,3 +59,23 @@ def test_the_demo_says_it_is_not_a_simulation():
     d = demo.flood_scenario(28.35, 83.57)
     assert "not a forecast" in d["what_this_demo_is_not"]
     assert "not a synthetic curve" in d["event"]
+
+
+def test_the_satellite_step_does_not_render_blank_when_its_data_is_missing():
+    """Step 2 is the abstention beat - the one that says the system cannot see.
+
+    Its source returned an empty dict on failure, so the step rendered with no numbers and no reason:
+    the demo's most characteristic step, silently blank. It now says why.
+    """
+    import json
+    from pathlib import Path
+
+    src = (Path(__file__).resolve().parents[1] / "src/pahiro/demo.py").read_text(encoding="utf-8")
+    assert 'return {"unavailable": True' in src, (
+        "a failed observability load returns an empty dict again, which renders a blank step")
+
+    d = demo.flood_scenario(28.35, 83.57)
+    step2 = {s["n"]: s for s in d["steps"]}[2]
+    assert step2["computed"], "step 2 rendered with nothing in it"
+    if step2["computed"].get("unavailable"):
+        assert step2["computed"].get("why"), "a failed step must say why"
