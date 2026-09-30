@@ -193,8 +193,10 @@ def main() -> int:
 
     feats, vertices, raw_vertices, covered = [], 0, 0, []
     sources = REGIONS if a.src is None else [(a.src, a.src, "explicit --in")]
-    for region, path, *rest in [(s[0], s[1]) for s in sources] if a.src else REGIONS:
-        description = rest[0] if rest else "explicit --in"
+    # `rest` is (bbox, description) for a region and empty for --in. Taking rest[0] put the BBOX into
+    # the human-readable list, so the bundle described its coverage as six coordinate strings.
+    for region, path, *rest in ([(s[0], s[1]) for s in sources] if a.src else REGIONS):
+        description = (rest[1] if len(rest) > 1 else (rest[0] if rest else "explicit --in"))
         f_path = ROOT / path
         if not f_path.exists():
             print(f"  {region}: no extract at {path} - run with --fetch to download it")

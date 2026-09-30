@@ -101,7 +101,12 @@ class TrailNetwork {
     return TrailNetwork(
       trails: trails,
       attribution: (data['attribution'] as String?) ?? '',
-      region: (data['region'] as String?) ?? '',
+      // `region` (singular) was replaced by `regions` (plural) when the bundle went
+      // multi-region. Reading the old key returned '' forever and nothing noticed,
+      // because the field is parsed and never displayed.
+      region: (data['region'] as String?)
+          ?? ((data['regions'] as List?)?.length != null
+              ? '${(data['regions'] as List).length} regions' : ''),
     );
   }
 

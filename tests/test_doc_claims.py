@@ -660,3 +660,35 @@ def test_the_map_panel_states_the_bundle_it_actually_loads():
         "the panel describes the coverage as the Kathmandu valley; it is several regions")
     assert str(regions) in trail_area or "regions of Nepal" in trail_area, (
         f"the panel should say how many regions ({regions}) the bundle covers")
+
+
+def test_the_bundle_describes_its_coverage_in_words_not_coordinates():
+    """The bundle's `regions` field is metadata a reader or the app can show.
+
+    When `--fetch` was added, the region bbox went into that list by mistake, so the data described
+    its own coverage as six coordinate strings - '"27.70,85.22,27.84,85.42"' - which tells nobody
+    anything. It is the kind of field no test reads and no screen displays, which is exactly why it
+    can be wrong for fifteen rounds without anybody noticing.
+    """
+    import json
+    import re
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    data = json.loads((root / "web/public/data/trails.geojson").read_text(encoding="utf-8"))
+
+    regions = data.get("regions")
+    assert isinstance(regions, list) and len(regions) >= 6, \
+        f"the bundle should name the regions it covers; got {regions!r}"
+
+    for r in regions:
+        assert not re.fullmatch(r"[\d.,\- ]+", r), (
+            f"region {r!r} is a bounding box, not a place - the builder is writing the wrong "
+            f"field into the human-readable list")
+        assert any(c.isalpha() for c in r), f"region {r!r} has no words in it"
+
+    # and the phone must read the key that exists
+    dart = read("mobile/lib/trails.dart")
+    assert "data['regions']" in dart, (
+        "the phone reads `region` (singular), which the bundle stopped emitting - it would parse "
+        "to an empty string forever and nothing would notice, because the field is never shown")
