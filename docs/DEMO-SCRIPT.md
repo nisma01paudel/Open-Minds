@@ -53,15 +53,35 @@ Run: `python scripts/demo_end_to_end.py --report "..." --lon 85.0575 --lat 27.76
 
 ### 1:40–2:10 — The honesty layer
 
-**On screen:** the same run at `--as-of 2024-07-20` with the abstain state.
+**On screen:** the same command at `--as-of 2024-09-28` — the day BIPAD records 167 landslides.
 
-> "Now the part I am proudest of. Ask the same system on a July date and it **refuses to issue**.
+> "Now the part I am proudest of. Run it for the twenty-eighth of September, the day our benchmark records
+> a hundred and sixty-seven landslides. The rain trigger is **exceeded** — a hundred and ninety millimetres
+> in forty-eight hours against a hundred and forty-two.
 >
-> *'नयाँ अवलोकन छैन'* — no fresh observation. It tells you the radar look is six days old, the optical
-> look twenty-seven days old, and — because we have not yet measured radar usability at the pixel level —
-> it **downgrades its own confidence and says so**."
+> And the system **refuses to claim a detection**:
+>
+> *'वर्षाका कारण ढलान संवेदनशील बनेको छ, तर पछिल्लो अवलोकन उपलब्ध छैन'* — the slope has been made
+> sensitive by rainfall, but no recent observation is available. It says plainly that this is **a signal of
+> risk, not a confirmation of it**.
+>
+> In July an optical system has nothing to show. Silence is indistinguishable from safety. This is the
+> state no existing tool produces."
 
-### 2:10–2:45 — Evidence, then the ask
+### 2:10–2:40 — The differentiator: where to build instead
+
+**On screen:** the siting line of the same advisory.
+
+> "But look at the last two lines. Every existing Nepali slope tool stops at a colour on a map. A road
+> office cannot act on a colour. This one says:
+>
+> *'सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब १९५ मिटर माथि सार्नुहोस्, करिब ७५ मिटर उचाइ बढी।'*
+>
+> **Do not repair in place. Move the new line about 195 metres upslope and 75 metres higher.** It read that
+> from the terrain — there is a 29-degree source zone 135 metres above the road — and it says the advice is
+> a terrain screen requiring geotechnical verification, not a design."
+
+### 2:40–3:20 — Evidence, then the ask
 
 **On screen:** the ablation table and the E1 routing score.
 
@@ -84,11 +104,12 @@ Run: `python scripts/demo_end_to_end.py --report "..." --lon 85.0575 --lat 27.76
 |---|---|---|
 | 1 | Per-AOI clear-fraction table | `reports/eval-v0.md` §1 |
 | 2 | OPML recommendation + BIPAD counts | `docs/research/nepal-slope-reporting-chain.md` |
-| 3 | Live end-to-end run | `scripts/demo_end_to_end.py --report ...` |
-| 4 | Nepali advisory | terminal output of the same run |
-| 5 | Abstain state | same command, `--as-of 2024-07-20` (or the cached recording) |
-| 6 | Ablation table | `reports/eval-v0.md` §2 |
-| 7 | E1 routing score | `reports/routing-ablation.md` — 38.1% → 61.9%, three arms |
+| 3 | Live end-to-end run, 7 tool calls | `scripts/agent_demo.py --as-of 2024-09-28` |
+| 4 | Nepali advisory, fully Nepali | `evidence/agent-2024-09-28-v4.log` |
+| 5 | `primed-unobserved` state | the same run: trigger EXCEEDED, evidence abstained |
+| 6 | **Siting recommendation** | `सिफारिस (स्थान)` line: 195 m upslope, +75 m |
+| 7 | Ablation + gap table | `reports/eval-v1.md` |
+| 8 | E1 routing score | `reports/routing-ablation.md` — 38.1% → 61.9%, three arms |
 
 ## Do not say
 
