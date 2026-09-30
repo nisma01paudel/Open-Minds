@@ -85,3 +85,76 @@ when we cannot see at all.
 
 We are the only entry in the field addressing disaster risk, and the only one addressing the
 reporting-to-action gap that every published system stops short of.
+
+---
+
+# Addendum — confirmed field intelligence (2026-09-30)
+
+Verified by screening ~6,000 repos and full-text grepping ~60 candidate clones for
+`frogtoberfest|leapfrog|lftechnology`.
+
+## The field is 14 confirmed entries, and 11 of them are empty
+
+| Substance | Count |
+|---|---|
+| 100% empty repo (registration placeholder) | 5 |
+| README only, no code | 6 |
+| Real files, still no working pipeline | 3 |
+| Working end-to-end demo | **0** |
+
+Domains taken: education (2), construction/AEC (2), agriculture (2), plus singletons in civic/legal
+safety, network tooling, document intelligence. **DRR / landslide / geospatial: EMPTY — zero confirmed
+entries.** The 1,113 "landslide" repos created in Sep 2026 are **Smart India Hackathon 2026**, a
+different competition; they are not our rivals.
+
+## The entry to beat: `amgainprabesh/karmi`
+
+A Nepali housing *naksa*-conformance compiler (MIT). Architecturally the **same pattern as ours** —
+detection → diff → authority-addressed verify-list — just for buildings instead of slopes.
+
+- Open-weight only: Qwen2.5-VL for drawings/photos, an open-weight LLM for diff reasoning and Nepali
+  narration, bge-m3 embeddings.
+- The only entry that quotes Leapfrog's own litmus test and states the renderer is
+  *"deliberately dumb… infers nothing."*
+- Ships `AI_USAGE.md`, `docs/architecture.md`, a component table, a failure-mode table, a privacy
+  policy, and honest "known limitations".
+- Language discipline: outputs are **"items to verify"**, never "violates".
+- **Weakness: one commit, no pipeline code, no dataset, no demo.** Everything AI is *planned*; the only
+  running artefact is a hand-authored 2D→3D prototype containing **no AI calls**.
+
+## The operational rubric — this is what actually scores
+
+Beyond the four marketing criteria, the Guidelines page carries three operational criteria:
+
+1. **Agentic Depth** — *"Real autonomy, tool use, or multi-step reasoning rather than a single prompt
+   dressed up."*
+2. **Demo Credibility** — *"Does it actually complete the task it claims to, end to end?"*
+3. **Repo & Doc Clarity** — *"Could a stranger understand what it does in under 5 minutes?"*
+
+Submission is **five items**: public repo · documentation (README, architecture, tech, limitations) ·
+working demo · **2–3 minute pre-recorded demo video** · AI disclosure.
+
+## The litmus test is our single biggest risk
+
+> *"If you deleted the AI call from your codebase, would the product still do its job? If yes, it
+> doesn't qualify."*
+
+If detection is deterministic geospatial code and the LLM merely drafts a Nepali letter, **the product
+still works without the AI** — and we score near zero on Agentic Depth.
+
+**Our answer** is the split `karmi` also makes, stated explicitly: **geometry and thresholds stay
+deterministic; the AI owns the decision chain** — severity triage, which authority and jurisdiction the
+request must reach, composition and addressing of the request, and acknowledgement tracking. Delete the
+routing step and no institution is selected, no escalation path is derived and nothing is dispatched.
+
+## To beat `karmi`
+
+1. **Ship a working end-to-end demo** — `karmi` has none. This is the single largest available win
+   because Demo Credibility is explicitly scored.
+2. Ship `AI_USAGE.md` naming the **exact file/function** where each model's output is consumed (Leapfrog
+   demands this verbatim; `karmi` is the only entry that complies).
+3. Cite the real instruments — DRRM Act 2074, LGOA 2074 — the way `karmi` cites Building Act 2055.
+4. Keep the "items to verify" discipline: never accuse, always attach a confidence and a review path.
+5. Release a **reusable open-source artefact** — our cited routing key plus the evaluation harness and
+   the screened per-AOI dataset.
+6. Match the documentation standard, and **remember the 2–3 minute demo video is mandatory**.

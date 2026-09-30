@@ -22,8 +22,9 @@ BLIND = [Observation(OPTICAL, days_ago(90), quality=0.9)]
 def rule(**kw):
     base = dict(
         case_id="R1", asset_type="local-road", jurisdiction="municipality",
-        hazard_type="slope-instability", institution="Rural Municipality",
-        office="Ward No. 5", legal_basis="Local Government Operation Act 2074, Sch. 8",
+        hazard_type="slope-instability", role="maintenance",
+        institution="Rural Municipality",
+        office="Ward No. 5", legal_basis="Local Government Operation Act 2074, s.12(2)(c)(23)",
         escalation=["municipality", "district committee"], confidence=VERIFIED,
         source_url="https://example.gov.np/act",
     )

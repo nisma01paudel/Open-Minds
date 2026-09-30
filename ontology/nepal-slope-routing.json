@@ -1,0 +1,291 @@
+{
+  "version": "0.1.0",
+  "note": "Machine-readable routing key: asset x location x hazard x role -> named office with the governing section cited. Every rule traces to docs/research/nepal-slope-responsibility-map.md. Rules marked 'uncertain' carry a legal_gap - read them before relying on them. Not legal advice.",
+  "rules": [
+    {
+      "case_id": "local-road-maintenance",
+      "asset_type": "local-road",
+      "jurisdiction": "municipality",
+      "hazard_type": "slope-instability",
+      "role": "maintenance",
+      "institution": "Rural/Urban Municipality (Ward Committee)",
+      "office": "Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it",
+      "legal_basis": "LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+      "escalation": [
+        "Ward Chair",
+        "Municipal CAO",
+        "Mayor/Chair",
+        "LDMC (Mayor)",
+        "DDMC (CDO)",
+        "Provincial committee",
+        "NDRRMA"
+      ],
+      "source_url": "https://www.fao.org/faolex/results/details/en/c/LEX-FAOC209136/",
+      "citation": "Local Government Operation Act 2074, s.11-12 (enacted Nepali, FAOLEX NEP209136)",
+      "notes": "Ward road duties are defaults applying until the municipal executive prescribes otherwise. Internal branch names vary between municipalities.",
+      "confidence": "verified",
+      "legal_gap": null
+    },
+    {
+      "case_id": "local-road-emergency",
+      "asset_type": "local-road",
+      "jurisdiction": "municipality",
+      "hazard_type": "road-blockage",
+      "role": "emergency",
+      "institution": "Local Disaster Management Committee (LDMC)",
+      "office": "chaired by the Mayor/Chairperson of the municipality (max 15 members)",
+      "legal_basis": "DRRM Act 2074 s.17(2); DRRM Rules 2076 r.8",
+      "escalation": [
+        "Ward committee",
+        "LDMC (Mayor)",
+        "DDMC (CDO)",
+        "Provincial committee",
+        "NDRRMA"
+      ],
+      "citation": "Disaster Risk Reduction and Management Act 2074, s.17",
+      "notes": "Emergency clearance is the LDMC's; permanent repair is the road owner's.",
+      "confidence": "verified",
+      "source_url": null,
+      "legal_gap": null
+    },
+    {
+      "case_id": "strategic-road-maintenance",
+      "asset_type": "strategic-road",
+      "jurisdiction": "federal",
+      "hazard_type": "slope-instability",
+      "role": "maintenance",
+      "institution": "Department of Roads (DoR), MoPIT",
+      "office": "Road Division Office (सडक डिभिजन कार्यालय) at the named place, under a Federal Road Supervision and Monitoring Office; HQ Geo-Environment and Social Section",
+      "legal_basis": "Constitution of Nepal 2072 Sch. 5 item 20 (national highways = federal); Public Road Act 2031; Road Board Act 2058",
+      "escalation": [
+        "Road Division Office",
+        "Federal Road Supervision & Monitoring Office",
+        "DoR HQ (Maintenance / Geo-Environment & Social)",
+        "MoPIT",
+        "NDRRMA"
+      ],
+      "citation": "Constitution of Nepal 2072 Sch. 5 item 20; Public Road Act 2031; Road Board Act 2058",
+      "notes": "Which Road Division owns a given segment requires the DoR road inventory (ssrn.dor.gov.np) - do NOT infer it from district boundaries.",
+      "confidence": "verified",
+      "source_url": null,
+      "legal_gap": null
+    },
+    {
+      "case_id": "strategic-road-emergency",
+      "asset_type": "strategic-road",
+      "jurisdiction": "federal",
+      "hazard_type": "road-blockage",
+      "role": "emergency",
+      "institution": "District Disaster Management Committee (DDMC)",
+      "office": "chaired by the Chief District Officer; secretariat = District Administration Office",
+      "legal_basis": "DRRM Act 2074 s.16(2) (SAR, EOC, relief, control movement of vehicles and people, requisition); s.18 (security agencies)",
+      "escalation": [
+        "DDMC (CDO) / District EOC",
+        "Provincial committee",
+        "NDRRMA"
+      ],
+      "citation": "DRRM Act 2074 s.16(2), s.18",
+      "notes": "Conflating emergency clearance with permanent repair is the classic misroute.",
+      "confidence": "verified",
+      "source_url": null,
+      "legal_gap": null
+    },
+    {
+      "case_id": "provincial-road-maintenance",
+      "asset_type": "provincial-road",
+      "jurisdiction": "province",
+      "hazard_type": "slope-instability",
+      "role": "maintenance",
+      "institution": "Provincial government (physical infrastructure ministry)",
+      "office": "provincial road division / infrastructure development office",
+      "legal_basis": "Constitution of Nepal 2072 Sch. 6 item 12 ('State highways' = provincial); Sch. 7 item 15 (physical infrastructures, concurrent)",
+      "escalation": [
+        "Provincial road office",
+        "Provincial ministry",
+        "Provincial Disaster Management Executive Committee",
+        "NDRRMA"
+      ],
+      "confidence": "partial",
+      "citation": "Constitution of Nepal 2072 Sch. 6 item 12, Sch. 7 item 15",
+      "notes": "Constitutional allocation verified; the seven provincial org charts were NOT verified.",
+      "source_url": null,
+      "legal_gap": null
+    },
+    {
+      "case_id": "private-land-maintenance",
+      "asset_type": "private-land",
+      "jurisdiction": "municipality",
+      "hazard_type": "slope-instability",
+      "role": "maintenance",
+      "institution": "Rural/Urban Municipality",
+      "office": "Mayor/Chair issues orders; Ward Chair is the first contact",
+      "legal_basis": "LGOA 2074 s.27(2) land-use standards on the basis of land-risk sensibility; s.39 inquiry and action; s.41 demolish structures and recover cost; DRRM Act 2074 s.16(2)(n)-(o) demolition and relocation",
+      "escalation": [
+        "Ward Chair",
+        "CAO",
+        "Mayor/Chair",
+        "DDMC (CDO)",
+        "Province",
+        "GoN declaration (DRRM Act s.32)"
+      ],
+      "confidence": "uncertain",
+      "citation": "LGOA 2074 s.27, s.39, s.41; DRRM Act 2074 s.16(2)(n)-(o)",
+      "legal_gap": "No provision was found empowering a municipality to compel a private landowner to stabilise a bare slope. LGOA s.41 reaches buildings/structures only.",
+      "source_url": null,
+      "notes": null
+    },
+    {
+      "case_id": "public-building-maintenance",
+      "asset_type": "public-building",
+      "jurisdiction": "municipality",
+      "hazard_type": "slope-instability",
+      "role": "maintenance",
+      "institution": "The asset owner (local level for basic school / health post)",
+      "office": "school management committee or health office, coordinated by the LDMC",
+      "legal_basis": "Constitution of Nepal 2072 Sch. 8 items 8-9; Sch. 9 items 2-3; DRRM Act 2074 s.17(2)(e)",
+      "escalation": [
+        "Asset owner",
+        "Municipality / LDMC",
+        "DDMC (CDO)",
+        "Province (for provincial assets)",
+        "NDRRMA"
+      ],
+      "confidence": "partial",
+      "citation": "Constitution of Nepal 2072 Sch. 8 items 8-9; DRRM Act 2074 s.17(2)(e)",
+      "notes": "Routing depends on who owns the building, which the hazard alone cannot tell us.",
+      "source_url": null,
+      "legal_gap": null
+    },
+    {
+      "case_id": "riverbank-maintenance",
+      "asset_type": "riverbank",
+      "jurisdiction": "federal",
+      "hazard_type": "slope-instability",
+      "role": "maintenance",
+      "institution": "Department of Water Induced Disaster Management (DWIDM), MoEWRI",
+      "office": "division and sub-division offices - river training, bank protection, check dams, landslide control",
+      "legal_basis": "Water Induced Disaster Management Policy 2062 (2005); LGOA 2074 s.11(2) disaster management item 3 (local dams, river and landslide control)",
+      "escalation": [
+        "Local level (LDMC)",
+        "DDMC (CDO)",
+        "DWIDM division office",
+        "DWIDM HQ / MoEWRI",
+        "NDRRMA"
+      ],
+      "citation": "Water Induced Disaster Management Policy 2062; DWIDM Disaster Review 2013",
+      "notes": "DWIDM also does landslide/debris-flow control on national highway sections (Muglin-Narayanghat, Sindhuli-Bardibas). Supporting watershed/bioengineering actor: DSCWM. dwidm.gov.np and dscwm.gov.np were unreachable, so division boundaries are UNCERTAIN.",
+      "confidence": "verified",
+      "source_url": null,
+      "legal_gap": null
+    },
+    {
+      "case_id": "warning-any",
+      "asset_type": "any",
+      "jurisdiction": "federal",
+      "hazard_type": "any",
+      "role": "warning",
+      "institution": "Department of Hydrology and Meteorology (DHM), MoEWRI",
+      "office": "national weather/hydrology warning; NDRRMA disseminates; DDMC/LDMC disseminate locally",
+      "legal_basis": "DRRM Act 2074 s.11(k) (national disaster information system); s.16(2)(u); DHM's published mandate",
+      "escalation": [
+        "DHM",
+        "NDRRMA",
+        "MoHA",
+        "DDMC (CDO)",
+        "LDMC (Mayor)",
+        "Ward",
+        "community"
+      ],
+      "confidence": "partial",
+      "citation": "DRRM Act 2074 s.11(k), s.16(2)(u); DHM published mandate",
+      "notes": "No instrument naming a single authorised issuer of a landslide-SPECIFIC public warning was found. DRRM Act s.24(2)(a): a false alarm is punishable.",
+      "source_url": null,
+      "legal_gap": null
+    },
+    {
+      "case_id": "assessment-any",
+      "asset_type": "any",
+      "jurisdiction": "federal",
+      "hazard_type": "any",
+      "role": "assessment",
+      "institution": "Department of Mines and Geology (DMG)",
+      "office": "Geoscience Division - Geo-hazard and Geo-environment Study Section; Engineering Geology Section",
+      "legal_basis": "DRRM Rules 2076 r.4(3)(a) (Expert Committee to identify disaster-risk areas on the basis of the geological condition of Nepal); DMG published mandates",
+      "escalation": [
+        "Requesting agency",
+        "DMG Geoscience Division",
+        "DMG HQ",
+        "Ministry"
+      ],
+      "confidence": "partial",
+      "citation": "DRRM Rules 2076 r.4(3)(a); DMG published section mandates",
+      "notes": "CRITICAL: there is NO statutory must-consult-DMG duty on a road division or municipality. DMG's published function is national/regional survey and mapping, not project certification. Cite DMG as an opinion source, never an authority of record.",
+      "source_url": null,
+      "legal_gap": null
+    },
+    {
+      "case_id": "coordination-district",
+      "asset_type": "any",
+      "jurisdiction": "district",
+      "hazard_type": "any",
+      "role": "coordination",
+      "institution": "District Disaster Management Committee (DDMC)",
+      "office": "chaired by the Chief District Officer; secretariat = District Administration Office",
+      "legal_basis": "DRRM Act 2074 s.16; DRRM Rules 2076 r.6-r.7",
+      "escalation": [
+        "Ward committee",
+        "LDMC",
+        "DDMC (CDO)",
+        "Provincial committee",
+        "NDRRMA"
+      ],
+      "citation": "DRRM Act 2074 s.16; DRRM Rules 2076 r.6-r.7",
+      "notes": "The CDO's performance contract gives the CDO overall authority for response preparedness and SAR at district level, so routing through the DDMC attaches the advisory to an officer whose own appraisal depends on it.",
+      "confidence": "verified",
+      "source_url": null,
+      "legal_gap": null
+    },
+    {
+      "case_id": "coordination-local",
+      "asset_type": "any",
+      "jurisdiction": "municipality",
+      "hazard_type": "any",
+      "role": "coordination",
+      "institution": "Local Disaster Management Committee (LDMC)",
+      "office": "chaired by the Mayor/Chairperson; may constitute ward/community committees",
+      "legal_basis": "DRRM Act 2074 s.17; s.17(2)(f); DRRM Rules 2076 r.8",
+      "escalation": [
+        "Ward committee",
+        "LDMC (Mayor)",
+        "DDMC (CDO)",
+        "Provincial committee",
+        "NDRRMA"
+      ],
+      "citation": "DRRM Act 2074 s.17, s.17(2)(f)",
+      "notes": "Ward-level committees are CONTINGENT - the LDMC constitutes them - and OPML found only about 60% of local governments had one. Do not assume a ward committee exists.",
+      "confidence": "verified",
+      "source_url": null,
+      "legal_gap": null
+    },
+    {
+      "case_id": "coordination-national",
+      "asset_type": "any",
+      "jurisdiction": "federal",
+      "hazard_type": "any",
+      "role": "coordination",
+      "institution": "NDRRMA",
+      "office": "federal authority and secretariat to the National Council and Executive Committee",
+      "legal_basis": "DRRM Act 2074 s.3, s.6, s.8, s.10, s.11",
+      "escalation": [
+        "NDRRMA",
+        "Executive Committee",
+        "National Council (PM)"
+      ],
+      "citation": "DRRM Act 2074 s.3, s.6, s.8, s.10, s.11",
+      "notes": "The National Relief Framework's 10 humanitarian clusters contain NO landslide or geology cluster, and district DPRP lead-agency tables have no landslide row. That absence is the gap this routing key fills.",
+      "confidence": "verified",
+      "source_url": null,
+      "legal_gap": null
+    }
+  ]
+}
