@@ -22,6 +22,8 @@ Not a plan — running code, verified against live services:
 | Dispatch object with validation | **working** — an authority without a cited section is structurally invalid |
 | Nepali advisory renderer | **working** — fully Nepali, including the evidence state |
 | **AI routing / triage** (open-weight, on CPU) | **working** — real model, citation-locked |
+| Rainfall trigger on published thresholds | **working** — validated on the 2024-09-28 event |
+| **Siting advice** (repair here, or move above the source zone) | **working** — Copernicus DEM, live |
 | BIPAD government integration | **working** — coordinate → ward; real road-blockage register |
 | Evaluation harnesses (routing accuracy, kappa, gap calibration) | **working** |
 
@@ -72,6 +74,32 @@ Crucially, **the model is never asked what it knows.** Asked to name the respons
 own knowledge, it invented *Indian* ministries for a Nepali road. So it is constrained to **choose among
 cited rules retrieved from the ontology**, and the institution and legal basis are read from the ontology
 record — never from the model. Both responses are kept in `evidence/grounding-contrast.md`.
+
+## The whole pipeline on the day of a real disaster
+
+`python scripts/agent_demo.py --lon 85.05 --lat 27.76 --as-of 2024-09-28 --report "..."`
+
+**2024-09-28 is the day BIPAD records 167 landslides.** Seven recorded steps, all live:
+
+```
+1. resolve_location     BIPAD      Ward 11, Thakre, DHADING, Province 3
+2. rainfall_trigger     CHIRPS     EXCEEDED — 48h 190/142mm, 240h 245/215mm
+3. ground_evidence      STAC       18 optical scenes (8 usable), 8 radar -> abstain
+4. siting_advice        DEM        relocate 195 m upslope (+75 m): source zone at 135 m, 29 deg
+5. route_report         model      Rural/Urban Municipality [local-road-maintenance]
+6. compose_advisory                Nepali
+7. emit_dispatch                   abstain, priority HIGH, validates OK
+```
+
+The advisory it produced:
+
+> **पहिरो जोखिम सूचना** — वर्षाका कारण ढलान संवेदनशील बनेको छ, तर पछिल्लो अवलोकन उपलब्ध छैन।
+> **वर्षाको अवस्था:** थ्रेसहोल्ड नाघ्यो (पाँचपोखरी थाङपाल, सिन्धुपाल्चोक) — ४८ घण्टामा १९०/१४२ मिमि
+> **सिफारिस (स्थान):** सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब १९५ मिटर माथि सार्नुहोस् (+७५ मिटर उचाइ)
+> **जिम्मेवार निकाय:** Rural/Urban Municipality (Ward Chair) — LGOA 2074 s.12(2)(c)(23)
+
+Four things at once, all of them defensible: the slope is primed, we cannot currently see it, do
+not rebuild in the same place, and here is the office that owns it under the cited section.
 
 ## What this project does NOT claim
 
