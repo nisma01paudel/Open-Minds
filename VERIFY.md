@@ -115,6 +115,22 @@ The pattern in every row: the thing was verified where it was built, and broken 
 used. That is why the commands above are run from a clean clone, and why
 `verify_repo.py` treats a **skipped** cross-language check as a failure rather than a pass.
 
+## The submission is reachable by someone who is not you
+
+The brief says the public GitHub repo is how submissions are tracked, so the first thing worth
+checking is that a judge can open it with no account and no token:
+
+```bash
+curl -s https://api.github.com/repos/sushant-me/work | grep private     # "private": false
+curl -s -o /dev/null -w "%{http_code}" https://raw.githubusercontent.com/sushant-me/work/main/SUBMISSION.md
+```
+
+Confirmed at the pushed HEAD, anonymously: **SUBMISSION.md, VERIFY.md, docs/SPEECH.md, the demo film,
+the trail bundle and the phone app's trail reader all return 200.** No authentication anywhere.
+
+That is worth stating because it is the one failure that makes every other check irrelevant - a
+private repository is a submission nobody can read, and nothing inside it would look wrong.
+
 ## The safety-critical path, exercised live
 
 The escape planner is the feature a life depends on, so it is worth seeing rather than trusting. With
