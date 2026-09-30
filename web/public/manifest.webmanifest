@@ -1,0 +1,17 @@
+{
+  "name": "Pahiro Watch — Nepal slope awareness",
+  "short_name": "Pahiro",
+  "description": "Every documented landslide-prone slope in Nepal, with the office legally responsible for each. Point your phone at a hillside.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#070b14",
+  "theme_color": "#070b14",
+  "categories": ["weather", "utilities", "education"],
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
