@@ -17,7 +17,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from pahiro import trails                     # noqa: E402
+from pahiro import access, trails             # noqa: E402
 from pahiro.shelter import load_dem           # noqa: E402
 
 
@@ -28,6 +28,8 @@ def main() -> int:
     ap.add_argument("--near", nargs=2, type=float, metavar=("LAT", "LON"))
     ap.add_argument("--radius", type=float, default=3000.0, help="metres, for --near")
     ap.add_argument("--limit", type=int, default=8)
+    ap.add_argument("--origin", nargs=2, type=float, metavar=("LAT", "LON"),
+                    help="where you are starting from; adds how to get there by bus")
     a = ap.parse_args()
 
     dem = load_dem()
@@ -49,6 +51,18 @@ def main() -> int:
             print(f"  {t.length_m/1000:6.2f} km  +{t.climb_m:4.0f} m  {h}h{m:02d}  "
                   f"{t.distance_to_start_m:4.0f} m away  {t.difficulty:13} {t.name[:40]}")
         print("\nclimb is from a 1.2 km terrain grid: indicative, not surveyed.")
+
+        if a.origin:
+            olat, olon = a.origin
+            print(f"\nfrom {olat:.4f}, {olon:.4f}, the closest of these:")
+            for t2 in got[:3]:
+                start = t2.points[0]
+                ac = access.to_trailhead(start[1], start[0], olat, olon)
+                print(f"  {t2.name[:34]:36} {ac.summary()}")
+            print(f"\n  fare: estimate from the Rs {access.FARE_MIN_RS:.0f} valley minimum "
+                  f"({access.FARE_AS_OF}). Set by DOTM and revised; confirm the route at the "
+                  f"park.")
+            print(f"  not known here: schedules, bandha, or whether the route still runs.")
         return 0
 
     if a.frm and a.to:

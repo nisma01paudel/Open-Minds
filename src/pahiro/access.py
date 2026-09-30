@@ -1,0 +1,175 @@
+"""Getting to the trailhead: which bus, from where, and roughly what it costs.
+
+THE QUESTION THIS ANSWERS
+-------------------------
+Every trail app tells you about the mountain. The question that actually stops a walker in
+Kathmandu is "which bus do I take, from which park, and what will it cost me" - and if an app
+cannot answer that, the trail is a line on a screen rather than a Saturday.
+
+WHAT IS SOURCED AND WHAT IS ESTIMATED
+-------------------------------------
+Sourced, with a date, because it changes:
+
+    Valley minimum public-transport fare: Rs 24, Bagmati Province adjustment, April 2026.
+    Fares are set by the Department of Transport Management (dotm.gov.np) and are revised;
+    the figure here is a dated snapshot, not a live feed.
+
+Estimated, and labelled:
+
+    The distance bands above the minimum, and therefore the total. Nepal's fare table is set in
+    bands by distance; this uses a linear approximation and will be wrong by a rupee or two on
+    a long route in the wrong direction.
+
+NOT KNOWN AT ALL, and said rather than guessed:
+
+    Which specific bus, its schedule, whether it is running today, whether it stops where you
+    are, strikes (bandha), and whether a route has changed since this file was written. The
+    output names the park and the fare and tells the walker to confirm the route at the park -
+    which is what a person does anyway.
+"""
+from __future__ import annotations
+
+import json
+import math
+from dataclasses import dataclass, field
+from pathlib import Path
+
+from .trails import EARTH_R_M, _haversine
+
+# Dated and cited. When DOTM revises fares this number goes stale, and the app says so rather
+# than presenting it as current.
+FARE_MIN_RS = 24.0
+FARE_AS_OF = "April 2026"
+FARE_SOURCE = "Department of Transport Management (dotm.gov.np); Bagmati Province adjustment"
+FARE_INCLUDED_KM = 5.0          # what the minimum is understood to cover
+FARE_PER_KM_RS = 3.0            # linear approximation beyond that
+
+# Fallback parks, used only when the OSM extract is absent. Coordinates are APPROXIMATE - good
+# enough to pick the right side of the valley, not good enough to navigate to. The OSM file
+# replaces them when present.
+FALLBACK_PARKS = [
+    ("Ratna Park (Old Bus Park)", 27.7047, 85.3146),
+    ("Gongabu (New Bus Park)", 27.7345, 85.3080),
+    ("Kalanki", 27.6937, 85.2812),
+    ("Koteshwor", 27.6786, 85.3493),
+    ("Chabahil", 27.7178, 85.3452),
+    ("Balaju", 27.7354, 85.3025),
+    ("Lagankhel", 27.6669, 85.3241),
+    ("Satdobato", 27.6580, 85.3251),
+    ("Jadibuti", 27.6787, 85.3629),
+]
+
+BUS_FILE = "web/public/data/bus-parks.geojson"
+
+
+@dataclass
+class Access:
+    """How to get to a trailhead, as far as anyone honest can say offline."""
+
+    ok: bool
+    park: str = ""
+    park_lat: float | None = None
+    park_lon: float | None = None
+    ride_m: float | None = None
+    fare_rs: float | None = None
+    walk_from_park_m: float | None = None
+    direct_walk_m: float | None = None
+    reason: str = ""
+    notes: list[str] = field(default_factory=list)
+
+    def summary(self) -> str:
+        if not self.ok:
+            return f"no bus route known: {self.reason}"
+        walk = self.walk_from_park_m or 0
+        out = (f"bus to {self.park} (~{self.ride_m/1000:.1f} km, "
+               f"about Rs {self.fare_rs:.0f})")
+        if walk > 200:
+            out += f", then {walk/1000:.1f} km on foot to the trailhead"
+        else:
+            out += ", trailhead at the stop"
+        return out
+
+
+def fare_for(km: float) -> float:
+    """An estimate, rounded the way a fare actually is: to the rupee, never below the minimum."""
+    if km <= FARE_INCLUDED_KM:
+        return FARE_MIN_RS
+    raw = FARE_MIN_RS + (km - FARE_INCLUDED_KM) * FARE_PER_KM_RS
+    return float(math.ceil(raw))
+
+
+def load_parks(path: str | Path | None = None) -> list[tuple[str, float, float]]:
+    """Real bus stations from OSM when the extract is present, otherwise the fallback list.
+
+    Most mapped stops in the valley are UNNAMED, which is itself information and is passed
+    through rather than invented: a stop exists at these coordinates and the map does not say
+    what it is called. Naming it would be this program guessing, and a walker sent to the wrong
+    "Ratna Park" because we wanted a tidier label is worse than one sent to a point.
+    """
+    root = Path(__file__).resolve().parents[2]
+    p = Path(path) if path else root / BUS_FILE
+    if p.exists():
+        try:
+            d = json.loads(p.read_text(encoding="utf-8"))
+            out = []
+            for f in d.get("features", []):
+                geom = f.get("geometry") or {}
+                c = geom.get("coordinates")
+                if not c:
+                    continue
+                name = (f.get("properties") or {}).get("n")
+                if not name:
+                    # Describe it by where it is, not by a name we do not have.
+                    name = f"mapped stop at {float(c[1]):.4f}, {float(c[0]):.4f}"
+                out.append((name, float(c[1]), float(c[0])))
+            if out:
+                return out
+        except (ValueError, KeyError, TypeError):
+            pass
+    return [(n, lat, lon) for n, lat, lon in FALLBACK_PARKS]
+
+
+def to_trailhead(trail_lat: float, trail_lon: float, from_lat: float, from_lon: float,
+                 parks: list[tuple[str, float, float]] | None = None) -> Access:
+    """Which park to leave from, roughly what it costs, and what is left to walk.
+
+    Picks the park that minimises the TOTAL of the ride and the walk at the far end, because the
+    nearest park to the trailhead is not always the cheapest way to arrive - a park 2 km further
+    but on a direct route beats one that leaves a 5 km walk.
+    """
+    parks = parks if parks is not None else load_parks()
+    if not parks:
+        return Access(False, reason="no bus parks are bundled")
+
+    best = None
+    for name, plat, plon in parks:
+        ride = _haversine((from_lon, from_lat), (plon, plat))
+        walk = _haversine((plon, plat), (trail_lon, trail_lat))
+        # The walk after the bus is the part that decides whether this is a real trip, so it is
+        # weighted: a metre on foot at the end costs more than a metre on a bus seat.
+        score = ride + walk * 1.5
+        if best is None or score < best[0]:
+            best = (score, name, plat, plon, ride, walk)
+
+    _, name, plat, plon, ride, walk = best
+    direct = _haversine((from_lon, from_lat), (trail_lon, trail_lat))
+
+    notes = [
+        f"Fare is an estimate from the valley minimum of Rs {FARE_MIN_RS:.0f} "
+        f"({FARE_AS_OF}) plus a distance approximation.",
+        "Nepal bus routes and fares are set by DOTM and change; confirm the route at the park.",
+        "Not known here: schedules, whether the service is running today, bandha, or a route "
+        "change since this data was written.",
+    ]
+    if walk > 3000:
+        notes.append(
+            f"the nearest park still leaves {walk/1000:.1f} km on foot, so this trailhead is "
+            f"not really a bus destination - consider a taxi from the last town, or a different "
+            f"trail")
+    if direct < ride:
+        notes.append("your starting point is closer to the trailhead than any bus park is, so "
+                     "the bus is not obviously worth it")
+
+    return Access(True, park=name, park_lat=plat, park_lon=plon, ride_m=ride,
+                  fare_rs=fare_for(ride / 1000.0), walk_from_park_m=walk, direct_walk_m=direct,
+                  notes=notes)
