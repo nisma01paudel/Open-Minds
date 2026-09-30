@@ -129,3 +129,69 @@ h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .07em; color: v
   .panel { position: absolute; top: auto; bottom: 0; left: 0; right: 0; width: auto;
            max-height: 52%; border-radius: 16px 16px 0 0; }
 }
+
+/* ---------- replay ---------- */
+.replay { display: flex; flex-direction: column; gap: 9px; }
+.replaybar { display: flex; align-items: center; gap: 10px; }
+.replaybar .date { font-size: 15px; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+button.play, button.mini {
+  font: inherit; border-radius: 8px; cursor: pointer; border: 1px solid rgba(148,163,184,.3);
+  background: rgba(148,163,184,.1); color: #e2e8f0; padding: 5px 10px;
+}
+button.play { font-size: 13px; min-width: 42px; }
+button.play:hover, button.mini:hover { border-color: var(--accent); color: #fff; }
+button.mini { font-size: 11.5px; padding: 4px 9px; margin-left: auto; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+.pulse { display: flex; align-items: flex-end; gap: 1px; height: 42px;
+         background: rgba(148,163,184,.07); border-radius: 7px; padding: 4px 5px; }
+.pulse .bar { flex: 1; background: rgba(148,163,184,.45); border-radius: 1px; cursor: pointer;
+              min-height: 2px; transition: background .1s; }
+.pulse .bar:hover { background: var(--accent); }
+.pulse .bar.at { background: var(--exceeded); }
+.pulselabel { font-size: 11.5px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.pulselabel b { color: #e2e8f0; }
+
+/* ---------- AR / phone ---------- */
+.arstage { position: fixed; inset: 0; background: #05070d; overflow: hidden; }
+.arcam { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.arstart { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; text-align: center; padding: 28px; gap: 12px; }
+.arstart h1 { margin: 0; font-size: 30px; }
+.arstart h1 span { color: var(--accent); font-weight: 400; }
+.arstart p { margin: 0; color: #cbd5e1; max-width: 40ch; font-size: 15px; }
+.arstart .err { color: #f87171; font-size: 13px; }
+.arstart .tiny { color: var(--muted); font-size: 12px; }
+.arstart button { font: inherit; font-size: 15px; padding: 12px 22px; border-radius: 999px;
+  border: none; background: var(--accent); color: #04222a; font-weight: 650; cursor: pointer; }
+.arhud { position: absolute; z-index: 4; top: 0; left: 0; right: 0; display: flex; gap: 12px;
+  align-items: center; padding: 10px 14px; font-size: 12.5px; color: #e2e8f0;
+  background: linear-gradient(180deg, rgba(5,7,13,.85), rgba(5,7,13,0)); }
+.arhud b { font-size: 14px; }
+.arhud span { color: #94a3b8; }
+.arhud button { margin-left: auto; font: inherit; font-size: 12px; padding: 5px 11px; border-radius: 999px;
+  border: 1px solid rgba(148,163,184,.3); background: rgba(148,163,184,.12); color: #e2e8f0; }
+.aroverlay { position: absolute; inset: 0; pointer-events: none; }
+.marker { position: absolute; transform: translate(-50%, -50%); display: flex; align-items: center; gap: 7px; }
+.pin { width: 13px; height: 13px; border-radius: 50%; border: 2px solid #fff; flex: none;
+       box-shadow: 0 0 14px rgba(0,0,0,.7); }
+.card { background: rgba(6,10,18,.8); backdrop-filter: blur(8px); border-radius: 9px;
+        border: 1px solid rgba(148,163,184,.25); padding: 6px 9px; font-size: 11.5px; line-height: 1.35;
+        max-width: 190px; }
+.card b { font-size: 13px; }
+.card .t { color: #e2e8f0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.card .d { color: var(--muted); }
+.card .a { color: var(--accent); }
+.arfoot { position: absolute; z-index: 4; bottom: 0; left: 0; right: 0; padding: 10px 16px 14px;
+  background: linear-gradient(0deg, rgba(5,7,13,.92), rgba(5,7,13,0)); }
+.arfoot input { width: 100%; accent-color: var(--accent); }
+.arlegend { display: flex; gap: 14px; align-items: center; font-size: 11.5px; color: #cbd5e1; }
+.arlegend i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 5px; }
+.arlegend .sp { flex: 1; }
+.arlegend a { color: var(--accent); text-decoration: none; }
+.arfoot .tiny { color: var(--muted); font-size: 11.5px; margin-top: 4px; }
+
+.phone { position: absolute; z-index: 7; top: 84px; right: 20px; text-decoration: none;
+  font-size: 13px; color: #04222a; background: var(--accent); padding: 9px 15px; border-radius: 999px;
+  font-weight: 600; box-shadow: 0 8px 26px rgba(34,211,238,.28); }
+.phone:hover { filter: brightness(1.08); }
+@media (max-width: 760px) { .phone { display: none; } }
