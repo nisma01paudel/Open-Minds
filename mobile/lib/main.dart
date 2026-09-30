@@ -366,6 +366,15 @@ class _WalkScreenState extends State<WalkScreen> {
            style: Theme.of(context).textTheme.bodySmall),
       const SizedBox(height: 12),
       if (_seasons != null) seasonStrip(s, _seasons!, _lat, _lon),
+      if (_seasons != null) ...[
+        const SizedBox(height: 14),
+        PanoramaView(
+          regionKey: _seasons!.nearest(_lat, _lon)?.key ?? 'kathmandu',
+          title: s['walk.look'],
+          caption: s['walk.lookNote'],
+          fallback: s['walk.noPanorama'],
+        ),
+      ],
       const SizedBox(height: 12),
       Row(children: [
         Text('${s['walk.within']} '),
@@ -863,4 +872,77 @@ Widget seasonStrip(L10n s, seasons.SeasonGuide guide, double lat, double lon) {
     const SizedBox(height: 4),
     Text(s['walk.seasonsNote'], style: const TextStyle(fontSize: 11, color: Color(0xFF64748B))),
   ]);
+}
+
+/// Look around the valley — the 360-degree render, draggable, offline.
+///
+/// The image is the equirectangular panorama the web app serves, bundled into the APK rather than
+/// fetched, because the places a valley view matters most are the places with no signal. Dragging
+/// left and right walks the full 360 degrees; the aspect ratio is 2:1 by construction, which is what
+/// an equirectangular projection is.
+///
+/// It is NOT a photograph. It is a silhouette rendered from the elevation grid this app already
+/// carries: shape, no trees, no buildings, and a gradient sky. The caption says so.
+class PanoramaView extends StatefulWidget {
+  final String regionKey;
+  final String title;
+  final String caption;
+  final String fallback;
+  const PanoramaView({super.key, required this.regionKey,
+                      required this.title, required this.caption,
+                      required this.fallback});
+
+  @override
+  State<PanoramaView> createState() => _PanoramaViewState();
+}
+
+class _PanoramaViewState extends State<PanoramaView> {
+  final _controller = ScrollController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    const h = 150.0;                 // 2:1, so 300 wide per full turn at this height
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text(widget.title, style: const TextStyle(fontWeight: FontWeight.w700)),
+      const SizedBox(height: 6),
+      ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: SizedBox(
+          height: h,
+          child: Scrollbar(
+            controller: _controller,
+            child: SingleChildScrollView(
+              controller: _controller,
+              scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
+              child: Image.asset(
+                'assets/panoramas/${widget.regionKey}.png',
+                height: h,
+                fit: BoxFit.fitHeight,
+                errorBuilder: (_, _, _) => Container(
+                  height: h,
+                  alignment: Alignment.center,
+                  color: const Color(0xFF1E293B),
+                  child: Text(widget.fallback,
+                      style: const TextStyle(fontSize: 11, color: Color(0xFF64748B))),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+      const SizedBox(height: 4),
+      Text(widget.caption,
+          style: const TextStyle(fontSize: 11, color: Color(0xFF64748B))),
+      const SizedBox(height: 4),
+      Text('← 360° →',
+          style: const TextStyle(fontSize: 10, color: Color(0xFF475569))),
+    ]);
+  }
 }

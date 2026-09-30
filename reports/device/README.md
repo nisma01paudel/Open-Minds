@@ -20,6 +20,7 @@ launched on an Android emulator (API 36, x86_64, `/dev/kvm`) on 2026-10-01.
 | `pahiro-settings-nepali.png` | Settings after the fix: **the capability card in Nepali** |
 | `pahiro-beacon-nepali.png` | the frame card after the fix: **every line in Nepali** |
 | `pahiro-walk-seasons.png` | **the Walk tab with when-to-go: twelve bars, four green, Kathmandu warned** |
+| `pahiro-walk-panorama.png` | **and look-around: the 360° valley render, on the phone, offline** |
 
 ## What this changes, and what it does not
 
@@ -30,6 +31,20 @@ a real handset" end here.
 **Unchanged, and still stated everywhere:** this is an **emulator**, not a physical phone. No radio
 figure has been measured on real hardware - Bluetooth range, Wi-Fi Aware range and battery endurance
 are all still somebody else's measurements or modelled from them. An emulator cannot measure a radio.
+
+## Look around the valley, on the phone
+
+    उपत्यका हेर्नुहोस्
+    [ the Kathmandu valley skyline, 360 degrees, draggable ]
+    यो तस्बिर होइन — उचाइको डेटाबाट बनाइएको ३६०° को चित्र हो। रूख, घर वा जमिनको रङ यसमा छैन;
+    आकृति मात्र। दायाँबायाँ तान्नुहोस्।
+
+The six panoramas are bundled into the APK, 264 KB for the whole country's walking regions, because
+the places a valley view matters most are the places with no signal. Dragging left and right walks
+the full 360; the aspect is 2:1 because that is what an equirectangular projection is.
+
+And the caption refuses the obvious mistake: this is NOT a photograph. It is a silhouette from the
+elevation grid the app already carries - shape, no trees, no buildings, a gradient sky.
 
 ## When to go, on the phone
 

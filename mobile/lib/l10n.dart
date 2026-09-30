@@ -94,6 +94,10 @@ const Map<String, Map<String, String>> translations = {
     'beacon.encode': 'नमुना फ्रेम बनाउनुहोस्',
     'beacon.bytes': 'बाइट',
     'board.title': 'बोर्ड',
+    'walk.look': 'उपत्यका हेर्नुहोस्',
+    'walk.noPanorama': 'यो क्षेत्रको चित्र उपलब्ध छैन',
+    'walk.lookNote': 'यो तस्बिर होइन — उचाइको डेटाबाट बनाइएको ३६०° को चित्र हो। रूख, घर वा '
+        'जमिनको रङ यसमा छैन; आकृति मात्र। दायाँबायाँ तान्नुहोस्।',
     'walk.seasons': 'कहिले जाने',
     'walk.seasonsNote': 'यी बाह्र महिना यहाँका लागि मापन गरिएका हुन्, तर कुनै महिनालाई राम्रो वा '
         'नराम्रो भनिएको छैन। किसान, पदयात्री र प्याराग्लाइडरले एउटै महिनाबाट फरक मौसम चाहन्छन्।',
@@ -147,6 +151,10 @@ const Map<String, Map<String, String>> translations = {
     'beacon.encode': 'Build a sample frame',
     'beacon.bytes': 'bytes',
     'board.title': 'Board',
+    'walk.look': 'Look around the valley',
+    'walk.noPanorama': 'No panorama bundled for this region',
+    'walk.lookNote': 'Not a photograph — a 360° view rendered from the elevation data. No trees, no '
+        'buildings, no ground colour; shape only. Drag left and right.',
     'walk.seasons': 'When to go',
     'walk.seasonsNote': 'These twelve months were measured for here, and no month is called good or '
         'bad. A farmer, a trekker and a paraglider want different weather from the same month.',

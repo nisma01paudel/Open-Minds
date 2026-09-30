@@ -68,6 +68,7 @@ flutter:
     # and needs no network once it is here.
     - assets/trails.geojson
     - assets/seasons.json
+    - assets/panoramas/
 
   # To add assets to your application, add an assets section, like this:
   # assets:
