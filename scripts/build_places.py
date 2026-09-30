@@ -1,177 +1,125 @@
 #!/usr/bin/env python3
-"""Major places with descriptions that are COMPUTED, not written.
+"""Major places, described from data rather than from prose.
 
 WHY IT IS BUILT THIS WAY
 ------------------------
-A place description copied from a guidebook is prose somebody else wrote. A description invented
-here would be prose nobody verified, which is the failure this project keeps catching.
+Two earlier attempts failed. The first asked Overpass for places and got four of six regions back
+empty. The second invented nothing and derived everything but had no coordinates.
 
-So every field is derived from something checkable: the place comes from OpenStreetMap, its type
-and population are OSM tags, its elevation is read from the bundled DEM, and how many of this
-repository's own mapped trails begin within five kilometres is counted from the trail network.
+Both problems are solved by NOT asking for a new dataset at all. Nepal's 753 local units are already
+here (administration.json, from NEPAL-QUEST-DATA) with real population, area and official website.
+And 613 documented slopes are already here with real coordinates AND a title that names the unit
+they sit in - "Landslide at Jaimini Municipality-10".
 
-That last one is the point. Nothing else in the world tells a walker "this is where the trails
-start", because nothing else has both the place list and the trail network in the same offline file.
+So a place entry is a JOIN, and every field in it is something a machine checked:
 
-    python scripts/build_places.py            # from the cache in evidence/
-    python scripts/build_places.py --fetch    # download the places first
+    name, Nepali name, district, province, population, area, website   <- the gazetteer
+    lat, lon                                                          <- the slopes documented in it
+    slopes_documented, susceptibility_median                          <- our own hazard work
+    trails_mapped_within_10km                                         <- the trail bundle
+
+There is no prose, because prose about a place is the one thing nothing here can check.
+
+    python scripts/build_places.py
 """
 from __future__ import annotations
 
-import argparse
 import json
-import time
-import urllib.parse
-import urllib.request
+import math
+import statistics
+from collections import defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-CACHE = "evidence/places-raw.json"
 OUT = "web/public/data/places.geojson"
-TRAILS = "web/public/data/trails.geojson"
-DEM = "web/public/data/terrain.bin"
-DEM_META = "web/public/data/terrain.json"
-TRAILHEAD_M = 5000.0
-
-REGIONS = [
-    ("kathmandu", "27.55,85.10,27.90,85.55"),
-    ("khumbu", "27.55,86.55,28.05,87.05"),
-    ("annapurna", "28.15,83.65,28.85,84.35"),
-    ("langtang", "27.90,85.15,28.45,85.85"),
-    ("manaslu", "28.30,84.30,28.90,85.00"),
-    ("mustang", "28.55,83.55,29.20,84.25"),
-]
-
-OVERPASS = ["https://overpass-api.de/api/interpreter",
-            "https://overpass.kumi.systems/api/interpreter"]
-
-# Place classes worth carrying. A hamlet is not a place you plan a trip around.
-WANTED = {"city", "town", "village", "suburb", "municipality"}
+D = "web/public/data"
 
 
-def fetch(bbox: str) -> list[dict]:
-    q = (f'[out:json][timeout:180];('
-         + "".join(f'node["place"="{p}"]({bbox});' for p in WANTED) +
-         f');out center tags;')
-    for ep in OVERPASS:
-        try:
-            req = urllib.request.Request(ep, data=urllib.parse.urlencode({"data": q}).encode(),
-                                         headers={"User-Agent": "pahiro-places/1.0"})
-            with urllib.request.urlopen(req, timeout=240) as r:
-                return json.loads(r.read()).get("elements", [])
-        except Exception as exc:                             # noqa: BLE001
-            print(f"    {ep.split('/')[2]}: {type(exc).__name__}")
-            time.sleep(3)
-    return []
+def _m(a, b):
+    p1, p2 = math.radians(a[0]), math.radians(b[0])
+    dp, dl = p2 - p1, math.radians(b[1] - a[1])
+    h = math.sin(dp / 2) ** 2 + math.cos(p1) * math.cos(p2) * math.sin(dl / 2) ** 2
+    return 6371000.0 * 2 * math.asin(math.sqrt(h))
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--fetch", action="store_true")
-    a = ap.parse_args()
+    admin = json.loads((ROOT / D / "administration.json").read_text(encoding="utf-8"))
+    sites = json.loads((ROOT / D / "timeline.json").read_text(encoding="utf-8"))["sites"]
+    sus = {r["id"]: r["value"] for r in
+           json.loads((ROOT / D / "susceptibility.json").read_text(encoding="utf-8"))["slopes"]}
+    trails = json.loads((ROOT / D / "trails.geojson").read_text(encoding="utf-8"))["features"]
 
-    cache = ROOT / CACHE
-    if a.fetch or not cache.exists():
-        raw = {}
-        for key, bbox in REGIONS:
-            print(f"  fetching {key} ...")
-            raw[key] = fetch(bbox)
-            time.sleep(2)
-        cache.parent.mkdir(parents=True, exist_ok=True)
-        cache.write_text(json.dumps(raw), encoding="utf-8")
-    raw = json.loads(cache.read_text(encoding="utf-8"))
+    # unit name -> the slopes whose titles name that unit. This is where the coordinates come from.
+    units = sorted(admin["units"], key=lambda u: -len(u["name"]))
+    hits: dict[str, list[dict]] = defaultdict(list)
+    for s in sites:
+        title = s["title"].lower()
+        for u in units:
+            if u["name"].lower() in title:
+                hits[u["name"]].append(s)
+                break
 
-    # A region that fetched nothing must stop the build. The first run got two of six regions, and
-    # the file it wrote looked complete - it was an Annapurna list presented as a national one.
-    empty = [k for k, _ in REGIONS if not raw.get(k)]
-    if empty:
-        print(f"REFUSING TO WRITE: no places for {', '.join(empty)}. "
-              f"The earlier attempt shipped a two-region file as a national gazetteer because "
-              f"nothing checked. Re-run with --fetch on a connection that works.")
+    if not hits:
+        print("REFUSING: no slope title matched a local unit, so there are no coordinates to place")
         return 1
+    print(f"  {len(hits)} of {len(admin['units'])} local units located from documented slopes")
 
-    trails = json.loads((ROOT / TRAILS).read_text(encoding="utf-8"))["features"]
-    meta = json.loads((ROOT / DEM_META).read_text(encoding="utf-8"))
-    import numpy as np
-    dem = np.fromfile(ROOT / DEM, dtype="<u2").reshape(meta["height"], meta["width"])
-    # terrain.json stores the corners as flat keys (west/south/east/north), not a bounds array.
-    # Reading meta["bounds"] returned None for every place, so all 207 came out with no elevation
-    # and nothing failed - a silent None, which is the shape of most of the bugs in this repository.
-    bounds = (meta.get("west"), meta.get("south"), meta.get("east"), meta.get("north"))
-
-    def elevation(lat: float, lon: float):
-        if any(b is None for b in bounds):
-            return None
-        w, s, e, n = bounds
-        if not (s <= lat <= n and w <= lon <= e):
-            return None
-        y = int((n - lat) / (n - s) * (meta["height"] - 1))
-        x = int((lon - w) / (e - w) * (meta["width"] - 1))
-        return int(dem[max(0, min(meta["height"] - 1, y)), max(0, min(meta["width"] - 1, x))])
-
-    # Trailheads: which mapped trails start within 5 km. Computed from the bundle, so it moves when
-    # the bundle moves and cannot go stale the way a written description does.
-    starts = []
-    for f in trails:
-        c = f["geometry"]["coordinates"]
-        if c:
-            starts.append((c[0][1], c[0][0]))
-
-    features, seen = [], set()
-    for key, _ in REGIONS:
-        for e in raw.get(key, []):
-            tags = e.get("tags") or {}
-            name = tags.get("name")
-            lat = e.get("lat") or (e.get("center") or {}).get("lat")
-            lon = e.get("lon") or (e.get("center") or {}).get("lon")
-            if not name or lat is None or lon is None or name in seen:
+    # trail density per place, measured from every vertex within 10 km
+    def trail_count(lat: float, lon: float) -> int:
+        n = 0
+        for f in trails:
+            c = f["geometry"]["coordinates"]
+            if not c:
                 continue
-            seen.add(name)
-            near = sum(1 for (slat, slon) in starts
-                       if abs(slat - lat) < 0.045 and abs(slon - lon) < 0.05)
-            features.append({
-                "type": "Feature",
-                "properties": {
-                    "name": name,
-                    "kind": tags.get("place"),
-                    "region": key,
-                    "population": int(tags["population"]) if str(tags.get("population", "")).isdigit() else None,
-                    "district": tags.get("addr:district") or tags.get("is_in:district"),
-                    "elevation_m": elevation(lat, lon),
-                    # Counted, NOT named. A first version called >=3 trails a "trailhead" and
-                    # flagged 207 out of 207 places, because a 5 km box anywhere in the middle
-                    # hills contains dozens of the 23,726 mapped trails. The number is a measure of
-                    # how densely OSM has mapped that area - which is real information - and it is
-                    # not a claim that walking there is good, which the count cannot support.
-                    "trails_mapped_within_5km": near,
-                },
-                "geometry": {"type": "Point", "coordinates": [round(lon, 6), round(lat, 6)]},
-            })
+            if any(abs(p[1] - lat) < 0.09 and abs(p[0] - lon) < 0.11 for p in c[::4]):
+                n += 1
+        return n
 
-    heads = sorted(features, key=lambda x: -x["properties"]["trails_mapped_within_5km"])[:5]
+    feats = []
+    for name, ss in sorted(hits.items(), key=lambda kv: -len(kv[1])):
+        u = next(x for x in admin["units"] if x["name"] == name)
+        lat = statistics.mean(s["lat"] for s in ss)
+        lon = statistics.mean(s["lon"] for s in ss)
+        vals = [sus[s["id"]] for s in ss if s["id"] in sus]
+        feats.append({
+            "type": "Feature",
+            "properties": {
+                "name": name, "name_ne": u.get("name_ne"), "kind": u.get("kind"),
+                "district": u.get("district"), "province_ne": u.get("province_ne"),
+                "population": u.get("population"), "area_km2": u.get("area_km2"),
+                "website": u.get("website"),
+                "slopes_documented": len(ss),
+                "susceptibility_median": round(statistics.median(vals), 3) if vals else None,
+                "trails_mapped_within_10km": trail_count(lat, lon),
+                "located_by": ("the mean position of the documented slopes whose titles name this "
+                               "unit - not a surveyed town centre"),
+            },
+            "geometry": {"type": "Point", "coordinates": [round(lon, 5), round(lat, 5)]},
+        })
+
     out = {
         "type": "FeatureCollection",
-        "attribution": "\u00a9 OpenStreetMap contributors, ODbL 1.0",
-        "source": "openstreetmap.org via Overpass API",
-        "method": ("Every field is derived, not written: place and population from OSM tags, "
-                   "elevation read from this repository's DEM, and trails_within_5km counted from "
-                   "the bundled trail network. There is no prose here, because prose about a place "
-                   "is the one thing that cannot be checked by a machine."),
-        "note_on_density": ("trails_mapped_within_5km counts mapped trails whose first node falls "
-                            "inside a five-kilometre box. It measures how well OpenStreetMap has "
-                            "covered the area, not how good the walking is, and an area with no "
-                            "coverage reads as zero however fine the walking there may be."),
-        "feature_count": len(features),
-        "reporting": 0,
-        "features": features,
+        "attribution": ("Local units from github.com/rgtstha/NEPAL-QUEST-DATA (community open data); "
+                        "slopes and trails \u00a9 OpenStreetMap contributors, ODbL 1.0"),
+        "method": ("A place is a join, not a description. Names, population, area and website come "
+                   "from Nepal's 753-unit gazetteer; coordinates come from the documented slopes "
+                   "whose titles name the unit; hazard and trail figures come from this repository. "
+                   "No field here is prose, because prose about a place is the one thing that "
+                   "cannot be checked."),
+        "accuracy": ("Positions are the MEAN OF DOCUMENTED SLOPES inside a unit, not town centres. "
+                     "A large rural municipality can be tens of kilometres across, so a point is a "
+                     "label position, not a location. Distances measured to these points inherit "
+                     "that error and are reported as approximate."),
+        "counts": {"places": len(feats)},
+        "features": feats,
     }
     dest = ROOT / OUT
     dest.write_text(json.dumps(out, separators=(",", ":"), ensure_ascii=False), encoding="utf-8")
-    print(f"wrote {OUT}: {len(features)} places, {dest.stat().st_size/1024:.0f} KB")
-    for f in heads:
+    print(f"wrote {OUT}: {len(feats)} places, {dest.stat().st_size/1024:.0f} KB")
+    for f in feats[:5]:
         p = f["properties"]
-        print(f"    {p['name'][:32]:34} {p['trails_mapped_within_5km']:>4} mapped trails  "
-              f"{p['elevation_m']} m")
+        print(f"    {p['name'][:26]:28} {p['district'] or '-':16} pop {str(p['population'] or '-'):>8} "
+              f"{p['slopes_documented']:>3} slopes")
     return 0
 
 
