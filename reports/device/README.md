@@ -18,6 +18,7 @@ launched on an Android emulator (API 36, x86_64, `/dev/kvm`) on 2026-10-01.
 | `pahiro-beacon-frame.png` | **a real 20-byte advertisement, encoded on the device, in hex** |
 | `pahiro-board-empty.png` | the Board with no messages, **and the app explaining why** |
 | `pahiro-settings-nepali.png` | Settings after the fix: **the capability card in Nepali** |
+| `pahiro-beacon-nepali.png` | the frame card after the fix: **every line in Nepali** |
 
 ## What this changes, and what it does not
 
@@ -28,6 +29,22 @@ a real handset" end here.
 **Unchanged, and still stated everywhere:** this is an **emulator**, not a physical phone. No radio
 figure has been measured on real hardware - Bluetooth range, Wi-Fi Aware range and battery endurance
 are all still somebody else's measurements or modelled from them. An emulator cannot measure a radio.
+
+## The frame card, translated without touching the codec
+
+    20 बाइट · 4 बाँकी 24 मध्ये
+    23373632afe320002a4a5600822d22005b15b935
+    2 जना · अत्यावश्यक
+    स्थान 27.71542, 85.31234
+    ttl 6 · 1 पटक अगाडि बढेको
+    बाइट हावामा पठाउन सक्ने एप हो यो। ब्राउजरले सक्दैन।
+
+`peopleText` and `severity` come from the beacon codec, which the byte-parity tests share with the
+JavaScript side. Localising THE CODEC to fix a caption would be the beginning of two implementations
+drifting apart, so the Nepali is composed in the widget from the decoded **numbers** - `people` is an
+int and the widget phrases it - and the codec stays English on both sides.
+
+`ttl` is left as-is: it is a protocol field name, like MB, not prose.
 
 ## The screen that was half-translated
 

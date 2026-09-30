@@ -1,3 +1,5 @@
+import 'dart:io';
+
 // Vectors derived from the Python reference implementation (src/pahiro/mesh/beacon.py).
 // Do not edit by hand. They are pinned from the other side by
 // tests/test_dart_beacon_vectors.py, which re-derives every value here from the Python
@@ -44,6 +46,7 @@ const List<List<Object>> truncations = [
 ];
 
 void main() {
+  beaconLocalisationTests();
 
   test('the frame is 20 bytes of the 24 a legacy advertisement allows', () {
     expect(encodedBytes, 20);
@@ -230,4 +233,27 @@ Uint8List encodeFor(String name) {
     default:
       throw StateError('unknown case $name');
   }
+}
+// ---------------------------------------------------------------------------------------------
+// The decoded frame, as a Nepali user sees it.
+// ---------------------------------------------------------------------------------------------
+
+void beaconLocalisationTests() {
+  test('the codec stays English and the widget carries the Nepali', () {
+    // peopleText and severity are produced by the codec, which the byte-parity tests share with the
+    // JavaScript side. Localising the CODEC to fix a caption would be the start of two
+    // implementations drifting apart, so the Nepali is composed in the widget from the decoded
+    // numbers instead. This asserts the direction of that decision, and that it has not been undone.
+    final codec = File('lib/beacon.dart').readAsStringSync();
+    expect(codec.contains("'2 people'") || codec.contains("people'"),
+        isTrue, reason: 'the codec still phrases people in English, deliberately');
+
+    final main = File('lib/main.dart').readAsStringSync();
+    expect(main.contains('कति जना थाहा छैन'), isTrue,
+        reason: 'the widget no longer phrases an unknown count in Nepali');
+    expect(main.contains('अत्यावश्यक'), isTrue,
+        reason: 'the widget no longer phrases the critical severity in Nepali');
+    expect(main.contains('decoded!.peopleText'), isTrue,
+        reason: 'the English phrasing is still there for English users - both must exist');
+  });
 }

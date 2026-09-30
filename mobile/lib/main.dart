@@ -629,7 +629,21 @@ class _BeaconScreenState extends State<BeaconScreen> {
                       style: const TextStyle(fontFamily: 'monospace', fontSize: 12)),
                   const SizedBox(height: 10),
                   if (decoded != null) ...[
-                    Text('${decoded!.peopleText} · ${decoded!.severity}'),
+                    // The codec is shared with the JavaScript side and its peopleText is English,
+                    // so the Nepali is composed here from the decoded NUMBERS rather than by
+                    // changing a byte-parity codec to satisfy a label. Localising a codec to fix a
+                    // caption is how two implementations drift apart.
+                    Text(
+                      s.lang == AppLang.ne
+                          ? '${decoded!.people == 0 ? 'कति जना थाहा छैन' : decoded!.people >= beacon.maxPeople ? '${beacon.maxPeople}+ जना' : '${decoded!.people} जना'}'
+                              ' · ${const {
+                                  'info': 'जानकारी',
+                                  'concern': 'चासो',
+                                  'urgent': 'जरुरी',
+                                  'critical': 'अत्यावश्यक',
+                                }[decoded!.severity] ?? decoded!.severity}'
+                          : '${decoded!.peopleText} · ${decoded!.severity}',
+                    ),
                     Text(decoded!.hasPosition
                         ? '${s.lang == AppLang.ne ? 'स्थान' : 'position'} '
                             '${decoded!.lat!.toStringAsFixed(5)}, '
