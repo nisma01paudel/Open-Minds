@@ -43,6 +43,19 @@ distribution and the Compose dependencies.
 Nothing in it is generated into the repository: `mobile/build/` is gitignored, so the artefact is a
 command rather than 50 MB of history.
 
+And check what ended up inside it, because a phone app that cannot reach its offline data is a
+phone app that needs the network:
+
+```bash
+unzip -l mobile/build/app/outputs/flutter-apk/app-release.apk | grep flutter_assets/assets
+# assets/terrain.bin        851,968
+# assets/terrain.json           303
+# assets/trails.geojson   5,684,443     <- the whole six-region bundle
+```
+
+Those three files are the offline claim. If they are not in the APK, nothing else on this page
+matters.
+
 The last one is the one worth your time. **A passing suite is not evidence until you know it can
 fail.** `mutate_check.py` breaks six load-bearing constants on purpose — the beacon's frame
 size, the weight of a headcount in triage, the battery level at which a phone stops scanning,

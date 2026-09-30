@@ -580,3 +580,19 @@ def test_the_observability_layer_can_be_rebuilt_and_refuses_to_write_a_bad_one()
     assert len(sites["sites"]) == 142
     assert sum(1 for s in sites["sites"] if s["usable"] == 0) == 17, \
         "17 of 142 sites were never seen; that is the beat 5b number"
+
+
+def test_the_phone_app_declares_every_asset_its_offline_claim_needs():
+    """The APK carries its data because pubspec lists it. Verified against a real build: the
+    48.5 MB release APK contains terrain.bin, terrain.json and the 5.42 MB trail bundle.
+
+    A test cannot inspect the APK - it is generated and gitignored - so this checks the mechanism
+    that puts them there. Without these three lines under `assets:` the app builds, installs, and
+    needs the network for everything it claims to do offline.
+    """
+    pubspec = read("mobile/pubspec.yaml")
+    assert "assets:" in pubspec
+    for needed in ("assets/terrain.bin", "assets/terrain.json", "assets/trails.geojson"):
+        assert f"- {needed}" in pubspec, (
+            f"{needed} is not declared under assets:, so it will not be bundled into the APK - the "
+            f"app would install and then need the network")
