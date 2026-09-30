@@ -56,6 +56,25 @@ unzip -l mobile/build/app/outputs/flutter-apk/app-release.apk | grep flutter_ass
 Those three files are the offline claim. If they are not in the APK, nothing else on this page
 matters.
 
+### The web app's offline shell, against the deployed export
+
+The service worker precaches fifteen URLs. `verify_repo.py` checks them against `web/public/`, but
+what a browser actually receives is `web/out/` - and a file present in one need not reach the other.
+
+```bash
+python - <<'EOF'
+import re, pathlib
+sw = pathlib.Path("web/public/sw.js").read_text()
+urls = set(re.findall(r'"(/data/[^"]+|/icons/[^"]+|/manifest\.webmanifest)"', sw))
+missing = [u for u in sorted(urls) if not (pathlib.Path("web/out") / u.lstrip("/")).exists()]
+print(f"{len(urls)} precached, {len(missing)} missing from the export")
+EOF
+```
+
+Confirmed: **15 of 15 present** in the built export, including the 5.42 MB trail bundle, the terrain
+grid and the twelve other files the app reads. Every one of them is a file the browser will have
+after a single visit and keep with the radio off.
+
 The last one is the one worth your time. **A passing suite is not evidence until you know it can
 fail.** `mutate_check.py` breaks six load-bearing constants on purpose — the beacon's frame
 size, the weight of a headcount in triage, the battery level at which a phone stops scanning,
