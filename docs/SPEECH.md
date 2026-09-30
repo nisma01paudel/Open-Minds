@@ -306,6 +306,139 @@ apparent contradiction becomes the most rigorous thing in the room.
 
 ---
 
+## The three that make people put their phones down
+
+These are the newest parts of the system and the ones that get a reaction, because each is a
+thing you can **do in front of the room in under thirty seconds** rather than a slide about it.
+Run them in this order. If you have time for only one, run the flood one.
+
+### N1 · The SOS that is carried by strangers
+
+> *Open `/field/`, Search tab. Press **LOOPBACK TEST — ENCODE, SEND, DECODE**.*
+
+The mesh relays between phones whose owners are helping. That is not the situation. The people
+standing in the debris are not running our app, and the handset under the rubble cannot open a
+connection to anybody.
+
+So the distress call fits **inside the Bluetooth advertisement itself** — the packet a phone
+broadcasts whether or not anyone is listening. Twenty bytes. **No pairing, no connection, no
+handshake: there is nothing to negotiate and nothing to fail.** And the phone that carries it
+does not need our app open, because the operating system already scans advertisements for its
+own reasons.
+
+The button you just pressed encoded a frame, relayed it one hop, decoded it and printed the
+bytes — on this laptop, with no radio, and it says on screen that it is a test and not a
+received call.
+
+**〔beat〕**
+
+Then say the part that is the actual innovation: **the advertisement's own signal strength is a
+locating measurement.** The thing that carries the message is also the thing that finds the
+person. The trilateration already in the project now runs on signals nobody had to send.
+
+And be exact about the half that is missing: *Web Bluetooth cannot advertise.* A browser can
+scan, and cannot transmit. That is one paragraph of native code away, and the wire format is
+published in the repository so anyone can write it.
+
+### N2 · Where to run, and how high — the answer the warning leaves out
+
+> *Open the map, press **FLASH FLOOD — WHERE DO I GO?**, click a hillside town.*
+
+A warning that says *"flash flood expected"* has already failed the person reading it. It tells
+them a thing is happening and leaves the only decision that matters — which way do I run, how
+far up — to be guessed at, in the dark, in the minute they have.
+
+Click, and the system answers from the elevation data already bundled in the repository, on
+this laptop, **with the wifi off**:
+
+> **GO EAST — about 1082 m, climbing 547 m (roughly 82 min on foot, uphill).**
+> *पूर्व तर्फ जानुहोस् — करिब १०८२ मिटर, करिब ५४७ मिटर माथि चढ्दै।*
+
+**〔beat〕**
+
+Now the moment that lands. Click **Melamchi** — the bazaar destroyed by the 2021 flash flood —
+and let them watch it **refuse**:
+
+> **NO REACHABLE HIGH GROUND.** The only ground that clears the rise is *behind* you, across the
+> water. Do not cross it: climb the slope you are on, away from the stream.
+
+**That refusal is the feature.** The first version of this found the nearest cell that was
+higher, and on a coarse grid that is routinely one pixel away in an arbitrary direction — at
+Melamchi it said *south*, which in a valley is as likely to be downstream as up. Running
+downstream is how people die. So the bearing now comes from the local fall line, and ground more
+than 75° off it is rejected. That single change turned a plausible answer into a safe one.
+
+In the Terai it refuses differently, and correctly: there is no high ground for miles, so it
+says **do not run for it — get to a solid multi-storey building and climb.** A planner that
+always finds *some* point would send a family across a plain in the dark toward a spot 18 km
+away and call that a plan.
+
+Then say the caveat yourself, before a judge does: **a DEM cannot see bridges, culverts, roads
+or the water**, and the bundled grid is about a kilometre a cell. It is valley-scale guidance,
+not turn-by-turn, and every answer carries that sentence on screen.
+
+### N3 · It speaks Nepali, offline, on a phone with nothing
+
+> *Press **🔊 SPEAK** on the flood panel.*
+
+> **माथि जानुहोस्।** — go up.
+> **अझ माथि जानुहोस्।** — keep going up.
+> **तल जानुभयो — फर्कनुहोस्।** — you are going down, turn back.
+
+A paragraph is a briefing, not navigation. Someone running in the dark cannot hold a bearing, a
+distance and a target elevation in their head while terrified. What they can follow is one short
+instruction that changes as they move — including the correction, because downhill is easier and
+faster, which is exactly why a panicking person takes it without noticing.
+
+**〔beat〕**
+
+And then the line that gets the room, because it is the opposite of what everyone expects from an
+AI pitch:
+
+**The voice runs on the handset. No network, no API key, no hosted service.** The Nepali model is
+63 MB and synthesises nine seconds of speech in 1.3. Now the general version:
+
+**Nothing that saves a life is behind the AI.** The SOS, the mesh, the beacon, the escape
+direction, the statutory routing and the advisory all run with **zero megabytes of model**. The
+AI is an upgrade. Here is what each phone actually gets:
+
+| Handset | Model tier | What it buys |
+|---|---|---|
+| 512 MB RAM | none | **every life-saving feature**, no model at all |
+| 1 GB | vision | change detection **and spoken Nepali** for 92 MB |
+| 2–3 GB | mid | a small language model for a plainer written advisory |
+| 4 GB+ | full | the pinned laptop stack |
+
+**The phone in the valley is the first row, and it still gets the warning and the direction.**
+That is a design decision, not an accident, and it is enforced by a test that fails if anyone
+ever moves routing behind a language model.
+
+---
+
+## The applause close
+
+> *Say this last. Slow. Put the paper with the 40 back on the table if you still have it.*
+
+Everything you have seen ran on this laptop. The map is bundled, the elevation is bundled, the
+voice is 63 megabytes and local, the models are open weights, and the whole thing works with the
+network switched off — because the network is the first thing a landslide takes.
+
+I am not going to tell you it predicts landslides. It does not, and we have the numbers to show
+that the obvious approach does not either.
+
+What it does is finish a sentence Nepal already started. **Find the slope. Name the office
+legally responsible for it — including when that office is a municipality nobody was looking at.
+And get it to a human being, even when the road, the network and the phone signal are all
+gone.**
+
+Forty people never came back from that river.
+
+**Let us make sure the next report gets dispatched.**
+
+**〔stop. Do not add anything. Let them clap.〕**
+
+---
+
 ## Q&A armour
 
 The ten questions that will actually come. Answer short, then stop talking.
@@ -378,6 +511,29 @@ sources attached. It does not invent thresholds and it does not choose who is re
 Test it on handsets with a real team in one valley. The maths is checked; the field is not. After that,
 bundle the deeper zoom levels so the map is genuinely offline rather than gracefully degraded — today the
 field client carries no tiles of its own and the search screen assumes the network it is searching for.
+
+**12. "Does the Bluetooth beacon actually transmit today?"**
+No, and we say so. Web Bluetooth has no advertiser role — a page can scan and cannot transmit.
+What is implemented and tested is the **codec**: 20 bytes, both languages byte-identical, one
+flipped bit in any byte refused. Advertising needs a native build, and the wire format in
+`src/pahiro/mesh/beacon.py` is the whole specification for it.
+
+**13. "How accurate is the flood escape direction?"**
+The *direction* comes from the local fall line over a neighbourhood, and ground more than 75°
+off it is rejected — that is what stops it sending anyone downstream. The *resolution* is the
+honest limit: about 1.1 km a cell from the bundled DEM, so it is valley-scale guidance. The
+test asserts every answer the planner gives is within 75° of the fall line.
+
+**14. "What if a phone has no model at all?"**
+It still gets everything that matters. The SOS, mesh, beacon, escape direction, routing and
+advisory need **zero** model, and a test fails the build if that ever stops being true. A 512 MB
+handset gets the first row of the table and not a degraded apology.
+
+**15. "Is the Nepali voice yours?"**
+The voices are Piper `ne_NP` chitwan medium, 63 MB, MIT, running locally. We did not train it
+and we credit it. What we wrote is the *instructions* it speaks — and a native speaker has
+**not** checked our pronunciation, which is in [LIMITATIONS.md](LIMITATIONS.md) and which we
+would rather you knew than discovered.
 
 **If you get a question you cannot answer:** say "I don't know — it is written down as uncertain in
 [LIMITATIONS.md](LIMITATIONS.md)", and move on. That answer has never lost a competition. A confident
@@ -461,6 +617,13 @@ Every figure you say out loud, and where it lives.
 | Threshold basis | fit rests on only **43–44 events** — say this if pressed | same |
 | Locating | **20 m** demo error, **15 m** search radius, refuses with <3 receivers or collinear | [src/pahiro/locate.py](../src/pahiro/locate.py), [docs/MESH.md](MESH.md) |
 | Bundled map (offline national view) | **34 tiles, 671,241 bytes**, committed to the repo; z5–z7 only. Offline the detailed layer is hidden and the app prints *"offline — showing the bundled national view; deeper zoom needs a connection."* **Say the limitation out loud — do not imply the map is fully offline.** | `web/public/tiles/` (tracked in git), `web/components/SlopeMap.tsx`, `scripts/prefetch_tiles.py` |
+| Bluetooth-advertisement beacon | **20 bytes** of the 24 available in a legacy advertisement (31 − 3 Flags AD − 1 length − 1 type − 2 company id). Carries device id, message id, ttl/hops, severity, people, optional position, timestamp, CRC-8. **Scanning is implemented; advertising is not** — Web Bluetooth has no advertiser role | `src/pahiro/mesh/beacon.py`, `web/public/field/beacon.js`, `scripts/check_beacon_parity.py` |
+| Escape planner | direction from the **local fall line**, candidates >75° off it rejected; refuses when no reachable ground clears the rise. Bundled DEM is **832×512 over Nepal (~1.1 km a cell)**, so valley-scale only | `src/pahiro/shelter.py`, `tests/test_shelter.py` |
+| Escape planner — worked answers | Beni: E 1076 m, climb 15 m. Barhabise: E 1082 m, climb **547 m**, 82 min. **Melamchi: refused** (only higher ground is downhill, across the water). Nepalgunj: **refused** (4.8 km) | same |
+| Spoken navigation | Nepali first, English fallback. `माथि जानुहोस्` · `अझ माथि जानुहोस्` · `तल जानुभयो — फर्कनुहोस्`. Ascent check is relative to where they started, never to the summit | `src/pahiro/navigate.py`, `tests/test_navigate.py` |
+| Offline voice | Piper `ne_NP` chitwan medium, **63 MB, MIT**, 9.5 s of Nepali in 1.3 s (RTF 0.14). Runs on the handset — **no network, no API key** | [docs/MODELS.md](MODELS.md) |
+| Mobile fit ladder | 512 MB → **no model, all life-saving features** · 1 GB → vision (92.5 MB) · 2–3 GB → mid (492.5 MB) · 4 GB+ → full (1488.5 MB weights). Working memory is modeled, not assumed: ×1.8 plus a 700 MB OS floor | `src/pahiro/offline_ai.py`, `tests/test_offline_ai.py` |
+| The floor is enforced | a test fails the build if any capability in `LIFESAVING` leaves `TIER_NONE` — i.e. if anyone moves routing behind an LLM | same |
 | Models | Qwen2.5-1.5B-Instruct Q4_K_M, SmolVLM-256M, DINOv2-S/14 int8 — all open weights | [docs/MODELS.md](MODELS.md) |
 | Not tested | real handsets, real valley, real dispatch; Bluetooth through rock | [docs/LIMITATIONS.md](LIMITATIONS.md) |
 
