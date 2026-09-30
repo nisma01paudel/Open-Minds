@@ -232,3 +232,44 @@ def test_any_answer_the_planner_gives_is_uphill(national):
             continue
         assert S._angle_between(e.bearing_deg, up) <= 75.0 + 1e-6, (
             f"{lat},{lon}: sent {e.bearing_deg:.0f} deg while the ground rises {up:.0f} deg")
+
+
+# ---- the DEFAULT must be safe, not just the parameter you pass ----------------------------------
+
+def test_the_default_rise_is_a_margin_worth_having():
+    """The escaping tests all pass `rise_m=5.0` explicitly, which is exactly why the default was
+    unguarded: mutation testing halved DEFAULT_RISE_M to 0.5 and the entire suite still passed.
+
+    The rise is the margin above the expected flood that the destination must clear. On a slope,
+    half a metre is not a margin - it is the same place. So the default itself is asserted, not
+    only the parameter.
+    """
+    assert S.DEFAULT_RISE_M >= 3.0, (
+        f"the default escape margin is {S.DEFAULT_RISE_M} m; on real terrain that is not an "
+        f"escape, and nothing else in the suite would notice")
+    assert S.SAFETY_MARGIN_M >= 1.0, "there must be margin above the expected rise"
+    assert S.DEFAULT_RISE_M > S.SAFETY_MARGIN_M, \
+        "the expected rise should exceed the margin added on top of it"
+
+
+def test_planning_with_no_rise_argument_still_clears_the_documented_default():
+    """Omitting the argument must not silently weaken the answer."""
+    dem = ramp_dem()
+    e = S.plan_escape(dem, 27.15, 85.10)          # no rise_m: the default is what is under test
+    assert e.reachable
+    assert e.rise_m == S.DEFAULT_RISE_M, "the plan must report the default it actually used"
+    assert e.climb_m >= S.DEFAULT_RISE_M, (
+        f"the default plan climbs only {e.climb_m} m against a documented rise of "
+        f"{S.DEFAULT_RISE_M} m")
+    assert e.target_elevation_m - e.from_elevation_m >= S.DEFAULT_RISE_M
+    assert e.target_elevation_m - e.from_elevation_m >= S.DEFAULT_RISE_M + S.SAFETY_MARGIN_M, (
+        "the destination must clear the expected rise BY the safety margin, not just reach it")
+
+
+def test_a_zero_or_negative_rise_is_refused_rather_than_answered():
+    """'Escape to somewhere no higher than here' is not a plan, and must not come back as one."""
+    dem = ramp_dem()
+    for bad in (0.0, -5.0):
+        e = S.plan_escape(dem, 27.15, 85.10, rise_m=bad)
+        assert not e.reachable or (e.climb_m or 0) > 0, (
+            f"rise_m={bad} produced a plan that climbs {e.climb_m}")
