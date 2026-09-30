@@ -79,6 +79,32 @@ Three paths near Kathmandu are unnamed in OSM, and the app prints "(unnamed path
 inventing one. The difficulty field says "not recorded" and "cannot check this from the map data"
 rather than guessing a grade from a length. The caveat paragraph names all three limits.
 
+## The whole internet, unavailable, and the map still draws
+
+The offline claim had been verified on the phone (airplane mode, `dumpsys` showing no default
+network, identical trail distances) and never on the web. It can be tested directly: Chromium will
+blackhole every host except localhost.
+
+    chromium --host-resolver-rules="MAP * ~NOTFOUND , EXCLUDE 127.0.0.1" ...
+
+**The map rendered anyway** - the same 3D terrain, the same ten labelled cities, the same 613-slope
+panel - because the basemap is bundled rather than fetched:
+
+    web/out/data/terrain-texture.jpg
+
+So the web app's national view does not need a connection, and the attribution line under it still
+names the sources the bundled data came from (Sentinel-2 cloudless, Open-Meteo/CHIRPS, AWS terrain)
+because attribution is owed whether or not the request is live.
+
+### What this did not test
+
+The `#maperr` notice - the one added when a broken style once rendered an empty map that looked like a
+styling choice. Blackholing the network did not trigger it, because nothing failed: the app was
+correctly offline. The handler is wired (`el.style.display = "block"`, with an `info` class that
+distinguishes "out of wifi range" from a real error), and **the live path is still unexercised.** It is
+named rather than assumed to work, and reaching it would need a deliberately broken tile source rather
+than an absent one.
+
 ## The SOS link that was hidden on phones
 
 Sweeping the stylesheet for other responsive hides after the advisory one turned up two more, both at
