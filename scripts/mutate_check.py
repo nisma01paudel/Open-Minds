@@ -28,6 +28,15 @@ MUTATIONS = [
      "how high above the flood the escape target must be"),
     ("src/pahiro/mesh/seal.py", "NONCE_BYTES = 12", "NONCE_BYTES = 8",
      "the AEAD nonce length"),
+    # the daily-use half
+    ("src/pahiro/access.py", "FARE_MIN_RS = 24.0", "FARE_MIN_RS = 5.0",
+     "the published bus fare floor"),
+    ("src/pahiro/access.py", "MAX_RIDE_M = 60_000.0", "MAX_RIDE_M = 5_000_000.0",
+     "where the stop data stops being believable"),
+    ("src/pahiro/trails.py", "JUNCTION_SNAP_M = 25.0", "JUNCTION_SNAP_M = 900.0",
+     "how far apart two footpaths may be and still be a junction"),
+    ("src/pahiro/trip_agent.py", "MAX_MINUTES_CAP = 12 * 60", "MAX_MINUTES_CAP = 100000",
+     "the longest walk a request may ask for"),
 ]
 
 survived, killed, not_applied = [], [], []
