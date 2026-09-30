@@ -15,6 +15,7 @@ REFUSAL = (
 
 HEADER = "पहिरो परिवर्तन सूचना"
 LABELS = {
+    "siting": "सिफारिस (स्थान)",
     "location": "स्थान",
     "date": "मिति",
     "changed": "के परिवर्तन भयो",
@@ -61,6 +62,22 @@ def refusal_text(staleness: StalenessDecision) -> str:
     return REFUSAL.format(detail=detail)
 
 
+def siting_ne(advice) -> str:
+    """Render the siting recommendation in Nepali.
+
+    This is the line a Division Road Office can act on: not "high risk", but where to
+    build instead. Excavated from the terrain screen, and caveated as such.
+    """
+    if advice is None:
+        return "स्थान सिफारिस उपलब्ध छैन।"
+    if advice.recommendation == "relocate-upslope":
+        return (f"सोही ठाउँमा मर्मत नगर्नुहोस् — नयाँ लाइन करिब "
+                f"{advice.target_offset_m:.0f} मिटर माथि सार्नुहोस् "
+                f"(करिब {advice.target_elevation_gain_m:.0f} मिटर उचाइ बढी)। "
+                f"माथिल्लो भागमा {advice.source_slope_deg:.0f}° ढलान छ।")
+    return ("सोही ठाउँमा मर्मत गर्न सकिन्छ — तर भू-प्राविधिक जाँचपछि मात्र।")
+
+
 def render(
     *,
     location: str,
@@ -74,6 +91,7 @@ def render(
     authority_office: str | None = None,
     legal_basis: str | None = None,
     needs_review: bool = False,
+    siting: str | None = None,
 ) -> str:
     """Render the advisory. Institutions appear only when cited."""
     lines = [HEADER, ""]
@@ -87,6 +105,8 @@ def render(
         lines.append(f"{LABELS['inspect']}: " + "; ".join(inspect_first))
     if recommendation:
         lines.append(f"{LABELS['recommendation']}: {recommendation}")
+    if siting:
+        lines.append(f"{LABELS['siting']}: {siting}")
     if authority_institution and legal_basis:
         office = f" ({authority_office})" if authority_office else ""
         lines.append(f"{LABELS['authority']}: {authority_institution}{office}")
@@ -125,6 +145,7 @@ def primed_unobserved_text(
     authority_office: str | None = None,
     legal_basis: str | None = None,
     needs_review: bool = False,
+    siting: str | None = None,
 ) -> str:
     """Advisory for: the rainfall trigger is up, but ground evidence is not available.
 
@@ -139,6 +160,8 @@ def primed_unobserved_text(
                  "पछिल्लो उपग्रह प्रमाण छैन — त्यसैले यो सूचना जोखिमको संकेत हो, पुष्टि होइन।")
     if inspect_first:
         lines.append(f"{LABELS_PRIMED['inspect']}: " + "; ".join(inspect_first))
+    if siting:
+        lines.append(f"{LABELS['siting']}: {siting}")
     if authority_institution and legal_basis:
         office = f" ({authority_office})" if authority_office else ""
         lines.append(f"{LABELS_PRIMED['authority']}: {authority_institution}{office}")

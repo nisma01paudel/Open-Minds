@@ -23,11 +23,13 @@ from dataclasses import asdict, dataclass, field
 from datetime import date, timedelta
 
 from pahiro.advisory.nepali import (evidence_state_ne, primed_unobserved_text,
-                                    rainfall_state_ne, refusal_text, render)
+                                    rainfall_state_ne, refusal_text, render, siting_ne)
 from pahiro.dispatch import authority_from_decision, build_dispatch
 from pahiro.ingest import stac
 from pahiro.ingest.rainfall import fetch_series_cached
 from pahiro.ingest.screen import screen_scene
+from pahiro.ingest import terrain as terrain_mod
+from pahiro.siting import advise as siting_advise
 from pahiro.ontology import Ontology
 from pahiro.routing.abstain import Observation, staleness_gate
 from pahiro.routing.resolve import RoutingContext, resolve
@@ -66,6 +68,9 @@ class AgentRun:
     rainfall_banner: str | None = None
     staleness: object | None = None
     trigger: object | None = None
+    siting: object | None = None
+    scenes: list[str] = field(default_factory=list)
+    sensors: list[str] = field(default_factory=list)
     routing: object | None = None
     dispatch: object | None = None
     advisory_ne: str | None = None
@@ -188,6 +193,23 @@ class SlopeChangeAgent:
             run.trigger = a
         return a
 
+    def tool_siting_advice(self, run: AgentRun):
+        """Read the terrain and decide: repair here, or move above the source zone."""
+        bbox = (run.lon - RAIN_PAD, run.lat - RAIN_PAD, run.lon + RAIN_PAD, run.lat + RAIN_PAD)
+
+        def call():
+            tw = terrain_mod.fetch(bbox)
+            if tw is None or not tw.usable:
+                raise RuntimeError("no usable DEM window for this site")
+            h, w = tw.elevation.shape
+            advice = siting_advise(tw.elevation, tw.transform, h // 2, w // 2, crs=tw.crs)
+            return advice.describe(), advice
+
+        a = self._record(run, "siting_advice", {"bbox": bbox}, call)
+        if a is not None:
+            run.siting = a
+        return a
+
     def tool_ground_evidence(self, run: AgentRun):
         bbox = (run.lon - SITE_PAD, run.lat - SITE_PAD, run.lon + SITE_PAD, run.lat + SITE_PAD)
         start = run.as_of - timedelta(days=self.evidence_days)
@@ -212,6 +234,11 @@ class SlopeChangeAgent:
                 obs.append(Observation(stac.RADAR, s.acquired, quality=1.0,
                                        scene_id=s.id, verified=False))
             decision = staleness_gate(obs, run.as_of)
+            # Remember exactly which observations support the decision: a
+            # non-abstaining dispatch must cite its evidence, and its own validator
+            # refuses to let one through without it.
+            run.scenes = [o.scene_id for o in obs if o.scene_id][:8]
+            run.sensors = sorted({o.sensor for o in obs})
             return (f"{len(scenes)} optical scenes ({usable} usable), {len(radar)} radar "
                     f"-> {decision.status}", decision)
 
@@ -261,7 +288,8 @@ class SlopeChangeAgent:
                 rainfall_state=rainfall_state_ne(getattr(run, "trigger", None)) or
                 (run.rainfall_banner or ""),
                 inspect_first=inspect, authority_institution=who,
-                authority_office=office, legal_basis=basis, needs_review=needs_review)
+                authority_office=office, legal_basis=basis, needs_review=needs_review,
+                siting=siting_ne(run.siting))
         if run.staleness is None or not getattr(run.staleness, "may_issue", False):
             return refusal_text(run.staleness) if run.staleness else (
                 "प्रमाण उपलब्ध छैन — सूचना जारी गरिएको छैन।")
@@ -273,7 +301,7 @@ class SlopeChangeAgent:
             inspect_first=inspect,
             recommendation="मर्मत गर्नुअघि ढलानको अवस्था जाँच्नुहोस्।",
             authority_institution=who, authority_office=office, legal_basis=basis,
-            needs_review=needs_review)
+            needs_review=needs_review, siting=siting_ne(run.siting))
 
     def _emit(self, run: AgentRun):
         state = run.state
@@ -297,7 +325,7 @@ class SlopeChangeAgent:
             findings=[run.rainfall_banner or ""],
             inspect_first=[run.ctx.describe() if run.ctx else ""],
             priority=priority, rule=rule,
-            scenes=[], sensors=[],
+            scenes=run.scenes, sensors=run.sensors,
             ontology_version=self.ontology.version,
         )
         d.routing_context = {
@@ -350,6 +378,7 @@ class SlopeChangeAgent:
         self._call_tool(run, "resolve_location", self.tool_resolve_location)
         self._call_tool(run, "rainfall_trigger", self.tool_rainfall_trigger)
         evidence = self._call_tool(run, "ground_evidence", self.tool_ground_evidence)
+        self._call_tool(run, "siting_advice", self.tool_siting_advice)
         run.state = decide_state(run.rainfall_state or "", bool(
             getattr(evidence, "may_issue", False)))
         self._call_tool(run, "route_report", self.tool_route_report)

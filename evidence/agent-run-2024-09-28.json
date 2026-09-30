@@ -22,7 +22,7 @@
       },
       "result": "rainfall trigger EXCEEDED (Panchpokhari Thangpal, Sindhupalchok): 24h 69/119mm, 48h 190/142mm, 72h 190/158mm, 240h 245/215mm",
       "ok": true,
-      "ms": 50792
+      "ms": 0
     },
     {
       "name": "ground_evidence",
@@ -32,7 +32,7 @@
       },
       "result": "18 optical scenes (8 usable), 8 radar -> abstain",
       "ok": true,
-      "ms": 29021
+      "ms": 24666
     },
     {
       "name": "route_report",
@@ -41,7 +41,7 @@
       },
       "result": "Rural/Urban Municipality (Ward Committee)  [local-road-maintenance]",
       "ok": true,
-      "ms": 3804
+      "ms": 3742
     },
     {
       "name": "compose_advisory",
@@ -136,6 +136,7 @@
     "assessed_days": 11,
     "missing_days": 0
   },
+  "siting": null,
   "routing": {
     "case_id": "local-road-maintenance",
     "priority": "high",
@@ -154,7 +155,7 @@
       "NDRRMA"
     ],
     "confidence": "verified",
-    "rationale": "The report indicates a rural road built by a municipality that is affected by cracks and debris falling onto the highway. This suggests a need for immediate maintenance or repair.",
+    "rationale": "The rural road built by a municipality is at risk due to the rainfall trigger exceeding the threshold, indicating a potential slope failure.",
     "candidates": [
       "local-road-maintenance",
       "local-road-emergency",
@@ -189,7 +190,7 @@
     "findings": [],
     "inspect_first": [],
     "recommendation": null,
-    "advisory_ne": "पहिरो जोखिम सूचना — वर्षाका कारण ढलान संवेदनशील बनेको छ, तर पछिल्लो अवलोकन उपलब्ध छैन। स्याटेलाइटले यो ढलान हेर्न सकेको छैन, त्यसैले परिवर्तनको पुष्टि गर्न सकिँदैन।\n\nस्थान: Ward 11, Thakre, DHADING, Province 3\nमिति: 2024-09-28\n\nवर्षाको अवस्था: थ्रेसहोल्ड नाघ्यो (पाँचपोखरी थाङपाल, सिन्धुपाल्चोक) — 24 घण्टामा 69/119 मिमि, 48 घण्टामा 190/142 मिमि, 72 घण्टामा 190/158 मिमि, 240 घण्टामा 245/215 मिमि\nकिन महत्त्वपूर्ण: यो अवस्थामा ढलान अस्थिर हुन सक्छ, तर हामीसँग पछिल्लो उपग्रह प्रमाण छैन — त्यसैले यो सूचना जोखिमको संकेत हो, पुष्टि होइन।\nपहिले जाँच्नुहोस्: Ward 11, Thakre, DHADING, Province 3 को ढलान; माथिल्लो ढलानको जल-निकास\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee) (Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+    "advisory_ne": "पहिरो जोखिम सूचना — वर्षाका कारण ढलान संवेदनशील बनेको छ, तर पछिल्लो अवलोकन उपलब्ध छैन। स्याटेलाइटले यो ढलान हेर्न सकेको छैन, त्यसैले परिवर्तनको पुष्टि गर्न सकिँदैन।\n\nस्थान: Ward 11, Thakre, DHADING, Province 3\nमिति: 2024-09-28\n\nवर्षाको अवस्था: थ्रेसहोल्ड नाघ्यो (पाँचपोखरी थाङपाल, सिन्धुपाल्चोक) — 24 घण्टामा 69/119 मिमि, 48 घण्टामा 190/142 मिमि, 72 घण्टामा 190/158 मिमि, 240 घण्टामा 245/215 मिमि\nकिन महत्त्वपूर्ण: यो अवस्थामा ढलान अस्थिर हुन सक्छ, तर हामीसँग पछिल्लो उपग्रह प्रमाण छैन — त्यसैले यो सूचना जोखिमको संकेत हो, पुष्टि होइन।\nपहिले जाँच्नुहोस्: Ward 11, Thakre, DHADING, Province 3 को ढलान; माथिल्लो ढलानको जल-निकास\nसिफारिस (स्थान): स्थान सिफारिस उपलब्ध छैन।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee) (Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
     "needs_review": false,
     "routing_context": {
       "ward": "11",
@@ -202,10 +203,10 @@
       "sensors": [],
       "ontology_version": "0.1.0",
       "model": null,
-      "generated_at": "2026-09-30T05:52:18+00:00"
+      "generated_at": "2026-09-30T05:55:55+00:00"
     }
   },
-  "advisory_ne": "पहिरो जोखिम सूचना — वर्षाका कारण ढलान संवेदनशील बनेको छ, तर पछिल्लो अवलोकन उपलब्ध छैन। स्याटेलाइटले यो ढलान हेर्न सकेको छैन, त्यसैले परिवर्तनको पुष्टि गर्न सकिँदैन।\n\nस्थान: Ward 11, Thakre, DHADING, Province 3\nमिति: 2024-09-28\n\nवर्षाको अवस्था: थ्रेसहोल्ड नाघ्यो (पाँचपोखरी थाङपाल, सिन्धुपाल्चोक) — 24 घण्टामा 69/119 मिमि, 48 घण्टामा 190/142 मिमि, 72 घण्टामा 190/158 मिमि, 240 घण्टामा 245/215 मिमि\nकिन महत्त्वपूर्ण: यो अवस्थामा ढलान अस्थिर हुन सक्छ, तर हामीसँग पछिल्लो उपग्रह प्रमाण छैन — त्यसैले यो सूचना जोखिमको संकेत हो, पुष्टि होइन।\nपहिले जाँच्नुहोस्: Ward 11, Thakre, DHADING, Province 3 को ढलान; माथिल्लो ढलानको जल-निकास\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee) (Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
+  "advisory_ne": "पहिरो जोखिम सूचना — वर्षाका कारण ढलान संवेदनशील बनेको छ, तर पछिल्लो अवलोकन उपलब्ध छैन। स्याटेलाइटले यो ढलान हेर्न सकेको छैन, त्यसैले परिवर्तनको पुष्टि गर्न सकिँदैन।\n\nस्थान: Ward 11, Thakre, DHADING, Province 3\nमिति: 2024-09-28\n\nवर्षाको अवस्था: थ्रेसहोल्ड नाघ्यो (पाँचपोखरी थाङपाल, सिन्धुपाल्चोक) — 24 घण्टामा 69/119 मिमि, 48 घण्टामा 190/142 मिमि, 72 घण्टामा 190/158 मिमि, 240 घण्टामा 245/215 मिमि\nकिन महत्त्वपूर्ण: यो अवस्थामा ढलान अस्थिर हुन सक्छ, तर हामीसँग पछिल्लो उपग्रह प्रमाण छैन — त्यसैले यो सूचना जोखिमको संकेत हो, पुष्टि होइन।\nपहिले जाँच्नुहोस्: Ward 11, Thakre, DHADING, Province 3 को ढलान; माथिल्लो ढलानको जल-निकास\nसिफारिस (स्थान): स्थान सिफारिस उपलब्ध छैन।\nजिम्मेवार निकाय: Rural/Urban Municipality (Ward Committee) (Ward Committee under the Ward Chair; municipal executive (Mayor/Chair) above it)\nकानुनी आधार: LGOA 2074 s.12(2)(c)(23) 'Remove floods, landslides in the roads'; s.12(2)(c)(21)-(22); Constitution of Nepal 2072 Sch. 8 item 11 read with LGOA 2074 s.11(1) and s.11(2)(ट)",
   "register_payload": null,
   "priority": "high"
 }

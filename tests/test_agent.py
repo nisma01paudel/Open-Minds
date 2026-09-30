@@ -63,12 +63,20 @@ def build_agent(*, trigger_state, evidence_ok, model=None):
         obs = [Observation(OPTICAL, AS_OF, quality=0.9)] if evidence_ok else \
               [Observation(OPTICAL, AS_OF.replace(month=4), quality=0.1)]
         run.staleness = staleness_gate(obs, AS_OF)
+        if evidence_ok:
+            run.scenes = ["S2A_TEST"]
+            run.sensors = ["sentinel-2"]
         run.trace.append(_ok("ground_evidence"))
         return run.staleness
+
+    def fake_siting(run):
+        run.trace.append(_ok("siting_advice"))
+        return "fake siting"
 
     agent.tool_resolve_location = fake_resolve
     agent.tool_rainfall_trigger = fake_rain
     agent.tool_ground_evidence = fake_evidence
+    agent.tool_siting_advice = fake_siting
     return agent
 
 
@@ -82,7 +90,7 @@ def test_run_records_every_step_in_order():
     run = agent.run("a slope above a road has cracked", 85.05, 27.76, AS_OF)
     names = [t.name for t in run.trace]
     assert names == ["resolve_location", "rainfall_trigger", "ground_evidence",
-                     "route_report", "compose_advisory", "emit_dispatch"]
+                     "siting_advice", "route_report", "compose_advisory", "emit_dispatch"]
     assert run.state == PRIMED_CONFIRMED
     assert run.priority == "high"
 
@@ -116,7 +124,7 @@ def test_trace_serialises_for_the_demo():
     run = agent.run("report", 85.05, 27.76, AS_OF)
     payload = json.loads(run.to_json())
     assert payload["state"] == PRIMED_CONFIRMED
-    assert len(payload["trace"]) == 6
+    assert len(payload["trace"]) == 7
     assert payload["as_of"] == AS_OF.isoformat()
 
 
@@ -137,7 +145,7 @@ def test_a_hung_tool_times_out_and_the_agent_carries_on():
     # The evidence tool still succeeded, so the agent has something to say and says
     # only that: fresh evidence, no trigger reading. It does not invent a trigger.
     assert run.state == MONITORED
-    assert len(run.trace) == 6, "the remaining steps still ran"
+    assert len(run.trace) == 7, "the remaining steps still ran"
 
 
 def test_a_tool_exception_is_recorded_not_swallowed():
@@ -155,3 +163,35 @@ def test_a_tool_exception_is_recorded_not_swallowed():
     # Reporting it is the whole point; silently downgrading to "nothing to say" would
     # be the failure mode this project exists to avoid.
     assert run.state == PRIMED_UNOBSERVED
+
+
+def test_the_siting_recommendation_reaches_the_nepali_advisory():
+    """The whole point of the siting layer is that a road office can read it."""
+    from pahiro.advisory.nepali import siting_ne
+    from pahiro.siting import RELOCATE_UPSLOPE, SitingAdvice
+
+    advice = SitingAdvice(recommendation=RELOCATE_UPSLOPE, reason="steep above",
+                          target_offset_m=105.0, target_elevation_gain_m=48.0,
+                          source_slope_deg=28.0)
+    text = siting_ne(advice)
+    assert "मर्मत नगर्नुहोस्" in text, "it must say not to repair in place"
+    assert "105" in text and "48" in text and "28" in text
+    assert "relocate" not in text.lower(), "no English may leak into the advisory"
+
+    flat = SitingAdvice(recommendation="repair-in-place", reason="no source zone")
+    assert "जाँच" in siting_ne(flat)
+    assert "उपलब्ध छैन" in siting_ne(None)
+
+
+def test_a_non_abstaining_dispatch_cites_its_evidence():
+    """Regression: the dispatch validator rejects a claim with no source scene.
+
+    The agent emitted exactly that until the evidence it gathered was carried through
+    to the dispatch. The validator had been right all along - the caller was wrong.
+    """
+    agent = build_agent(trigger_state="below", evidence_ok=True)
+    run = agent.run("report", 85.05, 27.76, AS_OF)
+    assert run.state == MONITORED
+    assert run.dispatch is not None
+    assert run.dispatch.validate() == [], "a claim must cite the scenes behind it"
+    assert run.dispatch.provenance.scenes == ["S2A_TEST"]
