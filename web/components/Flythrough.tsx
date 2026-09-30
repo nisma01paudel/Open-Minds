@@ -38,6 +38,8 @@ export default function Flythrough() {
   const [flying, setFlying] = useState(true);
   const [counts, setCounts] = useState({ ex: 0, ap: 0 });
   const [xrOk, setXrOk] = useState(false);
+  // VR is an explicit ask, so a failure to enter it must be visible rather than a console line.
+  const [vrError, setVrError] = useState("");
   const [status, setStatus] = useState("loading terrain…");
 
   const api = useRef<any>({ setDay: () => {}, setFly: () => {}, vr: () => {} });
@@ -53,7 +55,14 @@ export default function Flythrough() {
     });
     fetch("/data/terrain.json").then((r) => r.json()).then(setMeta);
     if ((navigator as any).xr?.isSessionSupported) {
-      (navigator as any).xr.isSessionSupported("immersive-vr").then((ok: boolean) => setXrOk(ok));
+      // navigator.xr is absent on most desktop browsers, and this line would have thrown
+      // uncaught rather than simply leaving the VR button hidden.
+      const xr = (navigator as any).xr;
+      if (xr?.isSessionSupported) {
+        xr.isSessionSupported("immersive-vr")
+          .then((ok: boolean) => setXrOk(ok))
+          .catch(() => setXrOk(false));
+      }
     }
   }, []);
 
@@ -217,7 +226,14 @@ export default function Flythrough() {
             optionalFeatures: ["local-floor", "bounded-floor"],
           });
           await renderer.xr.setSession(session);
-        } catch (e) { console.warn("[pahiro] vr:", e); }
+        } catch (e: any) {
+          console.warn("[pahiro] vr:", e);
+          // A headset that is plugged in but not ready, a permission refused, or no XR device at
+          // all - all three looked identical to the user, which was nothing at all.
+          setVrError(e?.name === "NotAllowedError"
+            ? "VR was refused by the browser or headset"
+            : "Could not start VR on this device");
+        }
       };
 
       setTl((t) => {
@@ -317,7 +333,8 @@ export default function Flythrough() {
           <button onClick={() => { const v = !flying; setFlying(v); api.current.setFly?.(v); }}>
             {flying ? "✋ manual camera" : "🎬 auto fly"}
           </button>
-          {xrOk && <button className="vr" onClick={() => api.current.vr?.()}>🥽 enter VR</button>}
+          {xrOk && <button className="vr" onClick={() => { setVrError(""); api.current.vr?.(); }}>🥽 enter VR</button>}
+          {vrError && <span className="vrerr" role="status">{vrError}</span>}
         </div>
         <div className="flyfoot">
           Elevation: AWS Terrain Tiles · Imagery: Esri World Imagery · Rainfall: CHIRPS.

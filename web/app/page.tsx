@@ -266,6 +266,7 @@ export default function Page() {
         blind={blind}
         trails={trails}
         places={places}
+        onLoadError={noteLoadFailure}
         onPick={(p, at) => {
           const a = advisories.current[p.id];
           setPicked(p);

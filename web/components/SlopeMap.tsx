@@ -93,6 +93,7 @@ export default function SlopeMap({
   blind,
   trails,
   places,
+  onLoadError,
 }: {
   data: AnyFC | null;
   popup?: boolean;
@@ -101,6 +102,7 @@ export default function SlopeMap({
   blind?: boolean;
   trails?: boolean;
   places?: boolean;
+  onLoadError?: (what: string) => void;
 }) {
   const holder = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any>(null);
@@ -374,20 +376,23 @@ export default function SlopeMap({
     const apply = async () => {
       try {
         const rp = await fetch("/data/places.geojson");
+        if (!rp.ok) onLoadError?.("the major places");
         if (rp.ok) {
           const pj = await rp.json();
           const src = map.getSource("places");
           if (src) src.setData(pj);
         }
         const r = await fetch("/data/trails.geojson");
-        if (!r.ok) return;
+        if (!r.ok) { onLoadError?.("the hiking trails"); return; }
         const trails = await r.json();
         if (cancelled) return;
         const src: any = map.getSource("trails");
         if (src) src.setData(trails);
       } catch {
-        // Offline with an empty cache, or the file is missing: the rest of the map still works,
-        // and a trail layer that failed to load must not take the slopes with it.
+        // Offline with an empty cache, or the file is missing: the rest of the map still works, and
+        // a trail layer that failed to load must not take the slopes with it. It must not vanish
+        // either - the caller is told, so the page can say the map is incomplete.
+        onLoadError?.("the hiking trails");
       }
     };
     if (readyRef.current) apply();
