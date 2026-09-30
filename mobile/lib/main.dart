@@ -472,6 +472,8 @@ class _EscapeScreenState extends State<EscapeScreen> {
           strings: s.lang.code, lat: place.lat, lon: place.lon,
           title: s['duty.title'], caption: s['duty.where'],
           noAddress: s['duty.noAddress'], defaultNote: s['duty.default'],
+          draftButton: s['duty.draft'], letterNote: s['duty.letterNote'],
+          nepali: s.lang == AppLang.ne,
         ),
         const SizedBox(height: 12),
         Text(s['escape.title'],
@@ -972,9 +974,13 @@ class DutyPanel extends StatefulWidget {
   final String caption;
   final String noAddress;
   final String defaultNote;
+  final String draftButton;
+  final String letterNote;
+  final bool nepali;
   const DutyPanel({super.key, required this.strings, required this.lat, required this.lon,
                    required this.title, required this.caption, required this.noAddress,
-                   required this.defaultNote});
+                   required this.defaultNote, required this.draftButton,
+                   required this.letterNote, required this.nepali});
 
   @override
   State<DutyPanel> createState() => _DutyPanelState();
@@ -984,6 +990,7 @@ class _DutyPanelState extends State<DutyPanel> {
   Duty? _duty;
   double? _distanceM;
   bool _tried = false;
+  bool _showLetter = false;
 
   @override
   void initState() {
@@ -1007,6 +1014,43 @@ class _DutyPanelState extends State<DutyPanel> {
     } catch (_) {
       if (mounted) setState(() => _tried = true);
     }
+  }
+
+  /// The complaint, composed on the phone from the row.
+  ///
+  /// It cites the section that obliges the named office, so it cannot be bounced as "not ours"
+  /// without somebody deciding that on paper. It says on its face that it was drafted
+  /// automatically and starts no proceeding - the citizen sends it and keeps the receipt.
+  String _letter(Duty d, bool nepali) {
+    final place = d.hasAddress
+        ? (nepali
+            ? 'यो स्थान ${d.unit}${d.district != null ? ', ${d.district} जिल्ला' : ''} भित्र पर्छ।'
+            : 'This location falls in ${d.unit}${d.district != null ? ', ${d.district} district' : ''}'
+              '${d.site != null ? ' (${d.site})' : ''}.')
+        : (nepali
+            ? 'यो स्थानको नगरपालिका पहिचान गर्न सकिएन।'
+            : 'No local unit could be matched for this place.');
+    if (nepali) {
+      return 'विषय: ${d.title} को जोखिमबारे जानकारी\n\n'
+          'श्रीमान्/श्रीमती प्रमुखज्यू,\n\n'
+          'मैले ${d.lat.toStringAsFixed(5)}, ${d.lon.toStringAsFixed(5)} निर्देशांकको ढलानमा '
+          'जोखिम देखेको छु।\n\n'
+          '$place\n\n'
+          'स्थानीय सरकार सञ्चालन ऐन, २०७४ को धारा १२(२)(ग) बमोजिम सडकसँग जोडिएको पहिरो '
+          'हटाउने दायित्व ${d.office} को हो।\n\n'
+          'कृपया यो स्थानको निरीक्षण गरी आवश्यक व्यवस्था मिलाउनुहुन अनुरोध गर्दछु। '
+          'यो पत्र स्वचालित रूपमा तयार भएको हो र यसले कुनै कानुनी कारबाही सुरु गर्दैन।\n\n'
+          '[तपाईंको नाम]\n[सम्पर्क नम्बर]\n[मिति]';
+    }
+    return 'Subject: Report - ${d.title}\n\n'
+        'Dear Sir/Madam,\n\n'
+        'I am reporting a slope at ${d.lat.toStringAsFixed(5)}, ${d.lon.toStringAsFixed(5)}.\n\n'
+        '$place\n\n'
+        'Under the Local Government Operation Act 2074, s.12(2)(c), the duty to remove landslides '
+        'affecting roads rests with ${d.office}.\n\n'
+        'I request an inspection and appropriate action. This letter was drafted automatically and '
+        'does not by itself start any legal proceeding.\n\n'
+        '[Your name]\n[Contact number]\n[Date]';
   }
 
   @override
@@ -1043,6 +1087,22 @@ class _DutyPanelState extends State<DutyPanel> {
           const SizedBox(height: 4),
           Text(widget.caption,
               style: const TextStyle(fontSize: 10, color: Color(0xFF64748B))),
+          const SizedBox(height: 10),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton(
+              onPressed: () => setState(() => _showLetter = !_showLetter),
+              child: Text(widget.draftButton),
+            ),
+          ),
+          if (_showLetter) ...[
+            const SizedBox(height: 4),
+            Text(widget.letterNote,
+                style: const TextStyle(fontSize: 10, color: Color(0xFF94A3B8))),
+            const SizedBox(height: 6),
+            SelectableText(_letter(d, widget.nepali),
+                style: const TextStyle(fontSize: 12, height: 1.5)),
+          ],
         ]),
       ),
     );

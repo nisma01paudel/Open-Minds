@@ -22,6 +22,7 @@ launched on an Android emulator (API 36, x86_64, `/dev/kvm`) on 2026-10-01.
 | `pahiro-walk-seasons.png` | **the Walk tab with when-to-go: twelve bars, four green, Kathmandu warned** |
 | `pahiro-walk-panorama.png` | **and look-around: the 360° valley render, on the phone, offline** |
 | `pahiro-duty.png` | **who is responsible for the ground, with a real gov.np address and the statute** |
+| `pahiro-complaint.png` | **the complaint itself, drafted on the phone, citing the section** |
 
 ## What this changes, and what it does not
 
@@ -32,6 +33,26 @@ a real handset" end here.
 **Unchanged, and still stated everywhere:** this is an **emulator**, not a physical phone. No radio
 figure has been measured on real hardware - Bluetooth range, Wi-Fi Aware range and battery endurance
 are all still somebody else's measurements or modelled from them. An emulator cannot measure a radio.
+
+## The complaint, drafted on the phone
+
+    मैले 27.81294, 85.59097 निर्देशांकको ढलानमा जोखिम देखेको छु।
+    यो स्थान Melamchi, Sindhupalchok जिल्ला भित्र पर्छ।
+    स्थानीय सरकार सञ्चालन ऐन, २०७४ को धारा १२(२)(ग) बमोजिम सडकसँग जोडिएको पहिरो हटाउने
+    दायित्व ... को हो।
+    कृपया यो स्थानको निरीक्षण गरी आवश्यक व्यवस्था मिलाउनुहुन अनुरोध गर्दछु। यो पत्र स्वचालित
+    रूपमा तयार भएको हो र यसले कुनै कानुनी कारबाही सुरु गर्दैन।
+    [तपाईंको नाम]  [सम्पर्क नम्बर]  [मिति]
+
+Composed on the phone from the row, with no Python and no network: the coordinates, the district,
+the office the routing key holds responsible, the section that obliges it, and a statement on the
+face of the letter that it was drafted automatically and starts no proceeding. The citizen sends it
+and keeps the receipt - which the app says it does not do for them.
+
+**Still English inside the Nepali letter:** the office string itself, "Ward Committee under the Ward
+Chair; municipal executive (Mayor/Chair) above it", because those descriptions live in the routing key
+and are not translated. Fixing it properly means translating the duty map, not the letter - and it is
+named here rather than patched in the widget, which is the mistake the beacon card taught.
 
 ## Who is responsible for the ground, on the phone
 

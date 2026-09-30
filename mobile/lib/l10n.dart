@@ -96,6 +96,9 @@ const Map<String, Map<String, String>> translations = {
     'board.title': 'बोर्ड',
     'walk.look': 'उपत्यका हेर्नुहोस्',
     'duty.title': 'यो जमिन कसको जिम्मामा',
+    'duty.draft': 'उजुरीको मस्यौदा देखाउनुहोस्',
+    'duty.letterNote': 'यो मस्यौदा हो। एपले पठाउँदैन, हस्ताक्षर गर्दैन र प्राप्ति पनि गर्दैन — '
+        'तपाईंले पठाउनुहोस् र रसिद राख्नुहोस्।',
     'duty.where': 'यो जमिनको जिम्मा माथि देखाइएको निकायको हो।',
     'duty.noAddress': 'यो ठाउँको नगरपालिका पहिचान गर्न सकिएन — ठेगाना बनाइएको छैन।',
     'duty.default': 'तल देखाइएको कार्यालय सडकको लागि पूर्वनिर्धारित हो, हरेक जग्गाको कानुनी '
@@ -158,6 +161,9 @@ const Map<String, Map<String, String>> translations = {
     'board.title': 'Board',
     'walk.look': 'Look around the valley',
     'duty.title': 'Who is responsible for this ground',
+    'duty.draft': 'Show a draft complaint',
+    'duty.letterNote': 'This is a draft. The app does not send it, sign it or receive it — you send '
+        'it and keep the receipt.',
     'duty.where': 'The duty for this ground rests with the body shown above.',
     'duty.noAddress': 'No local unit could be matched for this place — no address is invented.',
     'duty.default': 'The office below is the routing key\'s DEFAULT for a local road, not a '
