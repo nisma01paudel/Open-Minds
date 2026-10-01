@@ -1257,3 +1257,30 @@ def test_no_jsx_sits_inside_a_promise_callback():
     assert not offenders, (
         "JSX inside a promise callback can never render - it is constructed and discarded, with no "
         "error anywhere:\n  " + "\n  ".join(offenders))
+
+
+def test_every_layer_toggle_reaches_the_map():
+    """The other half of round 73's failure: a control that renders but changes nothing.
+
+    The Places toggle was dead code, so its state never reached anything. Had it rendered while the
+    `places` prop was missing from <SlopeMap>, the checkbox would have looked fine, done nothing, and
+    been just as unreachable - with the same absence of any error.
+
+    So: every boolean whose checkbox appears in the sidebar must be passed to the map component.
+    """
+    import re
+    from pathlib import Path
+
+    page = (Path(__file__).resolve().parents[1] / "web/app/page.tsx").read_text(encoding="utf-8")
+
+    toggled = set(re.findall(r'<input type="checkbox" checked=\{(\w+)\}', page))
+    assert toggled, "no layer checkboxes found - the sweep is not looking at the sidebar"
+
+    call = re.search(r"<SlopeMap(.*?)/>", page, re.S)
+    assert call, "no <SlopeMap ... /> found in page.tsx"
+    passed = set(re.findall(r"^\s*(\w+)=", call.group(1), re.M))
+
+    missing = toggled - passed
+    assert not missing, (
+        "these toggles render a checkbox but their state never reaches the map, so ticking them does "
+        f"nothing and says nothing: {sorted(missing)}")
