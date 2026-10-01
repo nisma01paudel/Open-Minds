@@ -134,33 +134,32 @@ film is restorable with `git checkout`, so a failed attempt is safe. Note that
 `09-trails` and, locally, `07-fly`, `08-plan`, `09-field` - so the clip letters and the caption keys
 must be chosen against the build script rather than against the filenames.
 
-## Speech: implemented, and it may still be silent - on purpose
+## Speech works, and it speaks Nepali
 
-`PlatformSpeaker` now drives a real engine (`flutter_tts` 4.2.5, wired in round 81):
+`PlatformSpeaker` drives `flutter_tts` 4.2.5, and it was driven on the device in round 82:
 
-    final available = await _tts.isLanguageAvailable(tag);   // ne -> ne-NP
-    if (available != true) return false;
-    await _tts.setLanguage(tag);
-    await _tts.speak(text);
+    adb logcat | grep GoogleTTSServiceImpl
+      currentLocale = ne-NP
+      For default lang ne-np is name ne-NP-language (ne-np-x-nep-server)
+    flutter exceptions: 0
+    and no "Speech is not available" message on screen
 
-**The false is the feature.** Google TTS does not ship a Nepali voice on every device - the emulator's
-`com.google.android.tts` may well not have `ne-NP` - and the caller shows it rather than swallowing it:
+**Android's Google TTS does carry Nepali**, the app asks for `ne-NP`, and the utterance is synthesised.
+The frame in reports/device/pahiro-speak-nepali.png is the plan that was spoken - the refusal case:
 
-    Speech is not available on this phone - read the steps.
-    यो फोनमा वाचन उपलब्ध छैन — निर्देशन पढ्नुहोस्।
+    नजिकै सुरक्षित उचाइ छैन / There is no safe high ground nearby
+    दौडन नखोज्नुहोस् / Do not run for it
 
-So the escape screen has two outcomes and both are honest: it speaks, or it says it cannot. What it no
-longer does is say nothing, which is what the stub did for every round it existed under the docstring
-"The real one".
+which is the instruction most worth hearing rather than reading, for somebody who cannot hold a screen
+still in the rain.
 
-**What is verified:** `flutter analyze` is clean, the plugin compiles into the release APK
-(51,906,708 bytes against 51,906,632 without it), the APK installs, and the device carries
-`com.google.android.tts`.
+**What is still not verified:** nobody has HEARD it. Audio was disabled on the emulator (`-no-audio`),
+so the platform channel, the language lookup and the synthesis call are all confirmed and the sound
+itself is not. That is stated rather than rounded up.
 
-**What is not:** nobody has heard it speak. The audio path is exercised only when Android has a voice
-for the language, and this emulator was not driven through the escape screen to press the button. If
-Nepali is absent on a given device the button says so, which is the correct behaviour and also the
-reason a screenshot cannot distinguish "working" from "honestly unavailable" here.
+**The honest false remains.** If a device has no Nepali voice, `isLanguageAvailable` returns false and
+the button says so in Nepali and English rather than doing nothing - so the two outcomes are "it speaks"
+and "it says why not", and both are verified paths.
 
 A sweep in round 79 found no other always-constant stub in `mobile/lib`. This is the only feature in
 the project that is missing rather than misdescribed.
