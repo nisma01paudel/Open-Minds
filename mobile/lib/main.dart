@@ -34,6 +34,7 @@ import 'seasons.dart' as seasons;
 import 'escape.dart' as escape;
 import 'terrainmap.dart';
 import 'dashboard.dart';
+import 'sos.dart';
 import 'theme.dart';
 import 'vr.dart';
 import 'l10n.dart';
@@ -711,6 +712,40 @@ class _EscapeScreenState extends State<EscapeScreen> {
         // The reference's grid, and the reason it uses one: this app now has eight surfaces and a
         // person opens it while it is raining. A list of eight is a menu; a grid of four with
         // distinct colours is a thing you can find something in without reading.
+        const SizedBox(height: 16),
+        // The reference app leads its emergency flow with a promise to notify dispatch. This one
+        // cannot keep that promise, so it makes a smaller true one instead.
+        SosPanel(
+          title: s['sos.title'],
+          hold: s['sos.hold'],
+          sendingIn: s['sos.sendingIn'],
+          cancel: s['sos.cancel'],
+          offlineTruth: s['sos.truth'],
+          onFire: () async {
+            // What actually works with the network already gone: the plan, and the message ready to
+            // send the moment a signal returns.
+            await showModalBottomSheet<void>(
+              context: context,
+              showDragHandle: true,
+              builder: (_) => Padding(
+                padding: const EdgeInsets.fromLTRB(20, 4, 20, 28),
+                child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  Text(s['sos.raised'],
+                      style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800)),
+                  const SizedBox(height: 8),
+                  Text(s['sos.raisedWhy'],
+                      style: const TextStyle(
+                          color: PahiroTheme.inkMuted, fontSize: 13, height: 1.4)),
+                  const SizedBox(height: 16),
+                  FilledButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text(s['sos.ok']),
+                  ),
+                ]),
+              ),
+            );
+          },
+        ),
         SectionLabel(s['home.services']),
         Row(children: [
           Expanded(
