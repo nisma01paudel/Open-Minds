@@ -35,6 +35,7 @@ import 'escape.dart' as escape;
 import 'terrainmap.dart';
 import 'dashboard.dart';
 import 'sos.dart';
+import 'deadline.dart';
 import 'theme.dart';
 import 'vr.dart';
 import 'l10n.dart';
@@ -588,6 +589,7 @@ class _EscapeScreenState extends State<EscapeScreen> {
 
   double rise = escape.defaultRiseM;
   escape.Escape? plan;
+  EscapeDeadline? deadline;
   String? note;
 
   @override
@@ -627,8 +629,14 @@ class _EscapeScreenState extends State<EscapeScreen> {
       return;
     }
     final e = escape.planEscape(d, place.lat, place.lon, riseM: rise);
+    // The same question with time in it: not "which way" but "until when". Assumes the water climbs
+    // at the slider's rate, which the card states, because the rate is a what-if and the terrain is
+    // not.
+    final dl = computeDeadline(d, place.lat, place.lon,
+        riseMetresPerHour: math.max(0.2, rise / 2.0));
     setState(() {
       plan = e;
+      deadline = dl;
       note = null;
     });
     // Speak the first instruction immediately: the person using this has both hands full.
@@ -848,6 +856,17 @@ class _EscapeScreenState extends State<EscapeScreen> {
         if (plan != null)
           EscapeResult(
               plan: plan!, strings: s, lang: widget.lang, speaker: widget.speaker),
+        if (deadline != null) ...[
+          const SizedBox(height: 12),
+          DeadlineCard(
+            deadline: deadline!,
+            title: s['deadline.title'],
+            unit: s['deadline.unit'],
+            noneAtAll: s['deadline.none'],
+            holdsText: s['deadline.holds'],
+            assumption: s['deadline.assumption'],
+          ),
+        ],
       ],
     );
   }
