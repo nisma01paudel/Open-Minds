@@ -123,6 +123,24 @@ for. Nothing is unreachable.
 1280-pixel panel, on API 36. Font rendering, memory pressure and touch latency on a real budget
 handset are not measured here and are not claimed.
 
+## Regression check after eighty rounds
+
+Every edit in this project is followed by a build, and this is the check that the whole thing still
+runs: the release APK built from the current tree, installed on API 36, and launched.
+
+    flutter build apk --release     ->  51.9 MB
+    adb install -r app-release.apk  ->  Success
+    monkey -p np.pahiro.pahiro_field ...  ->  language chooser, correct
+    logcat | grep -c "flutter.*exception|RenderFlex|overflowed"  ->  0
+
+The APK grew 0.2 MB this session, from the snackbars that now say speech is unavailable instead of
+failing silently. Nothing else moved a byte in the direction of breakage: the panel work, the l10n
+keys, the duty-loader injection, the places note and the speech handling all compile and run.
+
+Worth stating because the last twenty rounds touched main.dart nine times, once with brace surgery that
+had already destroyed the file in an earlier round and was reverted then. This is the frame that says it
+did not happen again.
+
 ## The duty holder, in Nepali, on the device
 
     वडा समिति (वडा अध्यक्षको नेतृत्वमा); माथि नगर/गाउँ कार्यपालिका (प्रमुख/अध्यक्ष)
