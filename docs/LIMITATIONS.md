@@ -99,6 +99,30 @@ the film's inputs are not in the repository and neither are any additions to the
 is a local build step, not a repository change, and a reader of this repository cannot tell from it
 whether the film was ever extended.
 
+### The film still SPEAKS the number the caption corrects
+
+`cap cd` says "31 of 613 ... peaked the day before, at 149". The narration for the same beat says
+"छ सय तेह्र मध्ये एकतीस" - corrected in `reports/video/voice/narration.txt`, which is tracked.
+
+**The audio has not been re-recorded, so the committed mp4 still says "three hundred five" out loud.**
+The on-screen text and the spoken word disagree inside one clip.
+
+Why it is not fixed here:
+
+- `scripts/build_voiced_video.sh` **reuses an existing `voice/<key>.wav` and does not synthesise.** If
+  the wav is missing it does not record the line either - it builds that beat as a **captioned silent
+  beat**. So rebuilding the film cannot change what is spoken; it can only silence it. Deleting `d.wav`
+  to force a re-record makes beat d silent, which is worse, and it was restored from a copy.
+- Recording happens in `scripts/narrate_omnivoice.py`, which sends the lines to a public Gradio Space
+  on ZeroGPU. Anonymous callers get a small daily quota, documented in `docs/NARRATION.md` as "the one
+  thing that blocks it" - enough for about two lines. **The seven-character correction is one line, so
+  it is within reach on a fresh day or with a token; it was out of quota when this was attempted.**
+
+So the film is committed in its original state and **the text is corrected while the audio is not.**
+Whoever re-runs the narration should re-synthesise line `d` and then rebuild, and the test
+`test_the_speech_the_caption_and_the_narration_agree_on_the_load_bearing_numbers` now enforces the
+corrected value in all three places - so the text cannot drift back.
+
 To extend it, three edits go together:
 
 1. a `cap <letter> "<caption>"` line in `scripts/build_voiced_video.sh`
