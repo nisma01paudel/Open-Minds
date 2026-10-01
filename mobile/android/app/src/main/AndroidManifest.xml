@@ -11,7 +11,11 @@
     <!-- Android 11 and below use the legacy pair instead. -->
     <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" android:maxSdkVersion="30" />
+    <!-- NOT capped. This line previously carried android:maxSdkVersion="30" from the legacy
+         Bluetooth pair above, which meant that on Android 13 - the handset this is tested on - the
+         permission was declared and therefore looked correct while never being requested at all. The
+         app asked for a position, was silently refused, and kept its default place. -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <application
         android:label="pahiro_field"
         android:name="${applicationName}"

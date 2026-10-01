@@ -15,10 +15,12 @@
 library;
 
 import 'dart:typed_data';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter_ble_peripheral/flutter_ble_peripheral.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -31,6 +33,7 @@ import 'places.dart';
 import 'seasons.dart' as seasons;
 import 'escape.dart' as escape;
 import 'terrainmap.dart';
+import 'dashboard.dart';
 import 'theme.dart';
 import 'vr.dart';
 import 'l10n.dart';
@@ -122,6 +125,61 @@ const List<Place> places = [
 /// language already survives a restart; the second thing worth keeping is where the user actually is,
 /// because re-picking it is a tap in the moment they have least attention to spare.
 const _placePrefsKey = 'pahiro.place';
+
+
+/// The place nearest a real position.
+///
+/// The escape screen opened on Melamchi because Melamchi was first in the list, so a person in
+/// Kathmandu was told about a bazaar forty kilometres away. The app has the user's coordinates
+/// available and simply was not asking for them.
+Place _nearestPlace(double lat, double lon) {
+  Place best = places.first;
+  var bestM = double.infinity;
+  for (final p in places) {
+    // Equirectangular distance. Over six candidate places a few hundred kilometres apart the error
+    // against a great-circle figure is metres, and this needs no import from the trail module.
+    final dLat = (p.lat - lat) * 111320.0;
+    final dLon = (p.lon - lon) * 111320.0 * math.cos(lat * math.pi / 180.0);
+    final d = math.sqrt(dLat * dLat + dLon * dLon);
+    if (d < bestM) {
+      bestM = d;
+      best = p;
+    }
+  }
+  return best;
+}
+
+/// Where the phone is, or null. Every failure is a null rather than an exception: a denied permission
+/// or a phone with location switched off is an ordinary state, not an error, and the screen has a
+/// sensible place to fall back to.
+Future<Place?> _locate() async {
+  try {
+    if (!await Geolocator.isLocationServiceEnabled()) return null;
+    var perm = await Geolocator.checkPermission();
+    if (perm == LocationPermission.denied) perm = await Geolocator.requestPermission();
+    if (perm == LocationPermission.denied || perm == LocationPermission.deniedForever) return null;
+    // LAST KNOWN FIRST, and the order is the whole lesson.
+    //
+    // Asking for a fresh fix indoors on a network-only fix does not return - it waits out the GPS
+    // and times out, so the screen kept its default and a person in Kathmandu was still told about
+    // Melamchi with the code "working". The last known position is a network fix already in hand and
+    // answers instantly, which is the right trade for a coarse "nearest of six places" question.
+    final last = await Geolocator.getLastKnownPosition();
+    if (last != null) return _nearestPlace(last.latitude, last.longitude);
+
+    // Only if the phone has never had a fix at all, wait briefly for one.
+    try {
+      final pos = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(accuracy: LocationAccuracy.low),
+      ).timeout(const Duration(seconds: 6));
+      return _nearestPlace(pos.latitude, pos.longitude);
+    } catch (_) {
+      return null;
+    }
+  } catch (_) {
+    return null;
+  }
+}
 
 Future<String?> _rememberedPlace() async {
   try {
@@ -284,7 +342,7 @@ class HomeShell extends StatefulWidget {
 }
 
 class _HomeShellState extends State<HomeShell> {
-  int index = 0;
+  int _index = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -300,9 +358,10 @@ class _HomeShellState extends State<HomeShell> {
                 fontSize: 15, fontWeight: FontWeight.w700, color: PahiroTheme.ink),
           ),
           body: IndexedStack(
-            index: index,
+            index: _index,
             children: [
               EscapeScreen(
+                onGo: (i) => setState(() => _index = i),
                   strings: s,
                   lang: lang ?? AppLang.en,
                   speaker: widget.speaker,
@@ -314,8 +373,8 @@ class _HomeShellState extends State<HomeShell> {
             ],
           ),
           bottomNavigationBar: NavigationBar(
-            selectedIndex: index,
-            onDestinationSelected: (i) => setState(() => index = i),
+            selectedIndex: _index,
+            onDestinationSelected: (i) => setState(() => _index = i),
             destinations: [
               NavigationDestination(
                   icon: const Icon(Icons.trending_up), label: s['tab.escape']),
@@ -501,11 +560,15 @@ class _WalkScreenState extends State<WalkScreen> {
 
 /// भाग्नुहोस् — which way to run, and how high. Computed on the phone.
 class EscapeScreen extends StatefulWidget {
+  /// Moves the shell's tab. Without it a service card is a control that does nothing, which is the
+  /// exact defect this project keeps finding in itself.
+  final void Function(int)? onGo;
   final L10n strings;
   final AppLang lang;
   final Speaker speaker;
   final DemLoader demLoader;
-  const EscapeScreen({
+  const EscapeScreen({this.onGo,
+
     super.key,
     required this.strings,
     required this.lang,
@@ -546,6 +609,14 @@ class _EscapeScreenState extends State<EscapeScreen> {
         }
       }
     });
+
+    // No stored choice: ask the phone where it is rather than guessing from list order.
+    _rememberedPlace().then((name) async {
+      if (name != null) return;               // an explicit choice already won
+      final here = await _locate();
+      if (here == null || !mounted) return;
+      if (place == places.first) setState(() => place = here);
+    });
   }
 
   void _plan() {
@@ -570,6 +641,114 @@ class _EscapeScreenState extends State<EscapeScreen> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
+        // The reference app opens with a greeting, where you are, and a visual - not a wall of
+        // text. Pahiro opened with two dense cards and buried its map below the fold, so the one
+        // thing a person needs in a hurry - what the ground around them looks like - was the thing
+        // they had to scroll for.
+        Row(children: [
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(s['home.hello'],
+                  style: const TextStyle(color: PahiroTheme.inkMuted, fontSize: 14)),
+              Text(place.nameEn,
+                  style: const TextStyle(
+                      color: PahiroTheme.ink, fontSize: 26, fontWeight: FontWeight.w800,
+                      letterSpacing: -0.5, height: 1.15)),
+            ]),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+            decoration: BoxDecoration(
+              color: PahiroTheme.primarySoft,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Row(mainAxisSize: MainAxisSize.min, children: [
+              const Icon(Icons.place, size: 15, color: PahiroTheme.primary),
+              const SizedBox(width: 5),
+              Text(place.nameNe,
+                  style: const TextStyle(
+                      color: PahiroTheme.primary, fontSize: 12.5, fontWeight: FontWeight.w700)),
+            ]),
+          ),
+        ]),
+        const SizedBox(height: 14),
+        // A map, because "which way, and how high" is a question about ground, and until now the
+        // app answered it with a sentence. The relief is drawn on the phone from the elevation grid
+        // that already ships with it - no tiles, no network, nothing new to download.
+        if (dem != null)
+          TerrainMap(
+            dem: dem!,
+            lat: place.lat,
+            lon: place.lon,
+            span: 0.35,
+            failureText: s['escape.mapFailed'],
+            marks: [
+              MapMark(place.lat, place.lon, s['escape.you'],
+                  kind: MapMarkKind.you),
+              if (plan?.targetLat != null)
+                MapMark(plan!.targetLat!, plan!.targetLon!,
+                    plan!.reachable
+                        ? '${s['escape.headFor']} +${plan!.climbM!.round()} m'
+                        : s['escape.noHighGround'],
+                    kind: MapMarkKind.destination),
+            ],
+            route: plan?.targetLat == null
+                ? null
+                : [
+                    [place.lat, place.lon],
+                    [plan!.targetLat!, plan!.targetLon!],
+                  ],
+          ),
+        if (dem != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 6, bottom: 2),
+            child: Text(
+              '${s['escape.mapNote']} · ${plan == null ? s['escape.mapBefore'] : s['escape.mapAfter']}',
+              style: const TextStyle(color: PahiroTheme.inkMuted, fontSize: 11),
+            ),
+          ),
+        const SizedBox(height: 16),
+        // The reference's grid, and the reason it uses one: this app now has eight surfaces and a
+        // person opens it while it is raining. A list of eight is a menu; a grid of four with
+        // distinct colours is a thing you can find something in without reading.
+        SectionLabel(s['home.services']),
+        Row(children: [
+          Expanded(
+            child: ServiceCard(
+              icon: Icons.hiking, tint: const Color(0xFF15803D),
+              title: s['nav.walk'], subtitle: s['home.walkSub'],
+              onTap: widget.onGo == null ? null : () => widget.onGo!(1),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: ServiceCard(
+              icon: Icons.podcasts, tint: const Color(0xFF7C3AED),
+              title: s['nav.beacon'], subtitle: s['home.beaconSub'],
+              onTap: widget.onGo == null ? null : () => widget.onGo!(2),
+            ),
+          ),
+        ]),
+        const SizedBox(height: 12),
+        Row(children: [
+          Expanded(
+            child: ServiceCard(
+              icon: Icons.dashboard_customize_outlined, tint: const Color(0xFFB45309),
+              title: s['nav.board'], subtitle: s['home.boardSub'],
+              onTap: widget.onGo == null ? null : () => widget.onGo!(3),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: ServiceCard(
+              icon: Icons.tune, tint: const Color(0xFF0369A1),
+              title: s['nav.settings'], subtitle: s['home.settingsSub'],
+              onTap: widget.onGo == null ? null : () => widget.onGo!(4),
+            ),
+          ),
+        ]),
+        const SizedBox(height: 14),
+        const SizedBox(height: 14),
         DemoPanel(
           title: s['demo.title'], blurb: s['demo.blurb'], runLabel: s['demo.run'],
           nextLabel: s['demo.next'], liveLabel: s['demo.live'], citedLabel: s['demo.cited'],
@@ -611,41 +790,6 @@ class _EscapeScreenState extends State<EscapeScreen> {
                   },
         ),
         const SizedBox(height: 14),
-        // A map, because "which way, and how high" is a question about ground, and until now the
-        // app answered it with a sentence. The relief is drawn on the phone from the elevation grid
-        // that already ships with it - no tiles, no network, nothing new to download.
-        if (dem != null)
-          TerrainMap(
-            dem: dem!,
-            lat: place.lat,
-            lon: place.lon,
-            span: 0.35,
-            failureText: s['escape.mapFailed'],
-            marks: [
-              MapMark(place.lat, place.lon, s['escape.you'],
-                  kind: MapMarkKind.you),
-              if (plan?.targetLat != null)
-                MapMark(plan!.targetLat!, plan!.targetLon!,
-                    plan!.reachable
-                        ? '${s['escape.headFor']} +${plan!.climbM!.round()} m'
-                        : s['escape.noHighGround'],
-                    kind: MapMarkKind.destination),
-            ],
-            route: plan?.targetLat == null
-                ? null
-                : [
-                    [place.lat, place.lon],
-                    [plan!.targetLat!, plan!.targetLon!],
-                  ],
-          ),
-        if (dem != null)
-          Padding(
-            padding: const EdgeInsets.only(top: 6, bottom: 2),
-            child: Text(
-              '${s['escape.mapNote']} · ${plan == null ? s['escape.mapBefore'] : s['escape.mapAfter']}',
-              style: const TextStyle(color: PahiroTheme.inkMuted, fontSize: 11),
-            ),
-          ),
         const SizedBox(height: 14),
         Text('${s['escape.rise']} · ${rise.toStringAsFixed(0)} m',
             style: const TextStyle(fontWeight: FontWeight.w600)),
