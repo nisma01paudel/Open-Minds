@@ -68,7 +68,20 @@ worse than an unencrypted working one.
 3. state plainly, where the links are listed, that the municipality's own site is the weakest link in
    this chain and is not something this project controls
 
-**Not done here because it changes what the user sees, and on this screen that is an editorial call.**
+**Attempted and reverted, on purpose.** A `siteLabel()` helper was written to append "not encrypted"
+after any `http://` address. It failed to compile at both call sites: the duty panel shadows `L10n` with
+a local `String s`, and `PlacesPanel` does not take an `L10n` at all — it takes a `bool nepali`. Threading
+a translated string through both is more surgery than the change deserves, and a half-applied marker is
+worse than none, so it was reverted rather than forced.
+
+**The next attempt should pass the finished label down as a plain `String` from a screen that already has
+`L10n`**, rather than reaching for it inside the panel.
+
+**The URL text itself is not hidden**: `http://` is visible in every one of them, so a careful reader can
+already tell. What is missing is that most readers will not.
+
+**Not otherwise done here because it changes what the user sees, and on this screen that is an
+editorial call.**
 
 ## What was not assessed, and why
 

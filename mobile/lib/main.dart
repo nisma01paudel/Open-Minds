@@ -1502,13 +1502,15 @@ class _DemoPanelState extends State<DemoPanel> {
 
 /// Major places near you, on the phone, offline.
 ///
-/// A list rather than the web app's map: there is no map widget in this app, and adding a mapping
-/// library to draw 277 dots would be a dependency the offline bundle carries for one screen. The
-/// data is the same file either way.
+/// A list rather than a map of 277 dots. The escape screen has a hillshaded terrain map drawn from
+/// the bundled elevation grid, but that renders relief, not a national scatter of points: drawing
+/// every local unit would want a projection, a viewport and panning, for a screen whose whole job is
+/// telling you which office is responsible. The data is the same file either way.
 ///
 /// It says how many of the country's units it has: 277 of 753, because a unit only has a position
 /// here if documented slopes inside it name it. And it repeats the file's own accuracy note - a
 /// position is the mean of those slopes, not a town centre.
+
 class PlacesPanel extends StatefulWidget {
   final String title;
   final String caption;
