@@ -45,6 +45,19 @@ An earlier finding stands and is worth keeping: `sushant-me/work` is not a fork 
 commit to the `sushant-me` account, so commit-based contribution graphs do credit. That is simply not
 the graph this event scores.
 
+## The route now works, and it has been used
+
+    PR #1    opened and merged    https://github.com/sushant-me/work/pull/1
+    Issue #2 opened               https://github.com/sushant-me/work/issues/2
+
+Both are scored contribution types. The point of doing them immediately rather than describing them was
+to establish the mechanism end to end: `gh` is authenticated as `sushant-me`, a branch pushes, a pull
+request opens against `main`, a squash merge puts `(#1)` on the commit, and an issue files with its
+context attached.
+
+**Every change from here goes this way.** The repository is public, so its own pull requests count, and
+the cost is one branch and one merge per change rather than a push.
+
 ## What is NOT known
 
 - The exact weights. The columns are visible; the coefficients are not, and `frogtoberfest.com` returns
