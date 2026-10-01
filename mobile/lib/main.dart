@@ -31,6 +31,7 @@ import 'places.dart';
 import 'seasons.dart' as seasons;
 import 'escape.dart' as escape;
 import 'terrainmap.dart';
+import 'theme.dart';
 import 'vr.dart';
 import 'l10n.dart';
 import 'offline_ai.dart' as ai;
@@ -170,15 +171,7 @@ class PahiroApp extends StatelessWidget {
       builder: (context, lang, _) => MaterialApp(
         title: 'Pahiro',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          useMaterial3: true,
-          brightness: Brightness.dark,
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xFF38BDF8),
-            brightness: Brightness.dark,
-          ),
-          scaffoldBackgroundColor: const Color(0xFF070B14),
-        ),
+        theme: PahiroTheme.light(),
         home: lang == null
             ? LanguageGate(controller: controller)
             : HomeShell(
@@ -215,7 +208,7 @@ class LanguageGate extends StatelessWidget {
                   const SizedBox(height: 8),
                   Text(L10n.both('app.tagline'),
                       textAlign: TextAlign.center,
-                      style: const TextStyle(color: Color(0xFF94A3B8), height: 1.6)),
+                      style: const TextStyle(color: PahiroTheme.inkMuted, height: 1.6)),
                   const SizedBox(height: 32),
                   Text(L10n.both('lang.choose'),
                       textAlign: TextAlign.center,
@@ -239,7 +232,7 @@ class LanguageGate extends StatelessWidget {
                   Text(L10n.both('lang.chooseHint'),
                       textAlign: TextAlign.center,
                       style: const TextStyle(
-                          color: Color(0xFF64748B), fontSize: 12, height: 1.5)),
+                          color: PahiroTheme.inkMuted, fontSize: 12, height: 1.5)),
                 ],
               ),
             ),
@@ -303,7 +296,8 @@ class _HomeShellState extends State<HomeShell> {
           appBar: AppBar(
             title: Text('${s['app.title']} · ${s['app.tagline']}', maxLines: 1,
                 overflow: TextOverflow.ellipsis),
-            titleTextStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+            titleTextStyle: const TextStyle(
+                fontSize: 15, fontWeight: FontWeight.w700, color: PahiroTheme.ink),
           ),
           body: IndexedStack(
             index: index,
@@ -595,10 +589,10 @@ class _EscapeScreenState extends State<EscapeScreen> {
             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
         const SizedBox(height: 6),
         Text(s['escape.blurb'],
-            style: const TextStyle(color: Color(0xFF94A3B8), height: 1.5)),
+            style: const TextStyle(color: PahiroTheme.inkMuted, height: 1.5)),
         const SizedBox(height: 8),
         Text(s['escape.offline'],
-            style: const TextStyle(color: Color(0xFF38BDF8), fontSize: 12)),
+            style: const TextStyle(color: PahiroTheme.primary, fontSize: 12)),
         const SizedBox(height: 18),
         Text(s['escape.place'], style: const TextStyle(fontWeight: FontWeight.w600)),
         DropdownButtonFormField<Place>(
@@ -649,7 +643,7 @@ class _EscapeScreenState extends State<EscapeScreen> {
             padding: const EdgeInsets.only(top: 6, bottom: 2),
             child: Text(
               '${s['escape.mapNote']} · ${plan == null ? s['escape.mapBefore'] : s['escape.mapAfter']}',
-              style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 11),
+              style: const TextStyle(color: PahiroTheme.inkMuted, fontSize: 11),
             ),
           ),
         const SizedBox(height: 14),
@@ -671,7 +665,7 @@ class _EscapeScreenState extends State<EscapeScreen> {
         ),
         const SizedBox(height: 18),
         if (loading) const Center(child: CircularProgressIndicator()),
-        if (note != null) Text(note!, style: const TextStyle(color: Color(0xFFF59E0B))),
+        if (note != null) Text(note!, style: const TextStyle(color: PahiroTheme.warn)),
         if (plan != null)
           EscapeResult(
               plan: plan!, strings: s, lang: widget.lang, speaker: widget.speaker),
@@ -713,7 +707,7 @@ class EscapeResult extends StatelessWidget {
               style: TextStyle(
                 fontSize: 23,
                 fontWeight: FontWeight.w700,
-                color: e.reachable ? const Color(0xFFE0F2FE) : const Color(0xFFFFB4A2),
+                color: e.reachable ? PahiroTheme.ink : PahiroTheme.danger,
               ),
             ),
             const SizedBox(height: 8),
@@ -722,7 +716,7 @@ class EscapeResult extends StatelessWidget {
                 '${e.fromElevationM.toStringAsFixed(0)} m → '
                 '${e.targetElevationM!.toStringAsFixed(0)} m · '
                 '~${e.walkMinutes!.toStringAsFixed(0)} min',
-                style: const TextStyle(color: Color(0xFF94A3B8)),
+                style: const TextStyle(color: PahiroTheme.inkMuted),
               ),
             const SizedBox(height: 12),
             Text(escape.adviceNe(e), style: const TextStyle(fontSize: 16, height: 1.6)),
@@ -793,13 +787,13 @@ class EscapeResult extends StatelessWidget {
                   children: [
                     Text(st.ne, style: const TextStyle(fontWeight: FontWeight.w600)),
                     Text(st.en,
-                        style: const TextStyle(color: Color(0xFF64748B), fontSize: 12)),
+                        style: const TextStyle(color: PahiroTheme.inkMuted, fontSize: 12)),
                   ],
                 ),
               ),
             const Divider(height: 26),
             Text(escape.terrainCaveat,
-                style: const TextStyle(color: Color(0xFF64748B), fontSize: 11, height: 1.5)),
+                style: const TextStyle(color: PahiroTheme.inkMuted, fontSize: 11, height: 1.5)),
           ],
         ),
       ),
@@ -904,7 +898,7 @@ class _BeaconScreenState extends State<BeaconScreen> {
             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
         const SizedBox(height: 6),
         Text(s['beacon.blurb'],
-            style: const TextStyle(color: Color(0xFF94A3B8), height: 1.5)),
+            style: const TextStyle(color: PahiroTheme.inkMuted, height: 1.5)),
         const SizedBox(height: 16),
         FilledButton(onPressed: _build, child: Text(s['beacon.encode'])),
         const SizedBox(height: 10),
@@ -917,7 +911,7 @@ class _BeaconScreenState extends State<BeaconScreen> {
             icon: Icon(advertising ? Icons.stop_circle_outlined : Icons.podcasts),
             label: Text(advertising ? s['beacon.stop'] : s['beacon.advertise']),
             style: FilledButton.styleFrom(
-              backgroundColor: advertising ? const Color(0xFFB91C1C) : null,
+              backgroundColor: advertising ? PahiroTheme.danger : null,
             ),
           ),
         if (frame != null) ...[
@@ -925,7 +919,7 @@ class _BeaconScreenState extends State<BeaconScreen> {
           Text(
             advertising ? s['beacon.onAir'] : s['beacon.offAir'],
             style: TextStyle(
-              color: advertising ? const Color(0xFF4ADE80) : const Color(0xFFFBBF24),
+              color: advertising ? PahiroTheme.safe : PahiroTheme.warn,
               fontSize: 12,
               height: 1.4,
             ),
@@ -933,7 +927,7 @@ class _BeaconScreenState extends State<BeaconScreen> {
         ],
         if (advNote != null) ...[
           const SizedBox(height: 6),
-          Text(advNote!, style: const TextStyle(color: Color(0xFFF87171), fontSize: 12)),
+          Text(advNote!, style: const TextStyle(color: PahiroTheme.danger, fontSize: 12)),
         ],
         const SizedBox(height: 16),
         if (frame != null)
@@ -990,7 +984,7 @@ class _BeaconScreenState extends State<BeaconScreen> {
                       s.lang == AppLang.ne
                           ? 'बाइट हावामा पठाउन सक्ने एप हो यो। ब्राउजरले सक्दैन।'
                           : 'A Flutter app can put bytes on the air. A browser cannot.',
-                      style: const TextStyle(color: Color(0xFF38BDF8), fontSize: 12),
+                      style: const TextStyle(color: PahiroTheme.primary, fontSize: 12),
                       textAlign: TextAlign.center),
                 ],
               ),
@@ -1017,11 +1011,11 @@ class BoardScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(strings['board.empty'],
-                style: const TextStyle(color: Color(0xFF64748B), fontSize: 16),
+                style: const TextStyle(color: PahiroTheme.inkMuted, fontSize: 16),
                 textAlign: TextAlign.center),
             const SizedBox(height: 12),
             Text(strings['board.empty_why'],
-                style: const TextStyle(color: Color(0xFF475569), fontSize: 13),
+                style: const TextStyle(color: PahiroTheme.inkMuted, fontSize: 13),
                 textAlign: TextAlign.center),
           ],
         ),
@@ -1084,13 +1078,13 @@ class SettingsScreen extends StatelessWidget {
                           '${f.tier.weightsMb.toStringAsFixed(0)} MB डिस्कमा'
                       : 'needs ~${f.tier.ramMb.toStringAsFixed(0)} MB resident, '
                           '${f.tier.weightsMb.toStringAsFixed(0)} MB on disk',
-                  style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+                  style: const TextStyle(color: PahiroTheme.inkMuted, fontSize: 12),
                 ),
                 if (f.tier.weightsMb == 0)
                   Padding(
                     padding: const EdgeInsets.only(top: 8),
                     child: Text(strings['settings.noModel'],
-                        style: const TextStyle(color: Color(0xFF38BDF8), fontSize: 12)),
+                        style: const TextStyle(color: PahiroTheme.primary, fontSize: 12)),
                   ),
               ],
             ),
@@ -1119,7 +1113,7 @@ Widget seasonStrip(L10n s, seasons.SeasonGuide guide, double lat, double lon) {
   return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
     Text(s['walk.seasons'], style: const TextStyle(fontWeight: FontWeight.w700)),
     const SizedBox(height: 2),
-    Text(region.name, style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8))),
+    Text(region.name, style: const TextStyle(fontSize: 12, color: PahiroTheme.inkMuted)),
     const SizedBox(height: 8),
     SizedBox(
       height: barMax + 22,
@@ -1134,19 +1128,19 @@ Widget seasonStrip(L10n s, seasons.SeasonGuide guide, double lat, double lon) {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(m.rainMmPerDay.toStringAsFixed(0),
-                      style: const TextStyle(fontSize: 8, color: Color(0xFF64748B))),
+                      style: const TextStyle(fontSize: 8, color: PahiroTheme.inkMuted)),
                   Container(
                     height: h.clamp(2.0, barMax),
                     decoration: BoxDecoration(
                       color: m.validated
-                          ? const Color(0xFF22C55E)
-                          : const Color(0xFF475569),
+                          ? PahiroTheme.safe
+                          : PahiroTheme.inkMuted,
                       borderRadius: const BorderRadius.vertical(top: Radius.circular(3)),
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(m.name.substring(0, 1),
-                      style: const TextStyle(fontSize: 9, color: Color(0xFF94A3B8))),
+                      style: const TextStyle(fontSize: 9, color: PahiroTheme.inkMuted)),
                 ],
               ),
             ),
@@ -1155,14 +1149,14 @@ Widget seasonStrip(L10n s, seasons.SeasonGuide guide, double lat, double lon) {
       ),
     ),
     const SizedBox(height: 6),
-    Text(s['walk.validated'], style: const TextStyle(fontSize: 11, color: Color(0xFF64748B))),
+    Text(s['walk.validated'], style: const TextStyle(fontSize: 11, color: PahiroTheme.inkMuted)),
     if (!region.reliable) ...[
       const SizedBox(height: 4),
       Text(s['walk.unreliable'],
-          style: const TextStyle(fontSize: 11, color: Color(0xFFF0A0A0))),
+          style: const TextStyle(fontSize: 11, color: PahiroTheme.danger)),
     ],
     const SizedBox(height: 4),
-    Text(s['walk.seasonsNote'], style: const TextStyle(fontSize: 11, color: Color(0xFF64748B))),
+    Text(s['walk.seasonsNote'], style: const TextStyle(fontSize: 11, color: PahiroTheme.inkMuted)),
   ]);
 }
 
@@ -1223,9 +1217,9 @@ class _PanoramaViewState extends State<PanoramaView> {
                 errorBuilder: (_, _, _) => Container(
                   height: h,
                   alignment: Alignment.center,
-                  color: const Color(0xFF1E293B),
+                  color: PahiroTheme.hairline,
                   child: Text(widget.fallback,
-                      style: const TextStyle(fontSize: 11, color: Color(0xFF64748B))),
+                      style: const TextStyle(fontSize: 11, color: PahiroTheme.inkMuted)),
                 ),
               ),
             ),
@@ -1234,10 +1228,10 @@ class _PanoramaViewState extends State<PanoramaView> {
       ),
       const SizedBox(height: 4),
       Text(widget.caption,
-          style: const TextStyle(fontSize: 11, color: Color(0xFF64748B))),
+          style: const TextStyle(fontSize: 11, color: PahiroTheme.inkMuted)),
       const SizedBox(height: 4),
       Text('← 360° →',
-          style: const TextStyle(fontSize: 10, color: Color(0xFF475569))),
+          style: const TextStyle(fontSize: 10, color: PahiroTheme.inkMuted)),
       const SizedBox(height: 8),
       // The same image, but somewhere you look rather than something you drag.
       OutlinedButton.icon(
@@ -1400,30 +1394,30 @@ class _DutyPanelState extends State<DutyPanel> {
           Text(d.title, style: const TextStyle(fontSize: 13)),
           const SizedBox(height: 2),
           Text('${km.toStringAsFixed(1)} km', style: const TextStyle(
-              fontSize: 11, color: Color(0xFF94A3B8))),
+              fontSize: 11, color: PahiroTheme.inkMuted)),
           const SizedBox(height: 8),
           if (d.hasAddress) ...[
             Text('${d.unit} — ${d.district ?? ''}',
                 style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
             if (d.site != null)
               Text(siteLabel(d.site!, widget.unencrypted),
-                  style: const TextStyle(fontSize: 11, color: Color(0xFF38BDF8))),
+                  style: const TextStyle(fontSize: 11, color: PahiroTheme.primary)),
           ] else
             Text(widget.noAddress,
-                style: const TextStyle(fontSize: 11, color: Color(0xFFF0A0A0))),
+                style: const TextStyle(fontSize: 11, color: PahiroTheme.danger)),
           const SizedBox(height: 8),
           // Same translation table as the letter: fixing the caption and leaving the card
           // English would be two vocabularies on one screen.
           Text(d.officeFor(widget.nepali),
-              style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8))),
+              style: const TextStyle(fontSize: 11, color: PahiroTheme.inkMuted)),
           const SizedBox(height: 4),
-          Text(d.legal, style: const TextStyle(fontSize: 10, color: Color(0xFF64748B))),
+          Text(d.legal, style: const TextStyle(fontSize: 10, color: PahiroTheme.inkMuted)),
           const SizedBox(height: 8),
           Text(widget.defaultNote,
-              style: const TextStyle(fontSize: 10, color: Color(0xFF64748B))),
+              style: const TextStyle(fontSize: 10, color: PahiroTheme.inkMuted)),
           const SizedBox(height: 4),
           Text(widget.caption,
-              style: const TextStyle(fontSize: 10, color: Color(0xFF64748B))),
+              style: const TextStyle(fontSize: 10, color: PahiroTheme.inkMuted)),
           const SizedBox(height: 10),
           Align(
             alignment: Alignment.centerLeft,
@@ -1435,7 +1429,7 @@ class _DutyPanelState extends State<DutyPanel> {
           if (_showLetter) ...[
             const SizedBox(height: 4),
             Text(widget.letterNote,
-                style: const TextStyle(fontSize: 10, color: Color(0xFF94A3B8))),
+                style: const TextStyle(fontSize: 10, color: PahiroTheme.inkMuted)),
             const SizedBox(height: 6),
             SelectableText(_letter(d, widget.nepali),
                 style: const TextStyle(fontSize: 12, height: 1.5)),
@@ -1501,7 +1495,7 @@ class _DemoPanelState extends State<DemoPanel> {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(widget.title, style: const TextStyle(fontWeight: FontWeight.w700)),
           const SizedBox(height: 4),
-          Text(widget.blurb, style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8))),
+          Text(widget.blurb, style: const TextStyle(fontSize: 11, color: PahiroTheme.inkMuted)),
           const SizedBox(height: 10),
           if (_shown == 0)
             FilledButton(onPressed: () => setState(() => _shown = 1), child: Text(widget.runLabel))
@@ -1524,8 +1518,8 @@ class _DemoPanelState extends State<DemoPanel> {
                         style: TextStyle(
                             fontSize: 10,
                             color: step['live'] == true
-                                ? const Color(0xFF22C55E)
-                                : const Color(0xFF94A3B8))),
+                                ? PahiroTheme.safe
+                                : PahiroTheme.inkMuted)),
                   ]),
                 ),
               ]),
@@ -1616,7 +1610,7 @@ class _PlacesPanelState extends State<PlacesPanel> {
                     style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
               ),
               Text('${(metres / 1000).toStringAsFixed(0)} km',
-                  style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8))),
+                  style: const TextStyle(fontSize: 11, color: PahiroTheme.inkMuted)),
             ]),
             Text([
               if (place.district != null) place.district!,
@@ -1624,13 +1618,13 @@ class _PlacesPanelState extends State<PlacesPanel> {
               '${widget.slopesLabel} ${place.slopes}',
               '${widget.trailsLabel} ${place.trails}',
             ].join(' · '),
-                style: const TextStyle(fontSize: 11, color: Color(0xFF64748B))),
+                style: const TextStyle(fontSize: 11, color: PahiroTheme.inkMuted)),
             if (place.hasWebsite)
               Text(siteLabel(place.site!, widget.siteNote),
-                  style: const TextStyle(fontSize: 10, color: Color(0xFF38BDF8))),
+                  style: const TextStyle(fontSize: 10, color: PahiroTheme.primary)),
           ]),
         ),
-      Text(widget.caption, style: const TextStyle(fontSize: 10, color: Color(0xFF64748B))),
+      Text(widget.caption, style: const TextStyle(fontSize: 10, color: PahiroTheme.inkMuted)),
     ]);
   }
 }
@@ -1644,5 +1638,5 @@ class _PlacesPanelState extends State<PlacesPanel> {
 Widget loadFailed(String label) => Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Text(label,
-          style: const TextStyle(fontSize: 11, color: Color(0xFFF0A0A0))),
+          style: const TextStyle(fontSize: 11, color: PahiroTheme.danger)),
     );

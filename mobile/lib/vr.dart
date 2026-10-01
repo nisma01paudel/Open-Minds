@@ -69,7 +69,7 @@ class _VrPanoramaState extends State<VrPanorama> {
 
   void _startGyro() {
     try {
-      _sub = gyroscopeEvents.listen(
+      _sub = gyroscopeEventStream().listen(
         (e) {
           if (!mounted) return;
           setState(() {
@@ -167,7 +167,6 @@ class _VrPanoramaState extends State<VrPanorama> {
       final h = box.maxHeight;
       final w = box.maxWidth;
       final panoW = h * 2; // 2:1 equirectangular
-      final visible = w / panoW; // fraction of the full turn on screen
 
       // Inter-eye separation. Small, and only horizontal: with one image there is no real parallax,
       // and a large offset would look like a misaligned picture rather than depth.
