@@ -461,7 +461,7 @@ kbd { background: rgba(148,163,184,.16); border: 1px solid rgba(148,163,184,.25)
 }
 
 /* --- provenance: where the numbers come from --- */
-.provbtn { position: absolute; z-index: 9; bottom: 16px; left: 20px; width: 336px;
+.provbtn { position: absolute; z-index: 9; bottom: 54px; left: 20px; width: 336px;
   text-align: left; font: inherit; font-size: 11.5px;
   color: #7dd3fc; background: rgba(56,189,248,.08); border: 1px solid rgba(56,189,248,.3);
   border-radius: 8px; padding: 7px 10px; cursor: pointer; }
