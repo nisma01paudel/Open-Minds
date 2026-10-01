@@ -1188,3 +1188,30 @@ def test_the_film_does_not_SPEAK_a_number_the_caption_contradicts():
     # and the caption must keep agreeing with it
     cap = [l for l in build.splitlines() if l.startswith("cap cd ")][0]
     assert "31 of 613" in cap and "149" in cap, "the caption and the narration have diverged again"
+
+
+def test_the_submission_quotes_the_video_length_it_actually_has():
+    """SUBMISSION.md pastes the eligibility output, and that output contains the film's duration.
+
+    The film is rebuilt whenever a defect like the spoken 305 is fixed, so the duration moves - and
+    the pasted line cannot. It said 157 s while the film was 159 s, which is the same drift as every
+    other remembered number here, in the one document that is the submission.
+    """
+    import re
+    import subprocess
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    film = root / "reports/video/pahiro-narrated-web.mp4"
+    r = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration",
+                        "-of", "csv=p=0", str(film)], capture_output=True, text=True)
+    if r.returncode != 0 or not r.stdout.strip():
+        return                                    # no ffprobe here; nothing to compare
+    actual = round(float(r.stdout.strip()))
+
+    text = read("SUBMISSION.md")
+    m = re.search(r"the video is 2-3 minutes\s+(\d+) s", text)
+    assert m, "the submission no longer quotes the video length"
+    assert int(m.group(1)) == actual, (
+        f"the submission says {m.group(1)} s and the film is {actual} s - the pasted eligibility "
+        f"output drifted, which is what it is there to prevent")

@@ -119,7 +119,7 @@ python scripts/check_eligibility.py
     OK    no proprietary inference endpoint in src/         none
     OK    README.md / SUBMISSION.md / LICENSE
     OK    reports/video/pahiro-narrated-web.mp4
-    OK    the video is 2-3 minutes                          157 s
+    OK    the video is 2-3 minutes                          159 s
     OK    the repository answers anonymously                sushant-me/work
     MAN   at least one member in the Kathmandu valley
     MAN   no vendor API keys anywhere in the shipped path
