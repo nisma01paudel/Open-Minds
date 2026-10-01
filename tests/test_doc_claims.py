@@ -1284,3 +1284,37 @@ def test_every_layer_toggle_reaches_the_map():
     assert not missing, (
         "these toggles render a checkbox but their state never reaches the map, so ticking them does "
         f"nothing and says nothing: {sorted(missing)}")
+
+
+def test_no_phone_control_has_an_empty_handler():
+    """The phone's version of the dead Places toggle.
+
+    On the web the defect was JSX that never rendered. The equivalent here is a button that renders
+    and does nothing - an empty `onPressed: () {}` or one wired to a no-op. Nothing would throw, the
+    widget tests would pass, and the control would sit there looking live.
+
+    Swept before writing this: the phone has none. Every onPressed calls a real function - a language
+    choice, the planner, a panel toggle, the demo's step counter, or speech.
+    """
+    import re
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1] / "mobile/lib"
+    files = list(root.rglob("*.dart"))
+    assert files, "no Dart sources found"
+
+    offenders = []
+    for f in files:
+        text = f.read_text(encoding="utf-8")
+        # an empty body, or a body of only whitespace/comments
+        for m in re.finditer(r"on(Pressed|Tap|Changed):\s*\([^)]*\)\s*\{\s*\}", text):
+            offenders.append(f"{f.name}: empty {m.group(1)} handler")
+        # `() {}` written with a space, which the pattern above misses
+        for m in re.finditer(r"on(Pressed|Tap):\s*\(\)\s*\{[^}]*\}\s*,", text):
+            body = m.group(0)
+            if body.count(";") == 0:
+                offenders.append(f"{f.name}: {body.strip()[:40]}")
+
+    assert not offenders, (
+        "a control that renders and does nothing is unreachable in the same way a missing one is:\n  "
+        + "\n  ".join(offenders))
