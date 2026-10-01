@@ -18,6 +18,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 import 'beacon.dart' as beacon;
@@ -662,6 +663,34 @@ class EscapeResult extends StatelessWidget {
                     },
                     child: Text(strings['escape.directionOnly']),
                   ),
+                // The plan is the one thing here worth handing to somebody else - a neighbour, a
+                // family member, whoever is deciding whether to move. It is shared as TEXT rather
+                // than a link because this project has no deployed web address: a link would point
+                // nowhere, and a message that arrives and opens to nothing is worse than no message.
+                OutlinedButton(
+                  onPressed: () async {
+                    final body = StringBuffer()
+                      ..writeln(strings['escape.shareHead'])
+                      ..writeln()
+                      ..writeln(strings['escape.shareWhere']);
+                    for (final st in planSteps) {
+                      body.writeln('- ${st.ne}');
+                    }
+                    body
+                      ..writeln()
+                      ..writeln(strings['escape.shareNote']);
+                    try {
+                      await SharePlus.instance.share(ShareParams(text: body.toString()));
+                    } catch (_) {
+                      // Same rule as speech: a control that cannot act says so rather than nothing.
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(strings['speak.unavailable'])));
+                      }
+                    }
+                  },
+                  child: Text(strings['escape.share']),
+                ),
               ],
             ),
             const SizedBox(height: 12),

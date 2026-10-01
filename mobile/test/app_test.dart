@@ -392,7 +392,7 @@ void persistenceTests() {
     final second = LanguageController();
     second.value = remembered;
     expect(second.chosen, isTrue, reason: 'a restored choice must skip the chooser');
-    expect(second.strings['app.title'] ?? second.strings['walk.title'], isNotNull);
+    expect(second.strings['walk.title'], isNotEmpty);
   });
 
   testWidgets('a broken preference store does not stop the app starting', (tester) async {

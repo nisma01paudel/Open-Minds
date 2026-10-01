@@ -123,6 +123,35 @@ for. Nothing is unreachable.
 1280-pixel panel, on API 36. Font rendering, memory pressure and touch latency on a real budget
 handset are not measured here and are not claimed.
 
+## Handing the plan to somebody else
+
+The escape plan is the one thing here worth forwarding - to a neighbour, a family member, whoever is
+deciding whether to move. It now has a **पठाउनुहोस् / Send this** button beside the speaker.
+
+Shared as **text, not a link**, and that is a deliberate finding rather than a shortcut: this project has
+no deployed web address.
+
+    grep for any http(s) host outside github/OSM/zenodo/...   ->  none
+
+A link would point nowhere, and a message that opens to nothing is worse than no message. What is sent
+is the plan itself:
+
+    पहिरो — भाग्ने योजना (यो फोनमै गणना गरिएको)
+    यो क्षेत्रीय सुझाव हो, स्थानीय निर्देशन पालना गर्नुहोस्।
+    - नजिकै सुरक्षित उचाइ छैन
+    - दौडन नखोज्नुहोस्
+    - अग्लो बहुतले भवनमा जानुहोस्
+    - सक्दो माथिल्लो तल्लामा जानुहोस्
+    यो यही फोनमा, इन्टरनेट बिना गणना गरिएको हो।
+
+**Verified on the device:** pressing it opens the system share sheet -
+
+    WindowManager: OPEN ... com.android.intentresolver/.ChooserActivity
+    ChooserActivity: onAppTargetsLoaded
+
+and a failure to share falls back to the same honest message the speaker uses, rather than doing
+nothing.
+
 ## The app remembers which language you chose
 
 Until this round it asked "Choose your language" on every single launch - the first thing anybody sees,
