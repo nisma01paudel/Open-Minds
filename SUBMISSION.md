@@ -124,10 +124,12 @@ python scripts/check_eligibility.py
     OK    reports/video/pahiro-narrated-web.mp4
     OK    the video is 2-3 minutes                          159 s
     OK    the repository answers anonymously                sushant-me/work
+    OK    the live web app answers                          https://sushant-me.github.io/work/
+    OK    the deployed data is served                       data/timeline.json
     MAN   at least one member in the Kathmandu valley
     MAN   no vendor API keys anywhere in the shipped path
 
-**10/10 checkable, 0 failed.** The two lines marked `MAN` are the ones a script cannot decide, and
+**12/12 checkable, 0 failed.** The two lines marked `MAN` are the ones a script cannot decide, and
 they are printed rather than skipped: one is a fact about people, the other is a manual grep. An
 eligibility claim that requires the team to be in the room is not a claim, it is a promise.
 

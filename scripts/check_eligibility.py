@@ -67,6 +67,19 @@ def main() -> int:
     else:
         add(MANUAL, "public repository", "no 'work' remote in this checkout")
 
+    # --- the live demo is reachable ------------------------------------------------------------
+    # A submission whose demo URL is dead has lost the demo, and nothing else in this repository
+    # would notice: the build is green, the tests pass, and the pages are all still in git.
+    LIVE = "https://sushant-me.github.io/work/"
+    code, _ = run(["curl", "-s", "-o", "/dev/null", "-w", "%{http_code}", LIVE])
+    add(OK if _.strip() == "200" else BAD, "the live web app answers", LIVE)
+
+    # and the data behind it, because a site that loads with no data looks fine and is not
+    code, _ = run(["curl", "-s", "-o", "/dev/null", "-w", "%{http_code}",
+                   LIVE + "data/timeline.json"])
+    add(OK if _.strip() == "200" else BAD, "the deployed data is served",
+        "data/timeline.json")
+
     # --- what this script cannot decide -------------------------------------------------------
     add(MANUAL, "at least one member in the Kathmandu valley",
         "a fact about people, not a file - must be stated by the team")
