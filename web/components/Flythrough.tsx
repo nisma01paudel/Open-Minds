@@ -1,5 +1,7 @@
 "use client";
 
+import { dataUrl } from "../lib/base";
+
 import { useEffect, useRef, useState } from "react";
 
 type TerrainMeta = {
@@ -46,14 +48,14 @@ export default function Flythrough() {
   const dayRef = useRef(0);
 
   useEffect(() => {
-    fetch("/data/timeline.json").then((r) => r.json()).then((t) => {
+    fetch(dataUrl("/data/timeline.json")).then((r) => r.json()).then((t) => {
       setTl(t);
       const s28 = t.days.indexOf("2024-09-28");
       const d = s28 >= 0 ? s28 : 0;
       setDay(d);
       api.current.setDay?.(d);
     });
-    fetch("/data/terrain.json").then((r) => r.json()).then(setMeta);
+    fetch(dataUrl("/data/terrain.json")).then((r) => r.json()).then(setMeta);
     if ((navigator as any).xr?.isSessionSupported) {
       // navigator.xr is absent on most desktop browsers, and this line would have thrown
       // uncaught rather than simply leaving the VR button hidden.
@@ -86,7 +88,7 @@ export default function Flythrough() {
       // verification. On a real GPU, 2 is comfortable.
       const step = Math.max(1, Number(new URLSearchParams(location.search).get("step")) || 2);
 
-      const buf = await (await fetch("/data/terrain.bin")).arrayBuffer();
+      const buf = await (await fetch(dataUrl("/data/terrain.bin"))).arrayBuffer();
       const all = new Int16Array(buf);
       const gw = meta.width, gh = meta.height;
       const rw = Math.floor(gw / step), rh = Math.floor(gh / step);

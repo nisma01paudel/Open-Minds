@@ -1,5 +1,7 @@
 "use client";
 
+import { dataUrl } from "../../lib/base";
+
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
@@ -39,7 +41,7 @@ export default function AR() {
   const [big, setBig] = useState(false);
 
   useEffect(() => {
-    fetch("/data/timeline.json").then((r) => r.json()).then((t: Timeline) => {
+    fetch(dataUrl("/data/timeline.json")).then((r) => r.json()).then((t: Timeline) => {
       setTl(t); setDayIdx(t.days.length - 1);
     }).catch(() => {});
   }, []);

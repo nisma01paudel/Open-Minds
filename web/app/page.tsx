@@ -1,5 +1,7 @@
 "use client";
 
+import { dataUrl } from "../lib/base";
+
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import SlopeMap, { AnyFC } from "../components/SlopeMap";
@@ -156,9 +158,9 @@ export default function Page() {
   const raf = useRef<number | null>(null);
 
   useEffect(() => {
-    fetch("/data/frames.json").then((r) => r.json()).then(setFrames)
+    fetch(dataUrl("/data/frames.json")).then((r) => r.json()).then(setFrames)
       .catch(() => setErr("could not load frames.json"));
-    fetch("/data/timeline.json").then((r) => r.json()).then((t: Timeline) => {
+    fetch(dataUrl("/data/timeline.json")).then((r) => r.json()).then((t: Timeline) => {
       setTl(t);
       // ?mode=replay&day=119  or  ?mode=replay&on=2024-09-28 - so any moment in the
       // season can be linked, screenshotted, or put on a slide.
@@ -175,11 +177,11 @@ export default function Page() {
       const pv = q.get("plan");
       if (pv) setAutoPlan(pv);
     }).catch(() => setErr("timeline not built yet"));
-    fetch("/data/observability-by-month.json")
+    fetch(dataUrl("/data/observability-by-month.json"))
       .then((r) => { if (!r.ok) throw new Error(String(r.status)); return r.json(); })
       .then(setObs)
       .catch(() => noteLoadFailure("the observability layer"));
-    fetch("/data/advisories.json").then((r) => r.json())
+    fetch(dataUrl("/data/advisories.json")).then((r) => r.json())
       .then((a) => {
         advisories.current = a.advisories ?? {};
         // ?adv=<site-id> opens a slope's advisory straight away, so a beat can be linked
@@ -216,7 +218,7 @@ export default function Page() {
   const [liveFC, setLiveFC] = useState<AnyFC | null>(null);
   useEffect(() => {
     if (mode !== "live" || !frames[liveIdx]) return;
-    fetch(`/data/${frames[liveIdx].file}`)
+    fetch(dataUrl(`/data/${frames[liveIdx].file}`))
       .then((r) => { if (!r.ok) throw new Error(String(r.status)); return r.json(); })
       .then(setLiveFC)
       .catch(() => noteLoadFailure("this day's slope layer"));

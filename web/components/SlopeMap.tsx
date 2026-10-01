@@ -1,5 +1,7 @@
 "use client";
 
+import { dataUrl } from "../lib/base";
+
 import { useEffect, useRef, useState } from "react";
 
 export type AnyFC = { type: "FeatureCollection"; features: any[] };
@@ -375,14 +377,14 @@ export default function SlopeMap({
     let cancelled = false;
     const apply = async () => {
       try {
-        const rp = await fetch("/data/places.geojson");
+        const rp = await fetch(dataUrl("/data/places.geojson"));
         if (!rp.ok) onLoadError?.("the major places");
         if (rp.ok) {
           const pj = await rp.json();
           const src = map.getSource("places");
           if (src) src.setData(pj);
         }
-        const r = await fetch("/data/trails.geojson");
+        const r = await fetch(dataUrl("/data/trails.geojson"));
         if (!r.ok) { onLoadError?.("the hiking trails"); return; }
         const trails = await r.json();
         if (cancelled) return;
