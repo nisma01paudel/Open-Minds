@@ -15,6 +15,7 @@ once, and `bus-parks.geojson` was exactly that until round 27.
 | `observability-sites.json` | `scripts/build_observability.py` | **yes** - from `reports/observability-monsoon.json` |
 | `observability-by-month.json` | `scripts/build_observability.py` | **yes** |
 | `demo-script.json` | hand-written, bilingual, bundled by the phone |
+| `provenance.json` | what each headline number on the map means, the file it is derived from, and what it does not say | Derived at build time from `timeline.json`, `trails.geojson`, `places.geojson`, `susceptibility.json` and `complaint-index.json`, so the values cannot drift from the data they describe. The caveats are the sentences the guards in `tests/` enforce. |
 | `complaint-index.json` | `scripts/build_complaint_index.py` | **yes** - a derived join, no network |
 | `places.geojson` | `scripts/build_places.py` | **yes** - a join, no network |
 | `panoramas/*.png` | `scripts/render_panorama.py` | **yes** - rendered from the DEM, offline |
