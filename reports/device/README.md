@@ -152,6 +152,21 @@ is the plan itself:
 and a failure to share falls back to the same honest message the speaker uses, rather than doing
 nothing.
 
+## The place comes back where you left it
+
+The behaviour PR #5 declared as unverified, now driven on the emulator:
+
+    <open the dropdown, choose पोखरा · Pokhara>
+    adb shell am force-stop np.pahiro.pahiro_field
+    <relaunch>
+    -> the dropdown reads पोखरा · Pokhara
+
+Not the default मेल्म्ची · Melamchi. The choice survived the process, the same way the language does, and
+the frame above is the relaunch.
+
+The dropdown offers six places - Melamchi, Beni, Barhabise, Pokhara, Kathmandu and Nepalgunj - each with
+its Nepali name and the reason it is on the list ("the Terai, where nothing is near").
+
 ## What actually gets sent
 
 The share sheet, photographed with its content rather than just its presence. This is the whole point of
