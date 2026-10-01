@@ -19,6 +19,7 @@
 library;
 
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// The languages this app can actually speak, with their own names for themselves - a language
 /// picker that labels Nepali as "Nepali" is useless to the person who needs it.
@@ -223,9 +224,47 @@ const Map<String, Map<String, String>> translations = {
 class LanguageController extends ValueNotifier<AppLang?> {
   LanguageController([super.initial]);
 
+  /// Where the choice is remembered between launches.
+  ///
+  /// The app asked "Choose your language" on every start until this existed, which is the first
+  /// thing anybody sees and the wrong first impression for a tool that is otherwise careful. The
+  /// choice is the one piece of state worth keeping: it is not derived from anything, and re-asking
+  /// is the difference between an app and a web page.
+  static const _prefsKey = 'pahiro.lang';
+
   bool get chosen => value != null;
 
-  void choose(AppLang lang) => value = lang;
+  void choose(AppLang lang) {
+    value = lang;
+    // Fire and forget. A device that cannot write preferences still has a working app; it just
+    // forgets, and interrupting a language choice to say so would be worse than the forgetting.
+    _remember(lang.code);
+  }
+
+  static Future<void> _remember(String code) async {
+    try {
+      final p = await SharedPreferences.getInstance();
+      await p.setString(_prefsKey, code);
+    } catch (_) {
+      // The fallback is that the question is asked again, which is not worth an error message.
+    }
+  }
+
+  /// The language chosen on a previous run, or null on a first run - and null on any failure,
+  /// because a preference store that is broken must not stop the app starting.
+  static Future<AppLang?> remembered() async {
+    try {
+      final p = await SharedPreferences.getInstance();
+      final code = p.getString(_prefsKey);
+      if (code == null) return null;
+      for (final l in AppLang.values) {
+        if (l.code == code) return l;
+      }
+      return null;
+    } catch (_) {
+      return null;
+    }
+  }
 
   L10n get strings => L10n(value ?? AppLang.en);
 }

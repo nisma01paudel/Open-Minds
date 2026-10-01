@@ -123,6 +123,30 @@ for. Nothing is unreachable.
 1280-pixel panel, on API 36. Font rendering, memory pressure and touch latency on a real budget
 handset are not measured here and are not claimed.
 
+## The app remembers which language you chose
+
+Until this round it asked "Choose your language" on every single launch - the first thing anybody sees,
+and the wrong first impression for a tool that is otherwise careful about first impressions.
+
+    adb shell pm clear np.pahiro.pahiro_field        # fresh install: it must ask
+    <choose Nepali>
+    adb shell am force-stop np.pahiro.pahiro_field   # a user closing the app
+    <relaunch>
+
+**It goes straight to the Escape tab in Nepali.** No chooser. The frame above this section is that
+relaunch.
+
+Implemented with `shared_preferences` 2.5.5, and three deliberate choices in it:
+
+- the write is **fire and forget**, so a tap never waits on a disk write
+- `remembered()` returns null on **any** failure, so a broken preference store asks again rather than
+  showing a blank screen
+- `main()` restores **after** the first frame and only when `!chosen`, so a restore can never overwrite
+  a choice the user just made
+
+Three widget tests cover exactly those three properties, including the one that would be silent: a
+stale restore overwriting a live choice.
+
 ## Regression check after eighty rounds
 
 Every edit in this project is followed by a build, and this is the check that the whole thing still

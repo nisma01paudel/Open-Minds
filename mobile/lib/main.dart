@@ -111,7 +111,17 @@ const List<Place> places = [
 ];
 
 void main() {
-  runApp(PahiroApp(controller: LanguageController(), speaker: const PlatformSpeaker()));
+  // SharedPreferences needs a binding before the first frame can ask it anything.
+  WidgetsFlutterBinding.ensureInitialized();
+  final controller = LanguageController();
+  runApp(PahiroApp(controller: controller, speaker: const PlatformSpeaker()));
+
+  // Restore AFTER the first frame rather than before it. Awaiting the preference store here would
+  // hold a blank screen in front of somebody who may be opening this in a hurry, to save them one
+  // tap. And it is guarded by !chosen so a restore can never overwrite a choice already made.
+  LanguageController.remembered().then((saved) {
+    if (saved != null && !controller.chosen) controller.value = saved;
+  });
 }
 
 class PahiroApp extends StatelessWidget {

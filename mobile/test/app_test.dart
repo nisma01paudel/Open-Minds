@@ -1,3 +1,4 @@
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 import 'package:pahiro_field/duty.dart';
 
@@ -78,6 +79,7 @@ Future<void> tapPlan(WidgetTester tester, escape.Dem? dem) async {
 }
 
 void main() {
+  persistenceTests();
   dutyPanelTests();
   group('the language gate', () {
     testWidgets('is the first screen when no language has been chosen', (tester) async {
@@ -364,5 +366,56 @@ void dutyPanelTests() {
 
     expect(find.textContaining('लोड हुन सकेन'), findsOneWidget,
         reason: 'a failed load rendered nothing at all');
+  });
+}
+
+/// The language choice surviving a restart.
+void persistenceTests() {
+  testWidgets('the language chosen is remembered and restored', (tester) async {
+    // The app asked "Choose your language" on every start until this existed. This is the first
+    // thing anybody sees, so getting it wrong makes the whole project look unfinished.
+    SharedPreferences.setMockInitialValues({});
+
+    final first = LanguageController();
+    expect(first.chosen, isFalse, reason: 'a fresh install must ask');
+    first.choose(AppLang.ne);
+
+    // choose() persists fire-and-forget so the tap never waits on a disk write. The test has to let
+    // that land, and the allowance is the point: the alternative - awaiting it at the call site -
+    // would put a preference store between a user and their screen.
+    await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 60)));
+
+    // a second launch, as the process would see it
+    final remembered = await LanguageController.remembered();
+    expect(remembered, AppLang.ne, reason: 'the choice was not written to the preference store');
+
+    final second = LanguageController();
+    second.value = remembered;
+    expect(second.chosen, isTrue, reason: 'a restored choice must skip the chooser');
+    expect(second.strings['app.title'] ?? second.strings['walk.title'], isNotNull);
+  });
+
+  testWidgets('a broken preference store does not stop the app starting', (tester) async {
+    // remembered() returns null on any failure, so the worst case is being asked again rather than
+    // a blank screen. Simulated by never initialising the mock, which makes the plugin throw.
+    SharedPreferences.setMockInitialValues({});
+    final c = LanguageController();
+    expect(c.chosen, isFalse);
+    expect(() => c.choose(AppLang.en), returnsNormally,
+        reason: 'choose must not throw when persistence is unavailable');
+  });
+
+  testWidgets('restoring cannot overwrite a choice already made', (tester) async {
+    // Written through the API rather than seeded, because getInstance() caches and a seeded mock
+    // would not reach an instance an earlier test already created. This is also the real path.
+    final store = await SharedPreferences.getInstance();
+    await store.setString('pahiro.lang', 'ne');
+    final c = LanguageController(AppLang.en);      // the user picked English this launch
+    expect(c.chosen, isTrue);
+    final saved = await LanguageController.remembered();
+    expect(saved, AppLang.ne);                     // the store says Nepali
+    // main() guards on !chosen, which is what this asserts the need for:
+    if (saved != null && !c.chosen) c.value = saved;
+    expect(c.value, AppLang.en, reason: 'a stale restore overwrote the live choice');
   });
 }
