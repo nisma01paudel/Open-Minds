@@ -161,16 +161,12 @@ const Map<String, Map<String, String>> translations = {
         'नराम्रो भनिएको छैन। किसान, पदयात्री र प्याराग्लाइडरले एउटै महिनाबाट फरक मौसम चाहन्छन्।',
     'walk.validated': 'हरियो महिना यही परियोजनाको नापसँग जाँचिएका; खैरा केवल मोडेलको अनुमान।',
     'walk.unreliable': 'यो क्षेत्रको वर्षाको अङ्क जाँचमा उत्तीर्ण भएन — यसलाई उद्धृत नगर्नुहोस्।',
-    'board.empty': 'अहिले कुनै सन्देश छैन।',
-    'board.empty_why': 'यो बोर्डले नजिकैका फोनबाट ब्लुटुथमा आएका सन्देश देखाउँछ। खाली हुनुको अर्थ दुईमध्ये एक हो: कसैले पठाएको छैन, वा नजिकमा अर्को फोन छैन। फोन सँगै राख्नुहोस्।',
     'settings.title': 'सेटिङ',
     'settings.language': 'भाषा',
-    'settings.device': 'यो यन्त्र',
-    'settings.model': 'यो फोनमा के चल्छ',
-    'settings.noModel': 'कुनै मोडेल छैन — तर जीवन बचाउने सबै सुविधा चल्छन्।',
-    'settings.caveat': 'यो केवल भू-स्वरूपको जानकारी हो। पुल, नाली वा पानी आफैं देखिँदैन। '
-        'पहिले खोलाबाट टाढा जानुहोस्।',
-    'common.back': 'पछाडि',
+    'settings.model': 'यो फोनमा भएको मोडेल',
+    'settings.noModel': 'यो परियोजनाको कुनै मोडेल यो फोनमा छैन। एप तैपनि चल्छ — भाग्ने योजना गणित र सँगै आएको उचाइ ग्रिडमा चल्छ — तर यहाँ देखिने कुनै कुरा एआईले गणना गरेको होइन।',
+    'board.empty': 'अहिले कुनै सन्देश छैन।',
+    'board.empty_why': 'यो बोर्डले नजिकैका फोनबाट ब्लुटुथमा आउने सन्देश देखाउने हो — तर त्यो आधा अझै बनेको छैन। यो एपले आफ्नो फ्रेम प्रसारण गर्छ, जुन साँच्चै चल्छ र बीकन ट्याबमा छ, तर अझै सुन्दैन। त्यसैले नजिकै जो भए पनि यो बोर्ड खाली रहन्छ, र फोन नजिक राख्दा पनि फरक पर्दैन।',
   },
   'en': {
     'app.title': 'Pahiro',
@@ -278,16 +274,12 @@ const Map<String, Map<String, String>> translations = {
     'walk.validated': 'Green months are cross-checked against this project\'s own measurement; '
         'grey are model output only.',
     'walk.unreliable': 'This region failed that check — its rain figures should not be quoted.',
-    'board.empty_why': 'This board shows messages that arrived over Bluetooth from nearby phones. Empty means one of two things: nobody has sent one, or no other phone is close enough yet. Put phones near each other.',
-    'board.empty': 'Nothing yet.',
     'settings.title': 'Settings',
     'settings.language': 'Language',
-    'settings.device': 'This device',
-    'settings.model': 'What runs on this phone',
-    'settings.noModel': 'No model at all — and every life-saving feature still works.',
-    'settings.caveat': 'This is terrain only. It cannot see bridges, culverts or the water. '
-        'Move away from the stream first.',
-    'common.back': 'Back',
+    'settings.model': 'The model on this phone',
+    'settings.noModel': 'No model from this project is present on this phone. The app still works - the escape planner runs on arithmetic and the bundled elevation grid - but nothing on this screen was computed by AI.',
+    'board.empty': 'Nothing yet.',
+    'board.empty_why': 'This board is meant to show messages that arrive over Bluetooth from nearby phones - and that half is not built. The app advertises its own frame, which is real and is on the Beacon tab, but it does not yet listen. So this board stays empty whoever is near, and moving the phones closer will not change that.',
   },
 };
 
