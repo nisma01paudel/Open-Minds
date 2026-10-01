@@ -29,6 +29,7 @@ import 'duty.dart';
 import 'places.dart';
 import 'seasons.dart' as seasons;
 import 'escape.dart' as escape;
+import 'terrainmap.dart';
 import 'l10n.dart';
 import 'offline_ai.dart' as ai;
 import 'trails.dart';
@@ -599,6 +600,42 @@ class _EscapeScreenState extends State<EscapeScreen> {
                     _rememberPlace(chosen);
                   },
         ),
+        const SizedBox(height: 14),
+        // A map, because "which way, and how high" is a question about ground, and until now the
+        // app answered it with a sentence. The relief is drawn on the phone from the elevation grid
+        // that already ships with it - no tiles, no network, nothing new to download.
+        if (dem != null)
+          TerrainMap(
+            dem: dem!,
+            lat: place.lat,
+            lon: place.lon,
+            span: 0.35,
+            failureText: s['escape.mapFailed'],
+            marks: [
+              MapMark(place.lat, place.lon, s['escape.you'],
+                  kind: MapMarkKind.you),
+              if (plan?.targetLat != null)
+                MapMark(plan!.targetLat!, plan!.targetLon!,
+                    plan!.reachable
+                        ? '${s['escape.headFor']} +${plan!.climbM!.round()} m'
+                        : s['escape.noHighGround'],
+                    kind: MapMarkKind.destination),
+            ],
+            route: plan?.targetLat == null
+                ? null
+                : [
+                    [place.lat, place.lon],
+                    [plan!.targetLat!, plan!.targetLon!],
+                  ],
+          ),
+        if (dem != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 6, bottom: 2),
+            child: Text(
+              '${s['escape.mapNote']} · ${plan == null ? s['escape.mapBefore'] : s['escape.mapAfter']}',
+              style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 11),
+            ),
+          ),
         const SizedBox(height: 14),
         Text('${s['escape.rise']} · ${rise.toStringAsFixed(0)} m',
             style: const TextStyle(fontWeight: FontWeight.w600)),
