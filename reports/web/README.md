@@ -105,8 +105,32 @@ should carry the major places.
 to link to had neither a link nor a control.
 
 **What is verified:** the toggle renders and reflects the URL parameter - the screenshot shows it
-checked under `?places=1`. **What is not:** whether the 277 circles are drawn on the map at this zoom.
-The screenshot does not show them clearly and 32 s of virtual time was allowed. Not claimed.
+checked under `?places=1`.
+
+### Why no circles were visible, answered the next round
+
+Not a defect. The layer carries `minzoom: 5.5`:
+
+    map.addLayer({ id: "places", type: "circle", source: "places", minzoom: 5.5, paint: {
+      "circle-radius": ["interpolate", ["linear"], ["get", "slopes_documented"], 1, 3, 8, 9],
+      "circle-color": "#e8c87a", ... }});
+
+At the whole-country view - the default, and what every capture here used - the layer is below its
+minimum zoom and correctly draws nothing. The threshold is a design choice: 277 circles over the
+Himalaya would be texture, not information. The map cannot be zoomed from a URL (there is no
+`hash: true` and no zoom parameter), and `?adv=<site>` opens an advisory without moving the camera, so
+the circles could not be photographed without driving a mouse.
+
+**But that left the toggle looking broken.** Switching it on at the national view changed nothing and
+said nothing - the same silent no-op shape as the ten hides, in a control this round had just brought
+back to life. So the toggle now explains itself:
+
+    277 circles, drawn once you are zoomed in. The layer has a minimum zoom of 5.5, so at this
+    whole-country view the toggle changes nothing you can see. Zoom into a district and each local
+    unit appears, sized by how many slopes are documented in it.
+
+Rendering that note is the verification: the paragraph appears only when the box is checked, which
+also proves the checkbox state reaches the render.
 
 ## /field/ - the last surface in the product, now seen
 

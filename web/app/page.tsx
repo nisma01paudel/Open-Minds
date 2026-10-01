@@ -634,6 +634,14 @@ export default function Page() {
           </span>
         </label>
 
+        {places && (
+          <div className="blindnote">
+            <b>277 circles, drawn once you are zoomed in.</b> The layer has a minimum zoom of 5.5, so
+            at this whole-country view the toggle changes nothing you can see. Zoom into a district and
+            each local unit appears, sized by how many slopes are documented in it.
+          </div>
+        )}
+
         {trails && (
           <div className="blindnote">
             <b>OpenStreetMap, bundled.</b> Every mapped footpath, track and stairway in the
