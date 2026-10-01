@@ -9,7 +9,7 @@ an error page from here. **That is not the event's site** - it is an unregistere
 snapshot is a parking page. The real one is:
 
 **<https://frogtoberfest.lftechnology.com/>**, a client-rendered SPA whose content lives in
-`/static/js/main.648176dd.chunk.js`. Reading the bundle gives the criteria verbatim.
+`main.648176dd.chunk.js` in the site's own `/static/js/`. Reading the bundle gives the criteria verbatim.
 
 ### How a winner is chosen
 
