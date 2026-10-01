@@ -31,6 +31,7 @@ import 'places.dart';
 import 'seasons.dart' as seasons;
 import 'escape.dart' as escape;
 import 'terrainmap.dart';
+import 'vr.dart';
 import 'l10n.dart';
 import 'offline_ai.dart' as ai;
 import 'trails.dart';
@@ -458,6 +459,18 @@ class _WalkScreenState extends State<WalkScreen> {
           title: s['walk.look'],
           caption: s['walk.lookNote'],
           fallback: s['walk.noPanorama'],
+          vrLabel: s['walk.vr'],
+          onVr: () => Navigator.of(context).push(MaterialPageRoute(
+            builder: (_) => VrPanorama(
+              asset: 'assets/panoramas/${_seasons!.nearest(_lat, _lon)?.key ?? 'kathmandu'}.png',
+              title: s['walk.look'],
+              hint: s['walk.noPanorama'],
+              monoscopicNote: s['vr.monoscopic'],
+              recenter: s['vr.recenter'],
+              noGyro: s['vr.noGyro'],
+              close: s['vr.close'],
+            ),
+          )),
         ),
       ],
       const SizedBox(height: 12),
@@ -1167,9 +1180,12 @@ class PanoramaView extends StatefulWidget {
   final String title;
   final String caption;
   final String fallback;
+  final String vrLabel;
+  final VoidCallback onVr;
   const PanoramaView({super.key, required this.regionKey,
                       required this.title, required this.caption,
-                      required this.fallback});
+                      required this.fallback,
+                      required this.vrLabel, required this.onVr});
 
   @override
   State<PanoramaView> createState() => _PanoramaViewState();
@@ -1222,6 +1238,13 @@ class _PanoramaViewState extends State<PanoramaView> {
       const SizedBox(height: 4),
       Text('← 360° →',
           style: const TextStyle(fontSize: 10, color: Color(0xFF475569))),
+      const SizedBox(height: 8),
+      // The same image, but somewhere you look rather than something you drag.
+      OutlinedButton.icon(
+        onPressed: widget.onVr,
+        icon: const Icon(Icons.view_in_ar, size: 16),
+        label: Text(widget.vrLabel),
+      ),
     ]);
   }
 }
