@@ -17,6 +17,7 @@ library;
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 import 'beacon.dart' as beacon;
@@ -62,8 +63,30 @@ class SilentSpeaker implements Speaker {
 class PlatformSpeaker implements Speaker {
   const PlatformSpeaker();
 
+  /// One engine for the process: constructing FlutterTts per utterance leaks a platform channel
+  /// each time, and this is called from a button a frightened person may press repeatedly.
+  static final FlutterTts _tts = FlutterTts();
+
+  /// `Ne` is what the app passes; Android wants a full tag. Kept here rather than at the call sites
+  /// because the mapping is a property of the engine, not of the screen.
+  static const _tags = {'ne': 'ne-NP', 'en': 'en-US'};
+
   @override
-  Future<bool> speak(String text, String langCode) async => false;
+  Future<bool> speak(String text, String langCode) async {
+    final tag = _tags[langCode] ?? langCode;
+    try {
+      // The false is the whole point. Android does not ship a Nepali voice on every device, and a
+      // silent button is worse than an honest one: the caller shows this failure.
+      final available = await _tts.isLanguageAvailable(tag);
+      if (available != true) return false;
+      await _tts.setLanguage(tag);
+      await _tts.speak(text);
+      return true;
+    } catch (_) {
+      // No engine, no permission, a platform channel that is not there - all the same to the caller.
+      return false;
+    }
+  }
 }
 
 /// Where a place is. A short list of real Nepali towns, each one a place where this question has
