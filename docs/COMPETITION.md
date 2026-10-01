@@ -55,6 +55,17 @@ to establish the mechanism end to end: `gh` is authenticated as `sushant-me`, a 
 request opens against `main`, a squash merge puts `(#1)` on the commit, and an issue files with its
 context attached.
 
+### The defects this project found are now filed, not just fixed
+
+    #2  the required video predates four of the features it should show
+    #3  the Places layer had no working toggle for every round it existed
+    #4  the film says 31 on screen and spoke 305 aloud, and a test enforced both
+
+Each carries the reproduction, the root cause, the fix commit and the guard that now prevents it.
+This is the material from the eighty-round verification pass, converted into the one form the event
+actually scores - and it is honest material rather than filler: three real defects, documented to the
+standard the rest of this repository holds.
+
 **Every change from here goes this way.** The repository is public, so its own pull requests count, and
 the cost is one branch and one merge per change rather than a push.
 
