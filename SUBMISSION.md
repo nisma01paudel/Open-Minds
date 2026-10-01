@@ -58,6 +58,28 @@ Stated here so you do not have to find it:
 
 ---
 
+## The evidence behind the claims
+
+Every number in this submission comes from a report in [`reports/`](reports/), and several of them
+were reachable from nowhere except the repository tree. This is the index.
+
+| claim | measurement |
+|---|---|
+| the system can speak on 90.4% of days, with a 34-day monsoon silence | [`reports/eval-v1.md`](reports/eval-v1.md) |
+| rainfall ranking does **not** find the slopes that fail - 53rd and 55th percentile | [`reports/rainfall-ranking.md`](reports/rainfall-ranking.md) |
+| routing accuracy, three arms, reported as an ablation rather than a claim | [`reports/routing-ablation.md`](reports/routing-ablation.md) |
+| **where the satellite could not see**: August at 16.8% usable, 17 of 142 sites never observed | [`reports/observability.md`](reports/observability.md) |
+| the same question across the monsoon, at 30-day pre-event windows | [`reports/observability-monsoon.md`](reports/observability-monsoon.md) |
+| how an advisory is rated, and by what rubric | [`reports/advisory-sheet-RUBRIC.md`](reports/advisory-sheet-RUBRIC.md) |
+
+**The observability reports are the two most worth opening.** "Where could we not look" is the question
+this project is built around, and the answer is that in August the satellite saw usable ground at 16.8%
+of the sites - and at 17 of 142 it never saw clear ground at all. A system that used imagery alone
+would have been blind at exactly the moment it mattered, and the report names which places.
+
+Each report states its own weaknesses next to its result, because a measurement without its limits is a
+claim, not evidence.
+
 ## Real-world impact, argued rather than asserted
 
 The event judges four things: innovation, technical excellence, open-source contribution,
