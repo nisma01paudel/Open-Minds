@@ -182,6 +182,44 @@ sharing the plan as text: a neighbour receives the steps, in Nepali, with the ca
 "Regional advice - follow local instructions" travels with it, because a forwarded message loses its
 context the moment it leaves the phone it was computed on.
 
+## A REAL PHONE, WITH THE RADIOS OFF
+
+Nineteen rounds of verification happened on an emulator. This is the first on hardware the project did
+not control.
+
+    adb devices -l
+    RZ8RB0AGYNW   device usb:1-1   product:f22ins   model:SM_E225F   device:f22
+
+    samsung SM-E225F          Galaxy F22
+    Android 13 (SDK 33)       the emulator is API 36 - a genuinely different target
+    720x1600 @ 300dpi         a low-end panel, not the emulator's 1080x2340
+    arm64-v8a
+
+**The offline claim, tested properly.** Not by blackholing a hostname, but by turning the radios off on
+the handset:
+
+    adb shell svc wifi disable; adb shell svc data disable
+    settings get global wifi_on     -> 0
+    settings get global mobile_data -> 0
+    dumpsys connectivity            -> Active default network: none
+
+Then force-stop and relaunch. **The app rendered the full escape screen, the responsible-office panel
+with its statute and its own caveat, the 360-degree panorama, and ran the flood scenario - with no
+network at all, and zero fatal exceptions in logcat across the entire run.**
+
+What step 2 of the scenario says, on the phone, offline:
+
+    In August only 16.8% of satellite scenes were usable, and 17 of 142 sites were never seen at all.
+    So the system does not say 'all clear' - it says it cannot see.
+    cited - Sentinel-2 scene metadata, 2,021 scenes
+
+Frames in this directory: `pahiro-physical-walk-panorama.png`, `pahiro-physical-offline.png`,
+`pahiro-physical-demo-step1.png`, `pahiro-physical-demo-step2.png`.
+
+**Still not verified, and it cannot be from here:** whether the Nepali speech is actually AUDIBLE. The app
+was run with sound, but nothing in this environment can listen to it. That needs a person holding the
+phone.
+
 ## The app remembers which language you chose
 
 Until this round it asked "Choose your language" on every single launch - the first thing anybody sees,
