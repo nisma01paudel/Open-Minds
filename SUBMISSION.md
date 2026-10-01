@@ -58,6 +58,52 @@ Stated here so you do not have to find it:
 
 ---
 
+## Real-world impact, argued rather than asserted
+
+The event judges four things: innovation, technical excellence, open-source contribution,
+**real-world impact**. This is the one that cannot be demonstrated by a repository, so it is worth
+being precise about what changes and what does not.
+
+### What changes for a citizen
+
+Nepal can already detect landslides. What it cannot do is tell a household which office is obliged to
+act. Before this, the answer to "who is responsible for this slope" was a phone call nobody makes and
+a form nobody files, because a complaint addressed to "the municipality" can be answered with "not
+ours" and closed.
+
+This project produces three things a person can act on:
+
+- **a ranked list of what to do**, in Nepali and English, with the reason for each step and the
+  statement that it is regional advice rather than a local instruction
+- **a drafted complaint, addressed to a named office**, carrying that office's official government
+  website and the section of the Local Government Operation Act that obliges them - **धारा १२(२)(ग)**
+  for a road - so a request cannot be bounced without somebody deciding that on paper
+- **an escape plan that refuses.** When there is no safe high ground within walking distance it says
+  so, and says what to do instead, which is *do not run for it*
+
+**494 of the 613 documented slopes resolve to a named local unit** with an official website. The other
+119 report the office the routing key names and invent no address, because an address that does not
+exist is worse than none.
+
+### What changes for a municipality
+
+A ranked queue rather than an inbox, with the ranking itself stated as arguable. The operations view
+says, in the interface: *"This ranks search order from a radio and a timestamp. It is not a judgement
+about who matters, it cannot see the person, and a low rank is not a reason to ignore a report."*
+
+And the weights are published in `src/pahiro/triage.py` **and meant to be argued with**, which is the
+difference between a scoring rule and a policy nobody can see.
+
+### What it does not claim
+
+**Nobody has used this.** There are no users, no municipalities running it, and no outcome that can be
+attributed to it. What exists is a working system, deployed and offline-capable, whose outputs are the
+real artefacts a citizen and a ward office would exchange - and every number in it can tell you where
+it came from and what it does not mean.
+
+A project that claimed impact it had not had would be a worse submission than one that shows a working
+system and says plainly that it has not been used yet.
+
 ## What you can open right now
 
 **<https://sushant-me.github.io/work/>** — deployed and public. Nothing to build, nothing to install, works on a phone.
