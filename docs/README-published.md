@@ -44,7 +44,7 @@ It is superseded by [README.md](../README.md). What it promised is now here:
 Two things this file used to say that are **no longer true**, corrected here rather than quietly
 deleted:
 
-- *"this repository currently carries only this description"* — it carries 521 tracked files (counted, not remembered — see the test that derives it).
+- *"this repository currently carries only this description"* — it carries 522 tracked files (counted, not remembered — see the test that derives it).
 - *"when the code arrives"* — it arrived.
 
 What it promised, and where each promise now lives, is listed in **Status** above.
