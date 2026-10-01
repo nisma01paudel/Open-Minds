@@ -272,6 +272,7 @@ Widget _dutyPanel(AppLang lang) => MaterialApp(
       home: Scaffold(
         body: SingleChildScrollView(
           child: DutyPanel(
+          unencrypted: '',
             strings: 'x', lat: 27.7047, lon: 85.3146,
             title: L10n(lang)['duty.title'],
             caption: L10n(lang)['duty.where'],
@@ -356,6 +357,7 @@ void dutyPanelTests() {
     await tester.pumpWidget(MaterialApp(
       home: Scaffold(
         body: DutyPanel(
+          unencrypted: '',
           strings: 'x', lat: 27.7047, lon: 85.3146, title: 't', caption: 'c',
           noAddress: 'n', defaultNote: 'd', draftButton: 'b', letterNote: 'l',
           nepali: true, failedLabel: label, loader: const _BrokenDuty(),

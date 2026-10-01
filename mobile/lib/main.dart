@@ -449,6 +449,7 @@ class _WalkScreenState extends State<WalkScreen> {
         title: s['places.title'], caption: s['places.caption'],
         slopesLabel: s['places.slopes'], trailsLabel: s['places.trails'],
         nepali: s.lang == AppLang.ne, lat: _lat, lon: _lon, failedLabel: s['load.failed'],
+        siteNote: s['duty.unencrypted'],
       ),
       if (_seasons != null) ...[
         const SizedBox(height: 14),
@@ -570,6 +571,7 @@ class _EscapeScreenState extends State<EscapeScreen> {
         const SizedBox(height: 12),
         DutyPanel(
           strings: s.lang.code, lat: place.lat, lon: place.lon,
+          unencrypted: s['duty.unencrypted'],
           title: s['duty.title'], caption: s['duty.where'],
           noAddress: s['duty.noAddress'], defaultNote: s['duty.default'],
           draftButton: s['duty.draft'], letterNote: s['duty.letterNote'],
@@ -1245,6 +1247,20 @@ class AssetDutyLoader implements DutyLoader {
       DutyIndex.parse(await rootBundle.loadString('assets/complaint-index.json'));
 }
 
+
+/// A government address, shown as its publisher gives it, with one addition.
+///
+/// Fourteen of these are plain http. Dialling every one over TLS found six with no HTTPS listener at
+/// all, so rewriting them to https would not secure them, it would break them - and a dead link on the
+/// screen whose entire purpose is reaching a duty holder is worse than an unencrypted working one.
+/// What is possible without changing a single address is to say which is which.
+///
+/// The note arrives as a finished string because neither panel owns the language: DutyPanel and
+/// PlacesPanel both take translated text as fields, and reaching for L10n inside them is what broke
+/// the first attempt at this.
+String siteLabel(String url, String note) =>
+    url.startsWith('http://') ? '$url  \u00b7  $note' : url;
+
 class DutyPanel extends StatefulWidget {
   final String strings;
   final double lat;
@@ -1255,6 +1271,8 @@ class DutyPanel extends StatefulWidget {
   final String defaultNote;
   final String draftButton;
   final String letterNote;
+  /// Appended to a government address published over plain http.
+  final String unencrypted;
   final bool nepali;
 
   /// Shown when the data could not be loaded. A panel that disappears is indistinguishable from a
@@ -1267,6 +1285,7 @@ class DutyPanel extends StatefulWidget {
   /// no signal anywhere.
   final DutyLoader loader;
   const DutyPanel({super.key, required this.strings, required this.lat, required this.lon,
+                   required this.unencrypted,
                    required this.title, required this.caption, required this.noAddress,
                    required this.defaultNote, required this.draftButton,
                    required this.letterNote, required this.nepali, required this.failedLabel,
@@ -1364,7 +1383,8 @@ class _DutyPanelState extends State<DutyPanel> {
             Text('${d.unit} — ${d.district ?? ''}',
                 style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
             if (d.site != null)
-              Text(d.site!, style: const TextStyle(fontSize: 11, color: Color(0xFF38BDF8))),
+              Text(siteLabel(d.site!, widget.unencrypted),
+                  style: const TextStyle(fontSize: 11, color: Color(0xFF38BDF8))),
           ] else
             Text(widget.noAddress,
                 style: const TextStyle(fontSize: 11, color: Color(0xFFF0A0A0))),
@@ -1516,12 +1536,15 @@ class PlacesPanel extends StatefulWidget {
   final String caption;
   final String slopesLabel;
   final String trailsLabel;
+  /// Appended to a government address published over plain http.
+  final String siteNote;
   final bool nepali;
   final String failedLabel;
   final double lat;
   final double lon;
   const PlacesPanel({super.key, required this.title, required this.caption,
                      required this.slopesLabel, required this.trailsLabel,
+                     required this.siteNote,
                      required this.nepali, required this.lat, required this.lon,
                      required this.failedLabel});
 
@@ -1580,7 +1603,8 @@ class _PlacesPanelState extends State<PlacesPanel> {
             ].join(' · '),
                 style: const TextStyle(fontSize: 11, color: Color(0xFF64748B))),
             if (place.hasWebsite)
-              Text(place.site!, style: const TextStyle(fontSize: 10, color: Color(0xFF38BDF8))),
+              Text(siteLabel(place.site!, widget.siteNote),
+                  style: const TextStyle(fontSize: 10, color: Color(0xFF38BDF8))),
           ]),
         ),
       Text(widget.caption, style: const TextStyle(fontSize: 10, color: Color(0xFF64748B))),
