@@ -77,11 +77,28 @@ void main() {
     expect(net.nearby(0.0, 0.0, radiusM: 1000).isEmpty, isTrue);
   });
 
-  test('an unnamed path is labelled as one rather than given an invented name', () {
+  test('an unnamed path carries its real type rather than an invented name', () {
+    // This guard used to require the literal '(unnamed path)'. It was enforcing the right principle
+    // - do not invent a name - and enforcing it in a way that hid the fix: the type was in the file
+    // all along, under `h`, and the parser was reading `n` and `d`, which do not exist. So every one
+    // of the 23,726 trails was unnamed and the screen said so twice over.
     final got = net.nearby(85.3620, 27.7750, radiusM: 3000, limit: 8);
     final unnamed = got.where((t) => t.name.isEmpty);
     expect(unnamed, isNotEmpty);
-    expect(unnamed.first.label, '(unnamed path)');
+    // Still no invented name.
+    expect(unnamed.first.label, '');
+    // And the type is read, which is what a reader actually needs.
+    expect(unnamed.first.highway, isNotEmpty);
+    expect(['path', 'track', 'footway', 'steps', 'bridleway'], contains(unnamed.first.highway));
+  });
+
+  test('the parser reads the keys the file actually has', () {
+    // The bug was a schema mismatch, so the guard is against the schema: every trail in the bundle
+    // must yield a highway type. If the file ever stops carrying `h`, this fails loudly instead of
+    // the screen quietly reverting to a placeholder.
+    for (final t in net.trails) {
+      expect(t.highway, isNotEmpty, reason: 'a trail with no type would render as a guess');
+    }
   });
 
   test('the walk time is a real figure, not a placeholder', () {

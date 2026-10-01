@@ -484,9 +484,9 @@ class _WalkScreenState extends State<WalkScreen> {
         margin: const EdgeInsets.only(bottom: 8),
         child: ListTile(
           leading: const Icon(Icons.hiking),
-          title: Text(t.label),
+          title: Text(t.label.isEmpty ? highwayLabel(t.highway, s) : t.label),
           subtitle: Text('${(t.lengthM / 1000).toStringAsFixed(1)} km · '
-              '${t.difficulty} · ${t.flatMinutes} min'),
+              '${highwayNote(t.highway, s)} · ${t.flatMinutes} min'),
           trailing: Text('${t.nearestM.round()} m'),
           onTap: () => setState(() { _lat = t.points.first[1]; _lon = t.points.first[0]; }),
         ),
@@ -1159,6 +1159,30 @@ Widget seasonStrip(L10n s, seasons.SeasonGuide guide, double lat, double lon) {
     Text(s['walk.seasonsNote'], style: const TextStyle(fontSize: 11, color: PahiroTheme.inkMuted)),
   ]);
 }
+
+
+/// What kind of way this is, named rather than guessed at.
+///
+/// The list printed "(unnamed path)" for all 23,726 trails because a field that does not exist in the
+/// file was being read. The type does exist, and for a person on foot it matters: steps mean vertical
+/// ground, a track means something on wheels could reach you, a bridleway is not a footpath.
+String highwayLabel(String h, L10n s) => switch (h) {
+      'path' => s['trail.path'],
+      'track' => s['trail.track'],
+      'footway' => s['trail.footway'],
+      'steps' => s['trail.steps'],
+      'bridleway' => s['trail.bridleway'],
+      'service' => s['trail.service'],
+      _ => s['trail.unknown'],
+    };
+
+/// One line on what that means for somebody deciding whether to walk it.
+String highwayNote(String h, L10n s) => switch (h) {
+      'steps' => s['trail.noteSteps'],
+      'track' => s['trail.noteTrack'],
+      'bridleway' => s['trail.noteBridleway'],
+      _ => s['trail.noteFoot'],
+    };
 
 /// Look around the valley — the 360-degree render, draggable, offline.
 ///

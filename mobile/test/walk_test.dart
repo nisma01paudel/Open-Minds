@@ -15,11 +15,11 @@ const _net = TrailNetwork(
   attribution: '© OpenStreetMap contributors, ODbL 1.0',
   region: 'test',
   trails: [
-    Trail(name: 'Shiva puri peak trek (stairs)', difficulty: 'hard', lengthM: 4024.0,
+    Trail(name: 'Shiva puri peak trek (stairs)', highway: 'steps', lengthM: 4024.0,
         nearestM: 120.0, points: [[85.3152, 27.7052], [85.3160, 27.7060]]),
-    Trail(name: '', difficulty: 'easy', lengthM: 2500.0, nearestM: 900.0,
+    Trail(name: '', highway: 'path', lengthM: 2500.0, nearestM: 900.0,
         points: [[85.3205, 27.7100], [85.3212, 27.7108]]),
-    Trail(name: 'too far away', difficulty: 'easy', lengthM: 9000.0, nearestM: 40000.0,
+    Trail(name: 'too far away', highway: 'path', lengthM: 9000.0, nearestM: 40000.0,
         points: [[86.9, 28.9], [86.95, 28.95]]),
   ],
 );
@@ -83,9 +83,13 @@ void main() {
     expect(find.textContaining('4.0 km'), findsWidgets);
   });
 
-  testWidgets('a trail with no name is labelled rather than given one', (tester) async {
+  testWidgets('a trail with no name is labelled by its real type, not a placeholder',
+      (tester) async {
     await pumpScreen(tester, FakeLoader());
-    expect(find.text('(unnamed path)', skipOffstage: false), findsOneWidget);
+    // The fixture's unnamed trail carries highway 'path', so this is what a reader now sees - the
+    // kind of way it is, which is information, instead of the same placeholder on every row.
+    expect(find.text('Footpath', skipOffstage: false), findsOneWidget);
+    expect(find.text('(unnamed path)', skipOffstage: false), findsNothing);
   });
 
   testWidgets('a trail 40 km away is not offered', (tester) async {

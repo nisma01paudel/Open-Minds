@@ -36,14 +36,21 @@ double haversineM(double lon1, double lat1, double lon2, double lat2) {
 
 class Trail {
   final String name;
-  final String difficulty;
+
+  /// The OSM `highway` tag: path, track, footway, steps, bridleway.
+  ///
+  /// This is the field the parser should always have read. It was reading `n` and `d`, neither of
+  /// which exists anywhere in the shipped file - so `name` was empty for all 23,726 trails and the
+  /// screen printed "(unnamed path)" beside "not recorded" for every one of them, twice over, while
+  /// the actual type sat unread in `h`.
+  final String highway;
   final double lengthM;
   final double nearestM;
   final List<List<double>> points;
 
   const Trail({
     required this.name,
-    required this.difficulty,
+    required this.highway,
     required this.lengthM,
     required this.nearestM,
     required this.points,
@@ -54,7 +61,9 @@ class Trail {
   /// distance-only figure and is labelled as such in the UI.
   int get flatMinutes => (lengthM / 1000.0 / 5.0 * 60.0).round();
 
-  String get label => name.isEmpty ? '(unnamed path)' : name;
+  /// A real name if OSM has one, otherwise empty - the type label belongs to the UI, which owns
+  /// the language, and every one of these trails is unnamed anyway.
+  String get label => name;
 }
 
 class TrailNetwork {
@@ -92,7 +101,7 @@ class TrailNetwork {
       }
       trails.add(Trail(
         name: (props['n'] as String?) ?? '',
-        difficulty: (props['d'] as String?) ?? 'not recorded',
+        highway: (props['h'] as String?) ?? '',
         lengthM: length,
         nearestM: 0,
         points: pts,
@@ -131,7 +140,7 @@ class TrailNetwork {
       if (t.lengthM < minTrailM) continue;   // a spur is not a walk; Python filters here too
       out.add(Trail(
         name: t.name,
-        difficulty: t.difficulty,
+        highway: t.highway,
         lengthM: t.lengthM,
         nearestM: best,
         points: t.points,
