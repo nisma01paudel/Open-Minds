@@ -133,3 +133,40 @@ film is restorable with `git checkout`, so a failed attempt is safe. Note that
 `reports/video/stills/` already contains **two sets** numbered 07-09 - `07-agent`, `08-limit`,
 `09-trails` and, locally, `07-fly`, `08-plan`, `09-field` - so the clip letters and the caption keys
 must be chosen against the build script rather than against the filenames.
+
+## The phone does not speak, and never has
+
+`PlatformSpeaker` (`mobile/lib/main.dart`) is the only implementation of the `Speaker` interface in a
+shipped build, and it returns `false` unconditionally:
+
+    class PlatformSpeaker implements Speaker {
+      const PlatformSpeaker();
+      @override
+      Future<bool> speak(String text, String langCode) async => false;
+    }
+
+There is no engine behind it - no `flutter_tts`, no platform channel, no dependency in `pubspec.yaml`.
+Its docstring said "The real one" until round 78, which is how it read as finished.
+
+The escape screen carries two buttons that call it. They now await the result and say so:
+
+    Speech is not available on this phone - read the steps.
+    यो फोनमा वाचन उपलब्ध छैन — निर्देशन पढ्नुहोस्।
+
+**So the buttons are honest and the feature is absent.** It is on the screen built for somebody
+standing in the rain with both hands full, where reading a screen is the thing they cannot do.
+
+Two routes, both of which need a build and a device check:
+
+1. `flutter_tts` in `pubspec.yaml`, wire `PlatformSpeaker`, rebuild, and confirm on the emulator that a
+   Nepali voice exists - Android may not ship `ne-NP`, in which case `speak` must return false for
+   that language and the button must keep saying so.
+2. A `MethodChannel` to `android.speech.tts.TextToSpeech` - no package, but native Kotlin under
+   `android/app/src/main/kotlin/`, with the same verification.
+
+**`flutter analyze` is clean and every widget test passes**, which is why this survived: a
+`Future<bool>` that is always false and is awaited by nobody is not an error in any tool this project
+has. It was found by reading what the button promises and asking what delivers it.
+
+A sweep in round 79 found no other always-constant stub in `mobile/lib`. This is the only feature in
+the project that is missing rather than misdescribed.
