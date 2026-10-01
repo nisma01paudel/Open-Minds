@@ -49,6 +49,16 @@ class SilentSpeaker implements Speaker {
 /// capability. The interface exists so the screen is written against it and the wiring is one
 /// line when the plugin is added. The Nepali voice itself is Piper `ne_NP`, 63 MB, MIT, which
 /// runs on the handset with no network - see docs/MODELS.md.
+/// The platform speaker.
+///
+/// **It returns false and always has.** There is no text-to-speech implementation behind it - no
+/// flutter_tts, no platform channel - so every button wired to it is a control that renders, is
+/// pressed, and does nothing. On the escape screen that button says "speak" to somebody standing in
+/// the rain with both hands full.
+///
+/// The honest thing is not to pretend: the callers now show the false, and this docstring says why
+/// rather than leaving a stub labelled "the real one". Wiring an engine is a dependency and a device
+/// test, so it is named here as work rather than implied as done.
 class PlatformSpeaker implements Speaker {
   const PlatformSpeaker();
 
@@ -596,12 +606,27 @@ class EscapeResult extends StatelessWidget {
               spacing: 8,
               children: [
                 OutlinedButton(
-                  onPressed: () => speaker.speak(planSteps.first.ne, 'ne'),
+                  onPressed: () async {
+                    // speak() returns false when there is no engine behind it, which is always.
+                    // A control that is pressed and does nothing is the same defect as one that
+                    // never rendered, so the false is shown instead of discarded.
+                    final ok = await speaker.speak(planSteps.first.ne, 'ne');
+                    if (!ok && context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(strings['speak.unavailable'])));
+                    }
+                  },
                   child: Text(strings['escape.speak']),
                 ),
                 if (e.reachable && planSteps.length > 1)
                   OutlinedButton(
-                    onPressed: () => speaker.speak(planSteps[1].ne, 'ne'),
+                    onPressed: () async {
+                      final ok = await speaker.speak(planSteps[1].ne, 'ne');
+                      if (!ok && context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(strings['speak.unavailable'])));
+                      }
+                    },
                     child: Text(strings['escape.directionOnly']),
                   ),
               ],
