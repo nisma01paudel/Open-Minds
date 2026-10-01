@@ -152,6 +152,21 @@ is the plan itself:
 and a failure to share falls back to the same honest message the speaker uses, rather than doing
 nothing.
 
+## What actually gets sent
+
+The share sheet, photographed with its content rather than just its presence. This is the whole point of
+sharing the plan as text: a neighbour receives the steps, in Nepali, with the caveat attached.
+
+    पहिरो — भाग्ने योजना (यो फोनमै गणना गरिएको)
+    यो क्षेत्रीय सुझाव हो, स्थानीय निर्देशन पालना गर्नुहोस्।
+    - नजिकै सुरक्षित उचाइ छैन
+    - दौडन नखोज्नुहोस्
+    - अग्लो बहुतले भवनमा जानुहोस्
+    - सक्दो माथिल्लो तल्लामा जानुहोस्
+
+"Regional advice - follow local instructions" travels with it, because a forwarded message loses its
+context the moment it leaves the phone it was computed on.
+
 ## The app remembers which language you chose
 
 Until this round it asked "Choose your language" on every single launch - the first thing anybody sees,

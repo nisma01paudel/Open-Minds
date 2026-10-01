@@ -18,6 +18,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
@@ -110,6 +111,28 @@ const List<Place> places = [
   Place('Kathmandu', 'काठमाडौं', 27.7172, 85.3240, 'Bagmati valley'),
   Place('Nepalgunj', 'नेपालगन्ज', 28.0500, 81.6167, 'the Terai, where nothing is near'),
 ];
+
+/// The place a person picked last time.
+///
+/// The escape screen opened on Melamchi for everybody, including people standing in Pokhara. The
+/// language already survives a restart; the second thing worth keeping is where the user actually is,
+/// because re-picking it is a tap in the moment they have least attention to spare.
+const _placePrefsKey = 'pahiro.place';
+
+Future<String?> _rememberedPlace() async {
+  try {
+    return (await SharedPreferences.getInstance()).getString(_placePrefsKey);
+  } catch (_) {
+    return null;      // no store, no memory - the default is simply used again
+  }
+}
+
+void _rememberPlace(Place p) {
+  // Fire and forget, for the same reason the language choice is: a dropdown should not wait on a disk.
+  SharedPreferences.getInstance()
+      .then((s) => s.setString(_placePrefsKey, p.nameEn))
+      .catchError((_) => false);   // returns bool: setString does, and nothing reads it
+}
 
 void main() {
   // SharedPreferences needs a binding before the first frame can ask it anything.
@@ -488,6 +511,7 @@ class _EscapeScreenState extends State<EscapeScreen> {
   escape.Dem? dem;
   bool loading = true;
   Place place = places.first;
+
   double rise = escape.defaultRiseM;
   escape.Escape? plan;
   String? note;
@@ -501,6 +525,16 @@ class _EscapeScreenState extends State<EscapeScreen> {
         dem = d;
         loading = false;
       });
+    });
+    // Guarded so a restore cannot overwrite a choice made while it was in flight.
+    _rememberedPlace().then((name) {
+      if (name == null || !mounted || place != places.first) return;
+      for (final p in places) {
+        if (p.nameEn == name) {
+          setState(() => place = p);
+          return;
+        }
+      }
     });
   }
 
@@ -559,7 +593,11 @@ class _EscapeScreenState extends State<EscapeScreen> {
                 child: Text(widget.lang == AppLang.ne ? '${p.nameNe} · ${p.nameEn}' : p.nameEn),
               ),
           ],
-          onChanged: (p) => setState(() => place = p ?? place),
+          onChanged: (p) {
+                    final chosen = p ?? place;
+                    setState(() => place = chosen);
+                    _rememberPlace(chosen);
+                  },
         ),
         const SizedBox(height: 14),
         Text('${s['escape.rise']} · ${rise.toStringAsFixed(0)} m',
