@@ -2,6 +2,70 @@
 
 Looked up on 2026-10-01, from the event's own tooling rather than from its marketing.
 
+## The rubric, finally, from the event's own site
+
+I had been planning against the leaderboard's mechanics for six rounds because `frogtoberfest.com` returns
+an error page from here. **That is not the event's site** - it is an unregistered domain, and the Wayback
+snapshot is a parking page. The real one is:
+
+**<https://frogtoberfest.lftechnology.com/>**, a client-rendered SPA whose content lives in
+`/static/js/main.648176dd.chunk.js`. Reading the bundle gives the criteria verbatim.
+
+### How a winner is chosen
+
+> The project that stands out for **innovation, technical excellence, open-source contribution, and
+> real-world impact.**
+
+**Top five** are shortlisted - *"Every entry gets run through the eligibility gate and quick screen, but
+the top 5 move on to present live on October 30."* **At least one member must be physically present in
+the Kathmandu valley.** Open to anyone based in Nepal, solo or up to five.
+
+### The eligibility gate - six requirements
+
+1. **Public GitHub repository** - public, with everything needed to run and understand it
+2. **Documentation** - README, architecture overview, technology details, **and limitations/future
+   improvements, all present and complete**
+3. **Working demo** - a functional demonstration of the key capabilities
+4. **Demo video** - showing the problem, solution, workflow and value
+5. **Qualifies as "Build with AI"** - *"AI does real work inside the solution: processing, transforming,
+   or reasoning over data as part of the system's core logic - not just generating a response that gets
+   shown to a user."*
+6. **AI usage disclosure** - *"a short written statement naming the exact file/function where AI output
+   is consumed programmatically"*
+
+### Where this project stands against the gate
+
+| requirement | state |
+|---|---|
+| public repository | yes - `sushant-me/work`, not a fork, commits linked to the account |
+| documentation | yes - README, `docs/`, and `docs/LIMITATIONS.md`, which is a full document rather than a paragraph |
+| working demo | yes - <https://sushant-me.github.io/work/>, deployed since round 4 |
+| demo video | yes - 159 s, `reports/video/pahiro-narrated-web.mp4` |
+| Build with AI | yes - `router.py::triage_route()` turns an unstructured hazard report into *(which asset is failing, which duty applies)*, and the ontology then maps that pair deterministically |
+| AI usage disclosure | yes - `docs/AI-USAGE.md`, which names each entry point as `file::function` |
+
+**Requirement 5 is the one to argue, not tick.** The project's own line is that the model decides *which
+asset and which duty*, and everything downstream - the institution, the statute, the letter - is read
+from the ontology and can never be invented. That is AI doing core work rather than generating text.
+
+### The anti-pattern the event names, which this project spent eighty rounds on
+
+> *"Building a reusable skill, prompt library, or tool definition, with nothing using it"*
+
+That is the exact defect found and fixed nine times here - code that exists, is compiled, passes every
+test, and is never reached. The Places layer had no working toggle. The speech stub returned `false`
+unconditionally. Nine panels vanished when their data failed.
+
+**The event names it as a failure mode. This repository has three guards against it**, each proven to
+fail on purpose.
+
+### Proprietary APIs
+
+> *"Proprietary APIs like OpenAI, Claude, or Gemini are discouraged, even for small auxiliary calls.
+> Document what you used, name the model, and disclose."*
+
+`check_eligibility.py` already greps `src/` for a vendor inference endpoint and reports none.
+
 ## The leaderboard is the scoreboard, and it does not count commits
 
 `https://frogtoberfest-leaderboard.lftechnology.com` is live. Its columns are:
