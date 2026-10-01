@@ -83,6 +83,38 @@ Three paths near Kathmandu are unnamed in OSM, and the app prints "(unnamed path
 inventing one. The difficulty field says "not recorded" and "cannot check this from the map data"
 rather than guessing a grade from a length. The caveat paragraph names all three limits.
 
+## /admin - the page the brief does not ask for, and the one worth reading
+
+Never rendered until now. It is the operations view: every handset that has called for help, ranked for
+search order, and it was reached with the field API deliberately absent - which is the state a visitor
+to the deployed site is in.
+
+    Pahiro operations
+    Every handset that has called for help, ranked for search order.
+    Deterministic and explainable - every point below names the factor that produced it.
+
+    [ Failed to fetch - is the field API running? python -m pahiro.api --port 8080 ]
+
+    This ranks search order from a radio and a timestamp. It is not a judgement about who matters,
+    it cannot see the person, and a low rank is not a reason to ignore a report. Weights are in
+    src/pahiro/triage.py and are meant to be argued with.
+
+**Three things worth noticing, all of them the project's own discipline applied to the hardest case.**
+
+The failure is handled the way this repository handles failures everywhere: it names the cause and the
+exact command that fixes it, rather than showing an empty table. That is the round-36 rule - an absent
+section and a section that could not be shown must not look the same - applied to the one screen where an
+empty list would be most alarming.
+
+And the paragraph underneath is the most difficult sentence in the whole project to write honestly.
+Triage ranks people. The page says, in the interface rather than in a paper: **this is not a judgement
+about who matters, it cannot see the person, a low rank is not a reason to ignore a report, and the
+weights are meant to be argued with.** A ranking that did not say that would be a worse artefact than no
+ranking at all.
+
+It is not linked from the header, which is right for an operations view - but for a judge it is at
+`/admin/` and it is two sentences long.
+
 ## Every number can explain itself
 
 `?prov=1`, or the button at the bottom of the sidebar. Six headline numbers, each with the file it is
