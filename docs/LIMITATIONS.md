@@ -99,29 +99,26 @@ the film's inputs are not in the repository and neither are any additions to the
 is a local build step, not a repository change, and a reader of this repository cannot tell from it
 whether the film was ever extended.
 
-### The film still SPEAKS the number the caption corrects
+### The film and its narration now agree
 
-`cap cd` says "31 of 613 ... peaked the day before, at 149". The narration for the same beat says
-"छ सय तेह्र मध्ये एकतीस" - corrected in `reports/video/voice/narration.txt`, which is tracked.
+`cap cd` says "31 of 613 ... peaked the day before, at 149" and the narration for the same beat says
+"छ सय तेह्र मध्ये एकतीस ढलानले वर्षाको थ्रेसहोल्ड नाघे। भोलिपल्ट सिजनको उच्च बिन्दु एक सय उनन्चास
+पुग्यो।" The film was rebuilt and the audio re-recorded, so the spoken number and the on-screen number
+match.
 
-**The audio has not been re-recorded, so the committed mp4 still says "three hundred five" out loud.**
-The on-screen text and the spoken word disagree inside one clip.
+**How the re-recording was possible after the OmniVoice quota ran out:** the film's own wavs are
+22,050 Hz, which is the local `evidence/voices/ne_NP-chitwan-medium.onnx` Piper voice. Synthesising an
+UNCHANGED line with it reproduced the existing wav to within 2.5% of duration - the same model,
+re-run - so the corrected line was recorded locally with the same voice.
 
-Why it is not fixed here:
+    d.wav      9.x s  ->  12.23 s   (the corrected line names the peak, so it is longer)
+    the film   156 s  ->  159 s     which is the evidence that the audio actually changed,
+                                    not another rebuild that reused a cached wav
 
-- `scripts/build_voiced_video.sh` **reuses an existing `voice/<key>.wav` and does not synthesise.** If
-  the wav is missing it does not record the line either - it builds that beat as a **captioned silent
-  beat**. So rebuilding the film cannot change what is spoken; it can only silence it. Deleting `d.wav`
-  to force a re-record makes beat d silent, which is worse, and it was restored from a copy.
-- Recording happens in `scripts/narrate_omnivoice.py`, which sends the lines to a public Gradio Space
-  on ZeroGPU. Anonymous callers get a small daily quota, documented in `docs/NARRATION.md` as "the one
-  thing that blocks it" - enough for about two lines. **The seven-character correction is one line, so
-  it is within reach on a fresh day or with a token; it was out of quota when this was attempted.**
-
-So the film is committed in its original state and **the text is corrected while the audio is not.**
-Whoever re-runs the narration should re-synthesise line `d` and then rebuild, and the test
-`test_the_speech_the_caption_and_the_narration_agree_on_the_load_bearing_numbers` now enforces the
-corrected value in all three places - so the text cannot drift back.
+The duration moving by the amount the text grew is the check that the earlier silent no-op did not
+repeat. `scripts/build_voiced_video.sh` still reuses `voice/<key>.wav` when it exists and still builds
+a captioned SILENT beat when it does not - so any future narration change must delete the affected wav
+first, or it will not be heard.
 
 To extend it, three edits go together:
 
