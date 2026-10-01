@@ -169,12 +169,11 @@ export default function Page() {
       if (q.get("mode") === "replay") setMode("replay");
       if (q.get("blind") === "1") setBlind(true);
       if (q.get("trails") === "1") setTrails(true);
+      // blind and trails each had a URL parameter; places did not, so the one layer a person
+      // most wants to link to - where the local units are - could only be turned on by clicking.
+      if (q.get("places") === "1") setPlaces(true);
       const pv = q.get("plan");
       if (pv) setAutoPlan(pv);
-      <button onClick={() => setPlaces((v) => !v)} className={places ? "on" : ""}
-              title="Major places: population, district and the office that owns the ground">
-        Places
-      </button>
     }).catch(() => setErr("timeline not built yet"));
     fetch("/data/observability-by-month.json")
       .then((r) => { if (!r.ok) throw new Error(String(r.status)); return r.json(); })
@@ -621,6 +620,17 @@ export default function Page() {
           <input type="checkbox" checked={trails} onChange={(e) => setTrails(e.target.checked)} />
           <span>
             Show <b>hiking trails</b> — 23,726 mapped paths, offline
+          </span>
+        </label>
+
+        {/* This was JSX inside the .then() callback that loads the timeline - an expression
+            evaluated and discarded, never returned. The layer, the source and the fetch were all
+            written; the control to switch it on rendered nowhere, so the major-places layer was
+            unreachable from the interface for every round it existed. */}
+        <label className="toggle">
+          <input type="checkbox" checked={places} onChange={(e) => setPlaces(e.target.checked)} />
+          <span>
+            Show <b>major places</b> — 277 local units, each with its own government site
           </span>
         </label>
 

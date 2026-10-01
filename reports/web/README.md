@@ -79,6 +79,35 @@ Three paths near Kathmandu are unnamed in OSM, and the app prints "(unnamed path
 inventing one. The difficulty field says "not recorded" and "cannot check this from the map data"
 rather than guessing a grade from a length. The caveat paragraph names all three limits.
 
+## The Places toggle that rendered nowhere
+
+The major-places layer had a source, a fetch, a style and a state variable - and its control was JSX
+sitting inside the `.then()` callback that loads the timeline:
+
+    }).then((t) => {
+      ...
+      if (q.get("places") === "1") setPlaces(true);
+      <button onClick={() => setPlaces((v) => !v)} className={places ? "on" : ""}>
+        Places
+      </button>
+    }).catch(() => setErr("timeline not built yet"));
+
+An arrow-function body is a statement block, not a return. The element was CONSTRUCTED on every load
+and DISCARDED. Nothing threw, nothing warned, and `npm run build` was clean - so the layer was
+unreachable from the interface for every round it existed, in a project whose brief says the map
+should carry the major places.
+
+**Fixed:** the dead element removed, and a real toggle rendered beside the trails checkbox:
+
+    [x] Show major places - 277 local units, each with its own government site
+
+`?places=1` was also added, matching `?blind=1` and `?trails=1`, because the layer a person most wants
+to link to had neither a link nor a control.
+
+**What is verified:** the toggle renders and reflects the URL parameter - the screenshot shows it
+checked under `?places=1`. **What is not:** whether the 277 circles are drawn on the map at this zoom.
+The screenshot does not show them clearly and 32 s of virtual time was allowed. Not claimed.
+
 ## /field/ - the last surface in the product, now seen
 
 The SOS button in the header links here, and this page had never been rendered. It is the emergency
