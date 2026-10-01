@@ -83,6 +83,35 @@ Three paths near Kathmandu are unnamed in OSM, and the app prints "(unnamed path
 inventing one. The difficulty field says "not recorded" and "cannot check this from the map data"
 rather than guessing a grade from a length. The caveat paragraph names all three limits.
 
+## Every number can explain itself
+
+`?prov=1`, or the button at the bottom of the sidebar. Six headline numbers, each with the file it is
+derived from, how it was measured, and **what it does not say**:
+
+    613          slopes mapped                    data/timeline.json
+    118.8 mm/24h rainfall threshold               data/timeline.json
+    23726        mapped footpaths                 data/trails.geojson
+    277          local units located              data/places.geojson
+    534          slopes with a susceptibility     data/susceptibility.json
+    494          slopes with a named office       data/complaint-index.json
+
+The caveats are the sentences the guards in `tests/` already enforce mechanically:
+
+    the threshold   a published fit for one local area, used here as a national reference.
+                    It is the single largest simplification in this map.
+    susceptibility  Kincey et al. (2023), CC-BY-4.0 - the one number in this project that is not
+                    ours. It says where failure is more likely across a country, not whether a
+                    slope is moving today.
+    places          277 of Nepal's 753 local units. A position is the mean of the slopes inside a
+                    unit, not a town centre.
+
+This is the difference between a project that is honest in its tests and one that is honest where a
+reader can see it. Until this existed, the discipline lived in prose and in guards; a judge looking at
+"613" had to take it on trust or go and find the test that checks it.
+
+`?prov=1` was added for the same reason as `?plan=` and `?beat=`: without it the panel needed a mouse
+click, and the one panel whose subject is "check the number" was the one that could not be checked.
+
 ## The Places toggle that rendered nowhere
 
 The major-places layer had a source, a fetch, a style and a state variable - and its control was JSX

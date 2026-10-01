@@ -5,6 +5,7 @@ import { dataUrl } from "../lib/base";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import SlopeMap, { AnyFC } from "../components/SlopeMap";
+import Provenance from "../components/Provenance";
 import Presenter from "../components/Presenter";
 
 type Frame = { id: string; label: string; date: string; source: string; file: string;
@@ -278,7 +279,8 @@ export default function Page() {
           Could not load {loadErrors.join(", ")} — what you see is incomplete.
         </div>
       )}
-      <SlopeMap
+            <Provenance />
+<SlopeMap
         data={mode === "replay" ? replayFC : liveFC}
         focus={focus}
         blind={blind}
@@ -687,7 +689,7 @@ export default function Page() {
           routing key&apos;s default duty holder for a local road. Per-report routing, which resolves
           the actual asset, is measured separately on 21 expert-labelled scenarios.
         </div>
-      </aside>
+            </aside>
 
       <div className="topactions">
         <Link href="/fly/">🥽 Fly over it in 3D</Link>

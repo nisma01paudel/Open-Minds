@@ -459,3 +459,24 @@ kbd { background: rgba(148,163,184,.16); border: 1px solid rgba(148,163,184,.25)
     background: rgba(7,11,20,.93); border: 1px solid rgba(148,163,184,.22); border-radius: 10px;
     padding: 10px 13px; font-size: 12.5px; color: #cbd5e1; }
 }
+
+/* --- provenance: where the numbers come from --- */
+.provbtn { position: absolute; z-index: 9; bottom: 16px; left: 20px; width: 336px;
+  text-align: left; font: inherit; font-size: 11.5px;
+  color: #7dd3fc; background: rgba(56,189,248,.08); border: 1px solid rgba(56,189,248,.3);
+  border-radius: 8px; padding: 7px 10px; cursor: pointer; }
+.provbtn:hover { background: rgba(56,189,248,.16); }
+.provpanel { position: absolute; z-index: 9; top: 84px; left: 372px; width: 430px;
+  max-height: calc(100% - 190px); overflow-y: auto; background: rgba(7,11,20,.96);
+  backdrop-filter: blur(14px); border: 1px solid rgba(148,163,184,.22); border-radius: 14px;
+  padding: 14px 16px; box-shadow: 0 18px 50px rgba(0,0,0,.55); }
+.provnote { color: #94a3b8; font-size: 12px; margin: 0 0 10px; line-height: 1.45; }
+.provitem { border-top: 1px solid rgba(148,163,184,.14); padding: 9px 0 7px; }
+.provhead { display: flex; align-items: baseline; gap: 8px; }
+.provval { font-size: 16px; font-weight: 700; color: #e8f4ff; }
+.provlab { font-size: 12px; color: #cbd5e1; }
+.provfile { font-family: ui-monospace, monospace; font-size: 10.5px; color: #64748b; margin-top: 2px; }
+.provhow { font-size: 11.5px; color: #b6c2d4; margin: 6px 0 0; line-height: 1.45; }
+.provcav { font-size: 11.5px; color: #fcd34d; margin: 5px 0 0; line-height: 1.45; }
+.proverr { color: #fca5a5; font-size: 12px; margin: 0; }
+@media (max-width: 1100px) { .provpanel { left: 12px; right: 12px; width: auto; } }
