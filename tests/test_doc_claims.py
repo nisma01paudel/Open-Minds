@@ -1215,3 +1215,45 @@ def test_the_submission_quotes_the_video_length_it_actually_has():
     assert int(m.group(1)) == actual, (
         f"the submission says {m.group(1)} s and the film is {actual} s - the pasted eligibility "
         f"output drifted, which is what it is there to prevent")
+
+
+def test_no_jsx_sits_inside_a_promise_callback():
+    """The Places toggle was JSX inside a `.then()`, so it was built and discarded every load.
+
+    An arrow-function body is a statement block, not a return, so JSX there can never render. Nothing
+    throws, nothing warns, `tsc` is happy and `npm run build` is clean - which is why it survived every
+    round, in the layer the brief asks for by name.
+
+    This walks the promise continuations in the web sources and fails on any JSX inside one. It cannot
+    be fooled by indentation, unlike a grep: it tracks brace depth from the `.then(` that opens the
+    block, and it only looks where a return is impossible.
+    """
+    import re
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    web = root / "web"
+    files = list((web / "app").rglob("*.tsx")) + list((web / "components").rglob("*.tsx"))
+    assert files, "no .tsx files found - the sweep is not looking anywhere"
+
+    offenders = []
+    for f in files:
+        lines = f.read_text(encoding="utf-8").splitlines()
+        i = 0
+        while i < len(lines):
+            if re.search(r"\.(then|catch)\(\s*(\([^)]*\)|[A-Za-z_$][\w$]*)?\s*=>\s*\{", lines[i]):
+                depth = lines[i].count("{") - lines[i].count("}")
+                j = i + 1
+                while j < len(lines) and depth > 0:
+                    if (re.match(r"\s*<[A-Za-z][\w.]*[\s/>]", lines[j])
+                            and "return" not in lines[j]):
+                        offenders.append(f"{f.relative_to(root)}:{j + 1}")
+                    depth += lines[j].count("{") - lines[j].count("}")
+                    j += 1
+                i = j
+            else:
+                i += 1
+
+    assert not offenders, (
+        "JSX inside a promise callback can never render - it is constructed and discarded, with no "
+        "error anywhere:\n  " + "\n  ".join(offenders))
