@@ -1,4 +1,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- The beacon is the point of the Bluetooth tab, and until now this app had NO Bluetooth
+         permission at all: the screen encoded a frame and decoded its own output in the same process,
+         so nothing ever radiated. These are what Android 12+ requires to actually advertise.
+         neverForLocation is declared because a distress beacon is not a location tracker and the
+         permission would otherwise imply one. -->
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"
+        android:usesPermissionFlags="neverForLocation" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <!-- Android 11 and below use the legacy pair instead. -->
+    <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" android:maxSdkVersion="30" />
     <application
         android:label="pahiro_field"
         android:name="${applicationName}"

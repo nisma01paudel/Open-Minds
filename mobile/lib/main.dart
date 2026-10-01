@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:flutter_ble_peripheral/flutter_ble_peripheral.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 import 'beacon.dart' as beacon;
@@ -804,6 +805,16 @@ class _BeaconScreenState extends State<BeaconScreen> {
   Uint8List? frame;
   beacon.Beacon? decoded;
 
+  // Whether the phone is ACTUALLY radiating.
+  //
+  // Until this existed, the beacon tab encoded a frame and then decoded its own output through
+  // `beacon.relay(f)` in the same process. The codec was real and tested; the radio was not there at
+  // all, and there was no Bluetooth permission in the manifest to have made it possible. The screen
+  // said the distress call travels inside the advertisement, and the phone was silent.
+  final _ble = FlutterBlePeripheral();
+  bool advertising = false;
+  String? advNote;
+
   void _build() {
     final f = beacon.encode(
       'handset-demo',
@@ -821,6 +832,53 @@ class _BeaconScreenState extends State<BeaconScreen> {
     });
   }
 
+  /// Put the frame on the air.
+  ///
+  /// The payload rides as manufacturer-specific data, which is the one field a legacy advertisement
+  /// lets an application define freely - that is the trick the codec was written for. Everything here
+  /// can fail and every failure is SHOWN rather than swallowed: a beacon that silently does not
+  /// transmit is the worst possible version of this feature, and it is the version that shipped.
+  Future<void> _toggleAdvertise() async {
+    if (advertising) {
+      try {
+        await _ble.stop();
+      } catch (_) {}
+      if (mounted) setState(() { advertising = false; advNote = null; });
+      return;
+    }
+
+    final f = frame;
+    if (f == null) return;
+    final s = widget.strings;
+    try {
+      if (!await _ble.isSupported) {
+        if (mounted) setState(() => advNote = s['beacon.noAdapter']);
+        return;
+      }
+      final state = await _ble.start(
+        advertiseData: AdvertiseDataCore(
+          // A 16-bit service UUID, not the 128-bit form, and the size is the reason.
+          //
+          // A legacy advertisement is 31 bytes. Flags take 3, a 128-bit UUID takes 16, and the frame
+          // is 20 - which is 39, and the radio refuses it. The first attempt on the handset came back
+          // onAdvertisingSetStarted(0, -7, 0), an error status. The short form is resolved against
+          // the Bluetooth base UUID and costs 2 bytes, which fits with room to spare.
+          serviceUuid: 'F22E',
+          manufacturerId: 0x02E5, // unassigned by the Bluetooth SIG; claimed here for Pahiro
+          manufacturerData: f,
+        ),
+      );
+      if (!mounted) return;
+      setState(() {
+        advertising = state == PeripheralBluetoothState.ready ||
+            state == PeripheralBluetoothState.granted;
+        advNote = advertising ? null : '${s['beacon.notReady']} (${state.name})';
+      });
+    } catch (e) {
+      if (mounted) setState(() { advertising = false; advNote = '${s['beacon.failed']} $e'; });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = widget.strings;
@@ -834,6 +892,34 @@ class _BeaconScreenState extends State<BeaconScreen> {
             style: const TextStyle(color: Color(0xFF94A3B8), height: 1.5)),
         const SizedBox(height: 16),
         FilledButton(onPressed: _build, child: Text(s['beacon.encode'])),
+        const SizedBox(height: 10),
+        // The radio. Building a frame and transmitting it are different acts, and until this round
+        // only the first existed - so the screen said a distress call travels inside the
+        // advertisement while the phone stayed silent.
+        if (frame != null)
+          FilledButton.icon(
+            onPressed: _toggleAdvertise,
+            icon: Icon(advertising ? Icons.stop_circle_outlined : Icons.podcasts),
+            label: Text(advertising ? s['beacon.stop'] : s['beacon.advertise']),
+            style: FilledButton.styleFrom(
+              backgroundColor: advertising ? const Color(0xFFB91C1C) : null,
+            ),
+          ),
+        if (frame != null) ...[
+          const SizedBox(height: 8),
+          Text(
+            advertising ? s['beacon.onAir'] : s['beacon.offAir'],
+            style: TextStyle(
+              color: advertising ? const Color(0xFF4ADE80) : const Color(0xFFFBBF24),
+              fontSize: 12,
+              height: 1.4,
+            ),
+          ),
+        ],
+        if (advNote != null) ...[
+          const SizedBox(height: 6),
+          Text(advNote!, style: const TextStyle(color: Color(0xFFF87171), fontSize: 12)),
+        ],
         const SizedBox(height: 16),
         if (frame != null)
           Card(
