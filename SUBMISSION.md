@@ -60,6 +60,9 @@ Stated here so you do not have to find it:
 
 ## What you can open right now
 
+**<https://sushant-me.github.io/work/>** — deployed and public. Nothing to build, nothing to install, works on a phone.
+
+
 Everything below is on both platforms, works with the radio off, and has a frame in
 [reports/device/](reports/device/) taken from the release APK on an Android device.
 

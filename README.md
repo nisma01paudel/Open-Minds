@@ -75,6 +75,14 @@ that says so.
 **A user of this app can always tell "nothing is here" from "we could not look."** Most software
 cannot, and it is the thing worth looking at first.
 
+## Open it now
+
+**<https://sushant-me.github.io/work/>** — the web app is deployed and public. The 3D flythrough, the walk planner, the nine pitch
+beats, the advisory panel, the share page and the field app, all reachable without cloning anything.
+
+Everything except the deep-zoom basemap is bundled, so the four zoom levels the national view uses
+draw from the repository rather than from a tile service — the same reason it works with the wifi off.
+
 ## Start here
 
 New to the repo? Read **[SUBMISSION.md](SUBMISSION.md)** — it lists the five required submission items,

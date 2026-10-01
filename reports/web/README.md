@@ -1,5 +1,9 @@
 # The web app, rendered
 
+**Live: <https://sushant-me.github.io/work/>** — GitHub Pages, built from `web/out` with `NEXT_PUBLIC_BASE_PATH=/work` and published
+from the `gh-pages` branch. Round 4 of the competition goal; before it, every surface in this directory
+was reachable only by building the repository.
+
 Until this round the web half had been verified only by build exit codes, by the presence of files,
 and by grepping the bundle for strings. It had never been **looked at**. Chrome is on this machine, so
 it now has been:
